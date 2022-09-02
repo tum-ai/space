@@ -1,3 +1,7 @@
+"""
+Module to manage the startup as well as shutdown behavior of the app
+"""
+
 from fastapi import FastAPI
 
 profile_service_app = FastAPI(title="ProjectService")
