@@ -1,3 +1,7 @@
+"""
+Implementation of the handling of the actual CRUD requests
+"""
+
 from typing import List
 
 import motor
