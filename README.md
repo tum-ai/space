@@ -13,8 +13,10 @@ It essentially consists of multiple subsystems
 Development will start with the Profile Parts subsystem.
 
 Profile Service: A replacement for the current Notion-based member database. Essentially just a new way of showing member information and a history/track of their time at TUM.ai
+
 Application Service: A new way of applying for signature & external projects through the Profile System.
 Booking Service: Makes booking and applying to projects as well as later getting certification upon successful completion easier, central and unified (needs authentication for that).
+
 Projects Service: Hold information belonging to projects.
 
 These all services are designed to make member journey, recruiting phases and projects applications much easier for responsible people. This system doesn't replace Notion (as a great space for departmental documentation) and Slack (for internal communication) but will provide a unified and centralized way of searching and accessing that information.
