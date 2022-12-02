@@ -1,20 +1,96 @@
+# Docker Compose file for the tumai-space microservice architecture.
+# Traefik is used as a reverse proxy and load balancer. It is configured to redirect all requests to the tumai-space
+# Web App. Before accessing any of the tumai-space services, traefik first redirects to the supertokens
+# authentication service. If the user is not authenticated, the user is redirected to the tumai-space login page.
+
 version: "3.9"
 
 services:
-
-  profilesDB:
-    image: mongo
-    restart: always
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: admin
-      MONGO_INITDB_ROOT_PASSWORD: admin
-
-  mongo-express:
-    image: mongo-express
-    restart: always
+  # traefik reverse proxy
+  reverse-proxy-traefik:
+    image: traefik:v2.9.5
+    container_name: reverse-proxy-traefik
+    networks:
+      - microservices
+    command:
+      - --api.insecure=true # enable the dashboard. TODO: replace with a secure dashboard
+      - --providers.docker=true # enable docker provider
+      - --providers.docker.exposedbydefault=false # expose only containers with label traefik.enable=true
+      - --entrypoints.web.address=:80 # entrypoint "web" on port 80 TODO: add "websecure" on port 443
+      - --providers.docker.network=microservices # use the microservices network
+      - --providers.docker.endpoint=unix:///var/run/docker.sock # use the docker socket
     ports:
-      - 8081:8081
+      - "80:80" # HTTP port for "web" entrypoint
+      - "8080:8080" # The Web UI (enabled by --api.insecure=true)
+    volumes:
+        # So that Traefik can listen to the Docker events
+        # The docker-compose file shares the docker sock with the Traefik container
+        - "/var/run/docker.sock:/var/run/docker.sock:ro"
+
+  # SuperTokens database service
+  supertokens-db:
+    image: 'postgres:latest'
     environment:
-      ME_CONFIG_MONGODB_ADMINUSERNAME: admin
-      ME_CONFIG_MONGODB_ADMINPASSWORD: admin
-      ME_CONFIG_MONGODB_URL: mongodb://admin:admin@profilesDB:27017/
+      POSTGRES_USER: supertokens_user # TODO: move to secrets
+      POSTGRES_PASSWORD: somePassword # TODO: move to secrets
+      POSTGRES_DB: supertokens # TODO: move to secrets
+    ports:
+      - "5432:5432"
+    networks:
+      - microservices
+    restart: unless-stopped
+    healthcheck:
+      test: ['CMD', 'pg_isready -U supertokens_user']
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # Authentication service
+  auth-supertokens:
+    image: registry.supertokens.io/supertokens/supertokens-postgresql:4.2
+    depends_on:
+      - supertokens-db
+    ports:
+      - "3567:3567"
+    environment:
+      POSTGRESQL_CONNECTION_URI: "postgresql://supertokens_user:somePassword@supertokens-db:5432/supertokens"
+    networks:
+      - microservices
+    restart: unless-stopped
+    healthcheck:
+      test: >
+        bash -c 'exec 3<>/dev/tcp/127.0.0.1/3567 && echo -e "GET /hello HTTP/1.1\r\nhost: 127.0.0.1:3567\r\nConnection: close\r\n\r\n" >&3 && cat <&3 | grep "Hello"'
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # dev-test-service
+  # This services uses Dockerfile from the dev-test-service directory
+  dev-test-service:
+    build: ./dev-test-service
+    container_name: dev-test-service
+    networks:
+      - microservices
+    labels:
+      - "traefik.enable=true" # enable traefik discovery for this container
+      - "traefik.http.routers.dev-test-service.rule=Host(`dev-test-service.localhost`)" # specify the host name
+      - "traefik.http.routers.dev-test-service.entrypoints=web" # specify the entrypoint for this router
+      - "traefik.http.services.dev-test-service.loadbalancer.server.port=7777" # specify the port of the container
+
+  # whoami test service
+  whoami:
+    image: traefik/whoami
+    container_name: whoami
+    networks:
+      - microservices
+    labels:
+      - "traefik.enable=true" # enable traefik discovery for this container
+      - "traefik.http.routers.whoami.rule=Host(`whoami.localhost`)" # define the host
+      - "traefik.http.routers.whoami.entrypoints=web" # define the entrypoint
+
+
+# create a network called "microservices" for the services to communicate
+networks:
+  microservices:
+    driver: bridge
+
