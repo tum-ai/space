@@ -1,7 +1,7 @@
 # Docker Compose file for the tumai-space microservice architecture.
 # Traefik is used as a reverse proxy and load balancer. It is configured to redirect all requests to the tumai-space
 # Web App. Before accessing any of the tumai-space services, traefik first redirects to the supertokens
-# authentication service. If the user is not authenticated, the user is redirected to the tumai-space login page.
+# authentication service. If the user is not authenticated, the user is redirected to the "https://auth.tum-ai.com".
 
 version: "3.9"
 

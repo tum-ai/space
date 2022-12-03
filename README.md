@@ -23,3 +23,37 @@ These all services are designed to make member journey, recruiting phases and pr
 
 ## Design
 See the subsystem decomposition and other design choices visualized [here on miro](https://miro.com/app/board/uXjVPbuAg8o=/?share_link_id=654531643024).
+
+---
+
+## Development
+
+### Running the project
+
+1. From the root of the project:
+    ```bash
+    docker-compose up -d
+    ```
+2. Go to http://localhost:8080 to see the dashboard of the running services
+3. Go to http://whoami.localhost to see the whoami service
+4. Go to http://dev-test-service.localhost to see the dev-test-service
+
+### Technical Stack
+- Backend: depends on the service. Recommended:
+  - Services:
+    - GoLang with [`Gin`](https://github.com/gin-gonic/gin) or
+    - Python with [`FastAPI`](https://github.com/tiangolo/fastapi)
+  - Database:
+    - [`MongoDB`](https://www.mongodb.com/) or
+    - [`PostgreSQL`](https://www.postgresql.org/)
+- Frontend:
+  - [`NextJS`](https://nextjs.org/)
+- DevOps:
+  - Reverse proxy:
+    - [`Traefik`](https://traefik.io/)
+  - Authentication and Autherization:
+    - [`SuperTokens`](https://supertokens.com/)
+  - Containerization and orchestration:
+    - [`Docker`](https://www.docker.com/) with [`Docker Compose`](https://docs.docker.com/compose/)
+    - But ideally: [`Kubernetes`](https://kubernetes.io/) or [`Docker Swarm`](https://docs.docker.com/engine/swarm/)
+
