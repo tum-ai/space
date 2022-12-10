@@ -7,13 +7,13 @@ function NavBar() {
 				<a href='/'>
 					<Icon
 						name={'FaHome'}
-						className='bg-purple-500 p-2 rounded-full text-white hover:scale-105 hover:bg-purple-600'
+						className='bg-gray-400 p-2 rounded-full text-white hover:scale-105 hover:bg-purple-400'
 					/>
 				</a>
 				<a href='/members'>
 					<Icon
 						name={'FaUsers'}
-						className='bg-purple-500 p-2 rounded-full text-white hover:scale-105 hover:bg-purple-600'
+						className='bg-gray-400 p-2 rounded-full text-white hover:scale-105 hover:bg-purple-400'
 					/>
 				</a>
 			</div>

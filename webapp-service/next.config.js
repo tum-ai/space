@@ -1,6 +1,16 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: true,
-}
+	reactStrictMode: true,
+	images: {
+		remotePatterns: [
+			{
+				protocol: 'https',
+				hostname: 'images.pexels.com',
+				port: '',
+				pathname: '/photos/**',
+			},
+		],
+	},
+};
 
-module.exports = nextConfig
+module.exports = nextConfig;
