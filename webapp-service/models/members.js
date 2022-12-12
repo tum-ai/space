@@ -1,9 +1,11 @@
 import { makeAutoObservable } from 'mobx';
 
-class Members {
+export class MembersModel {
 	members = [];
+	root;
 
-	constructor() {
+	constructor(root) {
+		this.root = root;
 		makeAutoObservable(this);
 	}
 
@@ -34,17 +36,14 @@ class Members {
 
 	// ONLOAD
 	async loadMembers() {
-		console.log('mem');
 		await this.fetchMembers();
 	}
 }
 
-const members = new Members();
-
 var mockData = [
 	{
 		profileID: '1',
-		name: 'Max Mustermanns',
+		name: 'Max Mustermann',
 		picture:
 			'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg',
 		department: 'Industry',
@@ -52,7 +51,7 @@ var mockData = [
 		description: 'Hollywood star',
 		degreeName: 'Information Systems',
 		degreeLevel: 'M.Sc.',
-		degreeSemester: '3',
+		degreeSemester: '4',
 		university: 'TUM',
 	},
 	{
@@ -64,14 +63,74 @@ var mockData = [
 		description: 'Hollywood star',
 		degreeName: 'Computer Science',
 		degreeLevel: 'B.Sc.',
-		degreeSemester: '3',
+		degreeSemester: '1',
 		university: 'TUM',
 	},
 	{
 		profileID: '3',
 		name: 'Thomas Schmidt',
 		picture: '',
-		department: 'Industry',
+		department: 'Dev',
+		role: 'member',
+		description: 'Hollywood star',
+		degreeName: 'Information Systems',
+		degreeLevel: 'M.Sc.',
+		degreeSemester: '3',
+		university: 'TUM',
+	},
+	{
+		profileID: '4',
+		name: 'Thomas Schmidt',
+		picture: '',
+		department: 'Makeathon',
+		role: 'team lead',
+		description: 'Hollywood star',
+		degreeName: 'Management & Technology',
+		degreeLevel: 'M.Sc.',
+		degreeSemester: '1',
+		university: 'LMU',
+	},
+	{
+		profileID: '5',
+		name: 'Jakob',
+		picture: '',
+		department: 'Marketing',
+		role: 'member',
+		description: 'Hollywood star',
+		degreeName: 'Data Engineering and Analytics',
+		degreeLevel: 'M.Sc.',
+		degreeSemester: '3',
+		university: 'TUM',
+	},
+	{
+		profileID: '6',
+		name: 'Matthias Müller',
+		picture: '',
+		department: 'Community',
+		role: 'team lead',
+		description: 'Hollywood star',
+		degreeName: 'Information Systems',
+		degreeLevel: 'B.Sc.',
+		degreeSemester: '3',
+		university: 'TUM',
+	},
+	{
+		profileID: '7',
+		name: 'Lukas Zimmermann',
+		picture: '',
+		department: 'Dev',
+		role: 'member',
+		description: 'Hollywood star',
+		degreeName: 'Information Systems',
+		degreeLevel: 'M.Sc.',
+		degreeSemester: '3',
+		university: 'TUM',
+	},
+	{
+		profileID: '8',
+		name: 'Mo Salah',
+		picture: '',
+		department: 'Dev',
 		role: 'member',
 		description: 'Hollywood star',
 		degreeName: 'Information Systems',
@@ -92,5 +151,3 @@ var mockData = [
 	// 	picture: 'XXXXX',
 	// },
 ];
-
-export default members;

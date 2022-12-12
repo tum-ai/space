@@ -1,9 +1,14 @@
 import Page from 'components/Page';
 import { observer } from 'mobx-react';
-import { useEffect } from 'react';
-import Icon from '../components/Icon';
-import SelectMultiple from '../components/SelectMultiple';
-import membersModel from '/models/Members';
+import Icon from '/components/Icon';
+import SelectMultiple from '/components/SelectMultiple';
+import { useRootModel } from '/providers/RootStoreProvider';
+
+const DEPARTMENTTOCOLOR = {
+	marketing: 'green',
+	industry: 'blue',
+	dev: 'red',
+};
 
 export default function Members() {
 	return (
@@ -12,16 +17,15 @@ export default function Members() {
 			<br />
 			<br />
 			<MembersList />
+			<br />
+			<br />
 		</Page>
 	);
 }
 
 const MembersList = observer(() => {
-	useEffect(() => {
-		console.log('use effect');
-		membersModel.loadMembers();
-		// eslint-disable-next-line
-	}, []);
+	const rootModel = useRootModel();
+	const membersModel = rootModel.membersModel;
 
 	return (
 		<div className='flex flex-col space-y-6'>
@@ -52,11 +56,6 @@ const MembersList = observer(() => {
 });
 
 function Member({ member }) {
-	const DEPARTMENTTOCOLOR = {
-		marketing: 'green-500',
-		industry: 'blue-500',
-		dev: 'red-500',
-	};
 	return (
 		<div className='space-y-4'>
 			<div className='flex space-x-4 items-center'>
@@ -79,11 +78,12 @@ function Member({ member }) {
 				<div className='flex flex-col w-1/6'>
 					<div className='font-bold'>{member.name}</div>
 					<div
-						className={
-							'text-' +
-							DEPARTMENTTOCOLOR[member.department.toLowerCase()] +
-							' font-light'
-						}
+						className={' font-light'}
+						style={{
+							color: DEPARTMENTTOCOLOR[
+								member.department.toLowerCase()
+							],
+						}}
 					>
 						{member.department}
 					</div>
@@ -126,8 +126,20 @@ function Member({ member }) {
 				<div className='flex items-center justify-end'>
 					<a href={'/members/' + member.profileID}>
 						<Icon
-							name={'FaLink'}
+							name={'FaExternalLinkAlt'}
 							className='p-2 rounded-full text-purple-400 hover:scale-105'
+						/>
+					</a>
+					<a href={'tum-ai.com'}>
+						<Icon
+							name={'FaLinkedinIn'}
+							className='p-2 rounded-full hover:scale-105'
+						/>
+					</a>
+					<a href={'tum-ai.com'}>
+						<Icon
+							name={'FaGithub'}
+							className='p-2 rounded-full hover:scale-105'
 						/>
 					</a>
 				</div>
