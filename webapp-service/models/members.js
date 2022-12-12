@@ -1,8 +1,13 @@
 import { makeAutoObservable } from 'mobx';
 
 export class MembersModel {
-	members = [];
 	root;
+	members = [];
+	filteredMembers = [];
+	filter = {
+		department: '',
+		degreeName: '',
+	};
 
 	constructor(root) {
 		this.root = root;
@@ -22,10 +27,39 @@ export class MembersModel {
 	}
 
 	// STATE FUNCTIONS
+	getDepartments() {
+		const departmentsSet = new Set(
+			this.members.map((member) => member.department)
+		);
+		return Array.from(departmentsSet);
+	}
+	getDegrees() {
+		const degreesSet = new Set(
+			this.members.map((member) => member.degreeName)
+		);
+		return Array.from(degreesSet);
+	}
+
+	setFilter(key, value) {
+		this.filter[key] = value ?? '';
+		this.filterMembers();
+	}
+
+	filterMembers() {
+		this.filteredMembers = this.members.filter((member) => {
+			for (const key in this.filter) {
+				if (this.filter[key] && member[key] != this.filter[key]) {
+					return false;
+				}
+			}
+			return true;
+		});
+	}
 
 	// API FUNCTIONS
 	async fetchMembers() {
 		this.members = mockData;
+		this.filteredMembers = mockData;
 		// try {
 		// 	const response = await axios('/members');
 		// 	this.setMembers(response.data);

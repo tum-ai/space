@@ -1,7 +1,7 @@
 import Page from 'components/Page';
 import { observer } from 'mobx-react';
 import Icon from '/components/Icon';
-import SelectMultiple from '/components/SelectMultiple';
+import Select from '/components/Select';
 import { useRootModel } from '/providers/RootStoreProvider';
 
 const DEPARTMENTTOCOLOR = {
@@ -19,6 +19,8 @@ export default function Members() {
 			<MembersList />
 			<br />
 			<br />
+			<br />
+			<br />
 		</Page>
 	);
 }
@@ -31,24 +33,51 @@ const MembersList = observer(() => {
 		<div className='flex flex-col space-y-6'>
 			<div className='flex space-x-6 items-end'>
 				<div className='font-light text-gray-600'>
-					Total {membersModel.members.length} members
+					Total {membersModel.filteredMembers.length} members
 				</div>
 				<div className='text-gray-700'>filters:</div>
-				<SelectMultiple
+				<Select
+					placeholder={'Department'}
+					data={[
+						{ key: 'all', value: null },
+						...membersModel.getDepartments().map((department) => ({
+							key: department,
+							value: department,
+						})),
+					]}
+					selectedItem={{
+						key: membersModel.filter.department,
+						value: membersModel.filter.department,
+					}}
+					setSelectedItem={(item) => {
+						membersModel.setFilter(
+							'department',
+							item ? item.value : ''
+						);
+					}}
+				/>
+				<Select
 					placeholder={'Degree'}
 					data={[
 						{ key: 'all', value: null },
-						{ key: 'Marketing', value: null },
+						...membersModel.getDegrees().map((degree) => ({
+							key: degree,
+							value: degree,
+						})),
 					]}
-					selectedItems={[]}
-				/>
-				<SelectMultiple
-					placeholder={'Department'}
-					data={[{ key: 'NO LABEL', value: null }]}
-					selectedItems={[]}
+					selectedItem={{
+						key: membersModel.filter.degreeName,
+						value: membersModel.filter.degreeName,
+					}}
+					setSelectedItem={(item) => {
+						membersModel.setFilter(
+							'degreeName',
+							item ? item.value : ''
+						);
+					}}
 				/>
 			</div>
-			{membersModel.members.map((member, i) => (
+			{membersModel.filteredMembers.map((member, i) => (
 				<Member key={i} member={member} />
 			))}
 		</div>
@@ -94,7 +123,7 @@ function Member({ member }) {
 						<div className='text-xs text-gray-400 font-light'>
 							DEGREE
 						</div>
-						<div className='font-light text-sm'>
+						<div className='font-light text-sm text-center'>
 							{member.degreeLevel + ' '} {member.degreeName}
 						</div>
 					</div>
