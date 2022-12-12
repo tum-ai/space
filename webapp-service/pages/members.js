@@ -2,6 +2,7 @@ import Page from 'components/Page';
 import { observer } from 'mobx-react';
 import { useEffect } from 'react';
 import Icon from '../components/Icon';
+import SelectMultiple from '../components/SelectMultiple';
 import membersModel from '/models/Members';
 
 export default function Members() {
@@ -23,9 +24,25 @@ const MembersList = observer(() => {
 	}, []);
 
 	return (
-		<div className='flex flex-col space-y-4'>
-			<div className='font-light text-gray-600'>
-				Total {membersModel.members.length} members
+		<div className='flex flex-col space-y-6'>
+			<div className='flex space-x-6 items-end'>
+				<div className='font-light text-gray-600'>
+					Total {membersModel.members.length} members
+				</div>
+				<div className='text-gray-700'>filters:</div>
+				<SelectMultiple
+					placeholder={'Degree'}
+					data={[
+						{ key: 'all', value: null },
+						{ key: 'Marketing', value: null },
+					]}
+					selectedItems={[]}
+				/>
+				<SelectMultiple
+					placeholder={'Department'}
+					data={[{ key: 'NO LABEL', value: null }]}
+					selectedItems={[]}
+				/>
 			</div>
 			{membersModel.members.map((member, i) => (
 				<Member key={i} member={member} />
@@ -34,17 +51,12 @@ const MembersList = observer(() => {
 	);
 });
 
-const DEPARTMENTTOCOLOR = {
-	marketing: 'green-500',
-	industry: 'blue-500',
-	dev: 'red-500',
-};
-
 function Member({ member }) {
-	console.log(
-		DEPARTMENTTOCOLOR[member.department.toLowerCase()],
-		member.department.toLowerCase()
-	);
+	const DEPARTMENTTOCOLOR = {
+		marketing: 'green-500',
+		industry: 'blue-500',
+		dev: 'red-500',
+	};
 	return (
 		<div className='space-y-4'>
 			<div className='flex space-x-4 items-center'>
