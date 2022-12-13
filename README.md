@@ -23,3 +23,6 @@ These all services are designed to make member journey, recruiting phases and pr
 
 ## Design
 See the subsystem decomposition and other design choices visualized [here on miro](https://miro.com/app/board/uXjVPbuAg8o=/?share_link_id=654531643024).
+
+## Roadmap & Specification
+See [here](https://www.notion.so/tum-ai/Specification-Justification-Roadmap-5722022499ba4a6380f6667626af7595).
