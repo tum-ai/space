@@ -15,6 +15,7 @@ from uuid import UUID
 
 client = motor.motor_asyncio.AsyncIOMotorClient("mongodb://admin:admin@profilesDB:27017/")
 
+
 @app.get("/")
 async def root():
     return {"message": "Welcome to the TUM.ai Space!"}
@@ -27,10 +28,12 @@ async def root():
 async def get_profiles(query: ProfileQuery = Body(embed=True)):
     pass
 
+
 # GET profile with query parameters
 @app.get("/profile")
 async def get_profile(query: ProfileQuery = Body(embed=True)):
     pass
+
 
 # POST profile
 @app.post("/profile")
