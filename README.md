@@ -1,5 +1,10 @@
 # TUM.ai Space 💫
 
+``` markdown
+TODO: Rewrite
+```
+
+
 The "TUM.ai Space" System is a unified system for the management team to observe, edit and generate statistics regarding members activities (projects organisation and participation, participations in signature projects), and availabilities. And manage the current projects, applications and notifications.
 
 From the member point of view, this a way to track, display and have a confirmation from the management team for what you did inside TUM.ai. As well as, observe current projects, apply to them and become a subscriber to relevant notifications.
