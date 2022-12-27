@@ -1,6 +1,6 @@
 # A Template Service
 
-Serves a function of showcasing the template for the service development.
+Serves a function of showcasing an example for the service development.
 
 ## Basic functionality
 
