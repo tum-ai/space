@@ -1,7 +1,9 @@
 # TUM.ai Space 💫
 
 ``` markdown
-TODO: Rewrite
+TODOs: 
+1. Rewrite this README.md
+2. Add a proper logging
 ```
 
 
@@ -38,22 +40,33 @@ See [here](https://www.notion.so/tum-ai/Specification-Justification-Roadmap-5722
 
 ### Running the project
 
+#### Backend
 1. From the root of the project:
     ```bash
     docker-compose up -d
     ```
-2. Go to http://localhost:8080 to see the dashboard of the running services
-3. Go to http://whoami.localhost to see the whoami service
-4. Go to http://dev-test-service.localhost to see the dev-test-service
+2. Go to http://localhost:8082/
+   1. create a new database with the name `tumai-space` and
+   2. inside of `tumai-space` db create a new collection with the name `templates`
+   3. later we will automize the setup for all the functional services
+3. From the root of the project run:
+
+    ```bash
+    uvicorn server.app:app --reload
+    ```
+
+4. Go to http://localhost:8000/docs to see the dashboard of the available routes
+   1. You can use the "Try it out" button to test the routes
+
 
 ### Technical Stack
 - Backend: depends on the service. Recommended:
   - Services:
-    - GoLang with [`Gin`](https://github.com/gin-gonic/gin) or
+
     - Python with [`FastAPI`](https://github.com/tiangolo/fastapi)
   - Database:
-    - [`MongoDB`](https://www.mongodb.com/) or
-    - [`PostgreSQL`](https://www.postgresql.org/)
+    - [`MongoDB`](https://www.mongodb.com/) for all the services but analytics
+    - [`InfluxDB`](https://www.influxdata.com/) for analytics service
 - Frontend:
   - [`NextJS`](https://nextjs.org/)
 - DevOps:
