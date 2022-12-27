@@ -3,7 +3,7 @@ from fastapi import FastAPI
 from beanie import init_beanie
 from motor.motor_asyncio import AsyncIOMotorClient
 
-from server.main import logger
+# from server.main import logger
 
 from template.models import TemplateMessage
 
