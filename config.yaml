@@ -6,6 +6,9 @@ AUTH:
   API_DOMAIN: "http://api.localhost"
   AUTH_WEBSITE_BASE_PATH: "/"
   AUTH_WEBSITE_DOMAIN: "http://auth.localhost"
+  AUTH_ALLOWED_ORIGINS:
+    - "http://auth.localhost"
 MONGODB:
   MONGODB_HOST: localhost
   MONGODB_PORT: 27017
+# API:
