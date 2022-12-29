@@ -2,7 +2,7 @@
 
 from supertokens_python import init, InputAppInfo, SupertokensConfig
 from supertokens_python.recipe.thirdpartyemailpassword import Google, Github
-from supertokens_python.recipe import thirdpartyemailpassword, session
+from supertokens_python.recipe import thirdpartyemailpassword, session, dashboard
 
 import yaml
 
@@ -14,15 +14,18 @@ class Config:
 
     # Creates config field for each configuration in config.yaml
     def __init__(self, yaml_config_path: str = "config.yaml"):
-
-        self.config_dict = yaml.safe_load(open(yaml_config_path))
+        self.yaml_config_path = yaml_config_path
+        self.config_dict = yaml.safe_load(open(self.yaml_config_path))
 
         for config in self.config_dict:
             for sub_config, value in self.config_dict[config].items():
                 setattr(self, sub_config, value)
 
-    # Will throw an error if the config field is not found
     def get(self, config_field: str):
+        """
+        This function returns the value of the config field. If the config field is not found, it will throw an error.
+        @param config_field: The name of the config field. All the fields are listed in self.config_dict.
+        """
         return getattr(self, config_field)
 
 
@@ -52,10 +55,11 @@ def init_auth():
         supertokens_config=SupertokensConfig(
             # https://try.supertokens.com is for demo purposes.
             # Replace this with the address of our core instance.
-            connection_uri="https://try.supertokens.com",
+            # connection_uri="https://try.supertokens.com",
+            connection_uri=CONFIG.get("AUTH_CORE_INSTANCE"),
             # api_key=<API_KEY(if configured)>
         ),
-        framework="fastapi",
+        framework=CONFIG.get("API_FRAMEWORK_NAME"),
         recipe_list=[
             session.init(),  # initializes session features
             thirdpartyemailpassword.init(
@@ -72,6 +76,7 @@ def init_auth():
                     ),
                 ]
             ),
+            dashboard.init(api_key=CONFIG.get("USERS_DASHBOARD_API_KEY"))
         ],
         # use wsgi if we are running using gunicorn
         mode=CONFIG.get("FASTAPI_RUNNING_PROTOCOL"),

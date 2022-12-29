@@ -57,6 +57,13 @@ See [here](https://www.notion.so/tum-ai/Specification-Justification-Roadmap-5722
 
 4. Go to http://localhost:8000/docs to see the dashboard of the available routes
    1. You can use the "Try it out" button to test the routes
+5. To start the auth web app (you might need to install next.js first):
+    ```bash
+    cd auth-web-app
+    npm run dev
+    ```
+6. Try going to http://localhost:3000/, you will be redirected to the login page
+7. Go to http://localhost:8000/auth/dashboard to see all the registered users
 
 
 ### Technical Stack
@@ -72,7 +79,7 @@ See [here](https://www.notion.so/tum-ai/Specification-Justification-Roadmap-5722
 - DevOps:
   - Reverse proxy:
     - [`Traefik`](https://traefik.io/)
-  - Authentication and Autherization:
+  - Authentication and Authorization:
     - [`SuperTokens`](https://supertokens.com/)
   - Containerization and orchestration:
     - [`Docker`](https://www.docker.com/) with [`Docker Compose`](https://docs.docker.com/compose/)
