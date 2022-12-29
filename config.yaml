@@ -1,0 +1,11 @@
+APPLICATION:
+  APP_NAME: "TUM.ai Space"
+  FASTAPI_RUNNING_PROTOCOL: "asgi" # use wsgi if we are running using gunicorn
+AUTH:
+  AUTH_API_BASE_PATH: "/auth"
+  API_DOMAIN: "http://api.localhost"
+  AUTH_WEBSITE_BASE_PATH: "/"
+  AUTH_WEBSITE_DOMAIN: "http://auth.localhost"
+MONGODB:
+  MONGODB_HOST: localhost
+  MONGODB_PORT: 27017
