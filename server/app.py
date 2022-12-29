@@ -14,6 +14,7 @@ app = FastAPI()
 db_client = None
 
 # synchronous setup
+# ------------------------------------------------------------------------------#
 init_auth()
 app.add_middleware(get_middleware())
 # https://www.starlette.io/middleware/ scroll down to CORSMiddleware
@@ -24,6 +25,8 @@ app.add_middleware(
     allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
     allow_headers=["Content-Type"] + get_all_cors_headers(),
 )
+# TODO: add CORSMiddleware for other subdomains
+# ------------------------------------------------------------------------------#
 
 
 # asynchronous setup
