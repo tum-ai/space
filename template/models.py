@@ -1,6 +1,7 @@
 from typing import Optional, Any
 
 from pydantic import BaseModel
+
 # A library to ease interaction with the MongoDB database: https://beanie-odm.dev/
 from beanie import Document
 from enum import Enum
@@ -68,6 +69,6 @@ class Response(BaseModel):
                 "status_code": 200,
                 "response_type": "success",
                 "description": "Operation successful",
-                "data": "Sample data"
+                "data": "Sample data",
             }
         }
