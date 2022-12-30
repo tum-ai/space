@@ -4,7 +4,8 @@ from starlette.middleware.cors import CORSMiddleware
 from supertokens_python.framework.fastapi import get_middleware
 from supertokens_python import get_all_cors_headers
 
-from config import init_auth, CONFIG
+from config import CONFIG
+from security.auth import init_server_auth
 from template.routes import router as TemplateRouter
 
 from database.setup import setup_db_client, close_db_client
@@ -15,7 +16,7 @@ db_client = None
 
 # synchronous setup
 # ------------------------------------------------------------------------------#
-init_auth()
+init_server_auth()
 app.add_middleware(get_middleware())
 # https://www.starlette.io/middleware/ scroll down to CORSMiddleware
 app.add_middleware(
