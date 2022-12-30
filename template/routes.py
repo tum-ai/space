@@ -2,6 +2,7 @@ from fastapi import APIRouter, Body, Depends
 
 from supertokens_python.recipe.session.framework.fastapi import verify_session
 from supertokens_python.recipe.session import SessionContainer
+from supertokens_python.recipe.userroles.asyncio import get_roles_for_user
 
 from database.templates_connector import *
 from template.models import Response
@@ -51,7 +52,8 @@ async def show_template(id_: PydanticObjectId, session: SessionContainer = Depen
         return {
             "status_code": 200,
             "response_type": "success",
-            "description": f"Template message retrieved successfully. Requested by {session.get_user_id()}",
+            "description": f"Template message retrieved successfully. Requested by {session.get_user_id()}. User has"
+                           f" the following roles: {(await get_roles_for_user(session.get_user_id())).roles}",
             "data": template_message,
         }
     return {
@@ -60,3 +62,6 @@ async def show_template(id_: PydanticObjectId, session: SessionContainer = Depen
         "description": f"Template message not found. Requested by {session.get_user_id()}",
         "data": None,
     }
+
+# TODO: Example of a protected admin route
+# https://supertokens.com/docs/thirdpartyemailpassword/common-customizations/sessions/claims/claim-validators#adding-a-validator-check-to-a-specific-route

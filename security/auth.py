@@ -1,7 +1,9 @@
 from supertokens_python import init, InputAppInfo, SupertokensConfig
 from supertokens_python.recipe.thirdpartyemailpassword import Google, Github
-from supertokens_python.recipe import thirdpartyemailpassword, session, dashboard
+from supertokens_python.recipe import thirdpartyemailpassword, session, dashboard, userroles
 
+from main import log
+from security.roles import create_admin_role, create_generic_user_role
 from config import CONFIG
 
 
@@ -10,6 +12,7 @@ def init_server_auth():
     This function is called when the server starts up.
     It is used to set up the database connection and other configurations.
     """
+    log.debug("Initializing server auth...")
 
     init(
         app_info=InputAppInfo(
@@ -51,8 +54,16 @@ def init_server_auth():
                     ),
                 ]
             ),
-            dashboard.init(api_key=CONFIG.get("USERS_DASHBOARD_API_KEY"))
+            dashboard.init(api_key=CONFIG.get("USERS_DASHBOARD_API_KEY")),
+            userroles.init()
         ],
         # use wsgi if we are running using gunicorn
         mode=CONFIG.get("FASTAPI_RUNNING_PROTOCOL"),
     )
+
+
+# TODO: set up a proper role creation system
+# Create the roles for the users
+async def create_roles():
+    await create_admin_role()
+    await create_generic_user_role()
