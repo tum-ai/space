@@ -2,7 +2,7 @@ from typing import Optional, Any
 
 from pydantic import BaseModel
 
-# A library to ease interaction with the MongoDB database: https://beanie-odm.dev/
+# A library to ease the interaction with the MongoDB database: https://beanie-odm.dev/
 from beanie import Document
 from enum import Enum
 
