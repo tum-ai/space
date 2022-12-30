@@ -1,0 +1,7 @@
+# TODO: design the roles and permissions
+TEMPLATE:
+  - CREATE:
+      LEVEL:
+        - OWN
+        - DEPARTMENT
+        - ALL

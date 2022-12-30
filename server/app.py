@@ -5,7 +5,7 @@ from supertokens_python.framework.fastapi import get_middleware
 from supertokens_python import get_all_cors_headers
 
 from config import CONFIG
-from security.auth import init_server_auth
+from security.auth import init_server_auth, create_roles
 from template.routes import router as TemplateRouter
 
 from database.setup import setup_db_client, close_db_client
@@ -38,6 +38,7 @@ async def startup_event():
     It is used to set up the database connection and other configurations.
     """
     await setup_db_client(app)
+    await create_roles()
 
 
 @app.on_event("shutdown")
