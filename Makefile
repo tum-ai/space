@@ -9,14 +9,14 @@ install:
 	curl -sL https://deb.nodesource.com/setup_14.x | sudo -E /bin/bash
 	sudo apt-get install nodejs -y
 	
-	# python3.9
-	printf "${RED}TODO: Please intall Python3.9 ${NC}\n"
-	python3.9 --version
+	# python3.10
+	printf "${RED}TODO: Please intall Python3.10 ${NC}\n"
+	python3.10 --version
 
 init_venv:
-	python3.9 -m venv venv
+	python3.10 -m venv venv
 	. venv/bin/activate
-	python3.9 -m pip install -r requirements.txt
+	python3.10 -m pip install -r api/requirements.txt
 	printf "${RED}TODO: ${NC} >> ${GREEN}. venv/bin/activate${NC}\n"
 
 run_docker:
