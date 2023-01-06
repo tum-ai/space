@@ -1,0 +1,50 @@
+# Traefik static configuration file (/etc/traefik/traefik.yml)
+# See https://doc.traefik.io/traefik/getting-started/configuration-overview/#the-static-configuration
+# and https://doc.traefik.io/traefik/reference/static-configuration/cli/
+
+api:
+  insecure: true                              # TODO disable on production
+  dashboard: true                             # Enable the dashboard
+
+entryPoints:
+  http:
+    address: ":80"                            # Create the HTTP entrypoint on port 80
+    # TODO before production deployement
+    # http:
+    #   redirections:                           # HTTPS redirection (80 to 443)
+    #     entryPoint:
+    #       to: "https"                         # The target element
+    #       scheme: "https"                     # The redirection target scheme
+  https:
+    address: ":443"                           # Create the HTTPS entrypoint on port 443
+
+# Certificate Resolvers are responsible for retrieving certificates from an ACME server
+# See https://doc.traefik.io/traefik/https/acme/#certificate-resolvers
+certificatesResolvers:
+  le-tumai-com:
+    acme:
+      email: "nerotecs@gmail.com"
+      storage: "/acme/acme-nerotecs.json"
+      dnsChallenge:
+        provider: "namecheap"
+        delayBeforeCheck: 0
+        resolvers: 
+        - "1.1.1.1:53"
+        - "8.8.8.8:53"
+
+global:
+  checknewversion: true                       # Periodically check if a new version has been released.
+  sendanonymoususage: false                   # Periodically send anonymous usage statistics.
+
+providers:
+  docker:
+    endpoint: "unix:///var/run/docker.sock"   # Listen to the UNIX Docker socket
+    exposedByDefault: false                   # Only expose container that are explicitly enabled (using label traefik.enabled)
+    network: "reverse-root"                   # Default network to use for connections to all containers.
+    # swarmmode: true                         # Activates the Swarm Mode (instead of standalone Docker).
+    # swarmModeRefreshSeconds: 15             # Defines the polling interval (in seconds) in Swarm Mode.
+    watch: true                               # Watch Docker Swarm events
+  file:
+    filename: "/etc/traefik/config.yml"       # Link to the dynamic configuration
+    watch: true                               # Watch for modifications
+  providersThrottleDuration: 10               # Configuration reload frequency

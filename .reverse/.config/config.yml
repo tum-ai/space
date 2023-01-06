@@ -1,0 +1,224 @@
+http:
+  routers:
+    # Define a connection between requests and services
+    reverse-root:
+      rule: "Host(`dashboard.root.localhost`)"
+      entrypoints:
+       - http
+       - https
+      # middlewares:
+      # - default-security-headers
+      service: api@internal
+
+    # connect to a hidden (by docker, without port exposure) service, by manual config
+    test-root:
+      rule: "Host(`test.root.localhost`)"
+      entrypoints:
+       - http
+       - https
+      # middlewares:
+      # - default-security-headers
+      service: test-root
+
+    tumai-space-test:
+      rule: "Host(`test.tum-ai-dev.com`)"
+      entrypoints:
+       - http
+       - https
+      # tls:
+      #   certresolver: le-tumai-com
+      #   domains:
+      #     - main: "test.tum-ai.com"
+      #       sans:
+      #         - "*.tset.tum-ai.com"
+      service: tumai-space-test
+
+    tumai-space-api:
+      rule: "Host(`api.tum-ai-dev.com`)"
+      # rule: "Host(`space.tum-ai.com`) && PathPrefix(`/api`)"
+      entrypoints:
+       - http
+       - https
+      # tls:
+      #   certresolver: le-tumai-com
+      #   domains:
+      #     - main: "api.tum-ai.com"
+      #       sans:
+      #         - "*.api.tum-ai.com"
+      middlewares:
+        - "api-stripprefix"
+      service: tumai-space-api
+
+    tumai-space-auth:
+      rule: "Host(`auth.tum-ai-dev.com`)"
+      entrypoints:
+       - http
+       - https
+      # tls:
+      #   certresolver: le-tumai-com
+      #   domains:
+      #     - main: "api.tum-ai.com"
+      #       sans:
+      #         - "*.api.tum-ai.com"
+      service: tumai-space-auth
+
+    tumai-space-space:
+      rule: "Host(`space.tum-ai-dev.com`)"
+      entrypoints:
+       - http
+       - https
+      # tls:
+      #   certresolver: le-tumai-com
+      #   domains:
+      #     - main: "api.tum-ai.com"
+      #       sans:
+      #         - "*.api.tum-ai.com"
+      service: tumai-space-space
+
+  middlewares:
+    api-stripprefix:
+      stripPrefix:
+        prefixes:
+        - "/api"
+        
+    # auth-stripprefix:
+    #   stripPrefix:
+    #     prefixes:
+    #     - "/auth"
+    
+    # A basic authentification middleware, to protect the Traefik dashboard to anyone except myself
+    # Use with traefik.http.routers.myRouter.middlewares: "traefikAuth@file"
+    traefikAuth:
+      basicAuth:
+        users:
+          - "admin:PASSWORD_HASHED"
+
+    # Recommended default middleware for most of the services
+    # Use with traefik.http.routers.myRouter.middlewares: "default@file"
+    # Equivalent of traefik.http.routers.myRouter.middlewares: "default-security-headers@file,error-pages@file,gzip@file"
+    default:
+      chain:
+        middlewares:
+          - default-security-headers
+          - error-pages
+          - gzip
+
+    # Add automatically some security headers
+    # Use with traefik.http.routers.myRouter.middlewares: "default-security-headers@file"
+    default-security-headers:
+      headers:
+        browserXssFilter: true                            # X-XSS-Protection=1; mode=block
+        contentTypeNosniff: true                          # X-Content-Type-Options=nosniff
+        forceSTSHeader: true                              # Add the Strict-Transport-Security header even when the connection is HTTP
+        frameDeny: true                                   # X-Frame-Options=deny
+        referrerPolicy: "strict-origin-when-cross-origin"
+        sslRedirect: true                                 # Allow only https requests
+        stsIncludeSubdomains: true                        # Add includeSubdomains to the Strict-Transport-Security header
+        stsPreload: true                                  # Add preload flag appended to the Strict-Transport-Security header
+        stsSeconds: 63072000                              # Set the max-age of the Strict-Transport-Security header (63072000 = 2 years)
+
+    # Serve the error pages when the status is included inside the following ranges
+    # Use with traefik.http.routers.myRouter.middlewares: "error-pages@file"
+    error-pages:
+      errors:
+        query: "erreur{status}/"
+        service: traefik-error-pages
+        status:
+          - "403-404"
+          - "500"
+          - "503"
+
+    # Enables the GZIP compression (https://docs.traefik.io/middlewares/compress/)
+    #   if the response body is larger than 1400 bytes
+    #   if the Accept-Encoding request header contains gzip
+    #   if the response is not already compressed (Content-Encoding is not set)
+    # Use with traefik.http.routers.myRouter.middlewares: "gzip@file"
+    gzip:
+      compress: {}
+
+  services: 
+    test-root:
+      loadBalancer:
+        servers:
+        - url: http://test.root.localhost
+
+    tumai-space-test:
+      loadBalancer:
+        servers:
+        - url: http://test.root.localhost
+          
+    tumai-space-api:
+      loadBalancer:
+        servers:
+        - url: http://api.tum-ai-dev.com:15900
+        - url: http://localhost:15900
+        sticky:
+          cookie:
+            name: loadBalancer_cookie
+            secure: false
+            httpOnly: true
+          
+    tumai-space-auth:
+      loadBalancer:
+        servers:
+        - url: http://192.168.178.21:3000
+        # - url: http://localhost:3000
+        # sticky:
+        #   cookie:
+        #     name: loadBalancer_cookie
+        #     secure: false
+        #     httpOnly: true
+
+    tumai-space-space:
+      loadBalancer:
+        servers:
+        - url: http://test.root.localhost
+        # sticky:
+        #   cookie:
+        #     name: loadBalancer_cookie
+        #     secure: false
+        #     httpOnly: true
+
+tls:
+  options:
+    # To use with the label "traefik.http.routers.myrouter.tls.options=modern@file"
+    modern:
+      minVersion: "VersionTLS13"                          # Minimum TLS Version
+      sniStrict: true                                     # Strict SNI Checking
+    
+    # To use with the label "traefik.http.routers.myrouter.tls.options=intermediate@file"
+    intermediate:
+      cipherSuites:
+        - "TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256"
+        - "TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256"
+        - "TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384"
+        - "TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384"
+        - "TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305"
+        - "TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305"
+      minVersion: "VersionTLS12"                          # Minimum TLS Version
+      sniStrict: true                                     # Strict SNI Checking
+    
+    # To use with the label "traefik.http.routers.myrouter.tls.options=old@file"
+    old:
+      cipherSuites:
+        - "TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256"
+        - "TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256"
+        - "TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384"
+        - "TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384"
+        - "TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305"
+        - "TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305"
+        - "TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256"
+        - "TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256"
+        - "TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA"
+        - "TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA"
+        - "TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA"
+        - "TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA"
+        - "TLS_RSA_WITH_AES_128_GCM_SHA256"
+        - "TLS_RSA_WITH_AES_256_GCM_SHA384"
+        - "TLS_RSA_WITH_AES_128_CBC_SHA256"
+        - "TLS_RSA_WITH_AES_128_CBC_SHA"
+        - "TLS_RSA_WITH_AES_256_CBC_SHA"
+        - "TLS_RSA_WITH_3DES_EDE_CBC_SHA"
+      minVersion: "TLSv1"                                 # Minimum TLS Version
+      sniStrict: true                                     # Strict SNI Checking
+

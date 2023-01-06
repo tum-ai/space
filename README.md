@@ -41,8 +41,15 @@ See [here](https://www.notion.so/tum-ai/Specification-Justification-Roadmap-5722
 ### Running the project
 
 #### Backend
+> checkout Makefile for venv setup
+0. Map tum-ai-dev.com domain to localhost
+  > 0.1) change your host file to map 
+  api.tum-ai-dev.com, auth.tum-ai-dev.com, space.tum-ai-dev.com to localhost or 127.0.0.1
+
+  > Change http://192.168.178.21:3000 to http://127.0.0.1:3000 in /.reverse/.config/config.yml (or your hosts ip)
 1. From the root of the project:
     ```bash
+    # This will also start the api backend in a container. If you want to develop on it locally outside of docker just comment out the container for the backend and run uvicorn on the same port  (localhost:15900).
     docker-compose up -d
     ```
 2. Go to http://localhost:8082/
@@ -50,20 +57,28 @@ See [here](https://www.notion.so/tum-ai/Specification-Justification-Roadmap-5722
    2. inside of `tumai-space` db create a new collection with the name `templates`
    3. later we will automize the setup for all the functional services
 3. From the root of the project run:
-
     ```bash
-    uvicorn server.app:app --reload
+    # optional: running uvicorn outside of docker:
+    uvicorn api.server.app:app --reload --port 15900 --host 0.0.0.0
+    # or: 
+    make run_api
+
+    # otherwise if running inside docker restart the api container by
+    docker-compose down
+    docker-compose up -d
     ```
 
-4. Go to http://localhost:8000/docs to see the dashboard of the available routes
+4. Go to http://api.tum-ai-dev.com:15950/docs to see the dashboard of the available routes
    1. You can use the "Try it out" button to test the routes
 5. To start the auth web app (you might need to install next.js first):
     ```bash
+    # TODO dockerization
     cd auth-web-app
+    # maybe necessary: npm i next
     npm run dev
     ```
-6. Try going to http://localhost:3000/, you will be redirected to the login page
-7. Go to http://localhost:8000/auth/dashboard to see all the registered users
+6. Try going to http://auth.tum-ai-dev.com:15950/, you will be redirected to the login page
+7. Go to http://api.tum-ai-dev.com:15950/auth/dashboard to see all the registered users
 
 
 ### Technical Stack

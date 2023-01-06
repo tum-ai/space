@@ -1,5 +1,0 @@
-# TODO: design the roles and permissions
-ADMIN:
-  DESCRIPTION: 'Admin role'
-  PERMISSIONS:
-    - "TEMPLATE.*"
