@@ -1,5 +1,12 @@
 # TUM.ai Space 💫
 
+``` markdown
+TODOs: 
+1. Rewrite this README.md
+2. Add a proper logging
+```
+
+
 The "TUM.ai Space" System is a unified system for the management team to observe, edit and generate statistics regarding members activities (projects organisation and participation, participations in signature projects), and availabilities. And manage the current projects, applications and notifications.
 
 From the member point of view, this a way to track, display and have a confirmation from the management team for what you did inside TUM.ai. As well as, observe current projects, apply to them and become a subscriber to relevant notifications.
@@ -23,3 +30,58 @@ These all services are designed to make member journey, recruiting phases and pr
 
 ## Design
 See the subsystem decomposition and other design choices visualized [here on miro](https://miro.com/app/board/uXjVPbuAg8o=/?share_link_id=654531643024).
+
+## Roadmap & Specification
+See [here](https://www.notion.so/tum-ai/Specification-Justification-Roadmap-5722022499ba4a6380f6667626af7595).
+
+---
+
+## Development
+
+### Running the project
+
+#### Backend
+1. From the root of the project:
+    ```bash
+    docker-compose up -d
+    ```
+2. Go to http://localhost:8082/
+   1. create a new database with the name `tumai-space` and
+   2. inside of `tumai-space` db create a new collection with the name `templates`
+   3. later we will automize the setup for all the functional services
+3. From the root of the project run:
+
+    ```bash
+    uvicorn server.app:app --reload
+    ```
+
+4. Go to http://localhost:8000/docs to see the dashboard of the available routes
+   1. You can use the "Try it out" button to test the routes
+5. To start the auth web app (you might need to install next.js first):
+    ```bash
+    cd auth-web-app
+    npm run dev
+    ```
+6. Try going to http://localhost:3000/, you will be redirected to the login page
+7. Go to http://localhost:8000/auth/dashboard to see all the registered users
+
+
+### Technical Stack
+- Backend: depends on the service. Recommended:
+  - Services:
+
+    - Python with [`FastAPI`](https://github.com/tiangolo/fastapi)
+  - Database:
+    - [`MongoDB`](https://www.mongodb.com/) for all the services but analytics
+    - [`InfluxDB`](https://www.influxdata.com/) for analytics service
+- Frontend:
+  - [`NextJS`](https://nextjs.org/)
+- DevOps:
+  - Reverse proxy:
+    - [`Traefik`](https://traefik.io/)
+  - Authentication and Authorization:
+    - [`SuperTokens`](https://supertokens.com/)
+  - Containerization and orchestration:
+    - [`Docker`](https://www.docker.com/) with [`Docker Compose`](https://docs.docker.com/compose/)
+    - But ideally: [`Kubernetes`](https://kubernetes.io/) or [`Docker Swarm`](https://docs.docker.com/engine/swarm/)
+

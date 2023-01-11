@@ -1,0 +1,27 @@
+#-------------------------------------------------------------------------------#
+APPLICATION:
+  APP_NAME: "TUM.ai Space"
+  API_FRAMEWORK_NAME: "fastapi"
+  FASTAPI_RUNNING_PROTOCOL: "asgi" # set "wsgi" if running via gunicorn
+#-------------------------------------------------------------------------------#
+AUTH:
+  AUTH_API_BASE_PATH: "/auth"
+  API_DOMAIN: "http://localhost:8000"
+  AUTH_WEBSITE_BASE_PATH: "/auth"
+  AUTH_WEBSITE_DOMAIN: "http://localhost:3000"
+  AUTH_CORE_INSTANCE: "http://localhost:3567"
+  AUTH_ALLOWED_ORIGINS:
+    # Should contain AUTH_WEBSITE_DOMAIN
+    # TODO: make reference to AUTH_WEBSITE_DOMAIN
+    - "http://localhost:3000"
+  USERS_DASHBOARD_API_KEY: "someApiKey"
+#-------------------------------------------------------------------------------#
+MONGODB:
+  MONGODB_HOST: "localhost"
+  MONGODB_PORT: "27017"
+#-------------------------------------------------------------------------------#
+LOGGER:
+  LOGGER_NAME: "tumai-space-global"
+  LOG_LEVEL: "DEBUG"
+#-------------------------------------------------------------------------------#
+# API:
