@@ -66,7 +66,7 @@ export default function SelectMultiple({
 				</button>
 				<div
 					className={
-						'selectMultiple absolute max-h-64 w-full mt-2 overflow-auto flex flex-col shadow trans rounded origin-bottom-left z-40 bg-white dark:bg-gray-600 ' +
+						'selectMultiple absolute max-h-64 w-full mt-2 overflow-auto flex flex-col shadow trans rounded origin-bottom-left z-40 bg-white darkss:bg-gray-600 ' +
 						(active
 							? 'opacity-100 scale-100 visible'
 							: 'opacity-0 scale-75 hidden') +
@@ -111,7 +111,7 @@ function Item({ selected, ...props }) {
 	return (
 		<div
 			className={
-				'selectMultiple text-h5 cursor-pointer trans px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-500 trans ' +
+				'selectMultiple text-h5 cursor-pointer trans px-3 py-2 hover:bg-gray-100 darks:hover:bg-gray-500 trans ' +
 				(!selected && 'opacity-50 bg-secondary-50')
 			}
 			{...props}
@@ -123,7 +123,7 @@ function Item({ selected, ...props }) {
 
 function Selected({ item, onDelete }) {
 	return (
-		<div className='flex space-x-2 whitespace-nowrap bg-gray-300 dark:bg-gray-500 px-1 rounded text-h5'>
+		<div className='flex space-x-2 whitespace-nowrap bg-gray-300 darks:bg-gray-500 px-1 rounded text-h5'>
 			{item.key}
 			<div className='inline-flex items-center px-3 cursor-pointer '>
 				<Icon name={'FaTimes'} onClick={onDelete} />

@@ -85,7 +85,7 @@ export default function Select({
 				)}
 				<div
 					className={
-						'selectSingle absolute max-h-32 w-auto mt-2 overflow-auto flex flex-col trans border border-gray-300 rounded origin-bottom-left z-40 bg-white dark:bg-gray-600 ' +
+						'selectSingle absolute max-h-32 w-auto mt-2 overflow-auto flex flex-col trans border border-gray-300 rounded origin-bottom-left z-40 bg-white darks:bg-gray-600 ' +
 						(active
 							? 'opacity-100 scale-100 visible'
 							: 'opacity-0 scale-75 hidden')
