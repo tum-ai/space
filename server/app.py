@@ -7,6 +7,7 @@ from supertokens_python import get_all_cors_headers
 from config import CONFIG
 from security.auth import init_server_auth, create_roles
 from template.routes import router as TemplateRouter
+from profiles.routes import router as ProfilesRouter
 
 from database.setup import setup_db_client, close_db_client
 
@@ -58,3 +59,5 @@ async def root():
 
 # Include here all the routes from the different modules
 app.include_router(TemplateRouter, prefix="/template", tags=["Template"])
+# Prefix defined in router
+app.include_router(ProfilesRouter, tags=["Profile"])
