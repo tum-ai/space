@@ -151,7 +151,6 @@ http:
       loadBalancer:
         servers:
         - url: http://api.tum-ai-dev.com:15900
-        # - url: http://localhost:15900
         sticky:
           cookie:
             name: loadBalancer_cookie
@@ -162,9 +161,6 @@ http:
       loadBalancer:
         servers:
         - url: http://auth.tum-ai-dev.com:3000
-        # - url: http://192.168.178.21:3000
-        # - url: http://test.root.localhost
-        # - url: http://localhost:3000
         sticky:
           cookie:
             name: loadBalancer_cookie
