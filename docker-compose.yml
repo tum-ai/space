@@ -17,6 +17,10 @@ services:
     # environment:
     #   - NAMECHEAP_API_USER=?
     #   - NAMECHEAP_API_KEY=?
+    depends_on:
+      - tum-ai-space-auth-app
+      - tum-ai-space-api
+      - tumai-test-root
     networks:
       - reverse-net
       - backend-net
@@ -29,8 +33,9 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: admin
       MONGO_INITDB_ROOT_PASSWORD: password
-    ports:  # TODO remove on production
-      - "27017:27017"
+    # ports:  # enable enable this for debugging!
+    # TODO remove on production
+      # - "27017:27017"
     volumes:
       - .data/mongodb:/data/db
     networks:
@@ -43,7 +48,7 @@ services:
     container_name: mongo-express
     depends_on:
       - mongodb
-    ports:  # TODO remove on production
+    ports: # TODO remove on production
       - "8082:8081"
     environment:
       ME_CONFIG_MONGODB_ADMINUSERNAME: "admin"
@@ -58,8 +63,9 @@ services:
     restart: unless-stopped
     hostname: auth.db
     container_name: auth-db
-    ports:  # TODO remove on production
-      - "5432:5432"
+    # ports:  # enable enable this for debugging!
+    # TODO remove on production
+    #   - "5432:5432"
     volumes:
       - .data/authDB/postgresql:/var/lib/postgresql/data/
     environment:
@@ -81,8 +87,9 @@ services:
     container_name: supertokens
     depends_on:
       - auth-db
-    ports:  # TODO remove on production
-      - "3567:3567"
+    # ports:  # enable enable this for debugging!
+    # TODO remove on production
+    #   - "3567:3567"
     environment:
       POSTGRESQL_CONNECTION_URI: "postgresql://supertokens_user:somePassword@auth-db:5432/supertokens"
     networks:
@@ -95,7 +102,7 @@ services:
       timeout: 5s
       retries: 5
 
-  # TODO: comment this container out to run it manually in terminal
+# [BACKEND API] #######################################################
   tum-ai-space-api:
     image: api
     build: ./api
@@ -107,29 +114,37 @@ services:
     volumes:
       - ./api/:/code
       # - ./entrypoint.sh:/data/entrypoint.sh
-    ports: # TODO remove on production
-      - 15900:15900
+    # ports:  # enable enable this for debugging!
+    # TODO remove on production
+    #  - 15900:15900
     depends_on:
       - mongo-express
       - supertokens
+    # healthcheck:
+    #   test: ["CMD", "curl", "-f", "http://localhost:15900"]
+    #   interval: 5s
+    #   timeout: 5s
+    #   retries: 5
     networks:
       - backend-net
       - db-net
 
 # [FRONTEND AUTH APP] #################################################
-  # TODO: add container
-  # TODO: domain support
-  # # TODO: 
-  # tum-ai-space-auth-app:
-  #   image: auth-app
-  #   build: ./auth-web-app
-  #   restart: unless-stopped
-  #   hostname: auth.tum-ai-dev.com
-  #   container_name: tum-ai-space-auth-app
-  #   ports:
-  #     - 3000:3000
-  #   volumes:
-  #     - ./auth-web-app/:/app/
+  tum-ai-space-auth-app:
+    image: auth-app
+    build: ./auth-web-app
+    restart: unless-stopped
+    hostname: auth.tum-ai-dev.com
+    container_name: tum-ai-space-auth-app
+    # ports:  # enable enable this for debugging!
+    # TODO remove on production
+    #  - 3000:3000
+    depends_on:
+      - tum-ai-space-api
+    volumes:
+      - ./auth-web-app/:/app/
+    networks:
+      - backend-net
 # #####################################################################
 
 

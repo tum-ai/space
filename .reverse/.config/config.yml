@@ -161,13 +161,16 @@ http:
     tumai-space-auth:
       loadBalancer:
         servers:
-        - url: http://192.168.178.21:3000
+        - url: http://auth.tum-ai-dev.com:3000
+        # - url: http://192.168.178.21:3000
+        # - url: http://test.root.localhost
         # - url: http://localhost:3000
-        # sticky:
-        #   cookie:
-        #     name: loadBalancer_cookie
-        #     secure: false
-        #     httpOnly: true
+        sticky:
+          cookie:
+            name: loadBalancer_cookie
+            secure: false
+            httpOnly: true
+        passhostheader: true
 
     tumai-space-space:
       loadBalancer:

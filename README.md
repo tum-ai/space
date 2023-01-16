@@ -72,7 +72,7 @@ See [here](https://www.notion.so/tum-ai/Specification-Justification-Roadmap-5722
    1. You can use the "Try it out" button to test the routes
 5. To start the auth web app (you might need to install next.js first):
     ```bash
-    # TODO dockerization
+    # optional: running node outside of docker:
     cd auth-web-app
     # maybe necessary: npm i next
     npm run dev
