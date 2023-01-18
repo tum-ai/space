@@ -23,6 +23,6 @@ run_docker:
 	sudo docker-compose up -d
 
 run_api:
-	uvicorn api.server.app:app --reload --port 15900 --host 0.0.0.0
+	cd api && uvicorn server.app:app --reload --port 15900 --host 0.0.0.0
 
-run: run_docker run_api
+run: run_docker

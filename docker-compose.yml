@@ -104,7 +104,7 @@ services:
 
 # [BACKEND API] #######################################################
   tum-ai-space-api:
-    image: api
+    image: tum-ai-space-api
     build: ./api
     restart: unless-stopped
     hostname: api.tum-ai-dev.com
@@ -131,7 +131,7 @@ services:
 
 # [FRONTEND AUTH APP] #################################################
   tum-ai-space-auth-app:
-    image: auth-app
+    image: tum-ai-space-auth-app
     build: ./auth-web-app
     restart: unless-stopped
     hostname: auth.tum-ai-dev.com
