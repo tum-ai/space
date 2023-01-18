@@ -35,7 +35,7 @@ function ProtectedPage() {
                 <h1 className={styles.title}>
                     Welcome to <a href="https://nextjs.org">Next.js!</a>
                 </h1>
-                <p className={styles.description}>You are authenticated with SuperTokens!</p>
+                <p className={styles.description}>You are authenticated with SuperTokens! 😎</p>
 
                 <p className={styles.description}>UserId: {session.userId}</p>
                 <p className={styles.description}>Access token payload: {JSON.stringify(session.accessTokenPayload)}</p>

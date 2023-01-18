@@ -37,7 +37,7 @@ def init_server_auth():
         ),
         framework=CONFIG.get("API_FRAMEWORK_NAME"),
         recipe_list=[
-            session.init(),  # initializes session features
+            session.init(cookie_secure=False),  # initializes session features
             # TODO: add email verification
             # https://supertokens.com/docs/thirdpartyemailpassword/pre-built-ui/enable-email-verification
             thirdpartyemailpassword.init(
