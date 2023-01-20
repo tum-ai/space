@@ -21,6 +21,55 @@ function ProtectedPage() {
         }
     }
 
+    //testing
+    async function test1() {
+
+        try{
+            const res = await fetch("http://localhost:8000/test/checkrole", {
+                method: 'POST',
+               // mode: 'no-cors', 
+                headers: {
+                'Content-Type': 'application/json',
+                "Accept":"application/json"
+                },
+                body: JSON.stringify(session),
+            });
+            if (res.status === 200) {
+                const json = await res.json();
+                alert(JSON.stringify(json));
+            } else {
+                alert("an error occurred - user may not have required roles");
+            }
+        } catch (e)
+        {
+            console.log(e)
+        }        
+       
+    }
+
+    async function test0() {
+
+        try{
+            const res = await fetch("http://localhost:8000/profiles/role", { // 
+                method: 'POST', 
+                ///mode: 'no-cors',
+                headers: {
+                'Content-Type': 'application/json',
+                "Accept":"application/json"
+                },
+                body: JSON.stringify(session),
+            });
+            if (res.status === 200) {
+                const json = await res.json();
+                alert(JSON.stringify(json));
+            }
+        } catch (e)
+        {
+            console.log(e)
+        }        
+       
+    }
+
     if (session.loading === true) {
         return null;
     }
@@ -39,6 +88,65 @@ function ProtectedPage() {
 
                 <p className={styles.description}>UserId: {session.userId}</p>
                 <p className={styles.description}>Access token payload: {JSON.stringify(session.accessTokenPayload)}</p>
+
+                <div
+                    style={{
+                        display: "flex",
+                        height: "70px",
+                        alignItems: "center",
+                        justifyContent: "flex-end",
+                        paddingLeft: "75px",
+                        paddingRight: "75px",
+                    }}
+                >
+                    <div
+                        onClick={test0}
+                        style={{
+                            display: "flex",
+                            width: "116px",
+                            height: "42px",
+                            backgroundColor: "#000000",
+                            borderRadius: "10px",
+                            cursor: "pointer",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            color: "#ffffff",
+                            fontWeight: "bold",
+                        }}
+                    >
+                        TEST 0 {/* testing frontend connection ADD ROLE TO SESSION*/}
+                    </div>
+                </div>
+
+                <div
+                    style={{
+                        display: "flex",
+                        height: "70px",
+                        alignItems: "center",
+                        justifyContent: "flex-end",
+                        paddingLeft: "75px",
+                        paddingRight: "75px",
+                    }}
+                >
+                    <div
+                        onClick={test1}
+                        style={{
+                            display: "flex",
+                            width: "116px",
+                            height: "42px",
+                            backgroundColor: "#000000",
+                            borderRadius: "10px",
+                            cursor: "pointer",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            color: "#ffffff",
+                            fontWeight: "bold",
+                        }}
+                    >
+                        TEST 1 {/* testing frontend connection CHECK ROLE FOR INFO*/}
+                    </div>
+                </div>
+
                 <div
                     style={{
                         display: "flex",

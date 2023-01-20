@@ -5,7 +5,10 @@ from fastapi import APIRouter, Body, Depends
 
 from supertokens_python.recipe.session.framework.fastapi import verify_session
 from supertokens_python.recipe.session import SessionContainer
-from supertokens_python.recipe.userroles.asyncio import get_roles_for_user
+from supertokens_python.recipe.userroles.asyncio import get_roles_for_user, add_role_to_user
+from supertokens_python.recipe.session.exceptions import raise_invalid_claims_exception, ClaimValidationError
+from supertokens_python.recipe.userroles import UserRoleClaim, PermissionClaim
+from supertokens_python.recipe.userroles.interfaces import UnknownRoleError
 
 from database.profiles_connector import (
     retrieve_public_profiles,
@@ -19,7 +22,6 @@ from profiles.models import Profile, Department, Role
 
 router = APIRouter()
 
-
 # batch operations -----------------------------------------------------------#
 @router.post(
     "/profiles/",
@@ -30,14 +32,19 @@ async def add_profiles(
     profiles: List[Profile] = Body(...),
     session: SessionContainer = Depends(verify_session())
 ):
-    # TODO role permissions management
-    new_profiles = await create_profiles(profiles)
-    return {
-        "status_code": 200,
-        "response_type": "success",
-        "description": f"Created profiles with ids {[id(profile) for profile in new_profiles]}",
-        "data": new_profiles,
-    }
+    roles = await session.get_claim_value(UserRoleClaim)
+   
+    if roles is None or "admin" not in roles:
+        raise_invalid_claims_exception("User is not an admin", [
+                                       ClaimValidationError(UserRoleClaim.key, None)])
+    else:
+        new_profiles = await create_profiles(profiles)
+        return {
+            "status_code": 200,
+            "response_type": "success",
+            "description": f"Created profiles with ids {[id(profile) for profile in new_profiles]}",
+            "data": new_profiles,
+        }
 
 
 @router.get(
@@ -66,14 +73,19 @@ async def list_public_profiles(department: Department, role=Role):
     response_model=Response
 )
 async def add_profile(profile: Profile = Body(...), session: SessionContainer = Depends(verify_session())):
-    # TODO role permissions management
-    new_profile = await create_profile(profile)
-    return {
-        "status_code": 200,
-        "response_type": "success",
-        "description": f"Created profile with id {id(new_profile)}.",
-        "data": new_profile,
-    }
+    roles = await session.get_claim_value(UserRoleClaim)
+   
+    if roles is None or "admin" not in roles:
+        raise_invalid_claims_exception("User is not an admin", [
+                                       ClaimValidationError(UserRoleClaim.key, None)])
+    else:
+        new_profile = await create_profile(profile)
+        return {
+            "status_code": 200,
+            "response_type": "success",
+            "description": f"Created profile with id {id(new_profile)}.",
+            "data": new_profile,
+        }
 
 
 @router.get(
@@ -104,14 +116,18 @@ async def show_profile(id_: PydanticObjectId, session: SessionContainer = Depend
     response_model=Response,
 )
 async def remove_profile(id_: PydanticObjectId, session: SessionContainer = Depends(verify_session())):
-    # TODO role permissions management
-    await delete_profile(id_)
-    return {
-        "status_code": 200,
-        "response_type": "success",
-        "description": "Profile deleted",
-        "data": None,
-    }
+    roles = await session.get_claim_value(UserRoleClaim)
+    if roles is None or "admin" not in roles:
+        raise_invalid_claims_exception("User is not an admin", [
+                                       ClaimValidationError(UserRoleClaim.key, None)])
+    else:
+        await delete_profile(id_)
+        return {
+            "status_code": 200,
+            "response_type": "success",
+            "description": "Profile deleted",
+            "data": None,
+        }
 
 
 @router.patch(
@@ -120,15 +136,73 @@ async def remove_profile(id_: PydanticObjectId, session: SessionContainer = Depe
     response_model=Response,
 )
 async def update_profile(
-    profile_id: PydanticObjectId, data: dict
+    profile_id: PydanticObjectId, data: dict, session : SessionContainer = Depends(verify_session())
 ) -> Union[bool, Profile]:
-    # TODO role permissions management
-    update_body = {k: v for k, v in data.items() if v is not None}
-    update_query = {"$set": {field: value for field, value in update_body.items()}}
-    profile = await Profile.get(profile_id)
-
-    if profile:
-        await profile.update(update_query)
-        return profile
+    roles = await session.get_claim_value(UserRoleClaim)
+   
+    if roles is None or "admin" not in roles:
+        raise_invalid_claims_exception("User is not an admin", [
+                                       ClaimValidationError(UserRoleClaim.key, None)])
     else:
-        return False
+        update_body = {k: v for k, v in data.items() if v is not None}
+        update_query = {"$set": {field: value for field, value in update_body.items()}}
+        profile = await Profile.get(profile_id)
+
+        if profile:
+            await profile.update(update_query)
+            return profile
+        else:
+            return False
+
+# testing for frontend connection---------------------------------------------#
+@router.post(
+    "/test/checkrole",
+    response_description="Test if role is added to session",
+    response_model=Response
+)
+async def test1(session : SessionContainer = Depends(verify_session())):
+    #print(session.__dict__)
+    roles = await session.get_claim_value(UserRoleClaim)
+   
+    if roles is None or "admin" not in roles:
+        raise_invalid_claims_exception("User is not an admin", [
+                                       ClaimValidationError(UserRoleClaim.key, None)])
+    else:
+        return {
+            "status": 200,
+            "status_code": 200,
+            "response_type": "success",
+            "description": "check role",
+            "data": "check completed",
+        }
+
+# add role to session user for testing ---------------------------------------#
+@router.post(
+    "/profiles/role",
+    response_description="Add role to user",
+    response_model=Response
+)
+async def add_role_to_user_func(session : SessionContainer = Depends(verify_session())):
+    user_id = session.user_id
+    role = "admin"
+    res = await add_role_to_user(user_id, role)
+
+    # add the user's roles to the user's session
+    await session.fetch_and_set_claim(UserRoleClaim)
+    # add the user's permissions to the user's session
+    await session.fetch_and_set_claim(PermissionClaim)
+
+    return {
+            "status_code": 200,
+            "response_type": "success",
+            "description": "attempted role add",
+            "data": res,
+        }
+    '''if isinstance(res, UnknownRoleError):
+        # No such role exists
+        
+        return
+
+    if res.did_user_already_have_role:
+        # User already had this role
+        pass'''
