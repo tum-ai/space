@@ -1,184 +1,197 @@
-version: "3.9"
+version: '3.9'
 services:
-  reverse-proxy:
-    image: traefik:v2.9.5
-    restart: unless-stopped
-    hostname: reverse.proxy
-    container_name: reverse-proxy
-    ports:
-      - 15950:80
-      - 15951:443
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-      - /etc/localtime:/etc/localtime:ro
-      - ./.reverse/.config/traefik.yml:/etc/traefik/traefik.yml:ro
-      - ./.reverse/.config/config.yml:/etc/traefik/config.yml:ro
-      - ./.reverse/.acme/:/acme/
-    # environment:
-    #   - NAMECHEAP_API_USER=?
-    #   - NAMECHEAP_API_KEY=?
-    depends_on:
-      - tum-ai-space-auth-app
-      - tum-ai-space-api
-      - tumai-test-root
-    networks:
-      - reverse-net
-      - backend-net
+    reverse-proxy:
+        image: traefik:v2.9.5
+        restart: unless-stopped
+        hostname: reverse.proxy
+        container_name: reverse-proxy
+        ports:
+            - 15950:80
+            - 15951:443
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock:ro
+            - /etc/localtime:/etc/localtime:ro
+            - ./.reverse/.config/traefik.yml:/etc/traefik/traefik.yml:ro
+            - ./.reverse/.config/config.yml:/etc/traefik/config.yml:ro
+            - ./.reverse/.acme/:/acme/
+        # environment:
+        #   - NAMECHEAP_API_USER=?
+        #   - NAMECHEAP_API_KEY=?
+        depends_on:
+            - tum-ai-space-auth-app
+            - tum-ai-space-api
+            - tumai-test-root
+        networks:
+            - reverse-net
+            - backend-net
 
-  mongodb:
-    image: "mongo:latest"
-    restart: unless-stopped
-    hostname: mongo.db
-    container_name: mongodb
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: admin
-      MONGO_INITDB_ROOT_PASSWORD: password
-    # ports:  # enable enable this for debugging!
-    # TODO remove on production
-      # - "27017:27017"
-    volumes:
-      - .data/mongodb:/data/db
-    networks:
-      - db-net
+    mongodb:
+        image: 'mongo:latest'
+        restart: unless-stopped
+        hostname: mongo.db
+        container_name: mongodb
+        environment:
+            MONGO_INITDB_ROOT_USERNAME: admin
+            MONGO_INITDB_ROOT_PASSWORD: password
+        # ports:  # enable enable this for debugging!
+        # TODO remove on production
+        # - "27017:27017"
+        volumes:
+            - .data/mongodb:/data/db
+        networks:
+            - db-net
 
-  mongo-express:  # TODO remove on production
-    image: "mongo-express:latest"
-    restart: unless-stopped
-    hostname: mongo.express
-    container_name: mongo-express
-    depends_on:
-      - mongodb
-    ports: # TODO remove on production
-      - "8082:8081"
-    environment:
-      ME_CONFIG_MONGODB_ADMINUSERNAME: "admin"
-      ME_CONFIG_MONGODB_ADMINPASSWORD: "password"
-      ME_CONFIG_MONGODB_URL: "mongodb://admin:password@mongodb:27017/"
-    networks:
-      - db-net
+    mongo-express: # TODO remove on production
+        image: 'mongo-express:latest'
+        restart: unless-stopped
+        hostname: mongo.express
+        container_name: mongo-express
+        depends_on:
+            - mongodb
+        ports: # TODO remove on production
+            - '8082:8081'
+        environment:
+            ME_CONFIG_MONGODB_ADMINUSERNAME: 'admin'
+            ME_CONFIG_MONGODB_ADMINPASSWORD: 'password'
+            ME_CONFIG_MONGODB_URL: 'mongodb://admin:password@mongodb:27017/'
+        networks:
+            - db-net
 
-# TODO: check the volumes behaviour for auth-db and supertokens
-  auth-db:
-    image: postgres:14-alpine
-    restart: unless-stopped
-    hostname: auth.db
-    container_name: auth-db
-    # ports:  # enable enable this for debugging!
-    # TODO remove on production
-    #   - "5432:5432"
-    volumes:
-      - .data/authDB/postgresql:/var/lib/postgresql/data/
-    environment:
-      POSTGRES_USER: supertokens_user
-      POSTGRES_PASSWORD: somePassword
-      POSTGRES_DB: supertokens
-    healthcheck:
-      test: [ 'CMD', 'pg_isready -U supertokens_user' ]
-      interval: 5s
-      timeout: 5s
-      retries: 5
-    networks:
-      - db-net
+    # TODO: check the volumes behaviour for auth-db and supertokens
+    auth-db:
+        image: postgres:14-alpine
+        restart: unless-stopped
+        hostname: auth.db
+        container_name: auth-db
+        # ports:  # enable enable this for debugging!
+        # TODO remove on production
+        #   - "5432:5432"
+        volumes:
+            - .data/authDB/postgresql:/var/lib/postgresql/data/
+        environment:
+            POSTGRES_USER: supertokens_user
+            POSTGRES_PASSWORD: somePassword
+            POSTGRES_DB: supertokens
+        healthcheck:
+            test: ['CMD', 'pg_isready -U supertokens_user']
+            interval: 5s
+            timeout: 5s
+            retries: 5
+        networks:
+            - db-net
 
-  supertokens:
-    image: "registry.supertokens.io/supertokens/supertokens-postgresql:4.2"
-    restart: unless-stopped
-    hostname: super.tokens
-    container_name: supertokens
-    depends_on:
-      - auth-db
-    # ports:  # enable enable this for debugging!
-    # TODO remove on production
-    #   - "3567:3567"
-    environment:
-      POSTGRESQL_CONNECTION_URI: "postgresql://supertokens_user:somePassword@auth-db:5432/supertokens"
-    networks:
-      - backend-net
-      - db-net
-    healthcheck:
-      test: >
-        bash -c 'exec 3<>/dev/tcp/127.0.0.1/3567 && echo -e "GET /hello HTTP/1.1\r\nhost: 127.0.0.1:3567\r\nConnection: close\r\n\r\n" >&3 && cat <&3 | grep "Hello"'
-      interval: 10s
-      timeout: 5s
-      retries: 5
+    supertokens:
+        image: 'registry.supertokens.io/supertokens/supertokens-postgresql:4.2'
+        restart: unless-stopped
+        hostname: super.tokens
+        container_name: supertokens
+        depends_on:
+            - auth-db
+        # ports:  # enable enable this for debugging!
+        # TODO remove on production
+        #   - "3567:3567"
+        environment:
+            POSTGRESQL_CONNECTION_URI: 'postgresql://supertokens_user:somePassword@auth-db:5432/supertokens'
+        networks:
+            - backend-net
+            - db-net
+        healthcheck:
+            test: >
+                bash -c 'exec 3<>/dev/tcp/127.0.0.1/3567 && echo -e "GET /hello HTTP/1.1\r\nhost: 127.0.0.1:3567\r\nConnection: close\r\n\r\n" >&3 && cat <&3 | grep "Hello"'
+            interval: 10s
+            timeout: 5s
+            retries: 5
 
-# [BACKEND API] #######################################################
-  tum-ai-space-api:
-    image: tum-ai-space-api
-    build: ./api
-    restart: unless-stopped
-    hostname: api.tum-ai-dev.com
-    container_name: tum-ai-space-api
-    # entrypoint:  "/bin/bash -c /data/entrypoint.sh"
-    command: "uvicorn server.app:app --host 0.0.0.0 --port 15900 --proxy-headers --reload"
-    volumes:
-      - ./api/:/code
-      # - ./entrypoint.sh:/data/entrypoint.sh
-    # ports:  # enable enable this for debugging!
-    # TODO remove on production
-    #  - 15900:15900
-    depends_on:
-      - mongo-express
-      - supertokens
-    # healthcheck:
-    #   test: ["CMD", "curl", "-f", "http://localhost:15900"]
-    #   interval: 5s
-    #   timeout: 5s
-    #   retries: 5
-    networks:
-      - backend-net
-      - db-net
+    # [BACKEND API] #######################################################
+    tum-ai-space-api:
+        image: tum-ai-space-api
+        build: ./api
+        restart: unless-stopped
+        hostname: api.tum-ai-dev.com
+        container_name: tum-ai-space-api
+        # entrypoint:  "/bin/bash -c /data/entrypoint.sh"
+        command: 'uvicorn server.app:app --host 0.0.0.0 --port 15900 --proxy-headers --reload'
+        volumes:
+            - ./api/:/code
+            # - ./entrypoint.sh:/data/entrypoint.sh
+        # ports:  # enable enable this for debugging!
+        # TODO remove on production
+        #  - 15900:15900
+        depends_on:
+            - mongo-express
+            - supertokens
+        # healthcheck:
+        #   test: ["CMD", "curl", "-f", "http://localhost:15900"]
+        #   interval: 5s
+        #   timeout: 5s
+        #   retries: 5
+        networks:
+            - backend-net
+            - db-net
 
-# [FRONTEND AUTH APP] #################################################
-  tum-ai-space-auth-app:
-    image: tum-ai-space-auth-app
-    build: ./auth-web-app
-    restart: unless-stopped
-    hostname: auth.tum-ai-dev.com
-    container_name: tum-ai-space-auth-app
-    # ports:  # enable enable this for debugging!
-    # TODO remove on production
-    #  - 3000:3000
-    depends_on:
-      - tum-ai-space-api
-    volumes:
-      - ./auth-web-app/:/app/
-    networks:
-      - backend-net
-# #####################################################################
+    # [FRONTEND AUTH APP] #################################################
+    tum-ai-space-auth-app:
+        image: tum-ai-space-auth-app
+        build: ./auth-web-app
+        restart: unless-stopped
+        hostname: auth.tum-ai-dev.com
+        container_name: tum-ai-space-auth-app
+        # ports:  # enable enable this for debugging!
+        # TODO remove on production
+        #  - 3000:3000
+        depends_on:
+            - tum-ai-space-api
+        volumes:
+            - ./auth-web-app/:/app/
+        networks:
+            - backend-net
 
+    # [WEB APP] #######################################################
+    tum-ai-space-web-app:
+        image: tum-ai-space-web-app
+        build: ./web-app
+        restart: unless-stopped
+        hostname: space.tum-ai-dev.com
+        container_name: tum-ai-space-web-app
+        ports: # enable enable this for debugging!
+            # TODO remove on production
+            - 4000:4000
+        depends_on:
+            - tum-ai-space-api
+        volumes:
+            - ./web-app/:/app/
 
-# [DEBUG CONTAINERS] ##################################################
-  # connect to a hidden (by docker, without port exposure) service, by manual config
-  tumai-test-root:  # test.root.localhost
-    image: containous/whoami:v1.3.0
-    restart: unless-stopped
-    hostname: test.root.localhost
-    container_name: tumai-test-root
-    networks:
-      - reverse-net
+    # [DEBUG CONTAINERS] ##################################################
+    # connect to a hidden (by docker, without port exposure) service, by manual config
+    tumai-test-root: # test.root.localhost
+        image: containous/whoami:v1.3.0
+        restart: unless-stopped
+        hostname: test.root.localhost
+        container_name: tumai-test-root
+        networks:
+            - reverse-net
 
-  # connect to a hidden (by docker, without port exposure) service, by docker
-  # tumai-test-root-2:  # test2.root.localhost
-  #   image: containous/whoami:v1.3.0
-  #   restart: unless-stopped
-  #   hostname: test2.root.localhost
-  #   container_name: tumai-test-root-2
-  #   labels:
-  #     - "traefik.enable=true"
-  #     - "traefik.http.routers.test.rule=Host(`test2.root.localhost`)"
-  #     - "traefik.http.routers.test.entrypoints=http"
-  #   networks:
-  #     - reverse-net
+    # connect to a hidden (by docker, without port exposure) service, by docker
+    # tumai-test-root-2:  # test2.root.localhost
+    #   image: containous/whoami:v1.3.0
+    #   restart: unless-stopped
+    #   hostname: test2.root.localhost
+    #   container_name: tumai-test-root-2
+    #   labels:
+    #     - "traefik.enable=true"
+    #     - "traefik.http.routers.test.rule=Host(`test2.root.localhost`)"
+    #     - "traefik.http.routers.test.entrypoints=http"
+    #   networks:
+    #     - reverse-net
 #######################################################################
 
 networks:
-  reverse-net:
-    driver: bridge
-    name: reverse-net
-  backend-net:
-    driver: bridge
-    name: backend-net
-  db-net:
-    driver: bridge
-    name: db-net
+    reverse-net:
+        driver: bridge
+        name: reverse-net
+    backend-net:
+        driver: bridge
+        name: backend-net
+    db-net:
+        driver: bridge
+        name: db-net
