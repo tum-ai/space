@@ -20,7 +20,6 @@ services:
         depends_on:
             - tum-ai-space-auth-app
             - tum-ai-space-api
-            - tumai-test-root
         networks:
             - reverse-net
             - backend-net
@@ -160,16 +159,18 @@ services:
             - tum-ai-space-api
         volumes:
             - ./web-app/:/app/
+        networks:
+            - backend-net
 
     # [DEBUG CONTAINERS] ##################################################
     # connect to a hidden (by docker, without port exposure) service, by manual config
-    tumai-test-root: # test.root.localhost
-        image: containous/whoami:v1.3.0
-        restart: unless-stopped
-        hostname: test.root.localhost
-        container_name: tumai-test-root
-        networks:
-            - reverse-net
+    # tumai-test-root: # test.root.localhost
+    #     image: containous/whoami:v1.3.0
+    #     restart: unless-stopped
+    #     hostname: test.root.localhost
+    #     container_name: tumai-test-root
+    #     networks:
+    #         - reverse-net
 
     # connect to a hidden (by docker, without port exposure) service, by docker
     # tumai-test-root-2:  # test2.root.localhost
