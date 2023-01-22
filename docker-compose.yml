@@ -152,9 +152,9 @@ services:
         restart: unless-stopped
         hostname: space.tum-ai-dev.com
         container_name: tum-ai-space-web-app
-        ports: # enable enable this for debugging!
-            # TODO remove on production
-            - 4000:4000
+        # ports: # enable enable this for debugging!
+        # TODO remove on production
+        # - 4000:4000
         depends_on:
             - tum-ai-space-api
         volumes:
