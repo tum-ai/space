@@ -1,5 +1,6 @@
 import Page from 'components/Page';
 import { observer } from 'mobx-react';
+import Icon from '/components/Icon';
 import { useRootModel } from '/providers/RootStoreProvider';
 
 const DEPARTMENTTOCOLOR = {
@@ -26,11 +27,19 @@ const Profile = observer(() => {
 			{/* name + image */}
 			<div className='flex flex-row justify-between w-full'>
 				<div className='font-thin text-6xl'>{profile.name}</div>
-				<img
-					className='rounded-full w-28 h-28 object-cover border drop-shadow-lg'
-					src={profile.picture}
-					alt='me'
-				/>
+				<div className='flex flex-col space-y-4 items-center'>
+					<img
+						className='rounded-full w-28 h-28 object-cover border drop-shadow-lg'
+						src={profile.picture}
+						alt='me'
+					/>
+					<div>
+						<button className='flex items-center space-x-2 p-4 py-1 rounded-full text-white bg-purple-700 hover:bg-purple-500'>
+							<Icon name={'FaEdit'} className='' />
+							<div>edit</div>
+						</button>
+					</div>
+				</div>
 			</div>
 			{/* department */}
 			<div className='flex flex-col'>
