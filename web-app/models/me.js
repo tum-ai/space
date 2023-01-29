@@ -17,6 +17,7 @@ export class MeModel {
 
 	updateProfile(newProfile) {
 		this.profile = { ...this.profile, ...newProfile };
+		// TODO: call api to edit profile
 	}
 
 	// API FUNCTIONS
