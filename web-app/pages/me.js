@@ -1,6 +1,7 @@
 import Page from 'components/Page';
 import { observer } from 'mobx-react';
 import Icon from '/components/Icon';
+import Modal from '/components/Modal';
 import { useRootModel } from '/providers/RootStoreProvider';
 
 const DEPARTMENTTOCOLOR = {
@@ -12,10 +13,110 @@ const DEPARTMENTTOCOLOR = {
 export default function Me() {
 	return (
 		<Page>
+			<ProfileEditor />
 			<Profile />
 		</Page>
 	);
 }
+
+const ProfileEditor = observer(() => {
+	const rootModel = useRootModel();
+	const profileEditorModel = rootModel.profileEditorModel;
+	const profile = profileEditorModel.profile;
+
+	function handleChange(e) {
+		profileEditorModel.updateProfile({
+			[e.target.name]: e.target.value,
+		});
+	}
+
+	return (
+		<Modal
+			state={profileEditorModel.active}
+			setState={() => {
+				profileEditorModel.toggle();
+			}}
+		>
+			<div className='flex flex-col p-6 bg-white w-96 slide-in'>
+				<form
+					onSubmit={(e) => {
+						e.preventDefault();
+						profileEditorModel.saveProfile();
+						profileEditorModel.toggle();
+					}}
+					className='flex flex-col space-y-4'
+				>
+					<label htmlFor='first'>Full name:</label>
+					<input
+						type='text'
+						id='name'
+						name='name'
+						value={profile.name}
+						onChange={handleChange}
+						required={true}
+						className='border border-black border-r-2'
+					/>
+					<label htmlFor='first'>Semester:</label>
+					<input
+						type='number'
+						id='degreeSemester'
+						name='degreeSemester'
+						value={profile.degreeSemester}
+						onChange={handleChange}
+						required={true}
+						max={9}
+						min={1}
+						className='border border-black border-r-2'
+					/>
+					<label htmlFor='first'>Degree:</label>
+					<input
+						type='text'
+						id='degreeName'
+						name='degreeName'
+						value={profile.degreeName}
+						onChange={handleChange}
+						required={true}
+						className='border border-black border-r-2'
+					/>
+					<label htmlFor='first'>Degree level:</label>
+					<input
+						type='text'
+						id='degreeLevel'
+						name='degreeLevel'
+						value={profile.degreeLevel}
+						onChange={handleChange}
+						required={true}
+						className='border border-black border-r-2'
+					/>
+					<label htmlFor='first'>Description:</label>
+					<textarea
+						type='text'
+						id='description'
+						name='description'
+						value={profile.description}
+						onChange={handleChange}
+						required={false}
+						className='border border-black border-r-2'
+					/>
+					<button
+						type='submit'
+						className='p-4 py-1 rounded-full text-white bg-purple-700 hover:bg-purple-500'
+					>
+						<div>save</div>
+					</button>
+					<button
+						onClick={() => {
+							profileEditorModel.toggle();
+						}}
+						className='p-4 py-1 rounded-full text-black bg-gray-300 hover:bg-gray-200'
+					>
+						<div>cancel</div>
+					</button>
+				</form>
+			</div>
+		</Modal>
+	);
+});
 
 const Profile = observer(() => {
 	const rootModel = useRootModel();
@@ -26,20 +127,25 @@ const Profile = observer(() => {
 		<div className='flex flex-col space-y-8'>
 			{/* name + image */}
 			<div className='flex flex-row justify-between w-full'>
-				<div className='font-thin text-6xl'>{profile.name}</div>
-				<div className='flex flex-col space-y-4 items-center'>
-					<img
-						className='rounded-full w-28 h-28 object-cover border drop-shadow-lg'
-						src={profile.picture}
-						alt='me'
-					/>
+				<div className='flex flex-col space-y-4 items-start'>
+					<div className='font-thin text-6xl'>{profile.name}</div>
 					<div>
-						<button className='flex items-center space-x-2 p-4 py-1 rounded-full text-white bg-purple-700 hover:bg-purple-500'>
+						<button
+							onClick={() => {
+								rootModel.profileEditorModel.toggle();
+							}}
+							className='flex items-center space-x-2 p-4 py-1 rounded-full text-white bg-purple-700 hover:bg-purple-500'
+						>
 							<Icon name={'FaEdit'} className='' />
 							<div>edit</div>
 						</button>
 					</div>
 				</div>
+				<img
+					className='rounded-full w-28 h-28 object-cover border drop-shadow-lg'
+					src={profile.picture}
+					alt='me'
+				/>
 			</div>
 			{/* department */}
 			<div className='flex flex-col'>
@@ -72,13 +178,22 @@ const Profile = observer(() => {
 				<div className='font-light text-base'>
 					{profile.degreeSemester}
 				</div>
-				{/* university */}
 			</div>
+			{/* university */}
 			<div className='flex flex-col'>
 				<div className='text-base text-gray-400 font-light'>
 					UNIVERSITY
 				</div>
 				<div className='font-light text-base'>{profile.university}</div>
+			</div>
+			{/* description  */}
+			<div className='flex flex-col'>
+				<div className='text-base text-gray-400 font-light'>
+					DESCRIPTION
+				</div>
+				<div className='font-light text-base'>
+					{profile.description || '-'}
+				</div>
 			</div>
 		</div>
 	);
