@@ -56,7 +56,7 @@ See [here](https://www.notion.so/tum-ai/Specification-Justification-Roadmap-5722
     ```
 2. Go to http://localhost:8082/
    1. create a new database with the name `tumai-space` and
-   2. inside of `tumai-space` db create a new collection with the name `templates`
+   2. inside of `tumai-space` db create two new collections with the names `templates` and `profiles`
    3. later we will automize the setup for all the functional services
 3. From the root of the project run:
     ```bash
