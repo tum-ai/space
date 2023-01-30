@@ -1,7 +1,7 @@
-import ThirdPartyEmailPasswordReact from "supertokens-auth-react/recipe/thirdpartyemailpassword";
-import SessionReact from "supertokens-auth-react/recipe/session";
-import { appInfo } from "./appInfo";
 import Router from "next/router";
+import SessionReact from "supertokens-auth-react/recipe/session";
+import ThirdPartyEmailPasswordReact from "supertokens-auth-react/recipe/thirdpartyemailpassword";
+import { appInfo } from "./appInfo";
 
 export let frontendConfig = () => {
     return {
@@ -16,6 +16,16 @@ export let frontendConfig = () => {
                         ThirdPartyEmailPasswordReact.Github.init()
                     ],
                 },
+                getRedirectionURL: async (context) => {                    
+                    if (context.action === "SUCCESS") {
+                        if (context.redirectToPath) {
+                            // we are navigating back to where the user was before they authenticated
+                            return context.redirectToPath;
+                        }
+                        return "http://space.tum-ai-dev.com:15950";
+                    }
+                    return undefined;
+                }
             }),
             SessionReact.init(),
         ],
