@@ -6,8 +6,10 @@ from motor.motor_asyncio import AsyncIOMotorClient
 # from server.main import logger
 
 from template.models import TemplateMessage
+from profiles.models import Profile
 
-document_models = [TemplateMessage]
+
+document_models = [TemplateMessage, Profile]
 
 
 async def setup_db_client(running_app: FastAPI):
