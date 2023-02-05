@@ -1,8 +1,10 @@
 import { makeAutoObservable } from 'mobx';
 
-export class MeModel {
+export class ProfileModel {
 	root;
 	profile = {};
+	editorProfile = {};
+	editorActive = false;
 
 	constructor(root) {
 		this.root = root;
@@ -15,9 +17,21 @@ export class MeModel {
 
 	// STATE FUNCTIONS
 
-	updateProfile(newProfile) {
-		this.profile = { ...this.profile, ...newProfile };
+	saveProfile() {
+		// TODO: do attribute validations
+		this.profile = { ...this.profile, ...this.editorProfile };
 		// TODO: call api to edit profile
+	}
+
+	updateEditorProfile(newEditorProfile) {
+		this.editorProfile = { ...this.editorProfile, ...newEditorProfile };
+	}
+
+	toggleEditor() {
+		this.editorActive = !this.editorActive;
+		if (this.editorActive) {
+			this.editorProfile = { ...this.profile };
+		}
 	}
 
 	// API FUNCTIONS

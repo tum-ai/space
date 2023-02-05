@@ -21,20 +21,20 @@ export default function Me() {
 
 const ProfileEditor = observer(() => {
 	const rootModel = useRootModel();
-	const profileEditorModel = rootModel.profileEditorModel;
-	const profile = profileEditorModel.profile;
+	const profileEditorModel = rootModel.profileModel;
+	const editorProfile = profileEditorModel.editorProfile;
 
 	function handleChange(e) {
-		profileEditorModel.updateProfile({
+		profileEditorModel.updateEditorProfile({
 			[e.target.name]: e.target.value,
 		});
 	}
 
 	return (
 		<Modal
-			state={profileEditorModel.active}
+			state={profileEditorModel.editorActive}
 			setState={() => {
-				profileEditorModel.toggle();
+				profileEditorModel.toggleEditor();
 			}}
 		>
 			<div className='flex flex-col p-6 bg-white w-96 slide-in'>
@@ -42,7 +42,7 @@ const ProfileEditor = observer(() => {
 					onSubmit={(e) => {
 						e.preventDefault();
 						profileEditorModel.saveProfile();
-						profileEditorModel.toggle();
+						profileEditorModel.toggleEditor();
 					}}
 					className='flex flex-col space-y-4'
 				>
@@ -51,7 +51,7 @@ const ProfileEditor = observer(() => {
 						type='text'
 						id='name'
 						name='name'
-						value={profile.name}
+						value={editorProfile.name}
 						onChange={handleChange}
 						required={true}
 						className='border border-black border-r-2'
@@ -61,7 +61,7 @@ const ProfileEditor = observer(() => {
 						type='number'
 						id='degreeSemester'
 						name='degreeSemester'
-						value={profile.degreeSemester}
+						value={editorProfile.degreeSemester}
 						onChange={handleChange}
 						required={true}
 						max={9}
@@ -73,7 +73,7 @@ const ProfileEditor = observer(() => {
 						type='text'
 						id='degreeName'
 						name='degreeName'
-						value={profile.degreeName}
+						value={editorProfile.degreeName}
 						onChange={handleChange}
 						required={true}
 						className='border border-black border-r-2'
@@ -83,7 +83,7 @@ const ProfileEditor = observer(() => {
 						type='text'
 						id='degreeLevel'
 						name='degreeLevel'
-						value={profile.degreeLevel}
+						value={editorProfile.degreeLevel}
 						onChange={handleChange}
 						required={true}
 						className='border border-black border-r-2'
@@ -93,7 +93,7 @@ const ProfileEditor = observer(() => {
 						type='text'
 						id='description'
 						name='description'
-						value={profile.description}
+						value={editorProfile.description}
 						onChange={handleChange}
 						required={false}
 						className='border border-black border-r-2'
@@ -106,7 +106,7 @@ const ProfileEditor = observer(() => {
 					</button>
 					<button
 						onClick={() => {
-							profileEditorModel.toggle();
+							profileEditorModel.toggleEditor();
 						}}
 						className='p-4 py-1 rounded-full text-black bg-gray-300 hover:bg-gray-200'
 					>
@@ -120,8 +120,8 @@ const ProfileEditor = observer(() => {
 
 const Profile = observer(() => {
 	const rootModel = useRootModel();
-	const meModel = rootModel.meModel;
-	const profile = meModel.profile;
+	const profileModel = rootModel.profileModel;
+	const profile = profileModel.profile;
 
 	return (
 		<div className='flex flex-col space-y-8'>
@@ -132,7 +132,7 @@ const Profile = observer(() => {
 					<div>
 						<button
 							onClick={() => {
-								rootModel.profileEditorModel.toggle();
+								profileModel.toggleEditor();
 							}}
 							className='flex items-center space-x-2 p-4 py-1 rounded-full text-white bg-purple-700 hover:bg-purple-500'
 						>

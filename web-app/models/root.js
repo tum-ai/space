@@ -1,27 +1,23 @@
-import { MeModel } from './me.js';
 import { MembersModel } from './members.js';
-import { ProfileEditorModel } from './profileEditor.js';
+import { ProfileModel } from './profile.js';
 
 export class RootModel {
 	membersModel;
-	meModel;
-	profileEditorModel;
+	profileModel;
 
 	constructor() {
 		this.membersModel = new MembersModel(this);
-		this.meModel = new MeModel(this);
-		this.profileEditorModel = new ProfileEditorModel(this);
+		this.profileModel = new ProfileModel(this);
 
 		this.membersModel.loadMembers();
-		this.meModel.loadProfile();
+		this.profileModel.loadProfile();
 	}
 
 	// I dont't understand this part but it works
 	hydrate(data) {
 		if (data.x) {
 			this.membersModel.hydrate(data.x);
-			this.meModel.hydrate(data.x);
-			this.profileEditorModel.hydrate(data.x);
+			this.profileModel.hydrate(data.x);
 		}
 	}
 }
