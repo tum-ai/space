@@ -1,5 +1,6 @@
 import Page from 'components/Page';
 import { observer } from 'mobx-react';
+import Link from 'next/Link';
 import Icon from '/components/Icon';
 import Select from '/components/Select';
 import { useRootModel } from '/providers/RootStoreProvider';
@@ -153,12 +154,12 @@ function Member({ member }) {
 					</div>
 				</div>
 				<div className='flex items-center justify-end'>
-					<a href={'/members/' + member.profileID}>
+					<Link href={'/members/' + member.profileID}>
 						<Icon
 							name={'FaExternalLinkAlt'}
 							className='p-2 rounded-full text-purple-400 hover:scale-105'
 						/>
-					</a>
+					</Link>
 					<a href={'tum-ai.com'}>
 						<Icon
 							name={'FaLinkedinIn'}
