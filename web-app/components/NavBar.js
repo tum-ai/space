@@ -1,12 +1,11 @@
 import Link from 'next/Link';
 
 function NavBar() {
-	const host = 'http://localhost:3000';
 	return (
 		<div className='w-full bg-white p-6 flex drop-shadow'>
 			<div className='h-auto mx-auto flex space-x-8'>
 				<Link
-					href={host + '/'}
+					href={'/'}
 					className='text-gray-600 hover:text-black hover:underline'
 				>
 					{/* <Icon
@@ -16,7 +15,7 @@ function NavBar() {
 					Home
 				</Link>
 				<Link
-					href={host + '/members'}
+					href={'/members'}
 					className='text-gray-600 hover:text-black hover:underline'
 				>
 					{/* <Icon
