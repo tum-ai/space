@@ -1,7 +1,7 @@
-import Page from 'components/Page';
+import Page from '../components/Page';
 import { observer } from 'mobx-react';
-import Icon from '/components/Icon';
-import Modal from '/components/Modal';
+import Icon from '../components/Icon';
+import Modal from '../components/Modal';
 import { useRootModel } from '/providers/RootStoreProvider';
 
 const DEPARTMENTTOCOLOR = {
