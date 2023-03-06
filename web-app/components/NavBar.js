@@ -1,4 +1,4 @@
-import Link from 'next/Link';
+import Link from 'next/link';
 
 function NavBar() {
 	const host = 'http://localhost:3000';
