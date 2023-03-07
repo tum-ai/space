@@ -1,5 +1,5 @@
 import Router from "next/router";
-import SessionReact from "supertokens-auth-react/recipe/session";
+import { default as SessionReact } from "supertokens-auth-react/recipe/session";
 import ThirdPartyEmailPasswordReact from "supertokens-auth-react/recipe/thirdpartyemailpassword";
 import { appInfo } from "./appInfo";
 
@@ -16,18 +16,20 @@ export let frontendConfig = () => {
                         ThirdPartyEmailPasswordReact.Github.init()
                     ],
                 },
-                getRedirectionURL: async (context) => {                    
+                getRedirectionURL: async (context) => {
                     if (context.action === "SUCCESS") {
                         if (context.redirectToPath) {
                             // we are navigating back to where the user was before they authenticated
                             return context.redirectToPath;
                         }
-                        return "http://space.tum-ai-dev.com:15950";
+                        return "http://localhost:3000";
                     }
                     return undefined;
                 }
             }),
-            SessionReact.init(),
+            SessionReact.init({
+                sessionTokenFrontendDomain: ".tum-ai-dev.com:15950"
+            }),
         ],
         // this is so that the SDK uses the next router for navigation
         windowHandler: (oI) => {

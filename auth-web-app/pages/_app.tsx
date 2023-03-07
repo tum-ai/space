@@ -1,9 +1,8 @@
-import "../styles/globals.css";
-import React from "react";
 import { useEffect } from "react";
 import SuperTokensReact, { SuperTokensWrapper } from "supertokens-auth-react";
-import * as SuperTokensConfig from "../config/frontendConfig";
 import Session from "supertokens-auth-react/recipe/session";
+import * as SuperTokensConfig from "../config/frontendConfig";
+import "../styles/globals.css";
 
 if (typeof window !== "undefined") {
     SuperTokensReact.init(SuperTokensConfig.frontendConfig());

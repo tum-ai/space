@@ -60,6 +60,14 @@ export class MembersModel {
 	async fetchMembers() {
 		this.members = mockData;
 		this.filteredMembers = mockData;
+		fetch(
+			'http://api.tum-ai-dev.com:15950/profiles?' +
+				new URLSearchParams({
+					department: 'Marketing',
+				})
+		).catch((err) => {
+			console.log(err);
+		});
 		// try {
 		// 	const response = await axios('/members');
 		// 	this.setMembers(response.data);

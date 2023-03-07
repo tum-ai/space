@@ -1,6 +1,15 @@
 import Link from 'next/Link';
+import SuperTokensReact from 'supertokens-auth-react';
+import SessionReact, {
+	useSessionContext,
+} from 'supertokens-auth-react/recipe/session';
 
 function NavBar() {
+	const session = useSessionContext();
+	async function logoutClicked() {
+		await SessionReact.signOut();
+		SuperTokensReact.redirectToAuth();
+	}
 	return (
 		<div className='w-full bg-white p-6 flex drop-shadow'>
 			<div className='h-auto mx-auto flex space-x-8'>
@@ -34,6 +43,7 @@ function NavBar() {
 					/> */}
 					My profile
 				</Link>
+				<button onClick={logoutClicked}>sign out</button>
 			</div>
 		</div>
 	);

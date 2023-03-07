@@ -32,9 +32,9 @@ services:
         environment:
             MONGO_INITDB_ROOT_USERNAME: admin
             MONGO_INITDB_ROOT_PASSWORD: password
-        # ports:  # enable enable this for debugging!
-        # TODO remove on production
-        # - "27017:27017"
+        ports: # enable enable this for debugging!
+            # TODO remove on production
+            - '27017:27017'
         volumes:
             - .data/mongodb:/data/db
         networks:
@@ -86,9 +86,9 @@ services:
         container_name: supertokens
         depends_on:
             - auth-db
-        # ports:  # enable enable this for debugging!
-        # TODO remove on production
-        #   - "3567:3567"
+        ports: # enable enable this for debugging!
+            # TODO remove on production
+            - '3567:3567'
         environment:
             POSTGRESQL_CONNECTION_URI: 'postgresql://supertokens_user:somePassword@auth-db:5432/supertokens'
         networks:
@@ -113,9 +113,9 @@ services:
         volumes:
             - ./api/:/code
             # - ./entrypoint.sh:/data/entrypoint.sh
-        # ports:  # enable enable this for debugging!
-        # TODO remove on production
-        #  - 15900:15900
+        ports: # enable enable this for debugging!
+            # TODO remove on production
+            - 15900:15900
         depends_on:
             - mongo-express
             - supertokens
