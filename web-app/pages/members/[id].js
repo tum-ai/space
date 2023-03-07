@@ -1,5 +1,7 @@
 import Page from 'components/Page';
+import { observer } from 'mobx-react';
 import { useRouter } from 'next/router';
+import { useEffect } from 'react';
 import Icon from '/components/Icon';
 import { useRootModel } from '/providers/RootStoreProvider';
 
@@ -17,16 +19,17 @@ export default function Member() {
 	);
 }
 
-function Profile() {
+const Profile = observer(() => {
 	const rootModel = useRootModel();
 	const router = useRouter();
 	const { id } = router.query;
-	const membersModel = rootModel.membersModel;
-	const profile = {
-		...membersModel.members.find((obj) => {
-			return obj.profileID === id;
-		}),
-	};
+	const memberModel = rootModel.memberModel;
+	useEffect(() => {
+		if (id) {
+			memberModel.fetchMember(id);
+		}
+	}, [id]);
+	const profile = memberModel.member;
 
 	return (
 		<div className='flex flex-col space-y-8'>
@@ -100,4 +103,4 @@ function Profile() {
 			</div>
 		</div>
 	);
-}
+});

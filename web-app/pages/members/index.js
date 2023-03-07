@@ -15,8 +15,6 @@ export default function Members() {
 	return (
 		<Page>
 			<div className='text-4xl font-light'>Members</div>
-			<br />
-			<br />
 			<MembersList />
 			<br />
 			<br />
@@ -32,51 +30,62 @@ const MembersList = observer(() => {
 
 	return (
 		<div className='flex flex-col space-y-6'>
-			<div className='flex space-x-6 items-end'>
+			<div className='flex flex-col space-y-6 justify-end'>
 				<div className='font-light text-gray-600'>
 					Total {membersModel.filteredMembers.length} members
 				</div>
-				<div className='text-gray-700'>filters:</div>
-				<Select
-					placeholder={'Department'}
-					data={[
-						{ key: 'all', value: null },
-						...membersModel.getDepartments().map((department) => ({
-							key: department,
-							value: department,
-						})),
-					]}
-					selectedItem={{
-						key: membersModel.filter.department,
-						value: membersModel.filter.department,
-					}}
-					setSelectedItem={(item) => {
-						membersModel.setFilter(
-							'department',
-							item ? item.value : ''
-						);
-					}}
-				/>
-				<Select
-					placeholder={'Degree'}
-					data={[
-						{ key: 'all', value: null },
-						...membersModel.getDegrees().map((degree) => ({
-							key: degree,
-							value: degree,
-						})),
-					]}
-					selectedItem={{
-						key: membersModel.filter.degreeName,
-						value: membersModel.filter.degreeName,
-					}}
-					setSelectedItem={(item) => {
-						membersModel.setFilter(
-							'degreeName',
-							item ? item.value : ''
-						);
-					}}
-				/>
+				<div className='flex space-x-4 items-end'>
+					<div className='text-gray-700'>filters:</div>
+					<Select
+						className='bg-white'
+						placeholder={'Department'}
+						data={[
+							{ key: 'all', value: null },
+							...membersModel
+								.getDepartments()
+								.map((department) => ({
+									key: department,
+									value: department,
+								})),
+						]}
+						selectedItem={{
+							key: membersModel.filter.department,
+							value: membersModel.filter.department,
+						}}
+						setSelectedItem={(item) => {
+							membersModel.setFilter(
+								'department',
+								item ? item.value : ''
+							);
+						}}
+					/>
+					<Select
+						className='bg-white'
+						placeholder={'Role'}
+						data={[
+							{ key: 'all', value: null },
+							...membersModel.getRoles().map((role) => ({
+								key: role,
+								value: role,
+							})),
+						]}
+						selectedItem={{
+							key: membersModel.filter.role,
+							value: membersModel.filter.role,
+						}}
+						setSelectedItem={(item) => {
+							membersModel.setFilter(
+								'role',
+								item ? item.value : ''
+							);
+						}}
+					/>
+					{Object.keys(membersModel.filter).length > 0 && (
+						<button onClick={() => membersModel.resetFilters()}>
+							reset
+						</button>
+					)}
+				</div>
 			</div>
 			{membersModel.filteredMembers.map((member, i) => (
 				<Member key={i} member={member} />
@@ -87,12 +96,12 @@ const MembersList = observer(() => {
 
 function Member({ member }) {
 	return (
-		<div className='space-y-4'>
+		<div className='space-y-4 bg-white p-4 rounded-xl shadow'>
 			<div className='flex space-x-4 items-center'>
 				{/* profile picture */}
 				{member.picture ? (
 					<img
-						className='rounded-full w-14 h-14 object-cover border drop-shadow-lg'
+						className='rounded-full w-14 h-14 object-cover border'
 						src={member.picture}
 						alt='me'
 					/>
@@ -120,41 +129,23 @@ function Member({ member }) {
 				</div>
 				{/* profile details */}
 				<div className='grid gap-x-16 gap-y-0 grid-cols-4 grid-rows-1 auto-cols-fr w-4/6'>
-					<div className='flex flex-col items-center'>
+					<div className='flex flex-col items-start'>
 						<div className='text-xs text-gray-400 font-light'>
-							DEGREE
+							ROLE
 						</div>
-						<div className='font-light text-sm text-center'>
-							{member.degreeLevel + ' '} {member.degreeName}
-						</div>
+						<div className='font-light text-sm'>{member.role}</div>
 					</div>
-					<div className='flex flex-col items-center'>
+					<div className='flex flex-col items-start'>
 						<div className='text-xs text-gray-400 font-light'>
-							SEMESTER
+							DESCRIPTION
 						</div>
 						<div className='font-light text-sm'>
-							{member.degreeSemester}
-						</div>
-					</div>
-					<div className='flex flex-col items-center'>
-						<div className='text-xs text-gray-400 font-light'>
-							DEGREE
-						</div>
-						<div className='font-light text-sm'>
-							Computer Science
-						</div>
-					</div>
-					<div className='flex flex-col items-center'>
-						<div className='text-xs text-gray-400 font-light'>
-							UNIVERSITY
-						</div>
-						<div className='font-light text-sm'>
-							{member.university}
+							{member.description}
 						</div>
 					</div>
 				</div>
 				<div className='flex items-center justify-end'>
-					<Link href={'/members/' + member.profileID}>
+					<Link href={'/members/' + member._id}>
 						<Icon
 							name={'FaExternalLinkAlt'}
 							className='p-2 rounded-full text-purple-400 hover:scale-105'
@@ -174,7 +165,6 @@ function Member({ member }) {
 					</a>
 				</div>
 			</div>
-			<hr />
 		</div>
 	);
 }
