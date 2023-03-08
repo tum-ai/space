@@ -1,4 +1,4 @@
-import NavBar from 'components/NavBar';
+import NavBar from '/components/NavBar';
 
 function Page({ className, children }) {
 	return (
