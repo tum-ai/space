@@ -68,7 +68,6 @@ export class MembersModel {
 			this.members = profiles.data.data;
 			this.filteredMembers = profiles.data.data;
 		} catch (error) {
-			console.log(error.response);
 			console.log('Could not get profiles');
 		}
 	}

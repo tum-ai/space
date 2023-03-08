@@ -6,15 +6,15 @@ import Select from '/components/Select';
 import { useRootModel } from '/providers/RootStoreProvider';
 
 const DEPARTMENTTOCOLOR = {
-	marketing: 'green',
-	industry: 'blue',
-	dev: 'red',
+	marketing: '',
+	industry: '',
+	dev: '',
 };
 
 export default function Members() {
 	return (
 		<Page>
-			<div className='text-4xl font-light'>Members</div>
+			<div className='font-thin text-6xl'>Members</div>
 			<MembersList />
 			<br />
 			<br />
@@ -29,15 +29,15 @@ const MembersList = observer(() => {
 	const membersModel = rootModel.membersModel;
 
 	return (
-		<div className='flex flex-col space-y-6'>
-			<div className='flex flex-col space-y-6 justify-end'>
-				<div className='font-light text-gray-600'>
+		<div className='flex flex-col space-y-2'>
+			<div className='flex flex-col space-y-10 justify-end'>
+				<div className='font-light text-gray-500 mt-2'>
 					Total {membersModel.filteredMembers.length} members
 				</div>
 				<div className='flex space-x-4 items-end'>
-					<div className='text-gray-700'>filters:</div>
+					<div className='text-gray-500'>filters:</div>
 					<Select
-						className='bg-white'
+						className='bg-white dark:bg-gray-700'
 						placeholder={'Department'}
 						data={[
 							{ key: 'all', value: null },
@@ -60,7 +60,7 @@ const MembersList = observer(() => {
 						}}
 					/>
 					<Select
-						className='bg-white'
+						className='bg-white dark:bg-gray-700'
 						placeholder={'Role'}
 						data={[
 							{ key: 'all', value: null },
@@ -96,8 +96,8 @@ const MembersList = observer(() => {
 
 function Member({ member }) {
 	return (
-		<div className='space-y-4 bg-white p-4 rounded-xl shadow'>
-			<div className='flex space-x-4 items-center'>
+		<div className='space-y-4 bg-white dark:bg-gray-700 p-4 rounded-xl shadow'>
+			<div className='flex space-x-4 items-center justify-between'>
 				{/* profile picture */}
 				{member.picture ? (
 					<img
@@ -106,7 +106,7 @@ function Member({ member }) {
 						alt='me'
 					/>
 				) : (
-					<div className='rounded-full w-14 h-14 bg-gray-300 flex text-center drop-shadow-lg'>
+					<div className='rounded-full w-14 h-14 bg-gray-300 dark:bg-gray-800 flex text-center drop-shadow-lg'>
 						<Icon
 							name={'FaUser'}
 							className='m-auto text-xl text-white'
@@ -144,25 +144,13 @@ function Member({ member }) {
 						</div>
 					</div>
 				</div>
-				<div className='flex items-center justify-end'>
+				<div className='flex items-center justify-end w-auto'>
 					<Link href={'/members/' + member._id}>
 						<Icon
 							name={'FaExternalLinkAlt'}
-							className='p-2 rounded-full text-purple-400 hover:scale-105'
+							className='p-2 rounded hover:scale-105 bg-gray-100 dark:bg-black'
 						/>
 					</Link>
-					<a href={'tum-ai.com'}>
-						<Icon
-							name={'FaLinkedinIn'}
-							className='p-2 rounded-full hover:scale-105'
-						/>
-					</a>
-					<a href={'tum-ai.com'}>
-						<Icon
-							name={'FaGithub'}
-							className='p-2 rounded-full hover:scale-105'
-						/>
-					</a>
 				</div>
 			</div>
 		</div>

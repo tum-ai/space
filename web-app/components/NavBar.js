@@ -11,11 +11,12 @@ function NavBar() {
 		SuperTokensReact.redirectToAuth();
 	}
 	return (
-		<div className='w-full bg-white p-6 flex drop-shadow'>
+		<div className='w-full bg-gray-100 p-6 flex items-center dark:bg-black'>
+			<div className=''>TUM.ai Space</div>
 			<div className='h-auto mx-auto flex space-x-8'>
 				<Link
 					href={'/'}
-					className='text-gray-600 hover:text-black hover:underline'
+					className='text-gray-500 hover:text-black dark:hover:text-white hover:underline'
 				>
 					{/* <Icon
 						name={'FaHome'}
@@ -25,7 +26,7 @@ function NavBar() {
 				</Link>
 				<Link
 					href={'/members'}
-					className='text-gray-600 hover:text-black hover:underline'
+					className='text-gray-500 hover:text-black dark:hover:text-white hover:underline'
 				>
 					{/* <Icon
 						name={'FaUsers'}
@@ -33,18 +34,24 @@ function NavBar() {
 					/> */}
 					Members
 				</Link>
-				<Link
+				{/* <Link
 					href='/me'
-					className='text-gray-600 hover:text-black hover:underline'
+					className='text-gray-500 hover:text-black dark:hover:text-white hover:underline'
 				>
-					{/* <Icon
-						name={'FaUsers'}
-						className='bg-gray-300 p-2 rounded-full text-white hover:scale-105 transition hover:bg-purple-400 text-xl'
-					/> */}
 					My profile
-				</Link>
-				<button onClick={logoutClicked}>sign out</button>
+				</Link> */}
 			</div>
+			{session.userId ? (
+				<button onClick={logoutClicked}>Sign out</button>
+			) : (
+				<a
+					href='http://auth.tum-ai-dev.com:15950'
+					className='bg-white dark:bg-gray-700 p-2 rounded'
+					onClick={logoutClicked}
+				>
+					Sign in
+				</a>
+			)}
 		</div>
 	);
 }

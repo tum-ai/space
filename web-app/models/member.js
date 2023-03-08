@@ -20,7 +20,6 @@ export class MemberModel {
 			this.loading = false;
 			this.error = false;
 		} catch (error) {
-			console.log(error);
 			console.log('Could not get profile');
 			this.loading = false;
 			this.error = true;
