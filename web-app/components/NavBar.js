@@ -1,4 +1,5 @@
 import Link from 'next/Link';
+import { useRouter } from 'next/router';
 import SuperTokensReact from 'supertokens-auth-react';
 import SessionReact, {
 	useSessionContext,
@@ -6,17 +7,22 @@ import SessionReact, {
 
 function NavBar() {
 	const session = useSessionContext();
+	const router = useRouter();
+	console.log(router);
 	async function logoutClicked() {
 		await SessionReact.signOut();
 		SuperTokensReact.redirectToAuth();
 	}
 	return (
 		<div className='w-full bg-gray-100 p-6 flex items-center dark:bg-black'>
-			<div className=''>TUM.ai Space</div>
+			<div className=''>Space</div>
 			<div className='h-auto mx-auto flex space-x-8'>
 				<Link
 					href={'/'}
-					className='text-gray-500 hover:text-black dark:hover:text-white hover:underline'
+					className={
+						'text-gray-500 hover:text-black dark:hover:text-white hover:underline ' +
+						(router.pathname == '/' && 'underline font-bold')
+					}
 				>
 					{/* <Icon
 						name={'FaHome'}
@@ -26,7 +32,11 @@ function NavBar() {
 				</Link>
 				<Link
 					href={'/members'}
-					className='text-gray-500 hover:text-black dark:hover:text-white hover:underline'
+					className={
+						'text-gray-500 hover:text-black dark:hover:text-white hover:underline ' +
+						(router.pathname.includes('/members') &&
+							'underline font-bold')
+					}
 				>
 					{/* <Icon
 						name={'FaUsers'}

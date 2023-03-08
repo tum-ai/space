@@ -136,7 +136,7 @@ function Member({ member }) {
 						DESCRIPTION
 					</div>
 					<div className='font-light text-sm'>
-						{member.description}
+						{member.description || '-'}
 					</div>
 				</div>
 			</div>
