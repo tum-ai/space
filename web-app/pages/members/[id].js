@@ -40,9 +40,9 @@ const Profile = observer(() => {
 	}
 
 	return (
-		<div className='grid grid-cols-2 gap-10 m-auto w-1/2 bg-white dark:bg-gray-700 p-8 px-10 rounded-xl'>
+		<div className='grid grid-cols-1 xl:grid-cols-2 gap-10 m-auto max-w-3xl bg-white dark:bg-gray-700 p-8 px-10 rounded-xl'>
 			{/* name + image */}
-			<div className=' col-span-2 flex flex-col items-start max-w-90 space-y-6'>
+			<div className=' xl:col-span-2 flex flex-col items-start max-w-90 space-y-6'>
 				{profile.picture ? (
 					<img
 						className='rounded-full w-28 h-28 object-cover border drop-shadow-lg m-auto'

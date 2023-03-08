@@ -16,10 +16,6 @@ export default function Members() {
 		<Page>
 			<div className='font-thin text-6xl'>Members</div>
 			<MembersList />
-			<br />
-			<br />
-			<br />
-			<br />
 		</Page>
 	);
 }
@@ -34,8 +30,15 @@ const MembersList = observer(() => {
 				<div className='font-light text-gray-500 mt-2'>
 					Total {membersModel.filteredMembers.length} members
 				</div>
-				<div className='flex space-x-4 items-end'>
-					<div className='text-gray-500'>filters:</div>
+				<div className='flex flex-col space-y-2 lg:flex-row lg:space-x-4 items-start lg:items-end'>
+					<div className=''>
+						<span className='font-thin'>filters: </span>
+						{Object.keys(membersModel.filter).length > 0 && (
+							<button onClick={() => membersModel.resetFilters()}>
+								reset
+							</button>
+						)}
+					</div>
 					<Select
 						className='bg-white dark:bg-gray-700'
 						placeholder={'Department'}
@@ -80,11 +83,6 @@ const MembersList = observer(() => {
 							);
 						}}
 					/>
-					{Object.keys(membersModel.filter).length > 0 && (
-						<button onClick={() => membersModel.resetFilters()}>
-							reset
-						</button>
-					)}
 				</div>
 			</div>
 			{membersModel.filteredMembers.map((member, i) => (
@@ -96,8 +94,8 @@ const MembersList = observer(() => {
 
 function Member({ member }) {
 	return (
-		<div className='space-y-4 bg-white dark:bg-gray-700 p-4 rounded-xl shadow'>
-			<div className='flex space-x-4 items-center justify-between'>
+		<div className='flex space-x-10 justify-between bg-white dark:bg-gray-700 p-4 rounded-xl shadow'>
+			<div className='grid grid-cols-2 gap-4 lg:flex lg:justify-around lg:space-x-6 lg:items-center w-full'>
 				{/* profile picture */}
 				{member.picture ? (
 					<img
@@ -114,7 +112,7 @@ function Member({ member }) {
 					</div>
 				)}
 				{/* profile name and department */}
-				<div className='flex flex-col w-1/6'>
+				<div className='flex flex-col lg:w-1/4'>
 					<div className='font-bold'>{member.name}</div>
 					<div
 						className={' font-light'}
@@ -127,31 +125,28 @@ function Member({ member }) {
 						{member.department}
 					</div>
 				</div>
-				{/* profile details */}
-				<div className='grid gap-x-16 gap-y-0 grid-cols-4 grid-rows-1 auto-cols-fr w-4/6'>
-					<div className='flex flex-col items-start'>
-						<div className='text-xs text-gray-400 font-light'>
-							ROLE
-						</div>
-						<div className='font-light text-sm'>{member.role}</div>
+				{/* role */}
+				<div className='flex flex-col items-start lg:w-1/4'>
+					<div className='text-xs text-gray-400 font-light'>ROLE</div>
+					<div className='font-light text-sm'>{member.role}</div>
+				</div>
+				{/* descriptio  */}
+				<div className='flex flex-col items-start lg:w-1/4'>
+					<div className='text-xs text-gray-400 font-light'>
+						DESCRIPTION
 					</div>
-					<div className='flex flex-col items-start'>
-						<div className='text-xs text-gray-400 font-light'>
-							DESCRIPTION
-						</div>
-						<div className='font-light text-sm'>
-							{member.description}
-						</div>
+					<div className='font-light text-sm'>
+						{member.description}
 					</div>
 				</div>
-				<div className='flex items-center justify-end w-auto'>
-					<Link href={'/members/' + member._id}>
-						<Icon
-							name={'FaExternalLinkAlt'}
-							className='p-2 rounded hover:scale-105 bg-gray-100 dark:bg-black'
-						/>
-					</Link>
-				</div>
+			</div>
+			<div className='flex items-center justify-end w-auto'>
+				<Link href={'/members/' + member._id}>
+					<Icon
+						name={'FaExternalLinkAlt'}
+						className='p-2 rounded hover:scale-105 bg-gray-100 dark:bg-black'
+					/>
+				</Link>
 			</div>
 		</div>
 	);
