@@ -30,8 +30,30 @@ const MembersList = observer(() => {
 				<div className='font-light text-gray-500 mt-2'>
 					Total {membersModel.filteredMembers.length} members
 				</div>
+				<div className='w-full flex'>
+					<div className='m-auto bg-white dark:bg-gray-700 rounded w-full lg:w-1/2 p-2 flex space-x-4'>
+						<Icon name={'FaSearch'} className='p-2 rounded' />
+						<input
+							value={membersModel.search}
+							onChange={(e) => {
+								membersModel.setSearch(e.target.value);
+							}}
+							placeholder='search..'
+							className='w-full bg-transparent outline-none'
+						></input>
+						{membersModel.search && (
+							<button
+								onClick={(e) => {
+									membersModel.setSearch('');
+								}}
+							>
+								clear
+							</button>
+						)}
+					</div>
+				</div>
 				<div className='flex flex-col space-y-2 lg:flex-row lg:space-x-4 items-start lg:items-end'>
-					<div className=''>
+					<div className='space-x-2'>
 						<span className='font-thin'>filters: </span>
 						{Object.keys(membersModel.filter).length > 0 && (
 							<button onClick={() => membersModel.resetFilters()}>
@@ -81,6 +103,22 @@ const MembersList = observer(() => {
 								'role',
 								item ? item.value : ''
 							);
+						}}
+					/>
+					<Select
+						className='bg-white dark:bg-gray-700'
+						placeholder={'Sort by'}
+						data={[
+							{ key: 'none', value: null },
+							{ key: 'name', value: 'name' },
+							{ key: 'department', value: 'department' },
+						]}
+						selectedItem={{
+							key: membersModel.sortBy,
+							value: membersModel.sortBy,
+						}}
+						setSelectedItem={(item) => {
+							membersModel.setSortBy(item?.value || '');
 						}}
 					/>
 				</div>

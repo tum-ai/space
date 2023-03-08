@@ -6,11 +6,15 @@ export class MembersModel {
 	members = [];
 	filteredMembers = [];
 	filter = {};
+	search = '';
+	sortBy = '';
 
 	constructor(root) {
 		this.root = root;
 		makeAutoObservable(this);
 	}
+
+	// STATE FUNCTIONS
 
 	getMembers() {
 		return this.members;
@@ -24,7 +28,6 @@ export class MembersModel {
 		this.members = members;
 	}
 
-	// STATE FUNCTIONS
 	getDepartments() {
 		const departmentsSet = new Set(
 			this.members.map((member) => member.department)
@@ -57,8 +60,34 @@ export class MembersModel {
 					return false;
 				}
 			}
-			return true;
+			return (
+				!this.search ||
+				JSON.stringify({ ...member, _id: '' })
+					.toLocaleLowerCase()
+					.includes(this.search.toLocaleLowerCase())
+			);
 		});
+		this.sortMembers();
+	}
+
+	sortMembers() {
+		if (this.sortBy) {
+			this.filteredMembers = this.filteredMembers.sort(
+				(memberA, memberB) => {
+					return memberA[this.sortBy] > memberB[this.sortBy];
+				}
+			);
+		}
+	}
+
+	setSearch(value) {
+		this.search = value;
+		this.filterMembers();
+	}
+
+	setSortBy(value) {
+		this.sortBy = value;
+		this.sortMembers();
 	}
 
 	// API FUNCTIONS
