@@ -53,7 +53,7 @@ async def add_profiles(
     response_description="List all profiles of department and role",
     response_model=Response
 )
-async def list_public_profiles(department: Department, role=Role):
+async def list_public_profiles(department: Department, role: Role):
     profiles = await retrieve_public_profiles(department=department, role=role)
     return {
         "status_code": 200,
@@ -65,7 +65,6 @@ async def list_public_profiles(department: Department, role=Role):
 
 # TODO PATCH multiple profiles
 # TODO DELETE multiple profiles
-
 
 # single profile operations --------------------------------------------------#
 @router.post(

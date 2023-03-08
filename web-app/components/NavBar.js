@@ -1,21 +1,40 @@
-import Icon from './Icon';
+import Link from 'next/link';
 
 function NavBar() {
+	const host = 'http://localhost:3000';
 	return (
 		<div className='w-full bg-white p-6 flex drop-shadow'>
 			<div className='h-auto mx-auto flex space-x-8'>
-				<a href='/'>
-					<Icon
+				<Link
+					href={host + '/'}
+					className='text-gray-600 hover:text-black hover:underline'
+				>
+					{/* <Icon
 						name={'FaHome'}
 						className='bg-gray-300 p-2 rounded-full text-white hover:scale-110 transition hover:bg-purple-400 text-xl'
-					/>
-				</a>
-				<a href='/members'>
-					<Icon
+					/> */}
+					Home
+				</Link>
+				<Link
+					href={host + '/members'}
+					className='text-gray-600 hover:text-black hover:underline'
+				>
+					{/* <Icon
 						name={'FaUsers'}
 						className='bg-gray-300 p-2 rounded-full text-white hover:scale-105 transition hover:bg-purple-400 text-xl'
-					/>
-				</a>
+					/> */}
+					Members
+				</Link>
+				<Link
+					href='/me'
+					className='text-gray-600 hover:text-black hover:underline'
+				>
+					{/* <Icon
+						name={'FaUsers'}
+						className='bg-gray-300 p-2 rounded-full text-white hover:scale-105 transition hover:bg-purple-400 text-xl'
+					/> */}
+					My profile
+				</Link>
 			</div>
 		</div>
 	);

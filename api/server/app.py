@@ -11,6 +11,11 @@ from profiles.routes import router as ProfilesRouter
 
 from database.setup import setup_db_client, close_db_client
 
+import time
+
+print("Bugfix: Sleeping 4 seconds for supertokens to finish starting up as Docker doesn't wait long enough by default!")
+time.sleep(4)
+
 
 app = FastAPI()
 db_client = None
@@ -61,3 +66,7 @@ async def root():
 app.include_router(TemplateRouter, prefix="/template", tags=["Template"])
 # Prefix defined in router
 app.include_router(ProfilesRouter, tags=["Profile"])
+<<<<<<< HEAD
+=======
+
+>>>>>>> main
