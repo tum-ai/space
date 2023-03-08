@@ -1,6 +1,6 @@
 import { enableStaticRendering } from 'mobx-react';
 import React, { createContext, useContext } from 'react';
-import { RootModel } from '../models/root';
+import { RootModel } from '/models/root';
 
 enableStaticRendering(typeof window === 'undefined');
 
