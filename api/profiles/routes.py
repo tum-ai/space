@@ -88,7 +88,7 @@ async def add_profile(profile: Profile = Body(...), session: SessionContainer = 
         }
 
 @router.get(
-    "/profile/current",
+    "/profile/me",
     response_description="Retrieve the complete profile of the user currently logged in with supertoken",
     response_model=Response,
 )
