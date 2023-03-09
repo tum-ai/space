@@ -24,6 +24,7 @@ const Profile = observer(() => {
 	const router = useRouter();
 	const { id } = router.query;
 	const memberModel = rootModel.memberModel;
+	console.log('awd');
 	useEffect(() => {
 		if (id) {
 			memberModel.fetchMember(id);

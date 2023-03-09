@@ -1,5 +1,5 @@
 import Router from "next/router";
-import { default as SessionReact } from "supertokens-auth-react/recipe/session";
+import SessionReact from "supertokens-auth-react/recipe/session";
 import ThirdPartyEmailPasswordReact from "supertokens-auth-react/recipe/thirdpartyemailpassword";
 import { appInfo } from "./appInfo";
 
@@ -13,22 +13,26 @@ export let frontendConfig = () => {
                 signInAndUpFeature: {
                     providers: [
                         ThirdPartyEmailPasswordReact.Google.init(),
-                        ThirdPartyEmailPasswordReact.Github.init()
+                        ThirdPartyEmailPasswordReact.Github.init(),
+                        ThirdPartyEmailPasswordReact.Apple.init(),
                     ],
                 },
                 getRedirectionURL: async (context) => {
+                    console.log(context);
+                    
                     if (context.action === "SUCCESS") {
-                        if (context.redirectToPath) {
+                        if (context.redirectToPath !== undefined) {
                             // we are navigating back to where the user was before they authenticated
-                            return context.redirectToPath;
+                            return context.redirectToPath.substring(1);
                         }
-                        return "http://localhost:3000";
+                        return "http://localhost:3000/";
                     }
                     return undefined;
                 }
             }),
             SessionReact.init({
-                sessionTokenFrontendDomain: ".tum-ai-dev.com:15950"
+                // sessionTokenFrontendDomain: ".tum-ai-dev.com:15950"
+                sessionTokenFrontendDomain: ".localhost:3000"
             }),
         ],
         // this is so that the SDK uses the next router for navigation
@@ -44,4 +48,8 @@ export let frontendConfig = () => {
             };
         },
     };
+};
+
+export const recipeDetails = {
+    docsLink: "https://supertokens.com/docs/thirdpartyemailpassword/introduction",
 };

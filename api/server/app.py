@@ -1,16 +1,12 @@
-from fastapi import FastAPI
-from starlette.middleware.cors import CORSMiddleware
-
-from supertokens_python.framework.fastapi import get_middleware
-from supertokens_python import get_all_cors_headers
-
 from config import CONFIG
-from security.auth import init_server_auth, create_roles
-from template.routes import router as TemplateRouter
+from database.setup import close_db_client, setup_db_client
+from fastapi import FastAPI
 from profiles.routes import router as ProfilesRouter
-
-from database.setup import setup_db_client, close_db_client
-
+from security.auth import create_roles, init_server_auth
+from starlette.middleware.cors import CORSMiddleware
+from supertokens_python import get_all_cors_headers
+from supertokens_python.framework.fastapi import get_middleware
+from template.routes import router as TemplateRouter
 
 app = FastAPI()
 db_client = None

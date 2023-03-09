@@ -1,6 +1,5 @@
 import Link from 'next/Link';
 import { useRouter } from 'next/router';
-import SuperTokensReact from 'supertokens-auth-react';
 import SessionReact, {
 	useSessionContext,
 } from 'supertokens-auth-react/recipe/session';
@@ -11,7 +10,8 @@ function NavBar() {
 	console.log(router);
 	async function logoutClicked() {
 		await SessionReact.signOut();
-		SuperTokensReact.redirectToAuth();
+		router.reload();
+		// SuperTokensReact.redirectToAuth({ redirectBack: false });
 	}
 	return (
 		<div className='w-full bg-gray-100 p-6 flex items-center dark:bg-black'>
@@ -21,7 +21,7 @@ function NavBar() {
 					href={'/'}
 					className={
 						'text-gray-500 hover:text-black dark:hover:text-white hover:underline ' +
-						(router.pathname == '/' && 'underline font-bold')
+						(router.asPath == '/' && 'underline font-bold')
 					}
 				>
 					{/* <Icon
@@ -34,7 +34,7 @@ function NavBar() {
 					href={'/members'}
 					className={
 						'text-gray-500 hover:text-black dark:hover:text-white hover:underline ' +
-						(router.pathname.includes('/members') &&
+						(router.asPath?.includes('/members') &&
 							'underline font-bold')
 					}
 				>
@@ -55,7 +55,12 @@ function NavBar() {
 				<button onClick={logoutClicked}>Sign out</button>
 			) : (
 				<a
-					href='http://auth.tum-ai-dev.com:15950'
+					href={
+						process.env.NEXT_PUBLIC_AUTH_URL +
+						'auth?redirectToPath=/' +
+						process.env.NEXT_PUBLIC_WEBSITE_URL +
+						router.asPath.substring(1)
+					}
 					className='bg-white dark:bg-gray-700 p-2 rounded'
 					onClick={logoutClicked}
 				>
