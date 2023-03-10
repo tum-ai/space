@@ -8,13 +8,14 @@ function NavBar() {
 	const session = useSessionContext();
 	const router = useRouter();
 	console.log(router);
+	console.log(session);
 	async function logoutClicked() {
 		await SessionReact.signOut();
 		router.reload();
 		// SuperTokensReact.redirectToAuth({ redirectBack: false });
 	}
 	return (
-		<div className='w-full bg-gray-100 p-6 flex items-center dark:bg-black'>
+		<div className='w-full bg-gray-100 p-6 flex items-center dark:bg-black sticky top-0 z-40'>
 			<div className=''>Space</div>
 			<div className='h-auto mx-auto flex space-x-8'>
 				<Link
