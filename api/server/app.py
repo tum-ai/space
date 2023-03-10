@@ -66,7 +66,3 @@ async def root():
 app.include_router(TemplateRouter, prefix="/template", tags=["Template"])
 # Prefix defined in router
 app.include_router(ProfilesRouter, tags=["Profile"])
-<<<<<<< HEAD
-=======
-
->>>>>>> main
