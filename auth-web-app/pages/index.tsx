@@ -56,7 +56,7 @@ function ProtectedPage() {
     ];
 
     useEffect(() => {
-        window.location.href = "http://space.tum-ai-dev.com:15950"
+        window.location.href = process.env.NEXT_PUBLIC_WEBSITE_URL
     }, [])
 
     return (

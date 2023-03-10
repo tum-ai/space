@@ -1,7 +1,7 @@
 from typing import List, Union
-from beanie import PydanticObjectId
 
-from profiles.models import Profile, PublicProfile, Department, Role
+from beanie import PydanticObjectId
+from profiles.models import Department, Profile, PublicProfile, Role
 
 
 # operation on single profiles -----------------------------------------------#
@@ -31,11 +31,13 @@ async def retrieve_public_profiles(
     department: Department,
     role: Role
 ) -> List[PublicProfile]:
+    query = {}
+    if department:
+        query["department"] = department
+    if role:
+        query["role"] = role
     profiles = await Profile.find(
-        {
-            Profile.department: department,
-            Profile.role: role
-        }
+        query
     ).project(PublicProfile).to_list()
     return profiles
 

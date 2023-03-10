@@ -25,14 +25,14 @@ export let frontendConfig = () => {
                             // we are navigating back to where the user was before they authenticated
                             return context.redirectToPath.substring(1);
                         }
-                        return "http://localhost:3000/";
+                        return process.env.NEXT_PUBLIC_WEBSITE_URL;
                     }
                     return undefined;
                 }
             }),
             SessionReact.init({
                 // sessionTokenFrontendDomain: ".tum-ai-dev.com:15950"
-                sessionTokenFrontendDomain: ".localhost:3000"
+                sessionTokenFrontendDomain: process.env.NEXT_PUBLIC_SUBDOMAINS
             }),
         ],
         // this is so that the SDK uses the next router for navigation

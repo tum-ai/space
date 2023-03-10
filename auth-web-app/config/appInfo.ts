@@ -1,8 +1,8 @@
 export const appInfo = {
     appName: "TUM.ai Auth",
-    websiteDomain: "http://localhost:3001",
+    websiteDomain: process.env.NEXT_PUBLIC_AUTH_URL,
     // FastAPI rest server path
-    apiDomain: "http://localhost:15900",
+    apiDomain: process.env.NEXT_PUBLIC_API_URL,
     apiBasePath: "/auth",
     websiteBasePath: "/auth",
 };
