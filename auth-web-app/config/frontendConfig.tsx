@@ -14,7 +14,6 @@ export let frontendConfig = () => {
                     providers: [
                         ThirdPartyEmailPasswordReact.Google.init(),
                         ThirdPartyEmailPasswordReact.Github.init(),
-                        ThirdPartyEmailPasswordReact.Apple.init(),
                     ],
                 },
                 getRedirectionURL: async (context) => {

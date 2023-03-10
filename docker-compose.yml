@@ -113,9 +113,9 @@ services:
         volumes:
             - ./api/:/code
             # - ./entrypoint.sh:/data/entrypoint.sh
-        ports: # enable enable this for debugging!
-            # TODO remove on production
-            - 15900:15900
+        # ports: # enable enable this for debugging!
+        # TODO remove on production
+        # - 15900:15900
         depends_on:
             - mongo-express
             - supertokens

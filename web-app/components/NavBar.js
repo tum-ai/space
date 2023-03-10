@@ -1,6 +1,7 @@
 import Link from 'next/Link';
 import { useRouter } from 'next/router';
-import SessionReact, {
+import {
+	signOut,
 	useSessionContext,
 } from 'supertokens-auth-react/recipe/session';
 
@@ -9,10 +10,14 @@ function NavBar() {
 	const router = useRouter();
 	console.log(router);
 	console.log(session);
-	async function logoutClicked() {
-		await SessionReact.signOut();
-		router.reload();
-		// SuperTokensReact.redirectToAuth({ redirectBack: false });
+	function logoutClicked() {
+		signOut()
+			.then(() => {
+				router.reload();
+			})
+			.catch(() => {
+				console.log('Could not sign out.');
+			});
 	}
 	return (
 		<div className='w-full bg-gray-100 p-6 flex items-center dark:bg-black sticky top-0 z-40'>
@@ -63,7 +68,6 @@ function NavBar() {
 						router.asPath.substring(1)
 					}
 					className='bg-white dark:bg-gray-700 p-2 rounded'
-					onClick={logoutClicked}
 				>
 					Sign in
 				</a>
