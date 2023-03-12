@@ -1,7 +1,7 @@
-import Page from 'components/Page';
 import { observer } from 'mobx-react';
 import Link from 'next/Link';
 import Icon from '/components/Icon';
+import Page from '/components/Page';
 import Select from '/components/Select';
 import { useRootModel } from '/providers/RootStoreProvider';
 

@@ -1,8 +1,8 @@
-import Page from 'components/Page';
 import { observer } from 'mobx-react';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import Icon from '/components/Icon';
+import Page from '/components/Page';
 import { useRootModel } from '/providers/RootStoreProvider';
 
 const DEPARTMENTTOCOLOR = {
