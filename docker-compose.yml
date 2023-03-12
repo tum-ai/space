@@ -161,6 +161,8 @@ services:
             - ./web-app/:/app/
         networks:
             - backend-net
+        env_file:
+            - ./web-app/.env.local
 
     # [DEBUG CONTAINERS] ##################################################
     # connect to a hidden (by docker, without port exposure) service, by manual config
