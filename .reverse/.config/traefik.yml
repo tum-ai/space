@@ -23,8 +23,8 @@ entryPoints:
 certificatesResolvers:
   le-tumai-com:
     acme:
-      email: "nerotecs@gmail.com"
-      storage: "/acme/acme-nerotecs.json"
+      email: "admin@tum-ai.com"
+      storage: "/acme/acme-tum-ai.json"
       dnsChallenge:
         provider: "namecheap"
         delayBeforeCheck: 0

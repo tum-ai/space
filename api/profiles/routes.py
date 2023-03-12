@@ -60,7 +60,6 @@ async def list_public_profiles(department: Department = None, role: Role = None)
 # TODO PATCH multiple profiles
 # TODO DELETE multiple profiles
 
-
 # single profile operations --------------------------------------------------#
 @router.post(
     "/profile/",
@@ -149,6 +148,7 @@ async def update_profile(
         else:
             return False
 
+
 # testing for frontend connection---------------------------------------------#
 @router.post(
     "/test/checkrole",
@@ -170,6 +170,7 @@ async def test1(session : SessionContainer = Depends(verify_session())):
             "description": "check role",
             "data": "check completed",
         }
+
 
 # add role to session user for testing ---------------------------------------#
 @router.post(
