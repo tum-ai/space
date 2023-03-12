@@ -1,5 +1,5 @@
 import { observer } from 'mobx-react';
-import Link from 'next/Link';
+import Link from 'next/link';
 import Icon from '/components/Icon';
 import Page from '/components/Page';
 import Select from '/components/Select';
