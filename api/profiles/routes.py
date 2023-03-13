@@ -1,25 +1,21 @@
-from beanie import PydanticObjectId
 from typing import List, Union
 
+from beanie import PydanticObjectId
+from database.profiles_connector import (create_profile, create_profiles,
+                                         delete_profile, retrieve_profile,
+                                         retrieve_profile_by_supertokens_id,
+                                         retrieve_public_profiles)
 from fastapi import APIRouter, Body, Depends
-
-from supertokens_python.recipe.session.framework.fastapi import verify_session
+from profiles.models import Department, Profile, Role
 from supertokens_python.recipe.session import SessionContainer
-from supertokens_python.recipe.userroles.asyncio import get_roles_for_user, add_role_to_user
-from supertokens_python.recipe.session.exceptions import raise_invalid_claims_exception, ClaimValidationError
-from supertokens_python.recipe.userroles import UserRoleClaim, PermissionClaim
+from supertokens_python.recipe.session.exceptions import (
+    ClaimValidationError, raise_invalid_claims_exception)
+from supertokens_python.recipe.session.framework.fastapi import verify_session
+from supertokens_python.recipe.userroles import PermissionClaim, UserRoleClaim
+from supertokens_python.recipe.userroles.asyncio import (add_role_to_user,
+                                                         get_roles_for_user)
 from supertokens_python.recipe.userroles.interfaces import UnknownRoleError
-
-from database.profiles_connector import (
-    retrieve_public_profiles,
-    retrieve_profile,
-    retrieve_profile_by_supertokens_id,
-    create_profiles,
-    create_profile,
-    delete_profile
-)
 from template.models import Response
-from profiles.models import Profile, Department, Role
 
 router = APIRouter()
 
@@ -43,8 +39,7 @@ async def add_profiles(
         return {
             "status_code": 200,
             "response_type": "success",
-            "description": f"Created profiles with ids {[id(profile) for profile in new_profiles]}",
-            "data": new_profiles,
+            "description": f"Created profiles with ids {[id(profile) for profile in new_profiles.inserted_ids]}",
         }
 
 
@@ -53,7 +48,7 @@ async def add_profiles(
     response_description="List all profiles of department and role",
     response_model=Response
 )
-async def list_public_profiles(department: Department, role: Role):
+async def list_public_profiles(department: Department = None, role: Role = None):
     profiles = await retrieve_public_profiles(department=department, role=role)
     return {
         "status_code": 200,
@@ -92,10 +87,8 @@ async def add_profile(profile: Profile = Body(...), session: SessionContainer = 
     response_description="Retrieve the complete profile of the user currently logged in with supertoken",
     response_model=Response,
 )
-async def show_current_profile(id_: PydanticObjectId, session: SessionContainer = Depends(verify_session())):
-    
+async def show_current_profile(session: SessionContainer = Depends(verify_session())):
     supertokens_user_id = session.get_user_id()
-
     profile = await retrieve_profile_by_supertokens_id(supertokens_user_id)
     if profile:
         return {

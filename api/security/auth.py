@@ -1,10 +1,10 @@
-from supertokens_python import init, InputAppInfo, SupertokensConfig
-from supertokens_python.recipe.thirdpartyemailpassword import Google, Github
-from supertokens_python.recipe import thirdpartyemailpassword, session, dashboard, userroles
-
+from config import CONFIG
 from main import log
 from security.roles import create_admin_role, create_generic_user_role
-from config import CONFIG
+from supertokens_python import InputAppInfo, SupertokensConfig, init
+from supertokens_python.recipe import (dashboard, session,
+                                       thirdpartyemailpassword, userroles)
+from supertokens_python.recipe.thirdpartyemailpassword import Github, Google
 
 
 def init_server_auth():

@@ -148,3 +148,5 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 .idea/
 
+auth-web-app-old
+.reverse/.acme/acme-tum-ai.json
