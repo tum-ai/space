@@ -1,3 +1,4 @@
+import yaml
 from supertokens_python.recipe.userroles.asyncio import create_new_role_or_add_permissions, add_role_to_user
 from supertokens_python.recipe.userroles.interfaces import UnknownRoleError
 from main import log
@@ -13,12 +14,60 @@ async def create_admin_role():
         log.info("\"admin\" role created")
 
 
-async def create_generic_user_role():
-    res = await create_new_role_or_add_permissions("user", ["templates.read.all"])
-    if not res.created_new_role:
-        log.warn("\"user\" role already exists")
-    else:
-        log.info("\"user\" role created")
+async def parse_roles(file_path: str) -> dict:
+    """
+    Parses a YAML file containing roles and permissions and returns a dictionary of roles and permissions.
+    :param file_path: path to the YAML file
+    :return: dictionary of roles and permissions.
+    Example: {"admin": {"description": "Admin role", "permissions": ["templates.read.all", "templates.write.all"]}}
+    """
+    try:
+        data = yaml.safe_load(open(file_path))
+    except FileNotFoundError:
+        log.error(f"File {file_path} not found")
+        raise ValueError(f"File {file_path} not found")
+
+    roles = {}
+    for role_name, role_data in data.items():
+        permissions = []
+
+        if 'DESCRIPTION' not in role_data:
+            raise ValueError(f"Role {role_name} must have a DESCRIPTION field")
+
+        if 'PERMISSIONS' not in role_data:
+            raise ValueError(f"Role {role_name} must have a PERMISSIONS field")
+
+        if role_permissions := role_data['PERMISSIONS'] is None:
+            pass
+        else:
+            for permission in role_permissions:
+                for feature, actions in permission.items():
+                    for action in actions:
+                        for action_name, targets in action.items():
+                            for target in targets:
+                                permissions.append(f"{feature}.{action_name}.{target}")
+
+        roles[role_name] = {'description': role_data['DESCRIPTION'], 'permissions': permissions}
+
+    return roles
+
+
+async def create_roles():
+    """
+    Creates roles for the TUM.ai Space API from a YAML file.
+    """
+    roles = await parse_roles("security/roles.yaml")
+
+    for role_name, role_data in roles.items():
+        if permissions := role_data['permissions'] == []:
+            log.warn(f"\"{role_name}\" role has no permissions assigned. It is recommended to assign at least one "
+                     f"permission to a role.")
+
+        res = await create_new_role_or_add_permissions(role_name, permissions)
+        if not res.created_new_role:
+            log.warn(f"\"{role_name}\" role already exists")
+        else:
+            log.info(f"\"{role_name}\" role created.\nAssigned permissions: {permissions}")
 
 
 # ---------------------------------------------------------------------------#
