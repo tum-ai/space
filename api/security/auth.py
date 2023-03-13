@@ -1,6 +1,6 @@
 from config import CONFIG
 from main import log
-from security.roles import create_admin_role, create_generic_user_role
+from security.roles import create_roles
 from supertokens_python import InputAppInfo, SupertokensConfig, init
 from supertokens_python.recipe import (dashboard, session,
                                        thirdpartyemailpassword, userroles)
@@ -64,6 +64,9 @@ def init_server_auth():
 
 # TODO: set up a proper role creation system
 # Create the roles for the users
-async def create_roles():
-    await create_admin_role()
-    await create_generic_user_role()
+async def create_auth_roles():
+    """
+    This function is called when the server starts up. It is used to set up roles within the auth system.
+    """
+    log.info("Creating auth roles...")
+    await create_roles()
