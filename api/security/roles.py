@@ -1,19 +1,11 @@
 import yaml
-from supertokens_python.recipe.userroles.asyncio import create_new_role_or_add_permissions, add_role_to_user
+from supertokens_python.recipe.userroles.asyncio import create_new_role_or_add_permissions,\
+    add_role_to_user, get_permissions_for_role
 from supertokens_python.recipe.userroles.interfaces import UnknownRoleError
 from main import log
 
 
 # ---------------------------------------------------------------------------#
-# TODO: define roles and permissions
-async def create_admin_role():
-    res = await create_new_role_or_add_permissions("admin", ["templates.read.all", "templates.write.all"])
-    if not res.created_new_role:
-        log.warn("\"admin\" role already exists")
-    else:
-        log.info("\"admin\" role created")
-
-
 async def parse_roles(file_path: str) -> dict:
     """
     Parses a YAML file containing roles and permissions and returns a dictionary of roles and permissions.
@@ -71,15 +63,16 @@ async def create_roles():
 
 
 # ---------------------------------------------------------------------------#
-async def assign_user_role(user_id: str):
+async def assign_role_by_user_id(user_id: str, role_name: str):
     """
-    Assigns a "user" role to a user.
+    Assigns a role to a user by their user ID.
     """
-    res = await add_role_to_user(user_id, "user")
+    res = await add_role_to_user(user_id, role_name)
     if isinstance(res, UnknownRoleError):
         log.error("Unknown role error: %s", res)
-        return
+        raise ValueError(f"Unknown role: {role_name}")
     if res.did_user_already_have_role:
         log.info(f"User {user_id} already had \"user\" role")
     else:
-        log.info(f"User {user_id} was assigned \"user\" role")
+        log.info(f"User {user_id} was assigned \"user\" role. Assigned permissions:"
+                 f" {await get_permissions_for_role(role_name)}")
