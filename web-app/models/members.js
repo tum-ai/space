@@ -93,7 +93,7 @@ export class MembersModel {
 	// API FUNCTIONS
 	async fetchMembers() {
 		try {
-			const profiles = await axios('/profiles');
+			const profiles = await axios('/profiles/');
 			this.members = profiles.data.data;
 			this.filteredMembers = profiles.data.data;
 		} catch (error) {
