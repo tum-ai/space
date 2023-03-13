@@ -6,7 +6,7 @@ from main import log
 
 
 # ---------------------------------------------------------------------------#
-async def parse_roles(file_path: str) -> dict:
+def parse_roles(file_path: str) -> dict:
     """
     Parses a YAML file containing roles and permissions and returns a dictionary of roles and permissions.
     :param file_path: path to the YAML file
@@ -29,10 +29,11 @@ async def parse_roles(file_path: str) -> dict:
         if 'PERMISSIONS' not in role_data:
             raise ValueError(f"Role {role_name} must have a PERMISSIONS field")
 
-        if role_permissions := role_data['PERMISSIONS'] is None:
+        if role_data['PERMISSIONS'] is None:
+            log.debug(f"DEBUG PERMISSIONS: {role_data['PERMISSIONS']}")
             pass
         else:
-            for permission in role_permissions:
+            for permission in role_data['PERMISSIONS']:
                 for feature, actions in permission.items():
                     for action in actions:
                         for action_name, targets in action.items():
@@ -48,13 +49,14 @@ async def create_roles():
     """
     Creates roles for the TUM.ai Space API from a YAML file.
     """
-    roles = await parse_roles("security/roles.yaml")
+    roles = parse_roles("security/roles.yaml")
 
     for role_name, role_data in roles.items():
-        if permissions := role_data['permissions'] == []:
+        permissions = role_data['permissions']
+        if not permissions:
             log.warn(f"\"{role_name}\" role has no permissions assigned. It is recommended to assign at least one "
                      f"permission to a role.")
-
+        log.debug(f"Creating role \"{role_name}\" with permissions: {permissions}")
         res = await create_new_role_or_add_permissions(role_name, permissions)
         if not res.created_new_role:
             log.warn(f"\"{role_name}\" role already exists")
