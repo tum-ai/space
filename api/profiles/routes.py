@@ -13,6 +13,7 @@ from supertokens_python.recipe.userroles.interfaces import UnknownRoleError
 from database.profiles_connector import (
     retrieve_public_profiles,
     retrieve_profile,
+    retrieve_profile_by_supertokens_id,
     create_profiles,
     create_profile,
     delete_profile
@@ -86,6 +87,29 @@ async def add_profile(profile: Profile = Body(...), session: SessionContainer = 
             "data": new_profile,
         }
 
+@router.get(
+    "/profile/me",
+    response_description="Retrieve the complete profile of the user currently logged in with supertoken",
+    response_model=Response,
+)
+async def show_current_profile(id_: PydanticObjectId, session: SessionContainer = Depends(verify_session())):
+    
+    supertokens_user_id = session.get_user_id()
+
+    profile = await retrieve_profile_by_supertokens_id(supertokens_user_id)
+    if profile:
+        return {
+            "status_code": 200,
+            "response_type": "success",
+            "description": "Complete internally visible Profile",
+            "data": profile,
+        }
+    return {
+        "status_code": 404,
+        "response_type": "error",
+        "description": "Profile not found",
+        "data": None,
+    }
 
 @router.get(
     "/profile/{id_}",
@@ -153,7 +177,6 @@ async def update_profile(
         else:
             return False
 
-
 # testing for frontend connection---------------------------------------------#
 @router.post(
     "/test/checkrole",
@@ -175,7 +198,6 @@ async def test1(session : SessionContainer = Depends(verify_session())):
             "description": "check role",
             "data": "check completed",
         }
-
 
 # add role to session user for testing ---------------------------------------#
 @router.post(
