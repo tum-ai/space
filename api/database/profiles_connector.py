@@ -24,10 +24,8 @@ async def retrieve_profile(
 async def retrieve_profile_by_supertokens_id(
     supertokensId: str,
 ) -> Union[bool, Profile]:
-    profile = await Profile.find(
-        {
-            Profile.supertokensId: supertokensId,
-        }
+    profile = await Profile.find_one(
+        Profile.supertokensId == supertokensId,
     )
     if profile:
         return profile

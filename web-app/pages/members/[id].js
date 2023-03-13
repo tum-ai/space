@@ -24,7 +24,6 @@ const Profile = observer(() => {
 	const router = useRouter();
 	const { id } = router.query;
 	const memberModel = rootModel.memberModel;
-	console.log('awd');
 	useEffect(() => {
 		if (id) {
 			memberModel.fetchMember(id);
@@ -38,6 +37,10 @@ const Profile = observer(() => {
 
 	if (memberModel.error) {
 		return <div>An error occured. Could not fetch profile.</div>;
+	}
+
+	if (!profile) {
+		return <div>Profile not found.</div>;
 	}
 
 	return (

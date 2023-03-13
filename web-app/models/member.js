@@ -16,7 +16,7 @@ export class MemberModel {
 	async fetchMember(id) {
 		try {
 			const profile = await axios('/profile/' + id);
-			this.member = profile.data.data;
+			this.member = profile?.data?.data;
 			this.loading = false;
 			this.error = false;
 		} catch (error) {

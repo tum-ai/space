@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import {
@@ -8,8 +9,6 @@ import {
 function NavBar() {
 	const session = useSessionContext();
 	const router = useRouter();
-	console.log(router);
-	console.log(session);
 	function logoutClicked() {
 		signOut()
 			.then(() => {
@@ -20,9 +19,28 @@ function NavBar() {
 			});
 	}
 	return (
-		<div className='w-full bg-gray-100 p-6 flex items-center dark:bg-black sticky top-0 z-40'>
-			<div className=''>Space</div>
-			<div className='h-auto mx-auto flex space-x-8'>
+		<div className='w-full bg-gray-100 p-4 lg:p-6 flex items-center dark:bg-black sticky top-0 z-40'>
+			<div>
+				<Link href={'/'}>
+					<Image
+						className='dark:block hidden'
+						priority
+						src='/logo/Group 6281-2.svg'
+						height={48}
+						width={48}
+						alt='Follow us on Twitter'
+					/>
+					<Image
+						className='dark:hidden visible'
+						priority
+						src='/logo/Group 6281-1.svg'
+						height={48}
+						width={48}
+						alt='Follow us on Twitter'
+					/>
+				</Link>
+			</div>
+			<div className='h-auto mx-auto flex space-x-4 lg:space-x-8'>
 				<Link
 					href={'/'}
 					className={
@@ -41,6 +59,7 @@ function NavBar() {
 					className={
 						'text-gray-500 hover:text-black dark:hover:text-white hover:underline ' +
 						(router.asPath?.includes('/members') &&
+							!router.asPath?.includes('/members/me') &&
 							'underline font-bold')
 					}
 				>
@@ -50,15 +69,21 @@ function NavBar() {
 					/> */}
 					Members
 				</Link>
-				{/* <Link
-					href='/me'
-					className='text-gray-500 hover:text-black dark:hover:text-white hover:underline'
-				>
-					My profile
-				</Link> */}
+				{session.doesSessionExist && (
+					<Link
+						href='/members/me'
+						className={
+							'text-gray-500 hover:text-black dark:hover:text-white hover:underline ' +
+							(router.asPath === '/members/me' &&
+								'underline font-bold')
+						}
+					>
+						My profile
+					</Link>
+				)}
 			</div>
-			{session.userId ? (
-				<button onClick={logoutClicked}>Sign out</button>
+			{session.doesSessionExist ? (
+				<button onClick={logoutClicked}>Logout</button>
 			) : (
 				<a
 					href={
@@ -69,7 +94,7 @@ function NavBar() {
 					}
 					className='bg-white dark:bg-gray-700 p-2 rounded'
 				>
-					Sign in
+					Login
 				</a>
 			)}
 		</div>
