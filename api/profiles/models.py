@@ -51,6 +51,9 @@ class Profile(Document):
     name: str
     # TODO encode
     # picture: Image
+    
+    supertokensId: str
+
     description: str
 
     degreeLevel: str
@@ -106,6 +109,9 @@ class UpdateProfile(Document):
     name: str
     # TODO
     # picture: Image
+
+    supertokensId: Optional[str]
+
     description: Optional[str]
 
     degreeLevel: Optional[str]

@@ -21,6 +21,19 @@ async def retrieve_profile(
     else:
         return False
 
+async def retrieve_profile_by_supertokens_id(
+    supertokensId: str,
+) -> Union[bool, Profile]:
+    profile = await Profile.find(
+        {
+            Profile.supertokensId: supertokensId,
+        }
+    )
+    if profile:
+        return profile
+    else:
+        return False
+
 
 async def delete_profile(profile_id: PydanticObjectId) -> None:
     await Profile.get(profile_id).delete()
