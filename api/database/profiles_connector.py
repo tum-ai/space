@@ -1,7 +1,7 @@
 from typing import List, Union
-from beanie import PydanticObjectId
 
-from profiles.models import Profile, PublicProfile, Department, Role
+from beanie import PydanticObjectId
+from profiles.models import Department, Profile, PublicProfile, Role
 
 
 # operation on single profiles -----------------------------------------------#
@@ -24,10 +24,8 @@ async def retrieve_profile(
 async def retrieve_profile_by_supertokens_id(
     supertokensId: str,
 ) -> Union[bool, Profile]:
-    profile = await Profile.find(
-        {
-            Profile.supertokensId: supertokensId,
-        }
+    profile = await Profile.find_one(
+        Profile.supertokensId == supertokensId,
     )
     if profile:
         return profile
@@ -44,11 +42,13 @@ async def retrieve_public_profiles(
     department: Department,
     role: Role
 ) -> List[PublicProfile]:
+    query = {}
+    if department:
+        query["department"] = department
+    if role:
+        query["role"] = role
     profiles = await Profile.find(
-        {
-            Profile.department: department,
-            Profile.role: role
-        }
+        query
     ).project(PublicProfile).to_list()
     return profiles
 

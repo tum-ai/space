@@ -13,21 +13,26 @@ export let frontendConfig = () => {
                 signInAndUpFeature: {
                     providers: [
                         ThirdPartyEmailPasswordReact.Google.init(),
-                        ThirdPartyEmailPasswordReact.Github.init()
+                        ThirdPartyEmailPasswordReact.Github.init(),
                     ],
                 },
-                getRedirectionURL: async (context) => {                    
+                getRedirectionURL: async (context) => {
+                    console.log(context);
+                    
                     if (context.action === "SUCCESS") {
-                        if (context.redirectToPath) {
+                        if (context.redirectToPath !== undefined) {
                             // we are navigating back to where the user was before they authenticated
-                            return context.redirectToPath;
+                            return context.redirectToPath.substring(1);
                         }
-                        return "http://space.tum-ai-dev.com:15950";
+                        return process.env.NEXT_PUBLIC_WEBSITE_URL;
                     }
                     return undefined;
                 }
             }),
-            SessionReact.init(),
+            SessionReact.init({
+                // sessionTokenFrontendDomain: ".tum-ai-dev.com:15950"
+                sessionTokenFrontendDomain: process.env.NEXT_PUBLIC_SUBDOMAINS
+            }),
         ],
         // this is so that the SDK uses the next router for navigation
         windowHandler: (oI) => {
@@ -42,4 +47,8 @@ export let frontendConfig = () => {
             };
         },
     };
+};
+
+export const recipeDetails = {
+    docsLink: "https://supertokens.com/docs/thirdpartyemailpassword/introduction",
 };
