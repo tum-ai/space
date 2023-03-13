@@ -4,7 +4,7 @@ from config import CONFIG
 from database.setup import close_db_client, setup_db_client
 from fastapi import FastAPI
 from profiles.routes import router as ProfilesRouter
-from security.auth import create_roles, init_server_auth
+from security.auth import create_auth_roles, init_server_auth
 from starlette.middleware.cors import CORSMiddleware
 from supertokens_python import get_all_cors_headers
 from supertokens_python.framework.fastapi import get_middleware
@@ -41,7 +41,7 @@ async def startup_event():
     It is used to set up the database connection and other configurations.
     """
     await setup_db_client(app)
-    await create_roles()
+    await create_auth_roles()
 
 
 @app.on_event("shutdown")
