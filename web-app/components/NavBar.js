@@ -163,7 +163,7 @@ function NavBarMobile() {
 	}
 	const [active, setActive] = useState(false);
 	return (
-		<div className='lg:hidden flex w-full bg-gray-100 p-4 lg:p-6 flex flex-col items-center dark:bg-black sticky top-0 z-20'>
+		<div className='lg:hidden flex w-full bg-gray-100 p-4 lg:p-6 flex-col items-center dark:bg-black sticky top-0 z-20'>
 			<div className='flex justify-between w-full'>
 				<div>
 					<Link href={'/'}>
