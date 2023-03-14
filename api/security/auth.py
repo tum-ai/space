@@ -1,10 +1,122 @@
+from supertokens_python.types import GeneralErrorResponse
+
 from config import CONFIG
 from main import log
+from typing import Union, Dict, Any, List
 from security.roles import create_roles
 from supertokens_python import InputAppInfo, SupertokensConfig, init
-from supertokens_python.recipe import (dashboard, session,
-                                       thirdpartyemailpassword, userroles)
+from supertokens_python.recipe.thirdpartyemailpassword.interfaces import (
+    APIInterface,
+    ThirdPartyAPIOptions,
+    EmailPasswordAPIOptions,
+    ThirdPartySignInUpPostOkResult,
+    EmailPasswordSignInPostOkResult,
+    EmailPasswordSignUpPostOkResult,
+    ThirdPartySignInUpPostNoEmailGivenByProviderResponse,
+    EmailPasswordSignInPostWrongCredentialsError,
+    EmailPasswordSignUpPostEmailAlreadyExistsError,
+)
+from supertokens_python.recipe import (
+    dashboard,
+    session,
+    thirdpartyemailpassword,
+    userroles,
+)
 from supertokens_python.recipe.thirdpartyemailpassword import Github, Google
+from supertokens_python.recipe.thirdparty.provider import Provider
+from supertokens_python.recipe.emailpassword.types import FormField
+
+
+def override_sign_up_in_apis(original_implementation: APIInterface):
+    original_thirdparty_sign_in_up_post = original_implementation.thirdparty_sign_in_up_post
+    original_emailpassword_sign_in_post = original_implementation.emailpassword_sign_in_post
+    original_emailpassword_sign_up_post = original_implementation.emailpassword_sign_up_post
+
+    # This function is used to override the default behaviour of the sign-up for the third party identity.
+    async def third_party_sign_in_up_post(
+        provider: Provider,
+        code: str,
+        redirect_uri: str,
+        client_id: Union[str, None],
+        auth_code_response: Union[Dict[str, Any], None],
+        api_options: ThirdPartyAPIOptions,
+        user_context: Dict[str, Any],
+    ):
+        # call the default behaviour as show below
+        result = await original_thirdparty_sign_in_up_post(
+            provider,
+            code,
+            redirect_uri,
+            client_id,
+            auth_code_response,
+            api_options,
+            user_context,
+        )
+
+        if isinstance(result, ThirdPartySignInUpPostOkResult):
+            if result.created_new_user:
+                log.debug(f"New user created with SuperTokens User ID: {result.user.user_id}")
+                # TODO: some post sign up logic
+            else:
+                log.debug(f"User signed in successfully with SuperTokens User ID: {result.user.user_id}")
+                # TODO: some post sign in logic
+
+        elif isinstance(result, ThirdPartySignInUpPostNoEmailGivenByProviderResponse):
+            log.debug(f"No email given by provider")
+
+        elif isinstance(result, GeneralErrorResponse):
+            log.debug(f"General error response")
+
+        return result
+
+    async def email_password_sign_in_post(
+        form_fields: List[FormField],
+        api_options: EmailPasswordAPIOptions,
+        user_context: Dict[str, Any],
+    ):
+        # call the default behaviour as show below
+        result = await original_emailpassword_sign_in_post(
+            form_fields, api_options, user_context
+        )
+
+        if isinstance(result, EmailPasswordSignInPostOkResult):
+            log.debug(f"User signed in successfully with SuperTokens User ID: {result.user.user_id}")
+            # TODO: some post sign in logic
+
+        elif isinstance(result, EmailPasswordSignInPostWrongCredentialsError):
+            log.debug(f"Wrong credentials")
+
+        elif isinstance(result, GeneralErrorResponse):
+            log.debug(f"General error response")
+
+        return result
+
+    async def email_password_sign_up_post(
+        form_fields: List[FormField],
+        api_options: EmailPasswordAPIOptions,
+        user_context: Dict[str, Any],
+    ):
+        # call the default behaviour as show below
+        result = await original_emailpassword_sign_up_post(
+            form_fields, api_options, user_context
+        )
+
+        if isinstance(result, EmailPasswordSignUpPostOkResult):
+            log.debug(f"User signed up successfully with SuperTokens User ID: {result.user.user_id}")
+            # TODO: some post sign up logic
+
+        elif isinstance(result, EmailPasswordSignUpPostEmailAlreadyExistsError):
+            log.debug("Email already exists")
+
+        elif isinstance(result, GeneralErrorResponse):
+            log.debug(f"General error response")
+
+        return result
+
+    original_implementation.thirdparty_sign_in_up_post = third_party_sign_in_up_post
+    original_implementation.emailpassword_sign_in_post = email_password_sign_in_post
+    original_implementation.emailpassword_sign_up_post = email_password_sign_up_post
+    return original_implementation
 
 
 def init_server_auth():
@@ -41,6 +153,9 @@ def init_server_auth():
             # TODO: add email verification
             # https://supertokens.com/docs/thirdpartyemailpassword/pre-built-ui/enable-email-verification
             thirdpartyemailpassword.init(
+                override=thirdpartyemailpassword.InputOverrideConfig(
+                    apis=override_sign_up_in_apis
+                ),
                 providers=[
                     # We have provided you with development keys which you can use for testing.
                     # IMPORTANT: Please replace them with your own OAuth keys for production use.
@@ -52,10 +167,10 @@ def init_server_auth():
                         client_id="467101b197249757c71f",
                         client_secret="e97051221f4b6426e8fe8d51486396703012f5bd",
                     ),
-                ]
+                ],
             ),
             dashboard.init(api_key=CONFIG.get("USERS_DASHBOARD_API_KEY")),
-            userroles.init()
+            userroles.init(),
         ],
         # use wsgi if we are running using gunicorn
         mode=CONFIG.get("FASTAPI_RUNNING_PROTOCOL"),
