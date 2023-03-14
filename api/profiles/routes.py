@@ -146,29 +146,54 @@ async def remove_profile(id_: PydanticObjectId, session: SessionContainer = Depe
         }
 
 
+# @router.patch(
+#     "/profile/{id_}",
+#     response_description="Update profile",
+#     response_model=Response,
+# )
+# async def update_profile(
+#     profile_id: PydanticObjectId, data: dict, session : SessionContainer = Depends(verify_session())
+# ) -> Union[bool, Profile]:
+#     roles = await session.get_claim_value(UserRoleClaim)
+   
+#     if roles is None or "admin" not in roles:
+#         raise_invalid_claims_exception("User is not an admin", [
+#                                        ClaimValidationError(UserRoleClaim.key, None)])
+#     else:
+#         update_body = {k: v for k, v in data.items() if v is not None}
+#         update_query = {"$set": {field: value for field, value in update_body.items()}}
+#         profile = await Profile.get(profile_id)
+
+#         if profile:
+#             await profile.update(update_query)
+#             return profile
+#         else:
+#             return False
+        
 @router.patch(
-    "/profile/{id_}",
-    response_description="Update profile",
+    "/profile/me",
+    response_description="Update my profile",
     response_model=Response,
 )
-async def update_profile(
-    profile_id: PydanticObjectId, data: dict, session : SessionContainer = Depends(verify_session())
+async def update_my_profile(
+    data: dict, session : SessionContainer = Depends(verify_session())
 ) -> Union[bool, Profile]:
-    roles = await session.get_claim_value(UserRoleClaim)
-   
-    if roles is None or "admin" not in roles:
-        raise_invalid_claims_exception("User is not an admin", [
-                                       ClaimValidationError(UserRoleClaim.key, None)])
-    else:
-        update_body = {k: v for k, v in data.items() if v is not None}
-        update_query = {"$set": {field: value for field, value in update_body.items()}}
-        profile = await Profile.get(profile_id)
+    supertokens_user_id = session.get_user_id()
+    update_body = {k: v for k, v in data.items() if v is not None}
+    update_query = {"$set": {field: value for field, value in update_body.items()}}
+    profile = await retrieve_profile_by_supertokens_id(supertokens_user_id)
 
-        if profile:
-            await profile.update(update_query)
-            return profile
-        else:
-            return False
+    if profile:
+        await profile.update(update_query)
+        return {
+            "status_code": 200,
+            "response_type": "success",
+            "description": "Profile edited",
+            "data": data,
+        }
+    else:
+        return False        
+
 
 # testing for frontend connection---------------------------------------------#
 @router.post(

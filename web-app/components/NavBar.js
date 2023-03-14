@@ -19,7 +19,7 @@ function NavBar() {
 			});
 	}
 	return (
-		<div className='w-full bg-gray-100 p-4 lg:p-6 flex items-center dark:bg-black sticky top-0 z-40'>
+		<div className='w-full bg-gray-100 p-4 lg:p-6 flex items-center dark:bg-black sticky top-0 z-20'>
 			<div>
 				<Link href={'/'}>
 					<Image
