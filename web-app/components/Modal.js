@@ -24,7 +24,7 @@ function Modal({ className, trigger, state, setState, onClose, ...props }) {
 						className='absolute h-screen w-screen bg-black opacity-40 z-20 top-0 left-0'
 					></div>
 					<div
-						className='absolute overflow-auto max-w-fit h-fit z-30 right-0 left-0 mx-auto top-0 bottom-0 my-auto'
+						className='absolute overflow-auto px-4 h-fit w-full max-w-2xl z-30 right-0 left-0 mx-auto top-0 bottom-0 my-auto'
 						style={{
 							maxHeight: '90%',
 						}}
