@@ -145,7 +145,7 @@ async def remove_profile(id_: PydanticObjectId, session: SessionContainer = Depe
             "data": None,
         }
 
-
+# TODO: uncomment it and fix it. If this is uncommented, the PATCH request below (/profile/me) doesnt work
 # @router.patch(
 #     "/profile/{id_}",
 #     response_description="Update profile",

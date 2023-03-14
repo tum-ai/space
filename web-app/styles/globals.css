@@ -29,12 +29,24 @@ a {
   }
 }
 
+.font-code {
+  font-family: "Lucida Console", "Courier New", monospace;
+}
+
 .glow {
-  font-size: 120px;
+  font-size: 110px;
   text-align: center;
   color: white;
   animation: glow 8s ease-in-out infinite alternate;
 }
+
+.slide-down {
+  animation: slide-down .2s ease-in-out;
+  top: 0px;
+  z-index: -10;
+}
+
+/* animations */
 
 @keyframes glow {
   from {
@@ -46,6 +58,13 @@ a {
   }
 }
 
-.font-code {
-  font-family: "Lucida Console", "Courier New", monospace;
+@keyframes slide-down {
+  0% {
+      top: -10px;
+      opacity: 0;
+  }
+  100% {
+      top: 0px;
+      opacity: 1;
+  }
 }
