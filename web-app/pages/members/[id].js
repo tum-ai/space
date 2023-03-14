@@ -251,7 +251,7 @@ const ProfileEditor = observer(() => {
 						required={true}
 					/>
 					<Input
-						label='Degree Name'
+						label='Degree name'
 						type='text'
 						id='degreeName'
 						name='degreeName'
