@@ -25,6 +25,7 @@ db_client = None
 init_server_auth()
 app.add_middleware(get_middleware())
 # https://www.starlette.io/middleware/ scroll down to CORSMiddleware
+log.debug(CONFIG.get("AUTH_ALLOWED_ORIGINS")),
 app.add_middleware(
     CORSMiddleware,
     allow_origins=CONFIG.get("AUTH_ALLOWED_ORIGINS"),
