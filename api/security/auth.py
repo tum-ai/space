@@ -1,9 +1,12 @@
-from supertokens_python.types import GeneralErrorResponse
+from typing import Union, Dict, Any, List
+from datetime import datetime
 
 from config import CONFIG
+from database.profiles_connector import create_profile
 from main import log
-from typing import Union, Dict, Any, List
-from security.roles import create_roles
+
+from profiles.models import Profile, Department, Role, SocialNetwork
+from security.roles import create_roles, assign_role_by_user_id
 from supertokens_python import InputAppInfo, SupertokensConfig, init
 from supertokens_python.recipe.thirdpartyemailpassword.interfaces import (
     APIInterface,
@@ -25,6 +28,7 @@ from supertokens_python.recipe import (
 from supertokens_python.recipe.thirdpartyemailpassword import Github, Google
 from supertokens_python.recipe.thirdparty.provider import Provider
 from supertokens_python.recipe.emailpassword.types import FormField
+from supertokens_python.types import GeneralErrorResponse
 
 
 def override_sign_up_in_apis(original_implementation: APIInterface):
@@ -34,13 +38,13 @@ def override_sign_up_in_apis(original_implementation: APIInterface):
 
     # This function is used to override the default behaviour of the sign-up for the third party identity.
     async def third_party_sign_in_up_post(
-        provider: Provider,
-        code: str,
-        redirect_uri: str,
-        client_id: Union[str, None],
-        auth_code_response: Union[Dict[str, Any], None],
-        api_options: ThirdPartyAPIOptions,
-        user_context: Dict[str, Any],
+            provider: Provider,
+            code: str,
+            redirect_uri: str,
+            client_id: Union[str, None],
+            auth_code_response: Union[Dict[str, Any], None],
+            api_options: ThirdPartyAPIOptions,
+            user_context: Dict[str, Any],
     ):
         # call the default behaviour as show below
         result = await original_thirdparty_sign_in_up_post(
@@ -56,6 +60,32 @@ def override_sign_up_in_apis(original_implementation: APIInterface):
         if isinstance(result, ThirdPartySignInUpPostOkResult):
             if result.created_new_user:
                 log.debug(f"New user created with SuperTokens User ID: {result.user.user_id}")
+                # Assign DEFAULT role to the new users
+                await assign_role_by_user_id(result.user.user_id, "DEFAULT")
+                await create_profile(
+                    Profile(
+                        supertokensId=result.user.user_id,
+                        name="Dummy Name",
+                        email=result.user.email,
+                        description="Dummy Description",
+                        degreeLevel="Bachelors",
+                        degreeName="ComputerScience",
+                        degreeSemester=3,
+                        university="TUM",
+                        currentJob="Dummy Job",
+                        department=Department.DEV,
+                        role=Role.MEMBER,
+                        previousDepartments=[Department.IND],
+                        joinedBatch=datetime(2022, 1, 1),
+                        involvedProjects=["TUM.ai Space"],
+                        nationality="International",
+                        socialNetworks=[SocialNetwork(
+                            type=SocialNetwork.SocialNetworkType.OTHER,
+                            link="other"
+                        )]
+                    )
+                )
+
                 # TODO: some post sign up logic
             else:
                 log.debug(f"User signed in successfully with SuperTokens User ID: {result.user.user_id}")
@@ -70,9 +100,9 @@ def override_sign_up_in_apis(original_implementation: APIInterface):
         return result
 
     async def email_password_sign_in_post(
-        form_fields: List[FormField],
-        api_options: EmailPasswordAPIOptions,
-        user_context: Dict[str, Any],
+            form_fields: List[FormField],
+            api_options: EmailPasswordAPIOptions,
+            user_context: Dict[str, Any],
     ):
         # call the default behaviour as show below
         result = await original_emailpassword_sign_in_post(
@@ -92,9 +122,9 @@ def override_sign_up_in_apis(original_implementation: APIInterface):
         return result
 
     async def email_password_sign_up_post(
-        form_fields: List[FormField],
-        api_options: EmailPasswordAPIOptions,
-        user_context: Dict[str, Any],
+            form_fields: List[FormField],
+            api_options: EmailPasswordAPIOptions,
+            user_context: Dict[str, Any],
     ):
         # call the default behaviour as show below
         result = await original_emailpassword_sign_up_post(
@@ -103,7 +133,34 @@ def override_sign_up_in_apis(original_implementation: APIInterface):
 
         if isinstance(result, EmailPasswordSignUpPostOkResult):
             log.debug(f"User signed up successfully with SuperTokens User ID: {result.user.user_id}")
+            # Assign DEFAULT role to the new users
+            await assign_role_by_user_id(result.user.user_id, "DEFAULT")
+            await create_profile(
+                Profile(
+                    supertokensId=result.user.user_id,
+                    name="Dummy Name",
+                    email=result.user.email,
+                    description="Dummy Description",
+                    degreeLevel="Bachelors",
+                    degreeName="ComputerScience",
+                    degreeSemester=3,
+                    university="TUM",
+                    currentJob="Dummy Job",
+                    department=Department.DEV,
+                    role=Role.MEMBER,
+                    previousDepartments=[Department.IND],
+                    joinedBatch=datetime(2022, 1, 1),
+                    involvedProjects=["TUM.ai Space"],
+                    nationality="International",
+                    socialNetworks=[SocialNetwork(
+                        type=SocialNetwork.SocialNetworkType.OTHER,
+                        link="other"
+                    )]
+                )
+            )
             # TODO: some post sign up logic
+            # TODO: connect analytics
+            #
 
         elif isinstance(result, EmailPasswordSignUpPostEmailAlreadyExistsError):
             log.debug("Email already exists")
@@ -177,7 +234,7 @@ def init_server_auth():
     )
 
 
-# TODO: set up a proper role creation system
+# TODO: set up a proper role creation system via the dashboard
 # Create the roles for the users
 async def create_auth_roles():
     """
