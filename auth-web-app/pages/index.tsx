@@ -68,7 +68,7 @@ function ProtectedPage() {
     return (
         <div className={styles.homeContainer}>
             <Head>
-                <title>SuperTokens 💫</title>
+                <title>TUM.ai Auth 🔐</title>
                 <link rel="icon" href="/favicon.ico" />
             </Head>
             <div className={styles.mainContainer}>
