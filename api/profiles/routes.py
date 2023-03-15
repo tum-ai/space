@@ -148,6 +148,7 @@ async def remove_profile(id_: PydanticObjectId, session: SessionContainer = Depe
             "data": None,
         }
 
+
 # TODO: uncomment it and fix it. If this is uncommented, the PATCH request below (/profile/me) doesnt work
 # @router.patch(
 #     "/profile/{id_}",
@@ -179,7 +180,7 @@ async def remove_profile(id_: PydanticObjectId, session: SessionContainer = Depe
     response_model=Response,
 )
 async def update_my_profile(
-    data: dict, session : SessionContainer = Depends(verify_session())
+        data: dict, session: SessionContainer = Depends(verify_session())
 ) -> Union[bool, Profile]:
     supertokens_user_id = session.get_user_id()
     update_body = {k: v for k, v in data.items() if v is not None}
