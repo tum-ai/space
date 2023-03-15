@@ -40,7 +40,7 @@ const Profile = observer(() => {
 	}
 
 	if (memberModel.error) {
-		return <div>An error occured. Could not fetch profile.</div>;
+		return <div>{memberModel.error}</div>;
 	}
 
 	if (!profile) {
@@ -215,7 +215,7 @@ const ProfileEditor = observer(() => {
 					className='flex flex-col gap-4 lg:grid lg:grid-cols-2 lg:space-y-0 lg:gap-8'
 				>
 					<Input
-						label='First name'
+						label='Full name'
 						type='text'
 						id='name'
 						name='name'
@@ -275,7 +275,6 @@ const ProfileEditor = observer(() => {
 						name='currentJob'
 						value={editorProfile.currentJob}
 						onChange={handleChange}
-						required={true}
 					/>
 					{/* <Input
 						label='Description'
@@ -300,7 +299,7 @@ const ProfileEditor = observer(() => {
 					<div className='col-span-2 flex space-x-2'>
 						<button
 							type='submit'
-							className='p-4 px-8 py-1 rounded-lg border-2 w-1/2'
+							className='p-4 px-8 py-1 rounded-lg w-1/2 bg-gray-200 text-black'
 						>
 							<div>save</div>
 						</button>
@@ -308,7 +307,7 @@ const ProfileEditor = observer(() => {
 							onClick={() => {
 								profileEditorModel.toggleEditor();
 							}}
-							className='p-4 px-8 py-1 rounded-lg text-black bg-gray-200 w-1/2'
+							className='p-4 px-8 py-1 rounded-lg w-1/2 border-2'
 						>
 							<div>cancel</div>
 						</button>
