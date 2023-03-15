@@ -37,9 +37,11 @@ export class MemberModel {
 			this.loading = false;
 			this.error = false;
 		} catch (error) {
-			console.log('Could not get profile');
+			console.log(error?.response?.data?.message);
 			this.loading = false;
-			this.error = true;
+			this.error =
+				error?.response?.data?.message ||
+				'An error occured. Could not fetch profile.';
 		}
 	}
 
