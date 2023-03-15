@@ -19,6 +19,7 @@ from template.models import Response
 
 router = APIRouter()
 
+
 # batch operations -----------------------------------------------------------#
 @router.post(
     "/profiles/",
@@ -26,14 +27,14 @@ router = APIRouter()
     response_model=Response
 )
 async def add_profiles(
-    profiles: List[Profile] = Body(...),
-    session: SessionContainer = Depends(verify_session())
+        profiles: List[Profile] = Body(...),
+        session: SessionContainer = Depends(verify_session())
 ):
     roles = await session.get_claim_value(UserRoleClaim)
-   
-    if roles is None or "admin" not in roles:
+
+    if roles is None or "ADMIN" not in roles:
         raise_invalid_claims_exception("User is not an admin", [
-                                       ClaimValidationError(UserRoleClaim.key, None)])
+            ClaimValidationError(UserRoleClaim.key, None)])
     else:
         new_profiles = await create_profiles(profiles)
         return {
@@ -69,10 +70,10 @@ async def list_public_profiles(department: Department = None, role: Role = None)
 )
 async def add_profile(profile: Profile = Body(...), session: SessionContainer = Depends(verify_session())):
     roles = await session.get_claim_value(UserRoleClaim)
-   
-    if roles is None or "admin" not in roles:
+
+    if roles is None or "ADMIN" not in roles:
         raise_invalid_claims_exception("User is not an admin", [
-                                       ClaimValidationError(UserRoleClaim.key, None)])
+            ClaimValidationError(UserRoleClaim.key, None)])
     else:
         new_profile = await create_profile(profile)
         return {
@@ -82,9 +83,10 @@ async def add_profile(profile: Profile = Body(...), session: SessionContainer = 
             "data": new_profile,
         }
 
+
 @router.get(
     "/profile/me",
-    response_description="Retrieve the complete profile of the user currently logged in with supertoken",
+    response_description="Retrieve the complete profile of the user currently logged in with SuperTokens",
     response_model=Response,
 )
 async def show_current_profile(session: SessionContainer = Depends(verify_session())):
@@ -103,6 +105,7 @@ async def show_current_profile(session: SessionContainer = Depends(verify_sessio
         "description": "Profile not found",
         "data": None,
     }
+
 
 @router.get(
     "/profile/{id_}",
@@ -133,9 +136,9 @@ async def show_profile(id_: PydanticObjectId, session: SessionContainer = Depend
 )
 async def remove_profile(id_: PydanticObjectId, session: SessionContainer = Depends(verify_session())):
     roles = await session.get_claim_value(UserRoleClaim)
-    if roles is None or "admin" not in roles:
+    if roles is None or "ADMIN" not in roles:
         raise_invalid_claims_exception("User is not an admin", [
-                                       ClaimValidationError(UserRoleClaim.key, None)])
+            ClaimValidationError(UserRoleClaim.key, None)])
     else:
         await delete_profile(id_)
         return {
@@ -155,7 +158,7 @@ async def remove_profile(id_: PydanticObjectId, session: SessionContainer = Depe
 #     profile_id: PydanticObjectId, data: dict, session : SessionContainer = Depends(verify_session())
 # ) -> Union[bool, Profile]:
 #     roles = await session.get_claim_value(UserRoleClaim)
-   
+
 #     if roles is None or "admin" not in roles:
 #         raise_invalid_claims_exception("User is not an admin", [
 #                                        ClaimValidationError(UserRoleClaim.key, None)])
@@ -169,7 +172,7 @@ async def remove_profile(id_: PydanticObjectId, session: SessionContainer = Depe
 #             return profile
 #         else:
 #             return False
-        
+
 @router.patch(
     "/profile/me",
     response_description="Update my profile",
@@ -192,7 +195,7 @@ async def update_my_profile(
             "data": data,
         }
     else:
-        return False        
+        return False
 
 
 # testing for frontend connection---------------------------------------------#
@@ -201,13 +204,13 @@ async def update_my_profile(
     response_description="Test if role is added to session",
     response_model=Response
 )
-async def test1(session : SessionContainer = Depends(verify_session())):
-    #print(session.__dict__)
+async def test1(session: SessionContainer = Depends(verify_session())):
+    # print(session.__dict__)
     roles = await session.get_claim_value(UserRoleClaim)
-   
-    if roles is None or "admin" not in roles:
+
+    if roles is None or "ADMIN" not in roles:
         raise_invalid_claims_exception("User is not an admin", [
-                                       ClaimValidationError(UserRoleClaim.key, None)])
+            ClaimValidationError(UserRoleClaim.key, None)])
     else:
         return {
             "status": 200,
@@ -217,15 +220,16 @@ async def test1(session : SessionContainer = Depends(verify_session())):
             "data": "check completed",
         }
 
+
 # add role to session user for testing ---------------------------------------#
 @router.post(
     "/profiles/role",
     response_description="Add role to user",
     response_model=Response
 )
-async def add_role_to_user_func(session : SessionContainer = Depends(verify_session())):
+async def add_role_to_user_func(session: SessionContainer = Depends(verify_session())):
     user_id = session.user_id
-    role = "admin"
+    role = "ADMIN"
     res = await add_role_to_user(user_id, role)
 
     # add the user's roles to the user's session
@@ -234,11 +238,11 @@ async def add_role_to_user_func(session : SessionContainer = Depends(verify_sess
     await session.fetch_and_set_claim(PermissionClaim)
 
     return {
-            "status_code": 200,
-            "response_type": "success",
-            "description": "attempted role add",
-            "data": res,
-        }
+        "status_code": 200,
+        "response_type": "success",
+        "description": "attempted role add",
+        "data": res,
+    }
     '''if isinstance(res, UnknownRoleError):
         # No such role exists
         
