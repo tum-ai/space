@@ -21,7 +21,7 @@ export default function Auth(): JSX.Element {
     return (
         <div className={styles.container}>
             <Head>
-                <title>SuperTokens 💫</title>
+                <title>TUM.ai Auth 🔐</title>
                 <link
                     href="//fonts.googleapis.com/css2?family=Rubik:wght@400&display=swap"
                     rel="stylesheet"
