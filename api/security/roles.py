@@ -78,7 +78,7 @@ async def create_roles():
 
 
 # ---------------------------------------------------------------------------#
-async def assign_role_by_user_id(user_id: str, role_name: str):
+async def assign_role_by_user_id(user_id: str, role_name: str = "DEFAULT"):
     """
     Assigns a role to a user by their user ID.
     """
@@ -87,11 +87,11 @@ async def assign_role_by_user_id(user_id: str, role_name: str):
         log.error("Unknown role error: %s", res)
         raise ValueError(f"Unknown role: {role_name}")
     if res.did_user_already_have_role:
-        log.info(f'User {user_id} already had "user" role')
+        log.info(f'User {user_id} already had {role_name} role')
     else:
         log.info(
-            f'User {user_id} was assigned "user" role. Assigned permissions:'
-            f" {await get_permissions_for_role(role_name)}"
+            f'User {user_id} was assigned {role_name} role. Assigned permissions:'
+            f" {(await get_permissions_for_role(role_name)).permissions}"
         )
 
 
