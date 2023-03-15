@@ -48,12 +48,12 @@ class SocialNetwork(BaseModel):
 class Profile(Document):
     # TODO decide if a handle would be appropriate
     # TODO include activity status?
-    name: str
+    supertokensId: str
     # TODO encode
     # picture: Image
-    
-    supertokensId: str
 
+    name: str
+    email: str
     description: str
 
     degreeLevel: str
@@ -81,7 +81,9 @@ class Profile(Document):
     class Config:
         schema_extra = {
             "example": {
+                "supertokensId": "dummy_supertokens_id",
                 "name": "TUM.ai Example Member",
+                "email": "member@tum-ai.com",
                 "description": "This is an example profile",
                 "degreeLevel": "Bachelors",
                 "degreeName": "Computer Science",
@@ -89,7 +91,7 @@ class Profile(Document):
                 "university": "TUM",
                 "currentJob": "AppliedAI AI Engineer",
                 "department": Department.DEV,
-                "role": Role.TEAMLEAD,
+                "role": Role.MEMBER,
                 "previousDepartments": [Department.IND],
                 "joinedBatch": datetime(2022, 1, 1),
                 "involvedProjects": ["TUM.ai Space"],
