@@ -197,7 +197,7 @@ function NavBarMobile() {
 				</button>
 			</div>
 			{active && (
-				<div className='slide-down absolute z-0 pt-20 bg-gradient-to-b from-gray-100 to-white dark:from-black dark:to-gray-900 p-4 rounded-b-lg flex flex-col space-y-4 justify-between items-center w-full'>
+				<div className='slide-down absolute z-0 pt-20 bg-gradient-to-b from-gray-100 to-white dark:from-black dark:to-gray-900 p-4 rounded-b-lg flex flex-col space-y-4 justify-between items-center w-full shadow-lg'>
 					<Link
 						href={'/'}
 						className={
