@@ -64,7 +64,7 @@ const Profile = observer(() => {
 					</button>
 				)}
 			</div>
-			<div className='grid grid-cols-1 xl:grid-cols-2 gap-10 p-8 px-10 rounded-xl'>
+			<div className='grid grid-cols-1 xl:grid-cols-2 gap-10 p-8 px-4 lg:px-10 rounded-xl'>
 				{/* name + image */}
 				<div className=' xl:col-span-2 flex flex-col items-start max-w-90 space-y-6'>
 					{profile.picture ? (
@@ -81,7 +81,7 @@ const Profile = observer(() => {
 							/>
 						</div>
 					)}
-					<div className='flex space-x-4 items-end'>
+					<div className='flex flex-col space-y-4 lg:space-y-0 lg:flex-row lg:space-x-4 lg:items-end'>
 						<div className='font-thin text-6xl'>{profile.name}</div>
 						{profile.socialNetworks &&
 							profile.socialNetworks.map((sn) => (
