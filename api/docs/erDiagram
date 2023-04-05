@@ -1,0 +1,190 @@
+erDiagram
+    // ================================
+    %% PROFILE SERVICE
+    Department {
+        // managed fields
+        string handle PK "maxlength(20)"
+
+        // userchangable fields
+        string name "required"
+
+        // relationalfk fields
+        DepartmentMembershipList meberships "automatic back reference from DepartmentMembership"
+        ProjectList projects "automatic back reference from DepartmentMembership"
+    }
+    Profile {
+        // managed fields
+        int id PK "AUTOINCREMENT"
+        string supertokens_id "UNIQUE"
+
+        // const fields
+        datetime time_created "default=now"
+        datetime time_updated "onUpdate=now"
+
+        // userchangable fields
+        string email "required, maxlen(200)"
+        string phone "optional, maxlen(50)"
+        string first_name "required, maxlen(50)"
+        string last_name "required, maxlen(50)"
+        datetime birthday "optional"
+        string nationality "optional, maxlen(100)"
+        string description "optional, maxlen(300)"
+        image profile_picture  "TODO"
+
+        string degree_level "optional, maxlen(20)"
+        string degree_name "optional, maxlen(80)"
+        int degree_semester "optional"
+        datetime degree_semester_last_change_date "optional"
+        string university "optional, maxlen(160)"
+
+        // supervisorchangable fields
+        datetime time_joined "optional"
+
+        // relationalfk fields
+        SocialNetworkList social_networks "automatic back reference from SocialNetwork"
+        DepartmentMembershipList department_memberships "automatic back reference from DepartmentMembership"
+        ProjectMembershipList projects_memberships "automatic back reference from ProjectMembership"
+
+        // computed fields
+        int tum_ai_semester "optional, computed from date_joined"
+        string full_name "guaranteed, first_name last_name"
+    }
+    SocialNetwork {
+        // managed fields
+        int profile_id PK "+FK, references Profile"
+        SocialNetworkType type PK
+        Profile profile "required"
+
+        // userchangable fields
+        string handle "either link or handles required"
+        string lik "either link or handles required"
+    }
+    DepartmentMembership {
+        // managed fields
+        string department_handle PK "+FK, references Department"
+        int profile_id PK "+FK, references Profile"
+
+        // supervisorchangable fields
+        datetime from "optional"
+        datetime to "optional"
+    }
+    // ================================
+    %% PROJECT SERVICE
+    Project {
+        // managed fields
+        string handle PK
+        string name "required"
+
+        // userchangable fields
+        string description "optional"
+
+        // const fields
+        datetime time_created "default=now"
+        datetime time_updated "onUpdate=now"
+
+        // relationalfk fields
+        string department_handle FK "optional, references Department, ondelete=setnull"
+        ProjectMembershipList memberships FK "automatic back reference from ProjectMembership"
+    }
+    ProjectMembership {
+        // managed fields
+        string project_handle PK "+FK, references Project"
+        int profile_id PK "+FK, references Profile"
+
+        // supervisorchangable fields
+        datetime from "optional"
+        datetime to "optional"
+    }
+    // ================================
+    %% CERTIFICATION SERVICE
+    // 2 ways to issue certificates: 1) user request 2) auto/by supervisor
+
+    CertificationTemplate {
+        // managed fields
+        string handle PK "maxlength(20)"
+        
+        // supervisorchangable fields
+        // types: short,long,number
+        // e.g. "name:short,description:long,prize:short"
+        string csv_replacors_with_types "optional"
+    }
+    CertificationRequest {
+        // certification initiated by profile; rate limited (e.g. 3 per quarter)
+        // can only be deleted if not yet instantiated (no certificate object created, 
+        //  otherwise rate limit workaround)
+
+        // no disapproval and approval of 1 teamlead and 1 president needed
+        int id PK "AUTOINCREMENT"
+
+        // const fields
+        datetime time_created "default=now"
+        datetime time_updated "onUpdate=now"
+        string csv_replacors_values "optional"
+
+        // relationalfk fields
+        string profile_id FK "required, references Profile, ondelete=cascade"
+        string template_handle FK "required, references CertificationTemplate, ondelete=cascade"
+
+        Certificate certificate FK "default=null, automatic back reference from Certificate"
+        CertificationFeedbackList feedback FK "automatic back reference from CertificationFeedback"
+    }
+    CertificationFeedback {
+        int request_id PK "+FK, references CertificationRequest, ondelete=cascade"
+        int approver_id PK "+FK, references Profile, ondelete=cascade"
+        // one can remove disapproval by approving (updating this object)
+
+        // const fields
+        datetime time_created "default=now"
+        datetime time_updated "onUpdate=now"
+
+        // userchangable fields
+        bool approved "default=False"
+        string feedback "set iff not approved"
+
+        // relationalfk fields
+        string csv_replacors_values "optional"
+    }
+    Certicate {
+        // instatiated certificate
+        int id PK "AUTOINCREMENT"
+
+        // const fields
+        datetime time_created "default=now"
+        datetime time_updated "onUpdate=now"
+
+        string csv_replacors_values "optional"
+        string cdn_download_link "required, expires with cdn_expiry"
+        datetime cdn_expiry "default=now+1mth"
+
+        // relationalfk fields
+        string profile_id FK "required, references Profile, ondelete=cascade"
+        string issuer_id FK "optional, references Profile, ondelete=setnull, only for non requested certificates"
+        // template_handle needed here as there are Certificates without request
+        string template_handle FK "required, references CertificationTemplate, ondelete=cascade, assert equal request.template_handle"
+        string request FK "optional, references CertificationRequest, ondelete=setnull"
+    }
+
+    // ================================
+    %% relations
+
+    %% PROFILE SERVICE
+    Profile ||--o{ SocialNetwork: has
+
+    Profile ||--o| DepartmentMembership: has 
+    DepartmentMembership }o--|| Department: has
+
+    %% PROJECT SERVICE
+    Profile ||--o{ ProjectMembership: has 
+    ProjectMembership }o--|| Project: has
+    Project }o--|| Department: has
+
+    %% CERTIFICATION SERVICE
+    CertificationTemplate ||--o{ CertificationRequest: "used in"
+    // TODO: assert rate limit
+    Profile ||--o{ CertificationRequest: makes
+    CertificationRequest ||--o{ CertificationFeedback: "is given"
+
+    Certicate }o--|| Profile: "issued for"
+    Certicate }o--o| Profile: "issued by"
+    CertificationTemplate ||--o{ Certicate: "used for"
+    Certicate |o--o| CertificationRequest: "created from"
