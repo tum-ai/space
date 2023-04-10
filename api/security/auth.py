@@ -5,7 +5,7 @@ from config import CONFIG
 from database.profiles_connector import create_profile
 from main import log
 
-from profiles.models import Profile, Department, Role, SocialNetwork
+from profiles.db_models import Profile, Department, Role, SocialNetwork
 from security.roles import create_roles, assign_role_by_user_id
 from supertokens_python import InputAppInfo, SupertokensConfig, init
 from supertokens_python.recipe.thirdpartyemailpassword.interfaces import (

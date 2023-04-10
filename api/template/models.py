@@ -2,8 +2,6 @@ from typing import Optional, Any
 
 from pydantic import BaseModel
 
-# A library to ease the interaction with the MongoDB database: https://beanie-odm.dev/
-from beanie import Document
 from enum import Enum
 
 
@@ -14,7 +12,7 @@ class Language(Enum):
     ES = "es"
 
 
-class TemplateMessage(Document):
+class TemplateMessage:
     sender_full_name: str
     email: str
 
@@ -57,11 +55,10 @@ class UpdateTemplateMessage(BaseModel):
         template = "templates"
 
 
-class Response(BaseModel):
+class CustomResponse(BaseModel):
     status_code: int
     response_type: str
     description: str
-    data: Optional[Any]
 
     class Config:
         schema_extra = {
@@ -69,6 +66,56 @@ class Response(BaseModel):
                 "status_code": 200,
                 "response_type": "success",
                 "description": "Operation successful",
-                "data": "Sample data",
+                "data": "+++",
             }
         }
+
+
+class BaseResponse(BaseModel):
+    status_code: int
+    response_type: str
+    description: str
+
+    class Config:
+        schema_extra = {
+            "example": {
+                "status_code": 200,
+                "response_type": "success",
+                "description": "Operation successful",
+                "data": "undefined format...",
+            }
+        }
+
+
+class BaseResponse(BaseModel):
+    status_code: int
+    response_type: str
+    description: str
+
+    @classmethod
+    def schema_wrapper(cls, data):
+        return {
+            "example": {
+                "status_code": 200,
+                "response_type": "success",
+                "description": "Operation successful",
+                "data": data,
+            }
+        }
+
+    class Config:
+        schema_extra = {
+            "example": {
+                "status_code": 200,
+                "response_type": "success",
+                "description": "Operation successful",
+                "data": "undefined format",
+            }
+        }
+
+
+class Response(BaseResponse):
+    data: str
+
+    class Config:
+        schema_extra = BaseResponse.schema_wrapper("some data...")

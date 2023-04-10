@@ -1,14 +1,15 @@
 from fastapi import APIRouter, Body, Depends
 
-from supertokens_python.recipe.session.framework.fastapi import verify_session
-from supertokens_python.recipe.session import SessionContainer
-from supertokens_python.recipe.userroles.asyncio import get_roles_for_user
-
 from database.templates_connector import *
 from template.models import Response
 
 # All routes will have the prefix "/template"
 router = APIRouter()
+
+
+##############################################################################################
+# TODO UPDATE ALL FUNCTIONS BELOW! ###########################################################
+##############################################################################################
 
 
 # Example of a public route
@@ -30,15 +31,16 @@ async def list_all_templates():
 @router.post(
     "/", response_description="Add a new template message", response_model=Response
 )
-async def add_template(template: TemplateMessage = Body(...), session: SessionContainer = Depends(verify_session())):
-    new_template_message = await add_template_message(template)
+async def add_template(
+        # template: TemplateMessage = Body(...), session: SessionContainer = Depends(verify_session())
+):
+    # new_template_message = await add_template_message(template)
     return {
         "status_code": 200,
         "response_type": "success",
         "description": f"Template message added successfully by {session.get_user_id()}.",
-        "data": new_template_message,
+        # "data": new_template_message,
     }
-
 
 # Example of a protected route
 @router.get(
@@ -46,20 +48,22 @@ async def add_template(template: TemplateMessage = Body(...), session: SessionCo
     response_description="Get a single template message",
     response_model=Response,
 )
-async def show_template(id_: PydanticObjectId, session: SessionContainer = Depends(verify_session())):
-    template_message = await retrieve_template_message(id_)
-    if template_message:
-        return {
-            "status_code": 200,
-            "response_type": "success",
-            "description": f"Template message retrieved successfully. Requested by {session.get_user_id()}. User has"
-                           f" the following roles: {(await get_roles_for_user(session.get_user_id())).roles}",
-            "data": template_message,
-        }
+async def show_template(
+        # id_: PydanticObjectId, session: SessionContainer = Depends(verify_session())
+):
+    # template_message = await retrieve_template_message(id_)
+    # if template_message:
+    #     return {
+    #         "status_code": 200,
+    #         "response_type": "success",
+    #         "description": f"Template message retrieved successfully. Requested by {session.get_user_id()}. User has"
+    #                        f" the following roles: {(await get_roles_for_user(session.get_user_id())).roles}",
+    #         "data": template_message,
+    #     }
     return {
         "status_code": 404,
         "response_type": "error",
-        "description": f"Template message not found. Requested by {session.get_user_id()}",
+        "description": f"TODO adjust. Requested by {session.get_user_id()}",
         "data": None,
     }
 

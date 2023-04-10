@@ -1,10 +1,15 @@
 from typing import List, Union
 
-from beanie import PydanticObjectId
+# from beanie import PydanticObjectId
 
 from template.models import TemplateMessage
 
 templates_collection = TemplateMessage
+
+
+##############################################################################################
+# TODO UPDATE ALL FUNCTIONS BELOW! ###########################################################
+##############################################################################################
 
 
 async def retrieve_all_template_messages() -> List[TemplateMessage]:
@@ -13,13 +18,14 @@ async def retrieve_all_template_messages() -> List[TemplateMessage]:
 
 
 async def retrieve_template_message(
-    template_message_id: PydanticObjectId,
+    # template_message_id: PydanticObjectId,
 ) -> Union[bool, TemplateMessage]:
-    template_message = await templates_collection.get(template_message_id)
-    if template_message:
-        return template_message
-    else:
-        return False
+    # template_message = await templates_collection.get(template_message_id)
+    # if template_message:
+    #     return template_message
+    # else:
+    #     return False
+    return False
 
 
 async def add_template_message(
@@ -29,25 +35,30 @@ async def add_template_message(
     return template_message
 
 
-async def delete_template_message(template_message_id: PydanticObjectId) -> bool:
-    template_message = await templates_collection.get(template_message_id)
-    if template_message:
-        await template_message.delete()
-        return True
-    else:
-        return False
+async def delete_template_message(
+        # template_message_id: PydanticObjectId
+) -> bool:
+    # template_message = await templates_collection.get(template_message_id)
+    # if template_message:
+    #     await template_message.delete()
+    #     return True
+    # else:
+    #     return False
+    return False
 
 
 async def update_template_message_data(
-    template_message_id: PydanticObjectId, data: dict
+    # template_message_id: PydanticObjectId,
+    data: dict
 ) -> Union[bool, TemplateMessage]:
 
-    update_body = {k: v for k, v in data.items() if v is not None}
-    update_query = {"$set": {field: value for field, value in update_body.items()}}
-    template_message = await templates_collection.get(template_message_id)
-
-    if template_message:
-        await template_message.update(update_query)
-        return template_message
-    else:
-        return False
+    # update_body = {k: v for k, v in data.items() if v is not None}
+    # update_query = {"$set": {field: value for field, value in update_body.items()}}
+    # template_message = await templates_collection.get(template_message_id)
+    #
+    # if template_message:
+    #     await template_message.update(update_query)
+    #     return template_message
+    # else:
+    #     return False
+    return False

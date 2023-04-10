@@ -3,23 +3,20 @@ erDiagram
     %% PROFILE SERVICE
     Department {
         // managed fields
-        string handle PK "maxlength(20)"
+        string handle PK "maxlen(20)"
 
         // userchangable fields
-        string name "required"
+        string name "required, maxlen(80)"
+        string description "optional, maxlen(2048)"
 
         // relationalfk fields
-        DepartmentMembershipList meberships "automatic back reference from DepartmentMembership"
-        ProjectList projects "automatic back reference from DepartmentMembership"
+        DepartmentMembershipList memberships "automatic back reference from DepartmentMembership"
+        ProjectList projects "automatic back reference from Project"
     }
     Profile {
         // managed fields
         int id PK "AUTOINCREMENT"
-        string supertokens_id "UNIQUE"
-
-        // const fields
-        datetime time_created "default=now"
-        datetime time_updated "onUpdate=now"
+        string supertokens_id "optional, UNIQUE"
 
         // userchangable fields
         string email "required, maxlen(200)"
@@ -30,12 +27,17 @@ erDiagram
         string nationality "optional, maxlen(100)"
         string description "optional, maxlen(300)"
         image profile_picture  "TODO"
+        string activity_status "optional, maxlen(50)"
 
         string degree_level "optional, maxlen(20)"
         string degree_name "optional, maxlen(80)"
         int degree_semester "optional"
         datetime degree_semester_last_change_date "optional"
         string university "optional, maxlen(160)"
+
+        // format <> 
+        // escaping of control characters
+        string job_history "optional, csv encoding"
 
         // supervisorchangable fields
         datetime time_joined "optional"
@@ -45,7 +47,9 @@ erDiagram
         DepartmentMembershipList department_memberships "automatic back reference from DepartmentMembership"
         ProjectMembershipList projects_memberships "automatic back reference from ProjectMembership"
 
-        // computed fields
+        // computed/automated fields
+        datetime time_created "default=now"
+        datetime time_updated "onUpdate=now"
         int tum_ai_semester "optional, computed from date_joined"
         string full_name "guaranteed, first_name last_name"
     }
@@ -56,42 +60,46 @@ erDiagram
         Profile profile "required"
 
         // userchangable fields
-        string handle "either link or handles required"
-        string lik "either link or handles required"
+        string handle "either link or handles required, maxlen(40)"
+        string link "either link or handles required, maxlen(1024)"
     }
     DepartmentMembership {
         // managed fields
-        string department_handle PK "+FK, references Department"
+        string department_handle PK "+FK, references Department, maxlen(20)"
         int profile_id PK "+FK, references Profile"
 
         // supervisorchangable fields
-        datetime from "optional"
-        datetime to "optional"
+        string role "required, default=member"
+        datetime time_from "optional"
+        datetime time_to "optional"
     }
     // ================================
     %% PROJECT SERVICE
     Project {
         // managed fields
-        string handle PK
-        string name "required"
+        string handle PK "maxlength(20)"
 
         // userchangable fields
-        string description "optional"
+        string name "required, maxlen(80)"
+        string description "optional, maxlen(2048)"
 
         // const fields
-        datetime time_created "default=now"
-        datetime time_updated "onUpdate=now"
 
         // relationalfk fields
-        string department_handle FK "optional, references Department, ondelete=setnull"
+        string department_handle FK "optional, references Department, ondelete=setnull, maxlength(20)"
         ProjectMembershipList memberships FK "automatic back reference from ProjectMembership"
+
+        // computed/automated fields
+        datetime time_created "default=now"
+        datetime time_updated "onUpdate=now"
     }
     ProjectMembership {
         // managed fields
-        string project_handle PK "+FK, references Project"
+        string project_handle PK "+FK, references Project, maxlength(20)"
         int profile_id PK "+FK, references Profile"
 
         // supervisorchangable fields
+        string role "required, default=member"
         datetime from "optional"
         datetime to "optional"
     }
@@ -101,7 +109,7 @@ erDiagram
 
     CertificationTemplate {
         // managed fields
-        string handle PK "maxlength(20)"
+        string handle PK "maxlen(20)"
         
         // supervisorchangable fields
         // types: short,long,number
@@ -117,51 +125,54 @@ erDiagram
         int id PK "AUTOINCREMENT"
 
         // const fields
-        datetime time_created "default=now"
-        datetime time_updated "onUpdate=now"
         string csv_replacors_values "optional"
 
         // relationalfk fields
-        string profile_id FK "required, references Profile, ondelete=cascade"
-        string template_handle FK "required, references CertificationTemplate, ondelete=cascade"
+        int profile_id FK "required, references Profile, ondelete=cascade"
+        string template_handle FK "required, references CertificationTemplate, ondelete=cascade, maxlength(20)"
 
         Certificate certificate FK "default=null, automatic back reference from Certificate"
         CertificationFeedbackList feedback FK "automatic back reference from CertificationFeedback"
+
+        // computed/automated fields
+        datetime time_created "default=now"
+        datetime time_updated "onUpdate=now"
     }
     CertificationFeedback {
         int request_id PK "+FK, references CertificationRequest, ondelete=cascade"
         int approver_id PK "+FK, references Profile, ondelete=cascade"
         // one can remove disapproval by approving (updating this object)
 
-        // const fields
-        datetime time_created "default=now"
-        datetime time_updated "onUpdate=now"
-
         // userchangable fields
         bool approved "default=False"
-        string feedback "set iff not approved"
+        string feedback "set iff not approved, maxlength(400)"
 
         // relationalfk fields
         string csv_replacors_values "optional"
+
+        // computed/automated fields
+        datetime time_created "default=now"
+        datetime time_updated "onUpdate=now"
     }
     Certicate {
         // instatiated certificate
         int id PK "AUTOINCREMENT"
 
         // const fields
-        datetime time_created "default=now"
-        datetime time_updated "onUpdate=now"
-
         string csv_replacors_values "optional"
-        string cdn_download_link "required, expires with cdn_expiry"
+        string cdn_download_link "required, expires with cdn_expiry, maxlength(2048)"
         datetime cdn_expiry "default=now+1mth"
 
         // relationalfk fields
-        string profile_id FK "required, references Profile, ondelete=cascade"
-        string issuer_id FK "optional, references Profile, ondelete=setnull, only for non requested certificates"
+        int profile_id FK "required, references Profile, ondelete=cascade"
+        int issuer_id FK "optional, references Profile, ondelete=setnull, only for non requested certificates"
         // template_handle needed here as there are Certificates without request
-        string template_handle FK "required, references CertificationTemplate, ondelete=cascade, assert equal request.template_handle"
-        string request FK "optional, references CertificationRequest, ondelete=setnull"
+        string template_handle FK "required, references CertificationTemplate, ondelete=cascade, assert equal request.template_handle, maxlength(20)"
+        int request FK "optional, references CertificationRequest, ondelete=setnull"
+
+        // computed/automated fields
+        datetime time_created "default=now"
+        datetime time_updated "onUpdate=now"
     }
 
     // ================================
