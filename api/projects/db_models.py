@@ -4,7 +4,7 @@ from typing import Optional, List
 from sqlalchemy import String, ForeignKey, Column, DateTime, func, Enum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from database.models import Base
+from database.db_models import Base
 from profiles.db_models import MixinAsDict, Profile
 from profiles.db_models import Department
 
@@ -47,6 +47,23 @@ class ProjectRole(enum.Enum):
 
 class ProjectMembership(MixinAsDict, Base):
     """database relation"""
+    __tablename__ = 'project_membership'
+
+    # [MANAGED FIELDS] #################################################################################################
+    profile_id: Mapped[int] = mapped_column(ForeignKey(Profile.id), primary_key=True)
+    project_handle: Mapped[str] = mapped_column(ForeignKey(Project.handle), primary_key=True)
+
+    # [SUPERVISOR CHANGEABLE FIELDS] ###################################################################################
+    role = Column(Enum(ProjectRole), nullable=False)
+    time_from = Column(DateTime, nullable=True)
+    time_to = Column(DateTime, nullable=True)
+
+    # [RELATIONAL FK FIELDS] ###########################################################################################
+    profile: Mapped["Profile"] = relationship("Profile", back_populates="project_memberships")
+    project: Mapped["Project"] = relationship("Project", back_populates="memberships")
+
+    def __repr__(self) -> str:
+        return f"ProjectMembership(profile_id={self.profile_id}, project_handle={self.project_handle})"
     __tablename__ = 'project_membership'
 
     # [MANAGED FIELDS] #################################################################################################

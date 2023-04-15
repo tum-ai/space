@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 
-from projects.models import Base
+from projects.db_models import Base
 
 from sqlalchemy import create_engine, Engine
 from sqlalchemy.orm import scoped_session, sessionmaker

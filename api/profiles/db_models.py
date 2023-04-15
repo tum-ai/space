@@ -13,12 +13,7 @@ from sqlalchemy.orm import relationship
 import enum
 from sqlalchemy import Enum
 
-from database.models import Base
-
-
-class MixinAsDict:
-    def as_dict(self):
-        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+from database.db_models import Base, MixinAsDict
 
 
 class Department(MixinAsDict, Base):
@@ -137,6 +132,17 @@ class Profile(MixinAsDict, Base):
     # back reference from ProjectMembership
     project_memberships: Mapped[List["ProjectMembership"]] = relationship(
         "ProjectMembership", back_populates="profile")
+
+    # back reference from CertificationRequest
+    certification_requests: Mapped[List["CertificationRequest"]] = relationship("CertificationRequest", back_populates="profile")
+
+    # back reference from Certificate
+    received_certificates: Mapped[List["Certificate"]] = relationship(
+        "Certificate", back_populates="profile", foreign_keys='Certificate.profile_id')
+
+    # back reference from Certificate
+    issued_certificates: Mapped[List["Certificate"]] = relationship(
+        "Certificate", back_populates="issuer", foreign_keys='Certificate.issuer_id')
 
     # [AUTOMATIC/COMPUTED FIELDS] ######################################################################################
     time_created = Column(DateTime(timezone=True), server_default=func.now())

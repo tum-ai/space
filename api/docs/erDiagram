@@ -115,6 +115,9 @@ erDiagram
         // types: short,long,number
         // e.g. "name:short,description:long,prize:short"
         string csv_replacors_with_types "optional"
+
+        // relationalfk fields
+        CertificationRequestList certification_requests FK "automatic back reference from CertificationRequest"
     }
     CertificationRequest {
         // certification initiated by profile; rate limited (e.g. 3 per quarter)
@@ -129,7 +132,10 @@ erDiagram
 
         // relationalfk fields
         int profile_id FK "required, references Profile, ondelete=cascade"
+        Profile profile FK "required, references Profile"
+
         string template_handle FK "required, references CertificationTemplate, ondelete=cascade, maxlength(20)"
+        CertificationFeedbackList feedback FK "automatic back reference from CertificationFeedback"
 
         Certificate certificate FK "default=null, automatic back reference from Certificate"
         CertificationFeedbackList feedback FK "automatic back reference from CertificationFeedback"
@@ -145,9 +151,7 @@ erDiagram
 
         // userchangable fields
         bool approved "default=False"
-        string feedback "set iff not approved, maxlength(400)"
-
-        // relationalfk fields
+        string feedback_text "set iff not approved, maxlength(400)"
         string csv_replacors_values "optional"
 
         // computed/automated fields
@@ -165,10 +169,17 @@ erDiagram
 
         // relationalfk fields
         int profile_id FK "required, references Profile, ondelete=cascade"
+        Profile profile "required"
+
         int issuer_id FK "optional, references Profile, ondelete=setnull, only for non requested certificates"
+        Profile profile "required"
+
         // template_handle needed here as there are Certificates without request
         string template_handle FK "required, references CertificationTemplate, ondelete=cascade, assert equal request.template_handle, maxlength(20)"
-        int request FK "optional, references CertificationRequest, ondelete=setnull"
+        CertificationTemplate template "required"
+
+        int request_id FK "optional, references CertificationRequest, ondelete=setnull"
+        CertificationRequest request "optional"
 
         // computed/automated fields
         datetime time_created "default=now"

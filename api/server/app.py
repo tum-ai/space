@@ -11,6 +11,7 @@ from starlette.middleware.cors import CORSMiddleware
 from supertokens_python import get_all_cors_headers
 from supertokens_python.framework.fastapi import get_middleware
 from template.routes import router as TemplateRouter
+from certification.routes import router as CertificationRouter
 
 log.warn("BUGFIX. Sleeping 4 seconds for supertokens to finish starting up as Docker doesn't wait long enough by "
          "default!")
@@ -65,5 +66,8 @@ async def root():
 
 # Include here all the routes from the different modules
 app.include_router(TemplateRouter, prefix="/template", tags=["Template"])
+
+app.include_router(CertificationRouter, prefix="/certification", tags=["Certification"])
+
 # Prefix defined in router
 app.include_router(ProfilesRouter, tags=["Profile"])

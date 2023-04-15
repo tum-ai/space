@@ -78,6 +78,36 @@ services:
             timeout: 5s
             retries: 5
 
+    # [CERTIFICATION SERVICE] #######################################################
+    
+    # serve static media files (for ceritification template rendering)
+    space.files:
+        image: httpd:latest
+        container_name: space.files
+        hostname: space.files
+        ports:
+            - '9990:80'
+        volumes:
+            - ./.fileserver:/usr/local/apache2/htdocs
+        networks:
+            - backend-net
+    
+    certification-api:
+        image: tum-ai-space-certification-api
+        build: ./certification-api
+        restart: unless-stopped
+        hostname: certify.tum-ai-dev.com
+        container_name: certification-api
+        ports:  # TODO remove in production
+          - 3008:80
+        depends_on:
+            - space.files
+        volumes:
+            - ./certification-api/src:/app/src/
+            - ./certification-api/templates:/app/templates/
+        networks:
+            - backend-net
+
     # [BACKEND API] #######################################################
     tum-ai-space-api:
         image: tum-ai-space-api
@@ -91,7 +121,7 @@ services:
             - ./api/:/code
             # - ./entrypoint.sh:/data/entrypoint.sh
         # ports: # enable enable this for debugging!
-        # TODO remove on production
+        # TODO remove in production
         # - 15900:15900
         depends_on:
             # - mongo-express
