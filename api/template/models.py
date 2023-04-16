@@ -115,7 +115,7 @@ class BaseResponse(BaseModel):
 
 
 class Response(BaseResponse):
-    data: str
+    data: Optional[str]
 
     class Config:
-        schema_extra = BaseResponse.schema_wrapper("some data...")
+        schema_extra = BaseResponse.schema_wrapper(None)

@@ -1,10 +1,11 @@
 import datetime
 from typing import List, Union
 
+from sqlalchemy import delete, Engine
 from sqlalchemy.orm import Session
 
-from profiles.api_models import ProfileInCreate, SocialNetworkIn
-from profiles.db_models import Department, Profile, Role, SocialNetwork  # PublicProfile
+from profiles.api_models import ProfileInCreate, SocialNetworkIn, ProfileInUpdate
+from profiles.db_models import Department, Profile, Role, SocialNetwork, DepartmentMembership  # PublicProfile
 
 
 # department operations ################################################################################################
@@ -15,7 +16,7 @@ def list_db_departments(sql_engine) -> List[Department]:
         return db_departments
 
 
-def retrieve_db_department(sql_engine, handle: str) -> Department:
+def retrieve_db_department(sql_engine: Engine, handle: str) -> Department:
     with Session(sql_engine) as db_session:
         db_model = db_session.query(Department).get(handle)
         if not db_model:
@@ -26,8 +27,8 @@ def retrieve_db_department(sql_engine, handle: str) -> Department:
 # profile operations ###################################################################################################
 
 def create_db_profiles(
-    sql_engine,
-    new_profiles: List[ProfileInCreate],
+        sql_engine: Engine,
+        new_profiles: List[ProfileInCreate],
 ) -> List[Profile]:
     created_db_profiles = []
     with Session(sql_engine) as db_session:
@@ -57,11 +58,11 @@ def create_db_profiles(
 
             for sn in new_profile.social_networks:
                 db_profile.social_networks.append(SocialNetwork(
-                        profile_id=db_profile.id,
-                        type=sn.type,
-                        handle=sn.handle if sn.handle and len(sn.handle) > 0 else None,
-                        link=sn.link if sn.link and len(sn.link) > 0 else None
-                    ))
+                    profile_id=db_profile.id,
+                    type=sn.type,
+                    handle=sn.handle if sn.handle and len(sn.handle) > 0 else None,
+                    link=sn.link if sn.link and len(sn.link) > 0 else None
+                ))
             created_db_profiles.append(db_profile)
 
         db_session.commit()
@@ -77,6 +78,159 @@ def create_db_profiles(
 
     return created_db_profiles
 
+
+def update_db_profile(
+        sql_engine: Engine,
+        profile_id: int,
+        profile_to_update: ProfileInUpdate,
+) -> List[Profile]:
+    with Session(sql_engine) as db_session:
+        job_history_encoded = Profile.encode_job_history(profile_to_update.job_history)
+
+        db_profile: Profile = db_session.query(Profile).get(profile_id)
+
+        db_profile.email = profile_to_update.email
+        db_profile.phone = profile_to_update.phone
+
+        db_profile.first_name = profile_to_update.first_name
+        db_profile.last_name = profile_to_update.last_name
+        db_profile.birthday = profile_to_update.birthday
+        db_profile.nationality = profile_to_update.nationality
+        db_profile.description = profile_to_update.description
+
+        db_profile.activity_status = profile_to_update.activity_status
+
+        db_profile.degree_level = profile_to_update.degree_level
+        db_profile.degree_name = profile_to_update.degree_name
+
+        if db_profile.degree_semester != profile_to_update.degree_semester:
+            db_profile.degree_semester = profile_to_update.degree_semester
+            db_profile.degree_semester_last_change_date = datetime.datetime.now()
+
+        db_profile.university = profile_to_update.university
+        db_profile.job_history = job_history_encoded
+
+        db_profile.time_joined = profile_to_update.time_joined
+
+        # social network change computation:
+        # - pk of social network: profile_id (fixed here), type
+        # build hashset by type (find removed, changed & added social networks)
+        old_sn_types = {sn.type: sn for sn in db_profile.social_networks}
+        new_sn_types = {sn.type: sn for sn in profile_to_update.social_networks}
+
+        # process all old social networks (remove, update, leave)
+        for old_k in old_sn_types:
+            old_sn: SocialNetwork = old_sn_types[old_k]
+            if old_k in new_sn_types:
+                # still in use: detect changes
+                new_sn: SocialNetworkIn = new_sn_types[old_k]
+                if (old_sn.link != new_sn.link) or (old_sn.handle != new_sn.handle):
+                    # values changed
+                    # old_sn.link = new_sn.link
+                    old_sn.handle = new_sn.handle
+                    db_session.add(old_sn)
+                # else: nothing changed, leave
+
+                # remove from new_sn_types, so that new items remain in dict
+                new_sn_types.pop(old_k)
+
+            else:  # not in use anymore -> delete
+                db_session.delete(old_sn)
+
+        # create objects for new social networks
+        for new_k in new_sn_types:
+            sn: SocialNetworkIn = new_sn_types[new_k]
+            db_profile.social_networks.append(
+                SocialNetwork(
+                    profile_id=db_profile.id,
+                    type=new_k,
+                    handle=sn.handle if sn.handle and len(sn.handle) > 0 else None,
+                    link=sn.link if sn.link and len(sn.link) > 0 else None
+                )
+            )
+
+        db_session.add(db_profile)
+        db_session.commit()
+
+        # asserts presence of id, triggers a db refresh
+        if not db_profile.id:
+            raise KeyError
+
+        for sn in db_profile.social_networks:
+            if not sn.profile_id:
+                raise KeyError
+
+    return db_profile
+
+
+def list_db_profiles(sql_engine: Engine, page: int, page_size: int) -> List[Profile]:
+    with Session(sql_engine) as db_session:
+        db_profiles: List[Profile] = db_session \
+            .query(Profile) \
+            .offset(page_size * (page - 1)) \
+            .limit(page_size).all()
+
+        # asserts presence of id, triggers a db refresh
+        for db_profile in db_profiles:
+            if not db_profile.id:
+                raise KeyError
+
+            for sn in db_profile.social_networks:
+                if not sn.profile_id:
+                    raise KeyError
+
+        return db_profiles
+
+
+def retrieve_db_profile(sql_engine: Engine, profile_id: str) -> Profile:
+    with Session(sql_engine) as db_session:
+        db_model = db_session.query(Profile).get(profile_id)
+
+        # asserts presence values
+        if not db_model:
+            raise KeyError
+
+        for sn in db_model.social_networks:
+            if not sn.profile_id:
+                raise KeyError
+
+        return db_model
+
+
+def retrieve_db_profile_by_supertokens_id(sql_engine: Engine, supertokens_id: str, ) -> Profile:
+    with Session(sql_engine) as db_session:
+        db_model = db_session.query(Profile).filter(Profile.supertokens_id == supertokens_id).one()
+
+        # asserts presence values
+        if not db_model:
+            raise KeyError
+
+        for sn in db_model.social_networks:
+            if not sn.profile_id:
+                raise KeyError
+
+        return db_model
+
+
+def delete_db_profiles(sql_engine: Engine, profile_ids: List[int]) -> List[int]:
+    with Session(sql_engine) as db_session:
+        stmt = delete(Profile).where(Profile.id.in_(profile_ids))
+        db_session.execute(stmt)
+        db_session.commit()
+        return profile_ids
+    return []
+
+
+def delete_db_profile(sql_engine: Engine, profile_id: int) -> bool:
+    print(f"deleting {profile_id}!")
+    with Session(sql_engine) as db_session:
+        stmt = delete(Profile).where(Profile.id == profile_id)
+        db_session.execute(stmt)
+        db_session.commit()
+        return True
+    return False
+
+
 ##############################################################################################
 # TODO UPDATE ALL FUNCTIONS BELOW! ###########################################################
 ##############################################################################################
@@ -85,6 +239,8 @@ async def create_profile(
         new_profile: Profile,
 ) -> Profile:
     pass
+
+
 # TODO
 
 
@@ -98,19 +254,6 @@ async def retrieve_profile(
     # else:
     #     return False
     return False
-
-
-# TODO
-def retrieve_profile_by_supertokens_id(
-        supertokensId: str,
-) -> Union[bool, Profile]:
-    profile = Profile.find_one(
-        Profile.supertokensId == supertokensId,
-    )
-    if profile:
-        return profile
-    else:
-        return False
 
 
 # TODO
@@ -146,3 +289,38 @@ async def retrieve_public_profiles(
     # return profiles
     return []
 
+
+### TODO: debug #########
+def debug_db_query(sql_engine):
+    with Session(sql_engine) as db_session:
+        # db_models = db_session\
+        #     .query(DepartmentMembership)\
+        #     .where(
+        #         # DepartmentMembership.department_handle == 'dev'
+        #         (DepartmentMembership.time_from <= datetime.datetime.now())
+        #         &
+        #         ((DepartmentMembership.time_to >= datetime.datetime.now()) | (DepartmentMembership.time_to is None))
+        #     ) \
+        #     .limit(100)\
+        #     .all()
+
+        # print("")
+        obj = DepartmentMembership(
+            role=Role.TEAMLEAD,
+            time_from=datetime.datetime.now() - datetime.timedelta(days=180),
+            time_to=datetime.datetime.now() + datetime.timedelta(days=180),
+            profile_id=42,
+            department_handle='dev'
+        )
+        db_session.add(obj)
+        db_session.commit()
+
+    # return ""
+
+    # .id.label('membership_id'),
+    # DepartmentMembership.role,
+    # DepartmentMembership.time_from,
+    # DepartmentMembership.time_to,
+    # DepartmentMembership.profile_id,
+    # DepartmentMembership.department_handle
+    # ],).select_from(DepartmentMembership)

@@ -2,19 +2,18 @@ from typing import List, Annotated
 
 from fastapi import APIRouter, Depends, Body
 from fastapi import Request
-from sqlalchemy.orm import Session
 from supertokens_python.recipe.session import SessionContainer
-from supertokens_python.recipe.session.exceptions import (
-    ClaimValidationError, raise_invalid_claims_exception)
 from supertokens_python.recipe.session.framework.fastapi import verify_session
-from supertokens_python.recipe.userroles import PermissionClaim, UserRoleClaim
-from supertokens_python.recipe.userroles.asyncio import (add_role_to_user)
 
-from database.profiles_connector import (retrieve_profile_by_supertokens_id, list_db_departments, create_db_profiles,
-                                         retrieve_db_department)
-from profiles.api_models import DepartmentOut, ProfileInCreate, ProfileOut
+from database.profiles_connector import (list_db_departments, create_db_profiles,
+                                         retrieve_db_department, list_db_profiles, debug_db_query, retrieve_db_profile,
+                                         delete_db_profiles, delete_db_profile, retrieve_db_profile_by_supertokens_id,
+                                         update_db_profile)
+from profiles.api_models import DepartmentOut, ProfileInCreate, ProfileOut, ProfileOutPublic, ProfileInUpdate
+from profiles.db_models import Profile
 from template.models import Response, BaseResponse
 from utils.error_handlers import async_error_handlers
+from utils.paging import enable_paging
 
 router = APIRouter()
 
@@ -72,6 +71,7 @@ async def get_department(request: Request, handle: str) -> ResponseDepartment:
 
 
 # profile operations ###################################################################################################
+# TODO: department memberships to profile responses
 
 class ResponseProfileList(BaseResponse):
     data: List[ProfileOut]
@@ -92,7 +92,7 @@ class ResponseProfileList(BaseResponse):
 @async_error_handlers
 async def add_profiles(
         request: Request,
-        data: Annotated[ProfileInCreate, Body(embed=True)],
+        data: Annotated[List[ProfileInCreate], Body(embed=True)],
         # session: SessionContainer = Depends(verify_session())
 ):
     # TODO test and enable the commented out code
@@ -102,13 +102,264 @@ async def add_profiles(
     #         ClaimValidationError(UserRoleClaim.key, None)])
     # else:
 
-    new_db_profiles = create_db_profiles(request.app.state.sql_engine, [data])
+    new_db_profiles = create_db_profiles(request.app.state.sql_engine, data)
     new_profiles = [ProfileOut.from_db_model(p) for p in new_db_profiles]
     return {
-        "status_code": 200,
+        "status_code": 201,
         "response_type": "success",
         "description": f"Created profiles",
         "data": new_profiles,
+    }
+
+
+class ResponseProfile(BaseResponse):
+    data: ProfileOut
+
+    class Config:
+        schema_extra = BaseResponse.schema_wrapper(ProfileOut.dummy())
+
+
+@router.post(
+    "/profile/",
+    response_description="Add profile",
+    response_model=ResponseProfile
+)
+@async_error_handlers
+async def add_profile(
+        request: Request,
+        data: Annotated[ProfileInCreate, Body(embed=True)],
+        # session: SessionContainer = Depends(verify_session())
+) -> ResponseProfile:
+    # TODO test and enable the commented out code
+    # roles = await session.get_claim_value(UserRoleClaim)
+    # if roles is None or "ADMIN" not in roles:
+    #     raise_invalid_claims_exception("User is not an admin", [
+    #         ClaimValidationError(UserRoleClaim.key, None)])
+    # else:
+
+    new_db_profile = create_db_profiles(request.app.state.sql_engine, [data])
+
+    if len(new_db_profile) < 1:
+        return {
+            "status_code": 500,
+            "response_type": "internal error",
+            "description": f"Profile could not be created!",
+            "data": None,
+        }
+
+    new_profile = ProfileOut.from_db_model(new_db_profile[0])
+    return {
+        "status_code": 201,
+        "response_type": "success",
+        "description": f"Created profile",
+        "data": new_profile,
+    }
+
+
+@router.get(
+    "/profiles/admin",
+    response_description="List all profiles, paging support",
+    response_model=ResponseProfileList
+)
+@async_error_handlers
+@enable_paging(max_page_size=100)
+def list_profiles(request: Request, page: int = 1, page_size: int = 100) -> ResponseProfileList:
+    # TODO authorization: only presidents / team leads
+    db_profiles = list_db_profiles(request.app.state.sql_engine, page, page_size)
+    out_profiles: List[ProfileOut] = [
+        ProfileOut.from_db_model(p) for p in db_profiles
+    ]
+    return {
+        "status_code": 200,
+        "response_type": "success",
+        "description": "Admin Profile list successfully received",
+        "data": out_profiles
+    }
+
+
+class ResponsePublicProfileList(BaseResponse):
+    data: List[ProfileOutPublic]
+
+    class Config:
+        schema_extra = BaseResponse.schema_wrapper([
+            ProfileOutPublic.dummy(),
+            ProfileOutPublic.dummy(),
+        ])
+
+
+@router.get(
+    "/profiles/",
+    response_description="List all profiles, paging support",
+    response_model=ResponsePublicProfileList
+)
+@async_error_handlers
+@enable_paging(max_page_size=100)
+def list_public_profiles(request: Request, page: int = 1, page_size: int = 100) -> ResponsePublicProfileList:
+    db_profiles = list_db_profiles(request.app.state.sql_engine, page, page_size)
+    out_public_profiles: List[ProfileOutPublic] = [
+        ProfileOutPublic.from_db_model(p) for p in db_profiles
+    ]
+    return {
+        "status_code": 200,
+        "response_type": "success",
+        "description": "PublicProfile list successfully received",
+        "data": out_public_profiles
+    }
+
+
+class ResponsePublicProfile(BaseResponse):
+    data: ProfileOutPublic
+
+    class Config:
+        schema_extra = BaseResponse.schema_wrapper(ProfileOutPublic.dummy())
+
+
+@router.get(
+    "/profile/{profile_id}",
+    response_description="Get a public profile by its profile_id",
+    response_model=ResponsePublicProfile
+)
+@async_error_handlers
+async def get_public_profile(request: Request, profile_id: str) -> ResponsePublicProfile:
+    db_model = retrieve_db_profile(request.app.state.sql_engine, profile_id)
+    return {
+        "status_code": 200,
+        "response_type": "success",
+        "description": "Retrieved public profile successfully",
+        "data": ProfileOutPublic.from_db_model(db_model)
+    }
+
+
+@router.get(
+    "/profile/{profile_id}/admin",
+    response_description="Get a profile by its profile_id",
+    response_model=ResponseProfile
+)
+@async_error_handlers
+async def get_profile(request: Request, profile_id: str) -> ResponseProfile:
+    # TODO access control
+    db_model = retrieve_db_profile(request.app.state.sql_engine, profile_id)
+    return {
+        "status_code": 200,
+        "response_type": "success",
+        "description": "Retrieved profile successfully",
+        "data": ProfileOut.from_db_model(db_model)
+    }
+
+
+# TODO test & logic to init profile with supertokens id
+@router.get(
+    "/profile/",
+    response_description="Retrieve the complete profile of the user currently logged in with SuperTokens",
+    response_model=ProfileOut,
+)
+async def show_current_profile(request: Request, session: SessionContainer = Depends(verify_session())) -> ProfileOut:
+    supertokens_user_id = session.get_user_id()
+    db_profile: Profile = retrieve_db_profile_by_supertokens_id(request.app.state.sql_engine, supertokens_user_id)
+    profile: ProfileOut = ProfileOut.from_db_model(db_profile)
+    return {
+        "status_code": 200,
+        "response_type": "success",
+        "description": "Complete internally visible Profile",
+        "data": profile,
+    }
+
+
+class ResponseDeletedProfileList(BaseResponse):
+    """data contains ids of deleted profiles"""
+    data: List[int]
+
+    class Config:
+        schema_extra = BaseResponse.schema_wrapper([43, 32])
+
+
+@router.delete(
+    "/profiles/",
+    response_description="delete all profiles",
+    response_model=ResponseDeletedProfileList
+)
+@async_error_handlers
+async def delete_profiles(request: Request, profile_ids: List[int]) -> ResponseDeletedProfileList:
+    # TODO authorization
+    deleted_profiles = delete_db_profiles(request.app.state.sql_engine, profile_ids)
+    return {
+        "status_code": 200,
+        "response_type": "success",
+        "description": "Profile list successfully deleted",
+        "data": deleted_profiles
+    }
+
+
+@router.delete(
+    "/profile/{profile_id}",
+    response_description="delete a profile",
+    response_model=Response
+)
+@async_error_handlers
+async def delete_profile(request: Request, profile_id: int) -> Response:
+    # TODO authorization (myself or admin)
+    if not delete_db_profile(request.app.state.sql_engine, profile_id):
+        return {
+            "status_code": 400,
+            "response_type": "error",
+            "description": "deletion was not possible!",
+        }
+    return {
+        "status_code": 200,
+        "response_type": "success",
+        "description": "Profile successfully deleted",
+    }
+
+
+@router.patch(
+    "/profile/{profile_id}",
+    response_description="Update profile",
+    response_model=ResponseProfile
+)
+@async_error_handlers
+async def update_profile(
+        request: Request,
+        profile_id: int,
+        data: Annotated[ProfileInUpdate, Body(embed=True)],
+        # session: SessionContainer = Depends(verify_session())
+) -> ResponseProfile:
+    # TODO authorization
+    updated_db_profile = update_db_profile(
+        request.app.state.sql_engine, profile_id, data)
+    # TODO: handle 404
+    udpated_profile = ProfileOut.from_db_model(updated_db_profile)
+    return {
+        "status_code": 201,
+        "response_type": "success",
+        "description": f"Updated profile",
+        "data": udpated_profile,
+    }
+
+
+# TODO test endpoint
+@router.patch(
+    "/profile/me",
+    response_description="Update logged in users profile",
+    response_model=ResponseProfile
+)
+@async_error_handlers
+async def update_current_profile(
+        request: Request,
+        profile_id: int,
+        data: Annotated[ProfileInUpdate, Body(embed=True)],
+        session: SessionContainer = Depends(verify_session())
+) -> ResponseProfile:
+    supertokens_user_id = session.get_user_id()
+    db_profile: Profile = retrieve_db_profile_by_supertokens_id(request.app.state.sql_engine, supertokens_user_id)
+    updated_db_profile = update_db_profile(
+        request.app.state.sql_engine, db_profile.id, data)
+    # TODO: handle 404
+    udpated_profile = ProfileOut.from_db_model(updated_db_profile)
+    return {
+        "status_code": 201,
+        "response_type": "success",
+        "description": f"Updated current profile",
+        "data": udpated_profile,
     }
 
 
@@ -116,247 +367,66 @@ async def add_profiles(
 # TODO UPDATE ALL FUNCTIONS BELOW! ###########################################################
 ##############################################################################################
 
-
-@router.get(
-    "/department/{handle}",
-    response_description="Get a department by its handle",
-    response_model=ResponseDepartment
-)
-@async_error_handlers
-async def get_department(request: Request, handle: str) -> ResponseDepartment:
-    with Session(request.app.state.sql_engine) as session:
-        out_department: DepartmentOut = DepartmentOut.from_handle(session, handle)
-        return {
-            "status_code": 200,
-            "response_type": "success",
-            "description": "Created...",
-            "data": out_department
-        }
-
-
-# ######################################################################################################################
-
-@router.get(
-    "/profiles/",
-    response_description="List all profiles of department and role",
-    response_model=Response
-)
-async def list_public_profiles(
-        department_handle: str,
-        role: str = None
-):
-    # profiles = await retrieve_public_profiles(department=department, role=role)
-    return {
-        "status_code": 200,
-        "response_type": "success",
-        "description": "List of public profiles",
-        # "data": profiles,
-    }
-
-
-# TODO PATCH multiple profiles
-# TODO DELETE multiple profiles
-
-# single profile operations --------------------------------------------------#
-@router.post(
-    "/profile/",
-    response_description="Add new profile",
-    response_model=Response
-)
-async def add_profile(
-        # profile: Profile = Body(...), session: SessionContainer = Depends(verify_session())
-):
-    # roles = await session.get_claim_value(UserRoleClaim)
-
-    # if roles is None or "ADMIN" not in roles:
-    #     raise_invalid_claims_exception("User is not an admin", [
-    #         ClaimValidationError(UserRoleClaim.key, None)])
-    # else:
-    #     new_profile = await create_profile(profile)
-    #     return {
-    #         "status_code": 200,
-    #         "response_type": "success",
-    #         "description": f"Created profile with id {id(new_profile)}.",
-    #         "data": new_profile,
-    #     }
-
-    raise_invalid_claims_exception("Not implemented!", [])
-
-
-@router.get(
-    "/profile/me",
-    response_description="Retrieve the complete profile of the user currently logged in with SuperTokens",
-    response_model=Response,
-)
-async def show_current_profile(session: SessionContainer = Depends(verify_session())):
-    supertokens_user_id = session.get_user_id()
-    profile = await retrieve_profile_by_supertokens_id(supertokens_user_id)
-    if profile:
-        return {
-            "status_code": 200,
-            "response_type": "success",
-            "description": "Complete internally visible Profile",
-            "data": profile,
-        }
-    return {
-        "status_code": 404,
-        "response_type": "error",
-        "description": "Profile not found",
-        "data": None,
-    }
-
-
-@router.get(
-    "/profile/{id_}",
-    response_description="Retrieve a complete profile",
-    response_model=Response,
-)
-async def show_profile(
-        # id_: PydanticObjectId,
-        # session: SessionContainer = Depends(verify_session())
-):
-    # profile = await retrieve_profile(id_)
-    # if profile:
-    #     return {
-    #         "status_code": 200,
-    #         "response_type": "success",
-    #         "description": "Complete internally visible Profile",
-    #         "data": profile,
-    #     }
-    return {
-        "status_code": 404,
-        "response_type": "error",
-        "description": "Profile not found",
-        "data": None,
-    }
-
-
-@router.delete(
-    "/profile/{id_}",
-    response_description="Remove profile",
-    response_model=Response,
-)
-async def remove_profile(
-        # id_: PydanticObjectId, session: SessionContainer = Depends(verify_session())
-):
-    # roles = await session.get_claim_value(UserRoleClaim)
-    # if roles is None or "ADMIN" not in roles:
-    #     raise_invalid_claims_exception("User is not an admin", [
-    #         ClaimValidationError(UserRoleClaim.key, None)])
-    # else:
-    #     await delete_profile(id_)
-    #     return {
-    #         "status_code": 200,
-    #         "response_type": "success",
-    #         "description": "Profile deleted",
-    #         "data": None,
-    #     }
-
-    raise_invalid_claims_exception("Not implemented!", [])
-
-
-# TODO: uncomment it and fix it. If this is uncommented, the PATCH request below (/profile/me) doesnt work
-# @router.patch(
-#     "/profile/{id_}",
-#     response_description="Update profile",
-#     response_model=Response,
-# )
-# async def update_profile(
-#     profile_id: PydanticObjectId, data: dict, session : SessionContainer = Depends(verify_session())
-# ) -> Union[bool, Profile]:
-#     roles = await session.get_claim_value(UserRoleClaim)
-
-#     if roles is None or "admin" not in roles:
-#         raise_invalid_claims_exception("User is not an admin", [
-#                                        ClaimValidationError(UserRoleClaim.key, None)])
-#     else:
-#         update_body = {k: v for k, v in data.items() if v is not None}
-#         update_query = {"$set": {field: value for field, value in update_body.items()}}
-#         profile = await Profile.get(profile_id)
-
-#         if profile:
-#             await profile.update(update_query)
-#             return profile
-#         else:
-#             return False
-
-@router.patch(
-    "/profile/me",
-    response_description="Update my profile",
-    response_model=Response,
-)
-async def update_my_profile(
-        data: dict, session: SessionContainer = Depends(verify_session())
-):  # -> Union[bool, Profile]:
-    # supertokens_user_id = session.get_user_id()
-    # update_body = {k: v for k, v in data.items() if v is not None}
-    # update_query = {"$set": {field: value for field, value in update_body.items()}}
-    # profile = await retrieve_profile_by_supertokens_id(supertokens_user_id)
-    #
-    # if profile:
-    #     await profile.update(update_query)
-    #     return {
-    #         "status_code": 200,
-    #         "response_type": "success",
-    #         "description": "Profile edited",
-    #         "data": data,
-    #     }
-    # else:
-    #     return False
-
-    raise_invalid_claims_exception("Not implemented!", [])
-
-
 # testing for frontend connection---------------------------------------------#
-@router.post(
-    "/test/checkrole",
-    response_description="Test if role is added to session",
-    response_model=Response
+# @router.post(
+#     "/test/checkrole",
+#     response_description="Test if role is added to session",
+#     response_model=Response
+# )
+# async def test1(session: SessionContainer = Depends(verify_session())):
+#     # print(session.__dict__)
+#     roles = await session.get_claim_value(UserRoleClaim)
+#
+#     if roles is None or "ADMIN" not in roles:
+#         raise_invalid_claims_exception("User is not an admin", [
+#             ClaimValidationError(UserRoleClaim.key, None)])
+#     else:
+#         return {
+#             "status": 200,
+#             "status_code": 200,
+#             "response_type": "success",
+#             "description": "check role",
+#             "data": "check completed",
+#         }
+#
+#
+# # add role to session user for testing ---------------------------------------#
+# @router.post(
+#     "/profiles/role",
+#     response_description="Add role to user",
+#     response_model=Response
+# )
+# async def add_role_to_user_func(session: SessionContainer = Depends(verify_session())):
+#     user_id = session.user_id
+#     role = "ADMIN"
+#     res = await add_role_to_user(user_id, role)
+#
+#     # add the user's roles to the user's session
+#     await session.fetch_and_set_claim(UserRoleClaim)
+#     # add the user's permissions to the user's session
+#     await session.fetch_and_set_claim(PermissionClaim)
+#
+#     return {
+#         "status_code": 200,
+#         "response_type": "success",
+#         "description": "attempted role add",
+#         "data": res,
+#     }
+#     '''if isinstance(res, UnknownRoleError):
+#         # No such role exists
+#
+#         return
+#
+#     if res.did_user_already_have_role:
+#         # User already had this role
+#         pass'''
+
+
+### TODO: DEBUG ####
+@router.get(
+    "/debug",
+    response_description="Retrieve a complete profile",
+    # response_model=Response,
 )
-async def test1(session: SessionContainer = Depends(verify_session())):
-    # print(session.__dict__)
-    roles = await session.get_claim_value(UserRoleClaim)
-
-    if roles is None or "ADMIN" not in roles:
-        raise_invalid_claims_exception("User is not an admin", [
-            ClaimValidationError(UserRoleClaim.key, None)])
-    else:
-        return {
-            "status": 200,
-            "status_code": 200,
-            "response_type": "success",
-            "description": "check role",
-            "data": "check completed",
-        }
-
-
-# add role to session user for testing ---------------------------------------#
-@router.post(
-    "/profiles/role",
-    response_description="Add role to user",
-    response_model=Response
-)
-async def add_role_to_user_func(session: SessionContainer = Depends(verify_session())):
-    user_id = session.user_id
-    role = "ADMIN"
-    res = await add_role_to_user(user_id, role)
-
-    # add the user's roles to the user's session
-    await session.fetch_and_set_claim(UserRoleClaim)
-    # add the user's permissions to the user's session
-    await session.fetch_and_set_claim(PermissionClaim)
-
-    return {
-        "status_code": 200,
-        "response_type": "success",
-        "description": "attempted role add",
-        "data": res,
-    }
-    '''if isinstance(res, UnknownRoleError):
-        # No such role exists
-        
-        return
-
-    if res.did_user_already_have_role:
-        # User already had this role
-        pass'''
+async def debug(request: Request):
+    return debug_db_query(request.app.state.sql_engine)

@@ -52,6 +52,7 @@ class DepartmentOut(BaseModel):
 
 # profile operations ###################################################################################################
 
+
 class SocialNetworkIn(BaseModel):
     type: SocialNetworkType
     handle: Optional[str]
@@ -110,7 +111,7 @@ class SocialNetworkOut(BaseModel):
         }
 
 
-class ProfileInCreate(BaseModel):
+class ProfileInCreateUpdateBase(BaseModel):
     email: str
     phone: Optional[str]
     first_name: str
@@ -158,6 +159,14 @@ class ProfileInCreate(BaseModel):
                 ],
             }
         }
+
+
+class ProfileInCreate(ProfileInCreateUpdateBase):
+    pass
+
+
+class ProfileInUpdate(ProfileInCreateUpdateBase):
+    pass
 
 
 # only for privileged users
@@ -295,6 +304,29 @@ class ProfileOutPublic(BaseModel):
     social_networks: List["SocialNetworkOut"]
 
     @classmethod
+    def from_db_model(cls, profile: Profile) -> "ProfileOut":
+        return ProfileOutPublic(
+            id=profile.id,
+
+            first_name=profile.first_name,
+            last_name=profile.last_name,
+            nationality=profile.nationality,
+            description=profile.description,
+
+            activity_status=profile.activity_status,
+
+            degree_level=profile.degree_level,
+            degree_name=profile.degree_name,
+            degree_semester=profile.degree_semester,
+            university=profile.university,
+            job_history=profile.decoded_job_history,
+            time_joined=profile.time_joined,
+            social_networks=[
+                SocialNetworkOut.from_db_model(s) for s in profile.social_networks
+            ],
+        )
+
+    @classmethod
     def dummy(cls) -> "ProfileOutPublic":
         return ProfileOutPublic(
             id=2,
@@ -351,5 +383,3 @@ class ProfileOutPublic(BaseModel):
 class UpdateProfile(BaseModel):
     class Settings:
         template = "profiles"
-
-    # TODO

@@ -1,9 +1,10 @@
 from fastapi import FastAPI
 
+from profiles.db_views import init_views
 from projects.db_models import Base
 
 from sqlalchemy import create_engine, Engine
-from sqlalchemy.orm import scoped_session, sessionmaker
+from sqlalchemy.orm import scoped_session, sessionmaker, Session
 
 from main import log
 
@@ -25,7 +26,11 @@ async def setup_db_client(running_app: FastAPI):
     # create/initialize tables
     DBSession.configure(bind=running_app.state.sql_engine)
     Base.metadata.bind = running_app.state.sql_engine
-    Base.metadata.create_all(running_app.state.sql_engine)
+
+    # create views
+    init_views(running_app.state.sql_engine, Base)
+
+    Base.metadata.create_all(running_app.state.sql_engine, checkfirst=True)
 
 
 async def close_db_client(running_app: FastAPI):

@@ -211,7 +211,7 @@ class SocialNetwork(MixinAsDict, Base):
     __tablename__ = 'social_network'
 
     # [MANAGED FIELDS] #################################################################################################
-    profile_id: Mapped[int] = mapped_column(ForeignKey(Profile.id), primary_key=True)
+    profile_id: Mapped[int] = mapped_column(ForeignKey(Profile.id, ondelete='CASCADE'), primary_key=True)
     type = Column(Enum(SocialNetworkType), primary_key=True)
 
     # [USER CHANGEABLE FIELDS] #########################################################################################
@@ -219,7 +219,7 @@ class SocialNetwork(MixinAsDict, Base):
     link: Mapped[Optional[str]] = mapped_column(String(1024), nullable=True)
 
     # [RELATIONAL FK FIELDS] ###########################################################################################
-    profile: Mapped["Profile"] = relationship("Profile", back_populates="social_networks")
+    profile: Mapped["Profile"] = relationship("Profile", back_populates="social_networks", cascade="all,delete")
 
     __table_args__ = (
         (CheckConstraint('(handle IS NULL) <> (link IS NULL)', name='handle_xor_link')),
@@ -235,8 +235,7 @@ class DepartmentMembership(MixinAsDict, Base):
     __tablename__ = 'department_membership'
 
     # [MANAGED FIELDS] #################################################################################################
-    profile_id: Mapped[int] = mapped_column(ForeignKey(Profile.id), primary_key=True)
-    department_handle: Mapped[str] = mapped_column(ForeignKey(Department.handle), primary_key=True)
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
 
     # [SUPERVISOR CHANGEABLE FIELDS] ###################################################################################
     role = Column(Enum(Role), nullable=False)
@@ -244,7 +243,10 @@ class DepartmentMembership(MixinAsDict, Base):
     time_to = Column(DateTime, nullable=True)
 
     # [RELATIONAL FK FIELDS] ###########################################################################################
-    profile: Mapped["Profile"] = relationship("Profile", back_populates="department_memberships")
+    profile_id: Mapped[int] = mapped_column(ForeignKey(Profile.id, ondelete='CASCADE'), nullable=False)
+    profile: Mapped["Profile"] = relationship("Profile", back_populates="department_memberships", cascade="all,delete")
+
+    department_handle: Mapped[str] = mapped_column(ForeignKey(Department.handle), nullable=False)
     department: Mapped["Department"] = relationship("Department", back_populates="memberships")
 
     def __repr__(self) -> str:
