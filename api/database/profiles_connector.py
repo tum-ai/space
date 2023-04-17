@@ -4,6 +4,7 @@ from typing import List, Union
 from sqlalchemy import delete, Engine
 from sqlalchemy.orm import Session
 
+from database.setup import setup_db_client_appless
 from profiles.api_models import ProfileInCreate, SocialNetworkIn, ProfileInUpdate
 from profiles.db_models import Department, Profile, Role, SocialNetwork, DepartmentMembership  # PublicProfile
 
@@ -77,6 +78,51 @@ def create_db_profiles(
                     raise KeyError
 
     return created_db_profiles
+
+
+def create_db_profile(
+        sql_engine: Engine,
+        new_profile: ProfileInCreate,
+):
+    new_db_profile = create_db_profiles(sql_engine, [new_profile])
+    if len(new_db_profile) >= 1:
+        return new_db_profile[0]
+
+
+def create_empty_db_profile(
+        supertokens_id: str,
+        email: str
+) -> List[Profile]:
+    with Session(setup_db_client_appless()) as db_session:
+        db_profile = Profile(
+            supertokens_id=supertokens_id,
+            
+            email=email,
+            phone="",
+
+            first_name="",
+            last_name="",
+            birthday=datetime.datetime(2000, 1, 1),
+            nationality="German",
+            description="",
+            activity_status="",
+            degree_level="",
+            degree_name="",
+            degree_semester=1,
+            degree_semester_last_change_date=datetime.datetime.now(),
+            university="TUM",
+            job_history="",
+            time_joined=datetime.datetime.now(),
+        )
+        db_session.add(db_profile)
+        db_session.commit()
+
+        if not db_profile.id:
+            raise KeyError
+
+        return db_profile
+
+
 
 
 def update_db_profile(
@@ -235,16 +281,7 @@ def delete_db_profile(sql_engine: Engine, profile_id: int) -> bool:
 # TODO UPDATE ALL FUNCTIONS BELOW! ###########################################################
 ##############################################################################################
 
-async def create_profile(
-        new_profile: Profile,
-) -> Profile:
-    pass
 
-
-# TODO
-
-
-# TODO
 async def retrieve_profile(
         # profile_id: PydanticObjectId,
 ) -> Union[bool, Profile]:

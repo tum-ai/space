@@ -33,6 +33,19 @@ async def setup_db_client(running_app: FastAPI):
     Base.metadata.create_all(running_app.state.sql_engine, checkfirst=True)
 
 
+def setup_db_client_appless() -> Engine:
+    log.info("Setting up sqlalchemy/postgres database connection")
+
+    # sqlalchemy: postgres db
+    sql_engine: Engine = create_engine(
+        # TODO env variables
+        "postgresql://supertokens_user:somePassword@auth-db:5432/supertokens",
+        echo=True
+    )
+
+    return sql_engine
+
+
 async def close_db_client(running_app: FastAPI):
     log.info("Closing sqlalchemy/postgres database connection")
     # nothing to do

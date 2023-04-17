@@ -30,6 +30,7 @@ const Profile = observer(() => {
 	const memberModel = rootModel.memberModel;
 	useEffect(() => {
 		if (id) {
+			// TODO: id=me needs a different endpoint!
 			memberModel.fetchMember(id);
 		}
 	}, [id]);

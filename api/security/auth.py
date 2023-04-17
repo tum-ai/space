@@ -2,9 +2,9 @@ from typing import Union, Dict, Any, List
 from datetime import datetime
 
 from config import CONFIG
-from database.profiles_connector import create_profile
 from main import log
 
+from database.profiles_connector import create_empty_db_profile
 from profiles.db_models import Profile, Department, Role, SocialNetwork
 from security.roles import create_roles, assign_role_by_user_id
 from supertokens_python import InputAppInfo, SupertokensConfig, init
@@ -62,28 +62,9 @@ def override_sign_up_in_apis(original_implementation: APIInterface):
                 log.debug(f"New user created with SuperTokens User ID: {result.user.user_id}")
                 # Assign DEFAULT role to the new users
                 await assign_role_by_user_id(result.user.user_id, "DEFAULT")
-                await create_profile(
-                    Profile(
-                        supertokensId=result.user.user_id,
-                        name="Dummy Name",
-                        email=result.user.email,
-                        description="Dummy Description",
-                        degreeLevel="Bachelors",
-                        degreeName="ComputerScience",
-                        degreeSemester=3,
-                        university="TUM",
-                        currentJob="Dummy Job",
-                        department=Department.DEV,
-                        role=Role.MEMBER,
-                        previousDepartments=[Department.IND],
-                        joinedBatch=datetime(2022, 1, 1),
-                        involvedProjects=["TUM.ai Space"],
-                        nationality="International",
-                        socialNetworks=[SocialNetwork(
-                            type=SocialNetwork.SocialNetworkType.OTHER,
-                            link="other"
-                        )]
-                    )
+                create_empty_db_profile(
+                    result.user.user_id,
+                    result.user.email
                 )
 
                 # TODO: some post sign up logic
@@ -135,28 +116,9 @@ def override_sign_up_in_apis(original_implementation: APIInterface):
             log.debug(f"User signed up successfully with SuperTokens User ID: {result.user.user_id}")
             # Assign DEFAULT role to the new users
             await assign_role_by_user_id(result.user.user_id, "DEFAULT")
-            await create_profile(
-                Profile(
-                    supertokensId=result.user.user_id,
-                    name="Dummy Name",
-                    email=result.user.email,
-                    description="Dummy Description",
-                    degreeLevel="Bachelors",
-                    degreeName="ComputerScience",
-                    degreeSemester=3,
-                    university="TUM",
-                    currentJob="Dummy Job",
-                    department=Department.DEV,
-                    role=Role.MEMBER,
-                    previousDepartments=[Department.IND],
-                    joinedBatch=datetime(2022, 1, 1),
-                    involvedProjects=["TUM.ai Space"],
-                    nationality="International",
-                    socialNetworks=[SocialNetwork(
-                        type=SocialNetwork.SocialNetworkType.OTHER,
-                        link="other"
-                    )]
-                )
+            create_empty_db_profile(
+                result.user.user_id,
+                result.user.email
             )
             # TODO: some post sign up logic
             # TODO: connect analytics

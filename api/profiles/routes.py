@@ -5,7 +5,16 @@ from fastapi import Request
 from supertokens_python.recipe.session import SessionContainer
 from supertokens_python.recipe.session.framework.fastapi import verify_session
 
-from database.profiles_connector import (list_db_departments, create_db_profiles,
+from supertokens_python.recipe.session import SessionContainer
+from supertokens_python.recipe.session.exceptions import (
+    ClaimValidationError, raise_invalid_claims_exception)
+
+from supertokens_python.recipe.session.framework.fastapi import verify_session
+from supertokens_python.recipe.userroles import PermissionClaim, UserRoleClaim
+
+from supertokens_python.recipe.userroles.asyncio import (add_role_to_user, get_roles_for_user)
+
+from database.profiles_connector import (list_db_departments, create_db_profiles, create_db_profile,
                                          retrieve_db_department, list_db_profiles, debug_db_query, retrieve_db_profile,
                                          delete_db_profiles, delete_db_profile, retrieve_db_profile_by_supertokens_id,
                                          update_db_profile)
@@ -137,17 +146,8 @@ async def add_profile(
     #         ClaimValidationError(UserRoleClaim.key, None)])
     # else:
 
-    new_db_profile = create_db_profiles(request.app.state.sql_engine, [data])
-
-    if len(new_db_profile) < 1:
-        return {
-            "status_code": 500,
-            "response_type": "internal error",
-            "description": f"Profile could not be created!",
-            "data": None,
-        }
-
-    new_profile = ProfileOut.from_db_model(new_db_profile[0])
+    new_db_profile = create_db_profile(request.app.state.sql_engine, data)
+    new_profile = ProfileOut.from_db_model(new_db_profile)
     return {
         "status_code": 201,
         "response_type": "success",
@@ -338,7 +338,7 @@ async def update_profile(
 
 # TODO test endpoint
 @router.patch(
-    "/profile/me",
+    "/profile/",
     response_description="Update logged in users profile",
     response_model=ResponseProfile
 )
@@ -368,58 +368,58 @@ async def update_current_profile(
 ##############################################################################################
 
 # testing for frontend connection---------------------------------------------#
-# @router.post(
-#     "/test/checkrole",
-#     response_description="Test if role is added to session",
-#     response_model=Response
-# )
-# async def test1(session: SessionContainer = Depends(verify_session())):
-#     # print(session.__dict__)
-#     roles = await session.get_claim_value(UserRoleClaim)
-#
-#     if roles is None or "ADMIN" not in roles:
-#         raise_invalid_claims_exception("User is not an admin", [
-#             ClaimValidationError(UserRoleClaim.key, None)])
-#     else:
-#         return {
-#             "status": 200,
-#             "status_code": 200,
-#             "response_type": "success",
-#             "description": "check role",
-#             "data": "check completed",
-#         }
-#
-#
-# # add role to session user for testing ---------------------------------------#
-# @router.post(
-#     "/profiles/role",
-#     response_description="Add role to user",
-#     response_model=Response
-# )
-# async def add_role_to_user_func(session: SessionContainer = Depends(verify_session())):
-#     user_id = session.user_id
-#     role = "ADMIN"
-#     res = await add_role_to_user(user_id, role)
-#
-#     # add the user's roles to the user's session
-#     await session.fetch_and_set_claim(UserRoleClaim)
-#     # add the user's permissions to the user's session
-#     await session.fetch_and_set_claim(PermissionClaim)
-#
-#     return {
-#         "status_code": 200,
-#         "response_type": "success",
-#         "description": "attempted role add",
-#         "data": res,
-#     }
-#     '''if isinstance(res, UnknownRoleError):
-#         # No such role exists
-#
-#         return
-#
-#     if res.did_user_already_have_role:
-#         # User already had this role
-#         pass'''
+@router.post(
+    "/test/checkrole",
+    response_description="Test if role is added to session",
+    response_model=Response
+)
+async def test1(session: SessionContainer = Depends(verify_session())):
+    # print(session.__dict__)
+    roles = await session.get_claim_value(UserRoleClaim)
+
+    if roles is None or "ADMIN" not in roles:
+        raise_invalid_claims_exception("User is not an admin", [
+            ClaimValidationError(UserRoleClaim.key, None)])
+    else:
+        return {
+            "status": 200,
+            "status_code": 200,
+            "response_type": "success",
+            "description": "check role",
+            "data": "check completed",
+        }
+
+
+# add role to session user for testing ---------------------------------------#
+@router.post(
+    "/profiles/role",
+    response_description="Add role to user",
+    response_model=Response
+)
+async def add_role_to_user_func(session: SessionContainer = Depends(verify_session())):
+    user_id = session.user_id
+    role = "ADMIN"
+    res = await add_role_to_user(user_id, role)
+
+    # add the user's roles to the user's session
+    await session.fetch_and_set_claim(UserRoleClaim)
+    # add the user's permissions to the user's session
+    await session.fetch_and_set_claim(PermissionClaim)
+
+    return {
+        "status_code": 200,
+        "response_type": "success",
+        "description": "attempted role add",
+        "data": res,
+    }
+    # '''if isinstance(res, UnknownRoleError):
+    #     # No such role exists
+
+    #     return
+
+    # if res.did_user_already_have_role:
+    #     # User already had this role
+    #     pass'''
 
 
 ### TODO: DEBUG ####
