@@ -1,23 +1,14 @@
-from typing import Union, Dict, Any, List
-from datetime import datetime
+from typing import (
+    Any,
+    Dict,
+    List,
+    Union,
+)
 
-from config import CONFIG
-from main import log
-
-from database.profiles_connector import create_empty_db_profile
-from profiles.db_models import Profile, Department, Role, SocialNetwork
-from security.roles import create_roles, assign_role_by_user_id
-from supertokens_python import InputAppInfo, SupertokensConfig, init
-from supertokens_python.recipe.thirdpartyemailpassword.interfaces import (
-    APIInterface,
-    ThirdPartyAPIOptions,
-    EmailPasswordAPIOptions,
-    ThirdPartySignInUpPostOkResult,
-    EmailPasswordSignInPostOkResult,
-    EmailPasswordSignUpPostOkResult,
-    ThirdPartySignInUpPostNoEmailGivenByProviderResponse,
-    EmailPasswordSignInPostWrongCredentialsError,
-    EmailPasswordSignUpPostEmailAlreadyExistsError,
+from supertokens_python import (
+    InputAppInfo,
+    SupertokensConfig,
+    init,
 )
 from supertokens_python.recipe import (
     dashboard,
@@ -25,26 +16,67 @@ from supertokens_python.recipe import (
     thirdpartyemailpassword,
     userroles,
 )
-from supertokens_python.recipe.thirdpartyemailpassword import Github, Google
-from supertokens_python.recipe.thirdparty.provider import Provider
-from supertokens_python.recipe.emailpassword.types import FormField
-from supertokens_python.types import GeneralErrorResponse
+from supertokens_python.recipe.emailpassword.types import (
+    FormField,
+)
+from supertokens_python.recipe.thirdparty.provider import (
+    Provider,
+)
+from supertokens_python.recipe.thirdpartyemailpassword import (
+    Github,
+    Google,
+)
+from supertokens_python.recipe.thirdpartyemailpassword.interfaces import (
+    APIInterface,
+    EmailPasswordAPIOptions,
+    EmailPasswordSignInPostOkResult,
+    EmailPasswordSignInPostWrongCredentialsError,
+    EmailPasswordSignUpPostEmailAlreadyExistsError,
+    EmailPasswordSignUpPostOkResult,
+    ThirdPartyAPIOptions,
+    ThirdPartySignInUpPostNoEmailGivenByProviderResponse,
+    ThirdPartySignInUpPostOkResult,
+)
+from supertokens_python.types import (
+    GeneralErrorResponse,
+)
+
+from config import (
+    CONFIG,
+)
+from database.profiles_connector import (
+    create_empty_db_profile,
+)
+from main import (
+    log,
+)
+from security.roles import (
+    assign_role_by_user_id,
+    create_roles,
+)
 
 
 def override_sign_up_in_apis(original_implementation: APIInterface):
-    original_thirdparty_sign_in_up_post = original_implementation.thirdparty_sign_in_up_post
-    original_emailpassword_sign_in_post = original_implementation.emailpassword_sign_in_post
-    original_emailpassword_sign_up_post = original_implementation.emailpassword_sign_up_post
+    original_thirdparty_sign_in_up_post = (
+        original_implementation.thirdparty_sign_in_up_post
+    )
+    original_emailpassword_sign_in_post = (
+        original_implementation.emailpassword_sign_in_post
+    )
+    original_emailpassword_sign_up_post = (
+        original_implementation.emailpassword_sign_up_post
+    )
 
-    # This function is used to override the default behaviour of the sign-up for the third party identity.
+    # This function is used to override the default behaviour of the
+    # sign-up for the third party identity.
     async def third_party_sign_in_up_post(
-            provider: Provider,
-            code: str,
-            redirect_uri: str,
-            client_id: Union[str, None],
-            auth_code_response: Union[Dict[str, Any], None],
-            api_options: ThirdPartyAPIOptions,
-            user_context: Dict[str, Any],
+        provider: Provider,
+        code: str,
+        redirect_uri: str,
+        client_id: Union[str, None],
+        auth_code_response: Union[Dict[str, Any], None],
+        api_options: ThirdPartyAPIOptions,
+        user_context: Dict[str, Any],
     ):
         # call the default behaviour as show below
         result = await original_thirdparty_sign_in_up_post(
@@ -59,31 +91,33 @@ def override_sign_up_in_apis(original_implementation: APIInterface):
 
         if isinstance(result, ThirdPartySignInUpPostOkResult):
             if result.created_new_user:
-                log.debug(f"New user created with SuperTokens User ID: {result.user.user_id}")
+                log.debug(
+                    f"New user created with SuperTokens User ID: {result.user.user_id}"
+                )
                 # Assign DEFAULT role to the new users
                 await assign_role_by_user_id(result.user.user_id, "DEFAULT")
-                create_empty_db_profile(
-                    result.user.user_id,
-                    result.user.email
-                )
+                create_empty_db_profile(result.user.user_id, result.user.email)
 
                 # TODO: some post sign up logic
             else:
-                log.debug(f"User signed in successfully with SuperTokens User ID: {result.user.user_id}")
+                log.debug(
+                    f"User signed in successfully with SuperTokens User ID: "
+                    f"{result.user.user_id}"
+                )
                 # TODO: some post sign in logic
 
         elif isinstance(result, ThirdPartySignInUpPostNoEmailGivenByProviderResponse):
-            log.debug(f"No email given by provider")
+            log.debug("No email given by provider")
 
         elif isinstance(result, GeneralErrorResponse):
-            log.debug(f"General error response")
+            log.debug("General error response")
 
         return result
 
     async def email_password_sign_in_post(
-            form_fields: List[FormField],
-            api_options: EmailPasswordAPIOptions,
-            user_context: Dict[str, Any],
+        form_fields: List[FormField],
+        api_options: EmailPasswordAPIOptions,
+        user_context: Dict[str, Any],
     ):
         # call the default behaviour as show below
         result = await original_emailpassword_sign_in_post(
@@ -91,21 +125,24 @@ def override_sign_up_in_apis(original_implementation: APIInterface):
         )
 
         if isinstance(result, EmailPasswordSignInPostOkResult):
-            log.debug(f"User signed in successfully with SuperTokens User ID: {result.user.user_id}")
+            log.debug(
+                "User signed in successfully with SuperTokens User ID: "
+                + f"{result.user.user_id}"
+            )
             # TODO: some post sign in logic
 
         elif isinstance(result, EmailPasswordSignInPostWrongCredentialsError):
-            log.debug(f"Wrong credentials")
+            log.debug("Wrong credentials")
 
         elif isinstance(result, GeneralErrorResponse):
-            log.debug(f"General error response")
+            log.debug("General error response")
 
         return result
 
     async def email_password_sign_up_post(
-            form_fields: List[FormField],
-            api_options: EmailPasswordAPIOptions,
-            user_context: Dict[str, Any],
+        form_fields: List[FormField],
+        api_options: EmailPasswordAPIOptions,
+        user_context: Dict[str, Any],
     ):
         # call the default behaviour as show below
         result = await original_emailpassword_sign_up_post(
@@ -113,13 +150,13 @@ def override_sign_up_in_apis(original_implementation: APIInterface):
         )
 
         if isinstance(result, EmailPasswordSignUpPostOkResult):
-            log.debug(f"User signed up successfully with SuperTokens User ID: {result.user.user_id}")
+            log.debug(
+                "User signed up successfully with SuperTokens User ID: "
+                + f"{result.user.user_id}"
+            )
             # Assign DEFAULT role to the new users
             await assign_role_by_user_id(result.user.user_id, "DEFAULT")
-            create_empty_db_profile(
-                result.user.user_id,
-                result.user.email
-            )
+            create_empty_db_profile(result.user.user_id, result.user.email)
             # TODO: some post sign up logic
             # TODO: connect analytics
             #
@@ -128,7 +165,7 @@ def override_sign_up_in_apis(original_implementation: APIInterface):
             log.debug("Email already exists")
 
         elif isinstance(result, GeneralErrorResponse):
-            log.debug(f"General error response")
+            log.debug("General error response")
 
         return result
 
@@ -156,7 +193,8 @@ def init_server_auth():
             # The auth api route. In our case: "/auth"
             api_base_path=CONFIG.get("AUTH_API_BASE_PATH"),
             # Path for the auth webpage.
-            # Because we have a custom subdomain https://auth.tum-ai.com, we don't need a path
+            # Because we have a custom subdomain https://auth.tum-ai.com, we
+            # don't need a path
             website_base_path=CONFIG.get("AUTH_WEBSITE_BASE_PATH"),
         ),
         supertokens_config=SupertokensConfig(
@@ -170,16 +208,20 @@ def init_server_auth():
         recipe_list=[
             session.init(cookie_secure=False),  # initializes session features
             # TODO: add email verification
-            # https://supertokens.com/docs/thirdpartyemailpassword/pre-built-ui/enable-email-verification
+            # https://supertokens.com/docs/thirdpartyemailpassword/pre-built-ui
+            # /enable-email-verification
             thirdpartyemailpassword.init(
                 override=thirdpartyemailpassword.InputOverrideConfig(
                     apis=override_sign_up_in_apis
                 ),
                 providers=[
-                    # We have provided you with development keys which you can use for testing.
-                    # IMPORTANT: Please replace them with your own OAuth keys for production use.
+                    # We have provided you with development keys which you
+                    # can use for testing.
+                    # IMPORTANT: Please replace them with your own OAuth keys
+                    # for production use.
                     Google(
-                        client_id="1060725074195-kmeum4crr01uirfl2op9kd5acmi9jutn.apps.googleusercontent.com",
+                        client_id="1060725074195-kmeum4crr01uirfl2op9kd5acmi9jutn"
+                        + ".apps.googleusercontent.com",
                         client_secret="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",
                     ),
                     Github(
@@ -200,7 +242,8 @@ def init_server_auth():
 # Create the roles for the users
 async def create_auth_roles():
     """
-    This function is called when the server starts up. It is used to set up roles within the auth system.
+    This function is called when the server starts up.
+    It is used to set up roles within the auth system.
     """
     log.info("Creating auth roles...")
     await create_roles()

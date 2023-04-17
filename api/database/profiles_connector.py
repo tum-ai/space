@@ -1,15 +1,34 @@
 import datetime
-from typing import List, Union
+from typing import (
+    List,
+)
 
-from sqlalchemy import delete, Engine
-from sqlalchemy.orm import Session
+from sqlalchemy import (
+    Engine,
+    delete,
+)
+from sqlalchemy.orm import (
+    Session,
+)
 
-from database.setup import setup_db_client_appless
-from profiles.api_models import ProfileInCreate, SocialNetworkIn, ProfileInUpdate
-from profiles.db_models import Department, Profile, Role, SocialNetwork, DepartmentMembership  # PublicProfile
+from database.setup import (
+    setup_db_client_appless,
+)
+from profiles.api_models import (
+    ProfileInCreate,
+    ProfileInUpdate,
+    SocialNetworkIn,
+)
+from profiles.db_models import (  # PublicProfile
+    Department,
+    DepartmentMembership,
+    Profile,
+    Role,
+    SocialNetwork,
+)
 
+# department operations ##################################################################
 
-# department operations ################################################################################################
 
 def list_db_departments(sql_engine) -> List[Department]:
     with Session(sql_engine) as db_session:
@@ -25,11 +44,12 @@ def retrieve_db_department(sql_engine: Engine, handle: str) -> Department:
         return db_model
 
 
-# profile operations ###################################################################################################
+# profile operations #####################################################################
+
 
 def create_db_profiles(
-        sql_engine: Engine,
-        new_profiles: List[ProfileInCreate],
+    sql_engine: Engine,
+    new_profiles: List[ProfileInCreate],
 ) -> List[Profile]:
     created_db_profiles = []
     with Session(sql_engine) as db_session:
@@ -39,7 +59,6 @@ def create_db_profiles(
             db_profile = Profile(
                 email=new_profile.email,
                 phone=new_profile.phone,
-
                 first_name=new_profile.first_name,
                 last_name=new_profile.last_name,
                 birthday=new_profile.birthday,
@@ -58,12 +77,14 @@ def create_db_profiles(
             db_session.flush()
 
             for sn in new_profile.social_networks:
-                db_profile.social_networks.append(SocialNetwork(
-                    profile_id=db_profile.id,
-                    type=sn.type,
-                    handle=sn.handle if sn.handle and len(sn.handle) > 0 else None,
-                    link=sn.link if sn.link and len(sn.link) > 0 else None
-                ))
+                db_profile.social_networks.append(
+                    SocialNetwork(
+                        profile_id=db_profile.id,
+                        type=sn.type,
+                        handle=sn.handle if sn.handle and len(sn.handle) > 0 else None,
+                        link=sn.link if sn.link and len(sn.link) > 0 else None,
+                    )
+                )
             created_db_profiles.append(db_profile)
 
         db_session.commit()
@@ -81,25 +102,20 @@ def create_db_profiles(
 
 
 def create_db_profile(
-        sql_engine: Engine,
-        new_profile: ProfileInCreate,
+    sql_engine: Engine,
+    new_profile: ProfileInCreate,
 ):
     new_db_profile = create_db_profiles(sql_engine, [new_profile])
     if len(new_db_profile) >= 1:
         return new_db_profile[0]
 
 
-def create_empty_db_profile(
-        supertokens_id: str,
-        email: str
-) -> List[Profile]:
+def create_empty_db_profile(supertokens_id: str, email: str) -> List[Profile]:
     with Session(setup_db_client_appless()) as db_session:
         db_profile = Profile(
             supertokens_id=supertokens_id,
-            
             email=email,
             phone="",
-
             first_name="",
             last_name="",
             birthday=datetime.datetime(2000, 1, 1),
@@ -123,12 +139,10 @@ def create_empty_db_profile(
         return db_profile
 
 
-
-
 def update_db_profile(
-        sql_engine: Engine,
-        profile_id: int,
-        profile_to_update: ProfileInUpdate,
+    sql_engine: Engine,
+    profile_id: int,
+    profile_to_update: ProfileInUpdate,
 ) -> List[Profile]:
     with Session(sql_engine) as db_session:
         job_history_encoded = Profile.encode_job_history(profile_to_update.job_history)
@@ -191,7 +205,7 @@ def update_db_profile(
                     profile_id=db_profile.id,
                     type=new_k,
                     handle=sn.handle if sn.handle and len(sn.handle) > 0 else None,
-                    link=sn.link if sn.link and len(sn.link) > 0 else None
+                    link=sn.link if sn.link and len(sn.link) > 0 else None,
                 )
             )
 
@@ -211,10 +225,12 @@ def update_db_profile(
 
 def list_db_profiles(sql_engine: Engine, page: int, page_size: int) -> List[Profile]:
     with Session(sql_engine) as db_session:
-        db_profiles: List[Profile] = db_session \
-            .query(Profile) \
-            .offset(page_size * (page - 1)) \
-            .limit(page_size).all()
+        db_profiles: List[Profile] = (
+            db_session.query(Profile)
+            .offset(page_size * (page - 1))
+            .limit(page_size)
+            .all()
+        )
 
         # asserts presence of id, triggers a db refresh
         for db_profile in db_profiles:
@@ -243,9 +259,16 @@ def retrieve_db_profile(sql_engine: Engine, profile_id: str) -> Profile:
         return db_model
 
 
-def retrieve_db_profile_by_supertokens_id(sql_engine: Engine, supertokens_id: str, ) -> Profile:
+def retrieve_db_profile_by_supertokens_id(
+    sql_engine: Engine,
+    supertokens_id: str,
+) -> Profile:
     with Session(sql_engine) as db_session:
-        db_model = db_session.query(Profile).filter(Profile.supertokens_id == supertokens_id).one()
+        db_model = (
+            db_session.query(Profile)
+            .filter(Profile.supertokens_id == supertokens_id)
+            .one()
+        )
 
         # asserts presence values
         if not db_model:
@@ -275,7 +298,7 @@ def delete_db_profile(sql_engine: Engine, profile_id: int) -> bool:
         return True
 
 
-### TODO: debug #########
+# TODO: debug #########
 def debug_db_query(sql_engine):
     with Session(sql_engine) as db_session:
         # db_models = db_session\
@@ -284,7 +307,8 @@ def debug_db_query(sql_engine):
         #         # DepartmentMembership.department_handle == 'dev'
         #         (DepartmentMembership.time_from <= datetime.datetime.now())
         #         &
-        #         ((DepartmentMembership.time_to >= datetime.datetime.now()) | (DepartmentMembership.time_to is None))
+        #         ((DepartmentMembership.time_to >= datetime.datetime.now()) |
+        #       (DepartmentMembership.time_to is None))
         #     ) \
         #     .limit(100)\
         #     .all()
@@ -295,7 +319,7 @@ def debug_db_query(sql_engine):
             time_from=datetime.datetime.now() - datetime.timedelta(days=180),
             time_to=datetime.datetime.now() + datetime.timedelta(days=180),
             profile_id=42,
-            department_handle='dev'
+            department_handle="dev",
         )
         db_session.add(obj)
         db_session.commit()

@@ -1,0 +1,23 @@
+[project]
+name = "TUM.ai space api"
+version = "0.1.0"
+description = ""
+authors = [
+    { name = "Robin Holzinger", email = "robin.holzingr@gmail.com" }
+]
+python = "3.10"
+
+[tool.isort]
+profile = "black"
+skip = ["venv", "__pycache__"]
+line_length = 90
+force_grid_wrap = 1
+
+[tool.mypy]
+ignore_missing_imports = "True"
+disallow_untyped_defs = "True"
+disable_error_code = "union-attr"
+exclude = ["venv/*", "__init__.py", "__pycache__/*", "docs/*"]
+
+[tool.coverage.run]
+omit = ["venv/*", "*__init__.py", "tests/*", "__pycache__"]

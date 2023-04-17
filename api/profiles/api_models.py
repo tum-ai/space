@@ -1,12 +1,25 @@
-from typing import Optional, List
+from datetime import (
+    date,
+    datetime,
+)
+from typing import (
+    List,
+    Optional,
+)
 
-from pydantic import BaseModel
-from datetime import date, datetime
+from pydantic import (
+    BaseModel,
+)
 
-from profiles.db_models import SocialNetworkType, Department, Profile, JobHistoryElement, SocialNetwork
+from profiles.db_models import (
+    Department,
+    JobHistoryElement,
+    Profile,
+    SocialNetwork,
+    SocialNetworkType,
+)
 
-
-# department operations ################################################################################################
+# department operations ##################################################################
 
 # class DepartmentCreate(BaseModel):
 # creation only via postgres directly!
@@ -27,7 +40,7 @@ class DepartmentOut(BaseModel):
         return DepartmentOut(
             handle=department.handle,
             name=department.name,
-            description=department.description
+            description=department.description,
         )
 
     @classmethod
@@ -35,7 +48,7 @@ class DepartmentOut(BaseModel):
         return DepartmentOut(
             handle="dummy",
             name="DummyDepartment",
-            description="This is a dummy department!"
+            description="This is a dummy department!",
         )
 
     # TODO evaluate if member this here (or first 10 members) or in separate endpoint
@@ -46,11 +59,13 @@ class DepartmentOut(BaseModel):
             "example": {
                 "handle": "dev",
                 "name": "Development & IT",
-                "description": "We are responsible for all IT and engineering related tasks!"
+                "description": "We are responsible for all IT "
+                + "and engineering related tasks!",
             }
         }
 
-# profile operations ###################################################################################################
+
+# profile operations #####################################################################
 
 
 class SocialNetworkIn(BaseModel):
@@ -60,18 +75,14 @@ class SocialNetworkIn(BaseModel):
 
     @classmethod
     def dummy(cls) -> "SocialNetworkIn":
-        return SocialNetworkIn(
-            type=SocialNetworkType.GITHUB,
-            handle="tum_ai",
-            link=""
-        )
+        return SocialNetworkIn(type=SocialNetworkType.GITHUB, handle="tum_ai", link="")
 
     class Config:
         schema_extra = {
             "example": {
                 "type": SocialNetworkType.GITHUB,
                 "handle": "tum_ai",
-                "link": ""
+                "link": "",
             }
         }
 
@@ -85,19 +96,13 @@ class SocialNetworkOut(BaseModel):
     @classmethod
     def from_db_model(cls, s: SocialNetwork) -> "SocialNetworkOut":
         return SocialNetworkOut(
-            profile_id=s.profile_id,
-            type=s.type,
-            handle=s.handle,
-            link=s.link
+            profile_id=s.profile_id, type=s.type, handle=s.handle, link=s.link
         )
 
     @classmethod
     def dummy(cls) -> "SocialNetworkOut":
         return SocialNetworkOut(
-            profile_id=32,
-            type=SocialNetworkType.GITHUB,
-            handle="tum_ai",
-            link=""
+            profile_id=32, type=SocialNetworkType.GITHUB, handle="tum_ai", link=""
         )
 
     class Config:
@@ -106,7 +111,7 @@ class SocialNetworkOut(BaseModel):
                 "profile_id": 32,
                 "type": SocialNetworkType.GITHUB,
                 "handle": "tum_ai",
-                "link": ""
+                "link": "",
             }
         }
 
@@ -200,7 +205,6 @@ class ProfileOut(BaseModel):
         return ProfileOut(
             id=profile.id,
             supertokens_id=profile.supertokens_id,
-
             email=profile.email,
             phone=profile.phone,
             first_name=profile.first_name,
@@ -208,9 +212,7 @@ class ProfileOut(BaseModel):
             birthday=profile.birthday,
             nationality=profile.nationality,
             description=profile.description,
-
             activity_status=profile.activity_status,
-
             degree_level=profile.degree_level,
             degree_name=profile.degree_name,
             degree_semester=profile.degree_semester,
@@ -227,7 +229,6 @@ class ProfileOut(BaseModel):
         return ProfileOut(
             id=2,
             supertokens_id="asdfHIUSF7",
-
             email="test@mymail.com",
             phone="+42 42424242",
             first_name="Max",
@@ -256,7 +257,6 @@ class ProfileOut(BaseModel):
             "example": {
                 "id": 42,
                 "supertokens_id": "asdfHIUSF7",
-
                 "email": "test@mymail.com",
                 "phone": "+42 42424242",
                 "first_name": "Max",
@@ -307,14 +307,11 @@ class ProfileOutPublic(BaseModel):
     def from_db_model(cls, profile: Profile) -> "ProfileOut":
         return ProfileOutPublic(
             id=profile.id,
-
             first_name=profile.first_name,
             last_name=profile.last_name,
             nationality=profile.nationality,
             description=profile.description,
-
             activity_status=profile.activity_status,
-
             degree_level=profile.degree_level,
             degree_name=profile.degree_name,
             degree_semester=profile.degree_semester,
@@ -330,14 +327,11 @@ class ProfileOutPublic(BaseModel):
     def dummy(cls) -> "ProfileOutPublic":
         return ProfileOutPublic(
             id=2,
-
             first_name="Max",
             last_name="Mustermann",
             nationality="German",
             description="Hi and welcome!",
-
             activity_status="active",
-
             degree_level="B.Sc.",
             degree_name="Computer Science",
             degree_semester="5",
@@ -357,7 +351,6 @@ class ProfileOutPublic(BaseModel):
         schema_extra = {
             "example": {
                 "id": 42,
-
                 "first_name": "Max",
                 "last_name": "Mustermann",
                 "nationality": "German",

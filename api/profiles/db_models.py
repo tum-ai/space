@@ -1,19 +1,41 @@
-from typing import List, Optional
-from datetime import datetime
-from dateutil.relativedelta import relativedelta
-from pydantic import BaseModel
-
-from sqlalchemy.ext.hybrid import hybrid_property
-from sqlalchemy import ForeignKey, Column, Integer, DateTime, func, CheckConstraint
-from sqlalchemy import String
-from sqlalchemy.orm import Mapped
-from sqlalchemy.orm import mapped_column
-from sqlalchemy.orm import relationship
-
 import enum
-from sqlalchemy import Enum
+from datetime import (
+    datetime,
+)
+from typing import (
+    List,
+    Optional,
+)
 
-from database.db_models import Base, MixinAsDict
+from dateutil.relativedelta import (
+    relativedelta,
+)
+from pydantic import (
+    BaseModel,
+)
+from sqlalchemy import (
+    CheckConstraint,
+    Column,
+    DateTime,
+    Enum,
+    ForeignKey,
+    Integer,
+    String,
+    func,
+)
+from sqlalchemy.ext.hybrid import (
+    hybrid_property,
+)
+from sqlalchemy.orm import (
+    Mapped,
+    mapped_column,
+    relationship,
+)
+
+from database.db_models import (
+    Base,
+    MixinAsDict,
+)
 
 
 class Department(MixinAsDict, Base):
@@ -21,20 +43,23 @@ class Department(MixinAsDict, Base):
 
     __tablename__ = "department"
 
-    # [MANAGED FIELDS] #################################################################################################
+    # [MANAGED FIELDS] ###################################################################
     handle: Mapped[str] = mapped_column(String(20), primary_key=True)
 
-    # [USER CHANGEABLE FIELDS] #########################################################################################
+    # [USER CHANGEABLE FIELDS] ###########################################################
     name: Mapped[str] = mapped_column(String(80), unique=True, nullable=False)
     description: Mapped[Optional[str]] = mapped_column(String(2048), nullable=True)
 
-    # [RELATIONAL FK FIELDS] ###########################################################################################
+    # [RELATIONAL FK FIELDS] #############################################################
     # back reference from DepartmentMembership
     memberships: Mapped[List["DepartmentMembership"]] = relationship(
-        "DepartmentMembership", back_populates="department")
+        "DepartmentMembership", back_populates="department"
+    )
 
     # back reference from Project
-    projects: Mapped[List["Project"]] = relationship("Project", back_populates="department")
+    projects: Mapped[List["Project"]] = relationship(
+        "Project", back_populates="department"
+    )
 
     def __repr__(self) -> str:
         return f"Department(id={self.handle!r}, name={self.name!r})"
@@ -60,7 +85,7 @@ class JobHistoryElement(BaseModel):
             employer="Google",
             position="SWE Intern",
             date_from="15.01.2023",
-            date_to="31.03.2023"
+            date_to="31.03.2023",
         )
 
     class Config:
@@ -69,7 +94,7 @@ class JobHistoryElement(BaseModel):
                 "employer": "Google",
                 "position": "SWE Intern",
                 "date_from": "15.01.2023",
-                "date_to": "31.03.2023"
+                "date_to": "31.03.2023",
             }
         }
 
@@ -89,11 +114,13 @@ class Profile(MixinAsDict, Base):
 
     __tablename__ = "profile"
 
-    # [MANAGED FIELDS] #################################################################################################
+    # [MANAGED FIELDS] ###################################################################
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    supertokens_id: Mapped[str] = mapped_column(String, unique=True, index=True, nullable=True)
+    supertokens_id: Mapped[str] = mapped_column(
+        String, unique=True, index=True, nullable=True
+    )
 
-    # [USER CHANGEABLE FIELDS] #########################################################################################
+    # [USER CHANGEABLE FIELDS] ###########################################################
     email: Mapped[str] = mapped_column(String(200), index=True, nullable=False)
     phone: Mapped[Optional[str]] = mapped_column(String(50), index=True, nullable=True)
 
@@ -118,33 +145,41 @@ class Profile(MixinAsDict, Base):
     # format: csv list of <employer:position:from:to>,
     job_history: Mapped[Optional[str]] = mapped_column(String, nullable=True)
 
-    # [SUPERVISOR CHANGEABLE FIELDS] ###################################################################################
+    # [SUPERVISOR CHANGEABLE FIELDS] #####################################################
     time_joined = Column(DateTime, nullable=True)
 
-    # [RELATIONAL FK FIELDS] ###########################################################################################
+    # [RELATIONAL FK FIELDS] #############################################################
     # back reference from SocialNetwork
-    social_networks: Mapped[List["SocialNetwork"]] = relationship("SocialNetwork", back_populates="profile")
+    social_networks: Mapped[List["SocialNetwork"]] = relationship(
+        "SocialNetwork", back_populates="profile"
+    )
 
     # back reference from DepartmentMembership
     department_memberships: Mapped[List["DepartmentMembership"]] = relationship(
-        "DepartmentMembership", back_populates="profile")
+        "DepartmentMembership", back_populates="profile"
+    )
 
     # back reference from ProjectMembership
     project_memberships: Mapped[List["ProjectMembership"]] = relationship(
-        "ProjectMembership", back_populates="profile")
+        "ProjectMembership", back_populates="profile"
+    )
 
     # back reference from CertificationRequest
-    certification_requests: Mapped[List["CertificationRequest"]] = relationship("CertificationRequest", back_populates="profile")
+    certification_requests: Mapped[List["CertificationRequest"]] = relationship(
+        "CertificationRequest", back_populates="profile"
+    )
 
     # back reference from Certificate
     received_certificates: Mapped[List["Certificate"]] = relationship(
-        "Certificate", back_populates="profile", foreign_keys='Certificate.profile_id')
+        "Certificate", back_populates="profile", foreign_keys="Certificate.profile_id"
+    )
 
     # back reference from Certificate
     issued_certificates: Mapped[List["Certificate"]] = relationship(
-        "Certificate", back_populates="issuer", foreign_keys='Certificate.issuer_id')
+        "Certificate", back_populates="issuer", foreign_keys="Certificate.issuer_id"
+    )
 
-    # [AUTOMATIC/COMPUTED FIELDS] ######################################################################################
+    # [AUTOMATIC/COMPUTED FIELDS] ########################################################
     time_created = Column(DateTime(timezone=True), server_default=func.now())
     time_updated = Column(DateTime(timezone=True), onupdate=func.now())
 
@@ -158,7 +193,6 @@ class Profile(MixinAsDict, Base):
         """automatically computed by python from db model"""
         return f"{self.first_name} {self.last_name}"
 
-
     @hybrid_property
     def decoded_job_history(self):
         job_history = []
@@ -167,12 +201,14 @@ class Profile(MixinAsDict, Base):
                 fields = entry.split(":")
                 if len(fields) != 4:
                     continue
-                job_history.append(JobHistoryElement(
-                    employer=fields[0],
-                    position=fields[1],
-                    date_from=fields[2],
-                    date_to=fields[3],
-                ))
+                job_history.append(
+                    JobHistoryElement(
+                        employer=fields[0],
+                        position=fields[1],
+                        date_from=fields[2],
+                        date_to=fields[3],
+                    )
+                )
         return job_history
 
     def __repr__(self) -> str:
@@ -185,7 +221,10 @@ class Profile(MixinAsDict, Base):
         encoded_history = ""
         for hist in job_history:
             # TODO abstraction
-            encoded_history = f"{encoded_history}{hist.employer}:{hist.position}:{hist.date_from}:{hist.date_to},"
+            encoded_history = (
+                f"{encoded_history}{hist.employer}:{hist.position}:"
+                + f"{hist.date_from}:{hist.date_to},"
+            )
         if len(encoded_history) > 0:
             encoded_history = encoded_history[:-1]  # strip trailing comma
         else:
@@ -208,46 +247,64 @@ class SocialNetworkType(enum.Enum):
 class SocialNetwork(MixinAsDict, Base):
     """database model"""
 
-    __tablename__ = 'social_network'
+    __tablename__ = "social_network"
 
-    # [MANAGED FIELDS] #################################################################################################
-    profile_id: Mapped[int] = mapped_column(ForeignKey(Profile.id, ondelete='CASCADE'), primary_key=True)
+    # [MANAGED FIELDS] ###################################################################
+    profile_id: Mapped[int] = mapped_column(
+        ForeignKey(Profile.id, ondelete="CASCADE"), primary_key=True
+    )
     type = Column(Enum(SocialNetworkType), primary_key=True)
 
-    # [USER CHANGEABLE FIELDS] #########################################################################################
+    # [USER CHANGEABLE FIELDS] ###########################################################
     handle: Mapped[Optional[str]] = mapped_column(String(40), nullable=True)
     link: Mapped[Optional[str]] = mapped_column(String(1024), nullable=True)
 
-    # [RELATIONAL FK FIELDS] ###########################################################################################
-    profile: Mapped["Profile"] = relationship("Profile", back_populates="social_networks", cascade="all,delete")
+    # [RELATIONAL FK FIELDS] #############################################################
+    profile: Mapped["Profile"] = relationship(
+        "Profile", back_populates="social_networks", cascade="all,delete"
+    )
 
     __table_args__ = (
-        (CheckConstraint('(handle IS NULL) <> (link IS NULL)', name='handle_xor_link')),
+        (CheckConstraint("(handle IS NULL) <> (link IS NULL)", name="handle_xor_link")),
     )
 
     def __repr__(self) -> str:
-        return f"SocialNetwork(profile_id={self.profile_id!r}, type={self.type!r}, " \
-               f"fullname={self.handle!r}, link={self.link!r})"
+        return (
+            f"SocialNetwork(profile_id={self.profile_id!r}, type={self.type!r}, "
+            f"fullname={self.handle!r}, link={self.link!r})"
+        )
 
 
 class DepartmentMembership(MixinAsDict, Base):
     """database relation"""
-    __tablename__ = 'department_membership'
 
-    # [MANAGED FIELDS] #################################################################################################
+    __tablename__ = "department_membership"
+
+    # [MANAGED FIELDS] ###################################################################
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
 
-    # [SUPERVISOR CHANGEABLE FIELDS] ###################################################################################
+    # [SUPERVISOR CHANGEABLE FIELDS] #####################################################
     role = Column(Enum(Role), nullable=False)
     time_from = Column(DateTime, nullable=True)
     time_to = Column(DateTime, nullable=True)
 
-    # [RELATIONAL FK FIELDS] ###########################################################################################
-    profile_id: Mapped[int] = mapped_column(ForeignKey(Profile.id, ondelete='CASCADE'), nullable=False)
-    profile: Mapped["Profile"] = relationship("Profile", back_populates="department_memberships", cascade="all,delete")
+    # [RELATIONAL FK FIELDS] #############################################################
+    profile_id: Mapped[int] = mapped_column(
+        ForeignKey(Profile.id, ondelete="CASCADE"), nullable=False
+    )
+    profile: Mapped["Profile"] = relationship(
+        "Profile", back_populates="department_memberships", cascade="all,delete"
+    )
 
-    department_handle: Mapped[str] = mapped_column(ForeignKey(Department.handle), nullable=False)
-    department: Mapped["Department"] = relationship("Department", back_populates="memberships")
+    department_handle: Mapped[str] = mapped_column(
+        ForeignKey(Department.handle), nullable=False
+    )
+    department: Mapped["Department"] = relationship(
+        "Department", back_populates="memberships"
+    )
 
     def __repr__(self) -> str:
-        return f"DepartmentMembership(id={self.profile_id!r} ({self.profile.full_name}), department_handle={self.department_handle!r})"
+        return (
+            f"DepartmentMembership(id={self.profile_id!r} "
+            + f"({self.profile.full_name}), department_handle={self.department_handle!r})"
+        )

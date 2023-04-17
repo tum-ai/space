@@ -1,13 +1,24 @@
-from fastapi import FastAPI
+from fastapi import (
+    FastAPI,
+)
+from sqlalchemy import (
+    Engine,
+    create_engine,
+)
+from sqlalchemy.orm import (
+    scoped_session,
+    sessionmaker,
+)
 
-from profiles.db_views import init_views
-from projects.db_models import Base
-
-from sqlalchemy import create_engine, Engine
-from sqlalchemy.orm import scoped_session, sessionmaker, Session
-
-from main import log
-
+from main import (
+    log,
+)
+from profiles.db_views import (
+    init_views,
+)
+from projects.db_models import (
+    Base,
+)
 
 DBSession = scoped_session(sessionmaker())
 
@@ -20,7 +31,7 @@ async def setup_db_client(running_app: FastAPI):
     running_app.state.sql_engine: Engine = create_engine(
         # TODO env variables
         "postgresql://supertokens_user:somePassword@auth-db:5432/supertokens",
-        echo=True
+        echo=True,
     )
 
     # create/initialize tables
@@ -40,7 +51,7 @@ def setup_db_client_appless() -> Engine:
     sql_engine: Engine = create_engine(
         # TODO env variables
         "postgresql://supertokens_user:somePassword@auth-db:5432/supertokens",
-        echo=True
+        echo=True,
     )
 
     return sql_engine
@@ -49,4 +60,3 @@ def setup_db_client_appless() -> Engine:
 async def close_db_client(running_app: FastAPI):
     log.info("Closing sqlalchemy/postgres database connection")
     # nothing to do
-

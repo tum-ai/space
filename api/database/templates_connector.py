@@ -1,15 +1,21 @@
-from typing import List, Union
+from typing import (
+    List,
+    Union,
+)
+
+from template.models import (
+    TemplateMessage,
+)
 
 # from beanie import PydanticObjectId
 
-from template.models import TemplateMessage
 
 templates_collection = TemplateMessage
 
 
-##############################################################################################
-# TODO UPDATE ALL FUNCTIONS BELOW! ###########################################################
-##############################################################################################
+##########################################################################################
+# TODO UPDATE ALL FUNCTIONS BELOW! #######################################################
+##########################################################################################
 
 
 async def retrieve_all_template_messages() -> List[TemplateMessage]:
@@ -36,7 +42,7 @@ async def add_template_message(
 
 
 async def delete_template_message(
-        # template_message_id: PydanticObjectId
+    # template_message_id: PydanticObjectId
 ) -> bool:
     # template_message = await templates_collection.get(template_message_id)
     # if template_message:
@@ -49,9 +55,8 @@ async def delete_template_message(
 
 async def update_template_message_data(
     # template_message_id: PydanticObjectId,
-    data: dict
+    data: dict,
 ) -> Union[bool, TemplateMessage]:
-
     # update_body = {k: v for k, v in data.items() if v is not None}
     # update_query = {"$set": {field: value for field, value in update_body.items()}}
     # template_message = await templates_collection.get(template_message_id)

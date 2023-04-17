@@ -1,15 +1,28 @@
-from fastapi import APIRouter, Body, Depends
+from fastapi import (
+    APIRouter,
+    Depends,
+)
+from supertokens_python.recipe.session import (
+    SessionContainer,
+)
+from supertokens_python.recipe.session.framework.fastapi import (
+    verify_session,
+)
 
-from database.templates_connector import *
-from template.models import Response
+from database.templates_connector import (
+    retrieve_all_template_messages,
+)
+from template.models import (
+    Response,
+)
 
 # All routes will have the prefix "/template"
 router = APIRouter()
 
 
-##############################################################################################
-# TODO UPDATE ALL FUNCTIONS BELOW! ###########################################################
-##############################################################################################
+##########################################################################################
+# TODO UPDATE ALL FUNCTIONS BELOW! #######################################################
+##########################################################################################
 
 
 # Example of a public route
@@ -32,7 +45,8 @@ async def list_all_templates():
     "/", response_description="Add a new template message", response_model=Response
 )
 async def add_template(
-        # template: TemplateMessage = Body(...), session: SessionContainer = Depends(verify_session())
+    # template: TemplateMessage = Body(...),
+    session: SessionContainer = Depends(verify_session()),
 ):
     # new_template_message = await add_template_message(template)
     return {
@@ -42,6 +56,7 @@ async def add_template(
         # "data": new_template_message,
     }
 
+
 # Example of a protected route
 @router.get(
     "/{id_}",
@@ -49,15 +64,18 @@ async def add_template(
     response_model=Response,
 )
 async def show_template(
-        # id_: PydanticObjectId, session: SessionContainer = Depends(verify_session())
+    # id_: PydanticObjectId,
+    session: SessionContainer = Depends(verify_session()),
 ):
     # template_message = await retrieve_template_message(id_)
     # if template_message:
     #     return {
     #         "status_code": 200,
     #         "response_type": "success",
-    #         "description": f"Template message retrieved successfully. Requested by {session.get_user_id()}. User has"
-    #                        f" the following roles: {(await get_roles_for_user(session.get_user_id())).roles}",
+    #         "description": f"Template message retrieved successfully. "+\
+    #               f"Requested by {session.get_user_id()}. User has"
+    #               f" the following roles: "+\
+    #   	        f"{(await get_roles_for_user(session.get_user_id())).roles}",
     #         "data": template_message,
     #     }
     return {
@@ -67,5 +85,7 @@ async def show_template(
         "data": None,
     }
 
+
 # TODO: Example of a protected admin route
-# https://supertokens.com/docs/thirdpartyemailpassword/common-customizations/sessions/claims/claim-validators#adding-a-validator-check-to-a-specific-route
+# https://supertokens.com/docs/thirdpartyemailpassword/common-customizations/sessions/
+# claims/claim-validators#adding-a-validator-check-to-a-specific-route

@@ -12,6 +12,5 @@ supertokens_python
 pydantic_computed
 python-dateutil
 psycopg2-binary
-psycopg2
 sqlalchemy
 sqlalchemy-utils

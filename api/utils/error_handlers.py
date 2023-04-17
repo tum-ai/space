@@ -1,7 +1,13 @@
-from typing import Callable
+from functools import (
+    wraps,
+)
+from typing import (
+    Callable,
+)
 
-from functools import wraps
-from fastapi import HTTPException
+from fastapi import (
+    HTTPException,
+)
 
 
 def error_handlers(func: Callable):

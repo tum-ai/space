@@ -1,8 +1,15 @@
 import logging
-from logging.config import dictConfig
-from config import CONFIG
+from logging.config import (
+    dictConfig,
+)
 
-from pydantic import BaseModel
+from pydantic import (
+    BaseModel,
+)
+
+from config import (
+    CONFIG,
+)
 
 
 class LogConfig(BaseModel):

@@ -1,8 +1,13 @@
-from typing import Optional, Any
+from enum import (
+    Enum,
+)
+from typing import (
+    Optional,
+)
 
-from pydantic import BaseModel
-
-from enum import Enum
+from pydantic import (
+    BaseModel,
+)
 
 
 class Language(Enum):
@@ -30,7 +35,8 @@ class TemplateMessage:
         }
 
     class Settings:
-        # This means that the collection name will be "templates" within the "tumai-space" database
+        # This means that the collection name will be "templates"
+        # within the "tumai-space" database
         name = "templates"
 
 
@@ -67,22 +73,6 @@ class CustomResponse(BaseModel):
                 "response_type": "success",
                 "description": "Operation successful",
                 "data": "+++",
-            }
-        }
-
-
-class BaseResponse(BaseModel):
-    status_code: int
-    response_type: str
-    description: str
-
-    class Config:
-        schema_extra = {
-            "example": {
-                "status_code": 200,
-                "response_type": "success",
-                "description": "Operation successful",
-                "data": "undefined format...",
             }
         }
 
