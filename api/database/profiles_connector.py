@@ -264,7 +264,6 @@ def delete_db_profiles(sql_engine: Engine, profile_ids: List[int]) -> List[int]:
         db_session.execute(stmt)
         db_session.commit()
         return profile_ids
-    return []
 
 
 def delete_db_profile(sql_engine: Engine, profile_id: int) -> bool:
@@ -274,57 +273,6 @@ def delete_db_profile(sql_engine: Engine, profile_id: int) -> bool:
         db_session.execute(stmt)
         db_session.commit()
         return True
-    return False
-
-
-##############################################################################################
-# TODO UPDATE ALL FUNCTIONS BELOW! ###########################################################
-##############################################################################################
-
-
-async def retrieve_profile(
-        # profile_id: PydanticObjectId,
-) -> Union[bool, Profile]:
-    # profile = await Profile.get(profile_id)
-    # if profile:
-    #     return profile
-    # else:
-    #     return False
-    return False
-
-
-# TODO
-async def delete_profile(
-        # profile_id: PydanticObjectId
-) -> bool:
-    # retrieved_profile = await Profile.get(profile_id)
-    # if retrieved_profile:
-    #     await retrieved_profile.delete()
-    #     log.debug(f"Deleted profile with id {profile_id}")
-    #     return True
-    # else:
-    #     log.debug(f"Could not delete profile with id {profile_id} - profile not found.")
-    #     return False
-
-    # await Profile.get(profile_id).delete()
-    return False
-
-
-# batched operations ---------------------------------------------------------#
-async def retrieve_public_profiles(
-        department: Department,
-        role: Role
-):  # -> List[PublicProfile] TODO
-    # query = {}
-    # if department:
-    #     query["department"] = department
-    # if role:
-    #     query["role"] = role
-    # profiles = await Profile.find(
-    #     query
-    # ).project(PublicProfile).to_list()
-    # return profiles
-    return []
 
 
 ### TODO: debug #########
@@ -351,13 +299,3 @@ def debug_db_query(sql_engine):
         )
         db_session.add(obj)
         db_session.commit()
-
-    # return ""
-
-    # .id.label('membership_id'),
-    # DepartmentMembership.role,
-    # DepartmentMembership.time_from,
-    # DepartmentMembership.time_to,
-    # DepartmentMembership.profile_id,
-    # DepartmentMembership.department_handle
-    # ],).select_from(DepartmentMembership)
