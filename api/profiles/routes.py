@@ -296,11 +296,11 @@ async def get_profile(request: Request, profile_id: str) -> ResponseProfile:
     "/profile/",
     response_description="Retrieve the complete profile of the user "
     + "currently logged in with SuperTokens",
-    response_model=ProfileOut,
+    response_model=ResponseProfile,
 )
 async def show_current_profile(
     request: Request, session: SessionContainer = Depends(verify_session())
-) -> ProfileOut:
+) -> ResponseProfile:
     supertokens_user_id = session.get_user_id()
     db_profile: Profile = retrieve_db_profile_by_supertokens_id(
         request.app.state.sql_engine, supertokens_user_id
