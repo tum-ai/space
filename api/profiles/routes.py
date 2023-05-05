@@ -398,7 +398,6 @@ async def update_profile(
 @async_error_handlers
 async def update_current_profile(
     request: Request,
-    profile_id: int,
     data: Annotated[ProfileInUpdate, Body(embed=True)],
     session: SessionContainer = Depends(verify_session()),
 ) -> ResponseProfile:
