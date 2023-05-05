@@ -23,11 +23,6 @@ AUTH:
         - 'http://localhost:3001'
     USERS_DASHBOARD_API_KEY: 'someApiKey'
 #-------------------------------------------------------------------------------#
-MONGODB:
-    MONGODB_HOST: 'mongo.db'
-    # MONGODB_HOST: 'localhost'
-    MONGODB_PORT: '27017'
-#-------------------------------------------------------------------------------#
 LOGGER:
     LOGGER_NAME: 'tumai-space-global'
     LOG_LEVEL: 'DEBUG'

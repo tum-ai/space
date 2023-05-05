@@ -19,8 +19,10 @@ class Config:
 
     def get(self, config_field: str):
         """
-        This function returns the value of the config field. If the config field is not found, it will throw an error.
-        @param config_field: The name of the config field. All the fields are listed in self.config_dict.
+        This function returns the value of the config field.
+        If the config field is not found, it will throw an error.
+        @param config_field: The name of the config field.
+        All the fields are listed in self.config_dict.
         """
         return getattr(self, config_field)
 

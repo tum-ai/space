@@ -24,47 +24,11 @@ services:
             - reverse-net
             - backend-net
 
-    mongodb:
-        image: 'mongo:latest'
-        restart: unless-stopped
-        hostname: mongo.db
-        container_name: mongodb
-        environment:
-            MONGO_INITDB_ROOT_USERNAME: admin
-            MONGO_INITDB_ROOT_PASSWORD: password
-        ports: # enable enable this for debugging!
-            # TODO remove on production
-            - '27017:27017'
-        volumes:
-            - .data/mongodb:/data/db
-        networks:
-            - db-net
-
-    mongo-express: # TODO remove on production
-        image: 'mongo-express:latest'
-        restart: unless-stopped
-        hostname: mongo.express
-        container_name: mongo-express
-        depends_on:
-            - mongodb
-        ports: # TODO remove on production
-            - '8082:8081'
-        environment:
-            ME_CONFIG_MONGODB_ADMINUSERNAME: 'admin'
-            ME_CONFIG_MONGODB_ADMINPASSWORD: 'password'
-            ME_CONFIG_MONGODB_URL: 'mongodb://admin:password@mongo.db:27017/'
-        networks:
-            - db-net
-
-    # TODO: check the volumes behaviour for auth-db and supertokens
     auth-db:
         image: postgres:14-alpine
         restart: unless-stopped
         hostname: auth.db
         container_name: auth-db
-        # ports:  # enable enable this for debugging!
-        # TODO remove on production
-        #   - "5432:5432"
         volumes:
             - .data/authDB/postgresql:/var/lib/postgresql/data/
         environment:
@@ -79,6 +43,19 @@ services:
         networks:
             - db-net
 
+    auth-db-explorer:
+        # TODO remove in production
+        image: dpage/pgadmin4
+        restart: unless-stopped
+        container_name: auth-db-explorer
+        environment:
+            PGADMIN_DEFAULT_EMAIL: "admin@admin.com"
+            PGADMIN_DEFAULT_PASSWORD: "somePassword"
+        ports:
+           - "8081:80"
+        networks:
+            - db-net
+
     supertokens:
         image: 'registry.supertokens.io/supertokens/supertokens-postgresql:4.2'
         restart: unless-stopped
@@ -86,8 +63,8 @@ services:
         container_name: supertokens
         depends_on:
             - auth-db
-        ports: # enable enable this for debugging!
-            # TODO remove on production
+        ports:
+            # TODO remove in production
             - '3567:3567'
         environment:
             POSTGRESQL_CONNECTION_URI: 'postgresql://supertokens_user:somePassword@auth-db:5432/supertokens'
@@ -100,6 +77,36 @@ services:
             interval: 10s
             timeout: 5s
             retries: 5
+
+    # [CERTIFICATION SERVICE] #######################################################
+    
+    # serve static media files (for ceritification template rendering)
+    space.files:
+        image: httpd:latest
+        container_name: space.files
+        hostname: space.files
+        ports:
+            - '9990:80'
+        volumes:
+            - ./.fileserver:/usr/local/apache2/htdocs
+        networks:
+            - backend-net
+    
+    certification-api:
+        image: tum-ai-space-certification-api
+        build: ./certification-api
+        restart: unless-stopped
+        hostname: certify.tum-ai-dev.com
+        container_name: certification-api
+        ports:  # TODO remove in production
+          - 3008:80
+        depends_on:
+            - space.files
+        volumes:
+            - ./certification-api/src:/app/src/
+            - ./certification-api/templates:/app/templates/
+        networks:
+            - backend-net
 
     # [BACKEND API] #######################################################
     tum-ai-space-api:
@@ -114,10 +121,10 @@ services:
             - ./api/:/code
             # - ./entrypoint.sh:/data/entrypoint.sh
         # ports: # enable enable this for debugging!
-        # TODO remove on production
+        # TODO remove in production
         # - 15900:15900
         depends_on:
-            - mongo-express
+            # - mongo-express
             - supertokens
         # healthcheck:
         #   test: ["CMD", "curl", "-f", "http://localhost:15900"]

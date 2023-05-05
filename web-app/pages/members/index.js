@@ -110,7 +110,7 @@ const MembersList = observer(() => {
 						placeholder={'Sort by'}
 						data={[
 							{ key: 'none', value: null },
-							{ key: 'name', value: 'name' },
+							{ key: 'name', value: 'first_name' },
 							{ key: 'department', value: 'department' },
 						]}
 						selectedItem={{
@@ -150,17 +150,19 @@ function Member({ member }) {
 					</div>
 				)}
 				{/* profile name and department */}
-				<div className='flex flex-col lg:w-1/4'>
-					<div className='font-bold'>{member.name}</div>
+				<div className='flex flex-col lg:w-1/4 col-span-2'>
+					<div className='font-bold'>
+						{member.first_name + ' ' + member.last_name}
+					</div>
 					<div
 						className={' font-light'}
 						style={{
 							color: DEPARTMENTTOCOLOR[
-								member.department.toLowerCase()
+								member?.department?.toLowerCase()
 							],
 						}}
 					>
-						{member.department}
+						{member.department || '-'}
 					</div>
 				</div>
 				{/* role */}
@@ -179,7 +181,7 @@ function Member({ member }) {
 				</div>
 			</div>
 			<div className='flex items-center justify-end w-auto'>
-				<Link href={'/members/' + member._id}>
+				<Link href={'/members/' + member.id}>
 					<Icon
 						name={'FaExternalLinkAlt'}
 						className='p-2 rounded hover:scale-105 bg-gray-100 dark:bg-black'

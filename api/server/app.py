@@ -1,19 +1,40 @@
 import time
 
-from config import CONFIG
-from database.setup import close_db_client, setup_db_client
-from fastapi import FastAPI
+from fastapi import (
+    FastAPI,
+)
+from starlette.middleware.cors import (
+    CORSMiddleware,
+)
+from supertokens_python import (
+    get_all_cors_headers,
+)
+from supertokens_python.framework.fastapi import (
+    get_middleware,
+)
 
-from main import log
+from certification.routes import router as CertificationRouter
+from config import (
+    CONFIG,
+)
+from database.setup import (
+    close_db_client,
+    setup_db_client,
+)
+from main import (
+    log,
+)
 from profiles.routes import router as ProfilesRouter
-from security.auth import create_auth_roles, init_server_auth
-from starlette.middleware.cors import CORSMiddleware
-from supertokens_python import get_all_cors_headers
-from supertokens_python.framework.fastapi import get_middleware
+from security.auth import (
+    create_auth_roles,
+    init_server_auth,
+)
 from template.routes import router as TemplateRouter
 
-log.warn("BUGFIX. Sleeping 4 seconds for supertokens to finish starting up as Docker doesn't wait long enough by "
-         "default!")
+log.warn(
+    "BUGFIX. Sleeping 4 seconds for supertokens to finish starting "
+    + "up as Docker doesn't wait long enough by default!"
+)
 time.sleep(4)
 
 
@@ -65,5 +86,8 @@ async def root():
 
 # Include here all the routes from the different modules
 app.include_router(TemplateRouter, prefix="/template", tags=["Template"])
+
+app.include_router(CertificationRouter, prefix="/certification", tags=["Certification"])
+
 # Prefix defined in router
 app.include_router(ProfilesRouter, tags=["Profile"])

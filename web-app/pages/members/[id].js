@@ -30,6 +30,7 @@ const Profile = observer(() => {
 	const memberModel = rootModel.memberModel;
 	useEffect(() => {
 		if (id) {
+			// TODO: id=me needs a different endpoint!
 			memberModel.fetchMember(id);
 		}
 	}, [id]);
@@ -82,7 +83,9 @@ const Profile = observer(() => {
 						</div>
 					)}
 					<div className='flex flex-col space-y-4 lg:space-y-0 lg:flex-row lg:space-x-4 lg:items-end'>
-						<div className='font-thin text-6xl'>{profile.name}</div>
+						<div className='font-thin text-6xl'>
+							{profile.first_name + ' ' + profile.last_name}
+						</div>
 						{profile.socialNetworks &&
 							profile.socialNetworks.map((sn) => (
 								<a href={sn.link}>
@@ -114,7 +117,7 @@ const Profile = observer(() => {
 							],
 						}}
 					>
-						{profile.department}
+						{profile.department || '-'}
 					</div>
 				</div>
 				{/* degree */}
@@ -123,7 +126,7 @@ const Profile = observer(() => {
 						DEGREE
 					</div>
 					<div className='font-light text-base'>
-						{profile.degreeLevel + ' '} {profile.degreeName}
+						{profile.degree_level + ' '} {profile.degree_name}
 					</div>
 				</div>
 				{/* semester */}
@@ -132,7 +135,7 @@ const Profile = observer(() => {
 						SEMESTER
 					</div>
 					<div className='font-light text-base'>
-						{profile.degreeSemester}
+						{profile.degree_semester || '-'}
 					</div>
 				</div>
 				{/* university */}
@@ -215,11 +218,20 @@ const ProfileEditor = observer(() => {
 					className='flex flex-col gap-4 lg:grid lg:grid-cols-2 lg:space-y-0 lg:gap-8'
 				>
 					<Input
-						label='Full name'
+						label='First name'
 						type='text'
-						id='name'
-						name='name'
-						value={editorProfile.name}
+						id='first_name'
+						name='first_name'
+						value={editorProfile.first_name}
+						onChange={handleChange}
+						required={true}
+					/>
+					<Input
+						label='Last name'
+						type='text'
+						id='last_name'
+						name='last_name'
+						value={editorProfile.last_name}
 						onChange={handleChange}
 						required={true}
 					/>
@@ -244,27 +256,27 @@ const ProfileEditor = observer(() => {
 					<Input
 						label='Degree level'
 						type='text'
-						id='degreeLevel'
-						name='degreeLevel'
-						value={editorProfile.degreeLevel}
+						id='degree_level'
+						name='degree_level'
+						value={editorProfile.degree_level}
 						onChange={handleChange}
 						required={true}
 					/>
 					<Input
 						label='Degree name'
 						type='text'
-						id='degreeName'
-						name='degreeName'
-						value={editorProfile.degreeName}
+						id='degree_name'
+						name='degree_name'
+						value={editorProfile.degree_name}
 						onChange={handleChange}
 						required={true}
 					/>
 					<Input
 						label='Semester'
 						type='number'
-						id='degreeSemester'
-						name='degreeSemester'
-						value={editorProfile.degreeSemester}
+						id='degree_semester'
+						name='degree_semester'
+						value={editorProfile.degree_semester}
 						onChange={handleChange}
 						required={true}
 					/>
