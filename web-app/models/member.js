@@ -32,7 +32,7 @@ export class MemberModel {
 	// API FUNCTIONS
 	async fetchMember(id) {
 		try {
-			const profile = await axios('/profile/' + id);
+			const profile = await axios('/profile/' + (id == 'me' ? '' : id));
 			this.member = profile?.data?.data;
 			this.loading = false;
 			this.error = false;
@@ -53,8 +53,8 @@ export class MemberModel {
 					obj[key] = this.editorMember[key];
 					return obj;
 				}, {});
-			const editResult = await axios('/profile/me', {
-				data: changes,
+			const editResult = await axios('/profile/', {
+				data: this.editorMember,
 				method: 'PATCH',
 			});
 			this.member = { ...this.member, ...editResult.data.data };

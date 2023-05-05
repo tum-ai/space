@@ -1,23 +1,34 @@
-from typing import List, Optional
+from typing import (
+    List,
+    Optional,
+)
 
 import yaml
 from supertokens_python.recipe.userroles.asyncio import (
-    create_new_role_or_add_permissions,
     add_role_to_user,
+    create_new_role_or_add_permissions,
     get_permissions_for_role,
     get_users_that_have_role,
 )
-from supertokens_python.recipe.userroles.interfaces import UnknownRoleError
-from main import log
+from supertokens_python.recipe.userroles.interfaces import (
+    UnknownRoleError,
+)
+
+from main import (
+    log,
+)
 
 
 # ---------------------------------------------------------------------------#
 def parse_roles(file_path: str) -> dict:
     """
-    Parses a YAML file containing roles and permissions and returns a dictionary of roles and permissions.
+    Parses a YAML file containing roles and permissions and returns
+    a dictionary of roles and permissions.
     :param file_path: path to the YAML file
     :return: dictionary of roles and permissions.
-    Example: {"admin": {"description": "Admin role", "permissions": ["templates.read.all", "templates.write.all"]}}
+    Example: {
+        "admin": {"description": "Admin role",
+            "permissions": ["templates.read.all", "templates.write.all"]}}
     """
     try:
         data = yaml.safe_load(open(file_path))
@@ -64,8 +75,9 @@ async def create_roles():
         permissions = role_data["permissions"]
         if not permissions:
             log.warn(
-                f'"{role_name}" role has no permissions assigned. It is recommended to assign at least one '
-                f"permission to a role."
+                f"{role_name} role has no permissions assigned. "
+                + "It is recommended to assign at least one "
+                + "permission to a role."
             )
         log.debug(f'Creating role "{role_name}" with permissions: {permissions}')
         res = await create_new_role_or_add_permissions(role_name, permissions)
@@ -87,10 +99,10 @@ async def assign_role_by_user_id(user_id: str, role_name: str = "DEFAULT"):
         log.error("Unknown role error: %s", res)
         raise ValueError(f"Unknown role: {role_name}")
     if res.did_user_already_have_role:
-        log.info(f'User {user_id} already had {role_name} role')
+        log.info(f"User {user_id} already had {role_name} role")
     else:
         log.info(
-            f'User {user_id} was assigned {role_name} role. Assigned permissions:'
+            f"User {user_id} was assigned {role_name} role. Assigned permissions:"
             f" {(await get_permissions_for_role(role_name)).permissions}"
         )
 

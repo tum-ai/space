@@ -8,6 +8,7 @@ install:
 	# next js
 	curl -sL https://deb.nodesource.com/setup_14.x | sudo -E /bin/bash
 	sudo apt-get install nodejs -y
+	brew install postgresql@15
 	
 	# python3.10
 	printf "${RED}TODO: Please intall Python3.10 ${NC}\n"

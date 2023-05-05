@@ -1,30 +1,62 @@
-from beanie import init_beanie
-from config import CONFIG
-from fastapi import FastAPI
-from motor.motor_asyncio import AsyncIOMotorClient
-from profiles.models import Profile
-from template.models import TemplateMessage
+from fastapi import (
+    FastAPI,
+)
+from sqlalchemy import (
+    Engine,
+    create_engine,
+)
+from sqlalchemy.orm import (
+    scoped_session,
+    sessionmaker,
+)
 
-# from server.main import logger
+from main import (
+    log,
+)
+from profiles.db_views import (
+    init_views,
+)
+from projects.db_models import (
+    Base,
+)
 
-
-
-document_models = [TemplateMessage, Profile]
+DBSession = scoped_session(sessionmaker())
 
 
 async def setup_db_client(running_app: FastAPI):
     # TODO: set up secrets
-    # TODO: reuse CONFIG from config.py
-    # logger.info("Setting up database connection")
-    running_app.state.mongodb_client = AsyncIOMotorClient(
-        "mongodb://admin:password@" + CONFIG.get("MONGODB_HOST") + ":" + CONFIG.get("MONGODB_PORT") + "/"
+
+    log.info("Setting up sqlalchemy/postgres database connection")
+    # sqlalchemy: postgres db
+    running_app.state.sql_engine: Engine = create_engine(
+        # TODO env variables
+        "postgresql://supertokens_user:somePassword@auth-db:5432/supertokens",
+        echo=True,
     )
-    await init_beanie(
-        database=running_app.state.mongodb_client["tumai-space"],
-        document_models=document_models,
+
+    # create/initialize tables
+    DBSession.configure(bind=running_app.state.sql_engine)
+    Base.metadata.bind = running_app.state.sql_engine
+
+    # create views
+    init_views(running_app.state.sql_engine, Base)
+
+    Base.metadata.create_all(running_app.state.sql_engine, checkfirst=True)
+
+
+def setup_db_client_appless() -> Engine:
+    log.info("Setting up sqlalchemy/postgres database connection")
+
+    # sqlalchemy: postgres db
+    sql_engine: Engine = create_engine(
+        # TODO env variables
+        "postgresql://supertokens_user:somePassword@auth-db:5432/supertokens",
+        echo=True,
     )
+
+    return sql_engine
 
 
 async def close_db_client(running_app: FastAPI):
-    # logger.info("Closing database connection")
-    running_app.state.mongodb_client.close()
+    log.info("Closing sqlalchemy/postgres database connection")
+    # nothing to do
