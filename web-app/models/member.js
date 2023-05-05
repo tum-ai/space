@@ -32,7 +32,7 @@ export class MemberModel {
 	// API FUNCTIONS
 	async fetchMember(id) {
 		try {
-			const profile = await axios('/profile/' + id);
+			const profile = await axios('/profile/' + (id == 'me' ? '' : id));
 			this.member = profile?.data?.data;
 			this.loading = false;
 			this.error = false;

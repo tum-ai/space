@@ -83,7 +83,9 @@ const Profile = observer(() => {
 						</div>
 					)}
 					<div className='flex flex-col space-y-4 lg:space-y-0 lg:flex-row lg:space-x-4 lg:items-end'>
-						<div className='font-thin text-6xl'>{profile.name}</div>
+						<div className='font-thin text-6xl'>
+							{profile.first_name + ' ' + profile.last_name}
+						</div>
 						{profile.socialNetworks &&
 							profile.socialNetworks.map((sn) => (
 								<a href={sn.link}>
@@ -115,7 +117,7 @@ const Profile = observer(() => {
 							],
 						}}
 					>
-						{profile.department}
+						{profile.department || '-'}
 					</div>
 				</div>
 				{/* degree */}
@@ -124,7 +126,7 @@ const Profile = observer(() => {
 						DEGREE
 					</div>
 					<div className='font-light text-base'>
-						{profile.degreeLevel + ' '} {profile.degreeName}
+						{profile.degree_level + ' '} {profile.degree_name}
 					</div>
 				</div>
 				{/* semester */}
@@ -133,7 +135,7 @@ const Profile = observer(() => {
 						SEMESTER
 					</div>
 					<div className='font-light text-base'>
-						{profile.degreeSemester}
+						{profile.degree_semester || '-'}
 					</div>
 				</div>
 				{/* university */}
