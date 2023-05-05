@@ -218,11 +218,20 @@ const ProfileEditor = observer(() => {
 					className='flex flex-col gap-4 lg:grid lg:grid-cols-2 lg:space-y-0 lg:gap-8'
 				>
 					<Input
-						label='Full name'
+						label='First name'
 						type='text'
-						id='name'
-						name='name'
-						value={editorProfile.name}
+						id='first_name'
+						name='first_name'
+						value={editorProfile.first_name}
+						onChange={handleChange}
+						required={true}
+					/>
+					<Input
+						label='Last name'
+						type='text'
+						id='last_name'
+						name='last_name'
+						value={editorProfile.last_name}
 						onChange={handleChange}
 						required={true}
 					/>
@@ -247,27 +256,27 @@ const ProfileEditor = observer(() => {
 					<Input
 						label='Degree level'
 						type='text'
-						id='degreeLevel'
-						name='degreeLevel'
-						value={editorProfile.degreeLevel}
+						id='degree_level'
+						name='degree_level'
+						value={editorProfile.degree_level}
 						onChange={handleChange}
 						required={true}
 					/>
 					<Input
 						label='Degree name'
 						type='text'
-						id='degreeName'
-						name='degreeName'
-						value={editorProfile.degreeName}
+						id='degree_name'
+						name='degree_name'
+						value={editorProfile.degree_name}
 						onChange={handleChange}
 						required={true}
 					/>
 					<Input
 						label='Semester'
 						type='number'
-						id='degreeSemester'
-						name='degreeSemester'
-						value={editorProfile.degreeSemester}
+						id='degree_semester'
+						name='degree_semester'
+						value={editorProfile.degree_semester}
 						onChange={handleChange}
 						required={true}
 					/>

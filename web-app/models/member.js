@@ -54,7 +54,7 @@ export class MemberModel {
 					return obj;
 				}, {});
 			const editResult = await axios('/profile/', {
-				data: changes,
+				data: this.editorMember,
 				method: 'PATCH',
 			});
 			this.member = { ...this.member, ...editResult.data.data };
