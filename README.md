@@ -56,7 +56,18 @@ To verify the installation and setup try out the following:
 - Visit http://api.tum-ai-dev.com:15950/docs to see the dashboard of the available routes.
 
 ### Working on a Linear ticket
-
+Working with Linear tickets is very similar to working with GitHub issues.
+It works as follows:
+1. Start by clicking on the chosen ticket
+2. Click on the branch icon in the top left corner to copy the branch name. This is important that Linear can properly track ticket status and progress
+3. Now locate the space repository and create a new branch
+  ```bash
+  git switch -c <branch-name>
+  ```
+4. Now push the branch and changes at first with
+  ```bash
+  git push --set-upstream origin <branch-name>
+  ```
 
 ### Technical Stack
 In the beginning of the project the team formed and chose a technical stack. This will not be changed and is a final decision. 
