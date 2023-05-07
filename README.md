@@ -1,46 +1,14 @@
-# TUM.ai Space 💫
+# TUM.ai space 🚀
+...
 
-``` markdown
-TODOs: 
-1. Rewrite this README.md
-2. Add a proper logging
-```
+## Organization & team
+Project planning is done over this [Linear project](https://linear.app/tum-ai/project/tumai-space-5b8716e29acb). All relevant issues and tasks are placed there, the GitHub issues in this repository are outdated and will slowly be removed.
 
-
-The "TUM.ai Space" System is a unified system for the management team to observe, edit and generate statistics regarding members activities (projects organisation and participation, participations in signature projects), and availabilities. And manage the current projects, applications and notifications.
-
-From the member point of view, this a way to track, display and have a confirmation from the management team for what you did inside TUM.ai. As well as, observe current projects, apply to them and become a subscriber to relevant notifications.
-
-It essentially consists of multiple subsystems
-- Profile Service
-- Application Service
-- Booking Service
-- Projects Service
-
-Development will start with the Profile Parts subsystem.
-
-Profile Service: A replacement for the current Notion-based member database. Essentially just a new way of showing member information and a history/track of their time at TUM.ai
-
-Application Service: A new way of applying for signature & external projects through the Profile System.
-Booking Service: Makes booking and applying to projects as well as later getting certification upon successful completion easier, central and unified (needs authentication for that).
-
-Projects Service: Hold information belonging to projects.
-
-These all services are designed to make member journey, recruiting phases and projects applications much easier for responsible people. This system doesn't replace Notion (as a great space for departmental documentation) and Slack (for internal communication) but will provide a unified and centralized way of searching and accessing that information.
-
-## Design
-See the subsystem decomposition and other design choices visualized [here on miro](https://miro.com/app/board/uXjVPbuAg8o=/?share_link_id=654531643024).
-
-## Roadmap & Specification
-See [here](https://www.notion.so/tum-ai/Specification-Justification-Roadmap-5722022499ba4a6380f6667626af7595).
-
----
+See here how to work and develop on a Linear ticket.
 
 ## Development
 
 ### Running the project
-
-#### Backend
 0. Initial setup:
     ```bash
     make # runs installation (venv etc.)
@@ -87,23 +55,24 @@ See [here](https://www.notion.so/tum-ai/Specification-Justification-Roadmap-5722
 6. Try going to http://auth.tum-ai-dev.com:15950/, you will be redirected to the login page
 7. Go to http://api.tum-ai-dev.com:15950/auth/dashboard to see all the registered users
 
+### Working on a Linear ticket
 
 ### Technical Stack
-- Backend: depends on the service. Recommended:
-  - Services:
+In the beginning of the project the team formed and chose a technical stack. This will not be changed and is a final decision. 
+**Backend**: 
+  - Service Logic:
 
-    - Python with [`FastAPI`](https://github.com/tiangolo/fastapi)
+    - Python using [`FastAPI`](https://github.com/tiangolo/fastapi) framework
   - Database:
     - [`MongoDB`](https://www.mongodb.com/) for all the services but analytics
-    - [`InfluxDB`](https://www.influxdata.com/) for analytics service
-- Frontend:
-  - [`NextJS`](https://nextjs.org/)
-- DevOps:
-  - Reverse proxy:
-    - [`Traefik`](https://traefik.io/)
-  - Authentication and Authorization:
-    - [`SuperTokens`](https://supertokens.com/)
-  - Containerization and orchestration:
-    - [`Docker`](https://www.docker.com/) with [`Docker Compose`](https://docs.docker.com/compose/)
-    - But ideally: [`Kubernetes`](https://kubernetes.io/) or [`Docker Swarm`](https://docs.docker.com/engine/swarm/)
+    - (coming up) [`InfluxDB`](https://www.influxdata.com/) for analytics service
 
+**Frontend**:
+- [`NextJS`](https://nextjs.org/) framework for the website
+-  [`MobX`](https://mobx.js.org) for state management
+
+**DevOps**:
+- Deployed on Azure
+- (currently, will be replaced by Azure service) [`Traefik`](https://traefik.io/) as a reverse proxy 
+- [`SuperTokens`](https://supertokens.com/) for managing authentication, authorization and roles
+- [`Docker`](https://www.docker.com/) with [`Docker Compose`](https://docs.docker.com/compose/) for containerization and orchestration
