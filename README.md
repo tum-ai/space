@@ -1,10 +1,13 @@
 # TUM.ai space 🚀
-...
+TUM.ai space is a system that tackles and solves three main issues:
+  1. Increasing observability of members and projects both internally and externally by providing a way to show ones efforts and achievements at TUM.ai 
+  2. Increasing clarity, visibility and linking of internal information that is otherwise hard to find (ie a slack message) as a single source of truth
+  3. Combine existing systems like application systems into a more managable and extensible format
 
 ## Organization & team
-Project planning is done over this [Linear project](https://linear.app/tum-ai/project/tumai-space-5b8716e29acb). All relevant issues and tasks are placed there, the GitHub issues in this repository are outdated and will slowly be removed.
+Project planning is done over [Linear](https://linear.app/tum-ai/project/tumai-space-5b8716e29acb). All relevant issues and tasks are placed there, the GitHub issues in this repository are outdated and will slowly be removed.
 
-See here how to work and develop on a Linear ticket.
+See [here](#working-on-a-linear-ticket) for how to work and develop on a Linear ticket.
 
 ## Development
 
