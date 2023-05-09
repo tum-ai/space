@@ -1,64 +1,39 @@
-# TUM.ai Space 💫
+# TUM.ai space 🚀
+TUM.ai space is a system that tackles and solves three main issues:
+  1. Increasing observability of members and projects both internally and externally by providing a way to show ones efforts and achievements at TUM.ai 
+  2. Increasing clarity, visibility and linking of internal information that is otherwise hard to find (ie a slack message) as a single source of truth
+  3. Combine existing systems like application systems into a more managable and extensible format
 
-``` markdown
-TODOs: 
-1. Rewrite this README.md
-2. Add a proper logging
-```
+## Organization & team
+Project planning is done over [Linear](https://linear.app/tum-ai/project/tumai-space-5b8716e29acb). All relevant issues and tasks are placed there, the GitHub issues in this repository are outdated and will slowly be removed.
 
-
-The "TUM.ai Space" System is a unified system for the management team to observe, edit and generate statistics regarding members activities (projects organisation and participation, participations in signature projects), and availabilities. And manage the current projects, applications and notifications.
-
-From the member point of view, this a way to track, display and have a confirmation from the management team for what you did inside TUM.ai. As well as, observe current projects, apply to them and become a subscriber to relevant notifications.
-
-It essentially consists of multiple subsystems
-- Profile Service
-- Application Service
-- Booking Service
-- Projects Service
-
-Development will start with the Profile Parts subsystem.
-
-Profile Service: A replacement for the current Notion-based member database. Essentially just a new way of showing member information and a history/track of their time at TUM.ai
-
-Application Service: A new way of applying for signature & external projects through the Profile System.
-Booking Service: Makes booking and applying to projects as well as later getting certification upon successful completion easier, central and unified (needs authentication for that).
-
-Projects Service: Hold information belonging to projects.
-
-These all services are designed to make member journey, recruiting phases and projects applications much easier for responsible people. This system doesn't replace Notion (as a great space for departmental documentation) and Slack (for internal communication) but will provide a unified and centralized way of searching and accessing that information.
-
-## Design
-See the subsystem decomposition and other design choices visualized [here on miro](https://miro.com/app/board/uXjVPbuAg8o=/?share_link_id=654531643024).
-
-## Roadmap & Specification
-See [here](https://www.notion.so/tum-ai/Specification-Justification-Roadmap-5722022499ba4a6380f6667626af7595).
-
----
+See [here](#working-on-a-linear-ticket) for how to work and develop on a Linear ticket.
 
 ## Development
 
-### Running the project
+### Prerequisites
+Make sure to have the following installed before running ```make```:
+- Linux build/dev tools, mainly for make
+- Python 3.10, consider using [pyenv](https://github.com/pyenv/pyenv), see [here](https://github.com/pyenv/pyenv#automatic-installer) for installation
+- Brew, see [here](https://brew.sh) for installation
+- Docker with the Compose plugin, see [here](https://docs.docker.com/get-docker/) for installation
 
-#### Backend
-0. Initial setup:
+### Running the project
+Note: this setup guide currently only works on Linux systems as-is. 
+1. Initial setup
     ```bash
     make # runs installation (venv etc.)
     ```
-    Map tum-ai-dev.com domain to localhost:<br>
-    change your host file to map api.tum-ai-dev.com, auth.tum-ai-dev.com, space.tum-ai-dev.com to 127.0.0.1
+    Map tum-ai-dev.com domain to localhost.
+    Change your host file to map api.tum-ai-dev.com, auth.tum-ai-dev.com, space.tum-ai-dev.com to 127.0.0.1 (checkout this [guide](https://www.hostinger.com/tutorials/how-to-edit-hosts-file))
 
-    checkout https://www.hostinger.com/tutorials/how-to-edit-hosts-file
-
-1. From the root of the project:
+2. Start backend
+  Run the following from the root of the project
     ```bash
     docker-compose up -d
     ```
-2. Go to http://localhost:8082/
-   1. create a new database with the name `tumai-space` and
-   2. inside of `tumai-space` db create two new collections with the names `templates` and `profiles`
-   3. later we will automize the setup for all the functional services
-3. From the root of the project run:
+3. Start frontend
+  Run the following from the root of the project
     ```bash
     # optional (advanced) ----------------------------------------------------
     # running uvicorn outside of docker (you have to change .reverse/.config/config.yml) to use your local ip as upstream server (in 'services' section)
@@ -72,10 +47,7 @@ See [here](https://www.notion.so/tum-ai/Specification-Justification-Roadmap-5722
     docker-compose down
     docker-compose up -d
     ```
-
-4. Go to http://api.tum-ai-dev.com:15950/docs to see the dashboard of the available routes
-   1. You can use the "Try it out" button to test the routes
-5. To start the auth web app (you might need to install next.js first):
+4. To start the auth web app (you might need to install next.js first):
     ```bash
     # optional (advanced) ----------------------------------------------------
     # running node outside of docker:
@@ -84,26 +56,42 @@ See [here](https://www.notion.so/tum-ai/Specification-Justification-Roadmap-5722
     npm run dev
     # ------------------------------------------------------------------------
     ```
-6. Try going to http://auth.tum-ai-dev.com:15950/, you will be redirected to the login page
-7. Go to http://api.tum-ai-dev.com:15950/auth/dashboard to see all the registered users
+  
+To verify the installation and setup try out the following: 
+- Visit http://auth.tum-ai-dev.com:15950/, you should be redirected to the login page.
+- Visit http://api.tum-ai-dev.com:15950/auth/dashboard to see all the registered users.
+- Visit http://api.tum-ai-dev.com:15950/docs to see the dashboard of the available routes.
 
+### Working on a Linear ticket
+Working with Linear tickets is very similar to working with GitHub issues.
+It works as follows:
+1. Start by clicking on the chosen ticket
+2. Click on the branch icon in the top left corner to copy the branch name. This is important that Linear can properly track ticket status and progress
+3. Now locate the space repository and create a new branch
+  ```bash
+  git switch -c <branch-name>
+  ```
+4. Now push the branch and changes at first with
+  ```bash
+  git push --set-upstream origin <branch-name>
+  ```
 
 ### Technical Stack
-- Backend: depends on the service. Recommended:
-  - Services:
+In the beginning of the project the team formed and chose a technical stack. This will not be changed and is a final decision. 
+**Backend**: 
+  - Service Logic:
 
-    - Python with [`FastAPI`](https://github.com/tiangolo/fastapi)
+    - Python using [`FastAPI`](https://github.com/tiangolo/fastapi) framework
   - Database:
     - [`MongoDB`](https://www.mongodb.com/) for all the services but analytics
-    - [`InfluxDB`](https://www.influxdata.com/) for analytics service
-- Frontend:
-  - [`NextJS`](https://nextjs.org/)
-- DevOps:
-  - Reverse proxy:
-    - [`Traefik`](https://traefik.io/)
-  - Authentication and Authorization:
-    - [`SuperTokens`](https://supertokens.com/)
-  - Containerization and orchestration:
-    - [`Docker`](https://www.docker.com/) with [`Docker Compose`](https://docs.docker.com/compose/)
-    - But ideally: [`Kubernetes`](https://kubernetes.io/) or [`Docker Swarm`](https://docs.docker.com/engine/swarm/)
+    - (coming up) [`InfluxDB`](https://www.influxdata.com/) for analytics service
 
+**Frontend**:
+- [`NextJS`](https://nextjs.org/) framework for the website
+-  [`MobX`](https://mobx.js.org) for state management
+
+**DevOps**:
+- Deployed on Azure
+- (currently, will be replaced by Azure service) [`Traefik`](https://traefik.io/) as a reverse proxy 
+- [`SuperTokens`](https://supertokens.com/) for managing authentication, authorization and roles
+- [`Docker`](https://www.docker.com/) with [`Docker Compose`](https://docs.docker.com/compose/) for containerization and orchestration
