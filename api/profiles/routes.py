@@ -53,6 +53,7 @@ from profiles.db_models import (
 from template.models import (
     BaseResponse,
     Response,
+    ResponseDeletedIntList,
 )
 from utils.error_handlers import (
     async_error_handlers,
@@ -314,24 +315,15 @@ async def show_current_profile(
     }
 
 
-class ResponseDeletedProfileList(BaseResponse):
-    """data contains ids of deleted profiles"""
-
-    data: List[int]
-
-    class Config:
-        schema_extra = BaseResponse.schema_wrapper([43, 32])
-
-
 @router.delete(
     "/profiles/",
     response_description="delete all profiles",
-    response_model=ResponseDeletedProfileList,
+    response_model=ResponseDeletedIntList,
 )
 @async_error_handlers
 async def delete_profiles(
     request: Request, profile_ids: List[int]
-) -> ResponseDeletedProfileList:
+) -> ResponseDeletedIntList:
     # TODO authorization
     deleted_profiles = delete_db_profiles(request.app.state.sql_engine, profile_ids)
     return {

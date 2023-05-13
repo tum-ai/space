@@ -46,6 +46,7 @@ erDiagram
         SocialNetworkList social_networks "automatic back reference from SocialNetwork"
         DepartmentMembershipList department_memberships "automatic back reference from DepartmentMembership"
         ProjectMembershipList projects_memberships "automatic back reference from ProjectMembership"
+        FeedbackItemList feedback_items "automatic back reference from FeedbackItem"
 
         // computed/automated fields
         datetime time_created "default=now"
@@ -69,9 +70,30 @@ erDiagram
         int profile_id PK "+FK, references Profile"
 
         // supervisorchangable fields
-        string role "required, default=member"
+        enumstring role "required, default=member"
         datetime time_from "optional"
         datetime time_to "optional"
+    }
+    // ================================
+    %% FEEDBACK SERVICE
+    FeedbackItem {
+        // managed fields
+        int id PK "AUTOINCREMENT"
+
+		enumstring type "required, default=feature"
+        string title "required"
+        string description "optional"
+
+		bool private "required, default=false"
+
+        // relationalfk fields
+        int reporter_id FK "required, references Profile, ondelete=CASCADE"
+        Profile reporter "reference to reporter's Profile"
+    }
+    FeedbackItemUpvote {
+        // managed fields
+        int feedback_item_id PK "FK references FeedbackItem, required"
+        int profile_id PK "FK references Profile, required"
     }
     // ================================
     %% PROJECT SERVICE
@@ -99,7 +121,7 @@ erDiagram
         int profile_id PK "+FK, references Profile"
 
         // supervisorchangable fields
-        string role "required, default=member"
+        enumstring role "required, default=member"
         datetime from "optional"
         datetime to "optional"
     }
@@ -194,6 +216,13 @@ erDiagram
 
     Profile ||--o| DepartmentMembership: has 
     DepartmentMembership }o--|| Department: has
+
+    %% FEEDBACK SERVICE
+    // limit to at most 20 FeedbackItems per profile
+	Profile ||--o{ FeedbackItem: makes
+
+	Profile ||--o{ FeedbackItemUpvote: makes
+	FeedbackItem ||--o{ FeedbackItemUpvote: gets
 
     %% PROJECT SERVICE
     Profile ||--o{ ProjectMembership: has 

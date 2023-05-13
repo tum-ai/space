@@ -2,6 +2,7 @@ from enum import (
     Enum,
 )
 from typing import (
+    List,
     Optional,
 )
 
@@ -109,3 +110,12 @@ class Response(BaseResponse):
 
     class Config:
         schema_extra = BaseResponse.schema_wrapper(None)
+
+
+class ResponseDeletedIntList(BaseResponse):
+    """data contains ids of deleted objects"""
+
+    data: List[int]
+
+    class Config:
+        schema_extra = BaseResponse.schema_wrapper([43, 32])

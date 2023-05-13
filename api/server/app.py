@@ -21,6 +21,7 @@ from database.setup import (
     close_db_client,
     setup_db_client,
 )
+from feedback.routes import router as FeedbackRouter
 from main import (
     log,
 )
@@ -88,6 +89,8 @@ async def root():
 app.include_router(TemplateRouter, prefix="/template", tags=["Template"])
 
 app.include_router(CertificationRouter, prefix="/certification", tags=["Certification"])
+
+app.include_router(FeedbackRouter, prefix="/feedback", tags=["Feedback"])
 
 # Prefix defined in router
 app.include_router(ProfilesRouter, tags=["Profile"])

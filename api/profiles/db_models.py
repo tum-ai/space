@@ -179,6 +179,13 @@ class Profile(MixinAsDict, Base):
         "Certificate", back_populates="issuer", foreign_keys="Certificate.issuer_id"
     )
 
+    # back reference from FeedbackItem
+    feedback_items: Mapped[List["FeedbackItem"]] = relationship(
+        "FeedbackItem",
+        back_populates="reporter",
+        foreign_keys="FeedbackItem.reporter_id",
+    )
+
     # [AUTOMATIC/COMPUTED FIELDS] ########################################################
     time_created = Column(DateTime(timezone=True), server_default=func.now())
     time_updated = Column(DateTime(timezone=True), onupdate=func.now())
