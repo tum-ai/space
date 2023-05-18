@@ -151,3 +151,6 @@ cython_debug/
 
 auth-web-app-old
 .reverse/.acme/acme-tum-ai.json
+
+.secrets/
+.old.auth.webapp
