@@ -90,17 +90,6 @@ services:
     #     networks:
     #         - backend-net
 
-    # [DEBUG CONTAINERS] ##################################################
-    # connect to a hidden (by docker, without port exposure) service, by manual config
-    # tumai-test-root: # test.root.localhost
-    #     image: containous/whoami:v1.3.0
-    #     restart: unless-stopped
-    #     hostname: test.root.localhost
-    #     container_name: tumai-test-root
-    #     networks:
-    #         - reverse-net
-    #######################################################################
-
 networks:
     reverse-net:
         driver: bridge
