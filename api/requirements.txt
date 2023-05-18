@@ -4,7 +4,7 @@
 fastapi~=0.88.0
 motor==3.1.1
 pydantic==1.10.4
-uvicorn==0.20.0
+gunicorn
 beanie==1.16.6
 pyyaml~=6.0
 starlette==0.22

@@ -1,5 +1,6 @@
 {
   "projects": {
-    "default": "tumai-space"
+    "default": "tumai-space",
+    "staging": "tumai-space-stage"
   }
 }
