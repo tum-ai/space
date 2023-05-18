@@ -11,10 +11,11 @@ function Login() {
   useEffect(() => {
     if (loading) {
       // maybe trigger a loading screen
+      console.log(error);
       return;
     }
     if (user) navigate("/dashboard");
-  }, [user, loading]);
+  });
   return (
     <div className="login">
       <div className="login__container">

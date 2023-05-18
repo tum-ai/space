@@ -23,3 +23,4 @@ jobs:
           firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_TUMAI_SPACE }}'
           channelId: live
           projectId: tumai-space
+          entryPoint: ./app
