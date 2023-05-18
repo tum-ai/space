@@ -9,7 +9,6 @@ import {
     sendPasswordResetEmail,
     signOut,
 } from "firebase/auth";
-import { getAnalytics } from "firebase/analytics";
 import { environment_name } from "../environment";
 
 // TODO: Add SDKs for Firebase products that you want to use
@@ -81,6 +80,7 @@ const registerWithEmailAndPassword = async (name: string, email: string, passwor
     try {
         const res = await createUserWithEmailAndPassword(auth, email, password);
         const user = res.user;
+        console.log(user)
     } catch (err) {
         console.error(err);
     }

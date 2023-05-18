@@ -20,7 +20,7 @@ function Register() {
   useEffect(() => {
     if (loading) return;
     if (user) navigate("/dashboard");
-  }, [user, loading]);
+  });
   return (
     <div className="register">
       <div className="register__container">
@@ -58,6 +58,7 @@ function Register() {
           Already have an account? <Link to="/">Login</Link> now.
         </div>
       </div>
+      {error}
     </div>
   );
 }

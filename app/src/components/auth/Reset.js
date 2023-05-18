@@ -11,7 +11,7 @@ function Reset() {
   useEffect(() => {
     if (loading) return;
     if (user) navigate("/dashboard");
-  }, [user, loading]);
+  });
   return (
     <div className="reset">
       <div className="reset__container">
@@ -31,6 +31,7 @@ function Reset() {
         <div>
           Don't have an account? <Link to="/register">Register</Link> now.
         </div>
+        {error}
       </div>
     </div>
   );
