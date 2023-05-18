@@ -1,3 +1,5 @@
+import os
+
 from fastapi import (
     FastAPI,
 )
@@ -24,13 +26,16 @@ DBSession = scoped_session(sessionmaker())
 
 
 async def setup_db_client(running_app: FastAPI):
-    # TODO: set up secrets
+    DB_HOST = os.getenv("DB_HOST")
+    DB_PORT = os.getenv("DB_PORT")
+    DB_NAME = os.getenv("DB_NAME")
+    DB_USER = os.getenv("DB_USER")
+    DB_PASSWORD = os.getenv("DB_PASSWORD")
 
     log.info("Setting up sqlalchemy/postgres database connection")
     # sqlalchemy: postgres db
     running_app.state.sql_engine: Engine = create_engine(
-        # TODO env variables
-        "postgresql://supertokens_user:somePassword@auth-db:5432/supertokens",
+        f"postgresql://{DB_USER}:{DB_PASSWORD}{DB_HOST}:{DB_PORT}/{DB_NAME}",
         echo=True,
     )
 
