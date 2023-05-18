@@ -1,0 +1,4 @@
+
+
+deploy:
+	firebase deploy
