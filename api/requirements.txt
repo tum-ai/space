@@ -14,3 +14,4 @@ python-dateutil
 psycopg2-binary
 sqlalchemy
 sqlalchemy-utils
+firebase-admin
