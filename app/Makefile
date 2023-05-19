@@ -12,6 +12,9 @@ switch2staging:
 switch2prod:
 	firebase use tumai-space
 
+start-emulators:
+	firebase emulators:start
+
 deploy-staging: switch2staging build
 	# TODO: change this line in firebase_auth.this
 	# const app = initializeApp(firebaseConfig);
