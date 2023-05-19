@@ -110,11 +110,11 @@ async def shutdown_event():
 # TODO: redirect to the main tumai-space page
 @app.get("/", tags=["Root"])
 async def root():
-    return {"message": "Welcome to the root of the tumai-space. Delete me later."}
+    return {"msg": "Welcome to tumai-space"}
 
 
 @app.get("/auth-test", tags=["Root"])
-async def root(request: Request):
+async def auth_test(request: Request):
     headers = request.headers
     # jwt = headers.get("authorization")
     # if jwt:
