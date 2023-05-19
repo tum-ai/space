@@ -15,8 +15,8 @@ install:
 	python3.10 --version
 
 init_venv:
-	python3.10 -m venv venv
-	. venv/bin/activate
+	python3.10 -m venv api/venv
+	. api/venv/bin/activate
 	python3.10 -m pip install -r api/requirements.txt
 	printf "${RED}TODO: ${NC} >> ${GREEN}. venv/bin/activate${NC}\n"
 

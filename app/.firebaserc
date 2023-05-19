@@ -1,0 +1,6 @@
+{
+  "projects": {
+    "default": "tumai-space",
+    "staging": "tumai-space-stage"
+  }
+}
