@@ -1,0 +1,21 @@
+name: Python Lint
+
+on: [push, pull_request]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    name: Python Lint
+    steps:
+      - uses: actions/checkout@v3
+      - name: Check Python Formatting
+        uses: psf/black@stable
+        with:
+          options: "--check --verbose"
+          src: "./api"
+      - name: Install JS/TS Modules
+        working-directory: ./web-app
+        run: yarn 
+      - name: Check JS/TS Formatting
+        working-directory: ./web-app
+        run: yarn run eslint . --config=.eslintrc.json --ext .js,.jsx,.ts,.tsx
