@@ -1,0 +1,35 @@
+name: API CI - lint and pytest
+
+on:
+  push:
+    branches-ignore:
+      - main
+      - staging
+    paths:
+    - 'api/**'
+  workflow_dispatch:
+
+jobs:
+  
+  lint_pytest:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      - name: Install dependencies
+        run: pip install -r api/requirements.txt
+
+      - name: Lint with 
+        run: cd ./api && black --check . && isort --check-only . && flake8 .
+        # TODO: integrate mypy
+        # && PYTHONPATH=/home/runner/work/space/space/api mypy api
+
+      - name: Run pytest
+        run: PYTHONPATH=/home/runner/work/space/space/api pytest ./api

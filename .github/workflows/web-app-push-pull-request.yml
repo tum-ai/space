@@ -1,0 +1,21 @@
+name: JS/TS Lint
+
+on:
+  push:
+    paths:
+    - 'web-app/**'
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    name: JS/TS Lint
+    steps:
+      - name: Install JS/TS Modules
+        working-directory: ./web-app
+        run: npm i 
+      - name: Check JS/TS Formatting
+        working-directory: ./web-app
+        run: npm run lint
