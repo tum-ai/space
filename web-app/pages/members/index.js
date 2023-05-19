@@ -4,6 +4,7 @@ import Icon from '/components/Icon';
 import Page from '/components/Page';
 import Select from '/components/Select';
 import { useRootModel } from '/providers/RootStoreProvider';
+import {Image} from 'next/image'
 
 const DEPARTMENTTOCOLOR = {
 	marketing: '',
@@ -136,7 +137,7 @@ function Member({ member }) {
 			<div className='grid grid-cols-2 gap-4 lg:flex lg:justify-around lg:space-x-6 lg:items-center w-full'>
 				{/* profile picture */}
 				{member.picture ? (
-					<img
+					<Image
 						className='rounded-full w-14 h-14 object-cover border'
 						src={member.picture}
 						alt='me'
