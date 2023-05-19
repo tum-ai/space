@@ -3,14 +3,15 @@
 APPLICATION:
     APP_NAME: 'TUM.ai Space'
     API_FRAMEWORK_NAME: 'fastapi'
-    FASTAPI_RUNNING_PROTOCOL: 'asgi' # set "wsgi" if running via gunicorn
+
+    # set "wsgi" if running via gunicorn, "asgi" for uvicorn
+    FASTAPI_RUNNING_PROTOCOL: 'wsgi'
 #-------------------------------------------------------------------------------#
 AUTH:
     AUTH_API_BASE_PATH: '/auth'
     API_DOMAIN: 'http://api.tum-ai-dev.com:15950'
     AUTH_WEBSITE_BASE_PATH: '/auth'
     AUTH_WEBSITE_DOMAIN: 'http://auth.tum-ai-dev.com:15950'
-    # AUTH_CORE_INSTANCE: 'http://localhost:3567'
     AUTH_CORE_INSTANCE: 'http://super.tokens:3567'
     AUTH_ALLOWED_ORIGINS:
         # Should contain AUTH_WEBSITE_DOMAIN
@@ -27,4 +28,3 @@ LOGGER:
     LOGGER_NAME: 'tumai-space-global'
     LOG_LEVEL: 'DEBUG'
 #-------------------------------------------------------------------------------#
-# API:

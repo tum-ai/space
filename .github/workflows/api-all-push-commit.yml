@@ -26,11 +26,10 @@ jobs:
       - name: Install dependencies
         run: pip install -r api/requirements.txt
 
-      - name: Check Python Formatting
-        uses: psf/black@stable
-        with:
-          options: "--check --verbose"
-          src: "./api"
+      - name: Lint with 
+        run: black --check api && isort --check-only api && flake8 ./api 
+        # TODO: integrate mypy
+        # && PYTHONPATH=/home/runner/work/space/space/api mypy api
 
       - name: Run pytest
-        run: PYTHONPATH=/home/runner/work/space/space/api pytest
+        run: PYTHONPATH=/home/runner/work/space/space/api pytest ./api

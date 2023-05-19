@@ -14,7 +14,6 @@ line_length = 90
 force_grid_wrap = 1
 
 [tool.mypy]
-ignore_missing_imports = "True"
 disallow_untyped_defs = "True"
 disable_error_code = "union-attr"
 exclude = ["venv/*", "__init__.py", "__pycache__/*", "docs/*"]
