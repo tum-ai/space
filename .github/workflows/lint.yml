@@ -1,0 +1,16 @@
+name: Lint
+
+on: [push, pull_request]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    name: Python Linting
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v3
+      - name: Check Python Formatting
+        uses: psf/black@stable
+        with:
+          options: "--check --verbose"
+          src: "./api"
