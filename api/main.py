@@ -28,7 +28,6 @@ from pydantic import (
 )
 
 
-
 class LogConfig(BaseModel):
     """Logging configuration to be set for the server"""
 
