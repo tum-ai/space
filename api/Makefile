@@ -1,4 +1,4 @@
-.PHONY: lint lint-fix
+.PHONY: lint lint-fix test
 
 PYTHONPATH=$(CURDIR)
 
