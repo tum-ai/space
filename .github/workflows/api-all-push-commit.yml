@@ -10,7 +10,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  pytest:
+  
+  lint_pytest:
     runs-on: ubuntu-latest
 
     steps:
@@ -25,6 +26,12 @@ jobs:
       - name: Install dependencies
         working-directory: ./app
         run: pip install -r requirements.txt
+
+      - name: Check Python Formatting
+        uses: psf/black@stable
+        with:
+          options: "--check --verbose"
+          src: "./api"
 
       - name: Run pytest
         working-directory: ./app
