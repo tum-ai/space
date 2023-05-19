@@ -1,0 +1,26 @@
+name: API CI - lint and pytest
+
+on:
+  push:
+    branches-ignore:
+      - main
+      - staging
+    paths:
+    - 'app/**'
+  workflow_dispatch:
+
+jobs:
+  
+  lint_test_app:
+    if: '${{ github.event.pull_request.head.repo.full_name == github.repository }}'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: CI & Build
+        working-directory: ./app
+        run: npm ci && npm run build
+      - name: Run Tests
+        working-directory: ./app
+        run: npm test
+        
