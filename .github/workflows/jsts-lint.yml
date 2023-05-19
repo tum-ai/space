@@ -1,0 +1,15 @@
+name: JS/TS Lint
+
+on: [push, pull_request]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    name: JS/TS Lint
+    steps:
+      - name: Install JS/TS Modules
+        working-directory: ./web-app
+        run: yarn 
+      - name: Check JS/TS Formatting
+        working-directory: ./web-app
+        run: yarn run eslint . --config=.eslintrc.json --ext .js,.jsx,.ts,.tsx
