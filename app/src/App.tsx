@@ -8,14 +8,15 @@ import Dashboard from './components/auth/Dashboard';
 function App() {
   return (
     <div className="App">
-    <BrowserRouter>
-      <Routes>
-          <Route path="/" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/reset" element={<Reset />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-      </Routes>
-    </BrowserRouter>
+      <small>You are running this application in <b>{process.env.NODE_ENV}</b> mode.</small>
+      <BrowserRouter>
+        <Routes>
+            <Route path="/" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/reset" element={<Reset />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+        </Routes>
+      </BrowserRouter>
     </div>
   );
 }
