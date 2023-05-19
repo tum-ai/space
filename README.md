@@ -95,3 +95,33 @@ In the beginning of the project the team formed and chose a technical stack. Thi
 - (currently, will be replaced by Azure service) [`Traefik`](https://traefik.io/) as a reverse proxy 
 - [`SuperTokens`](https://supertokens.com/) for managing authentication, authorization and roles
 - [`Docker`](https://www.docker.com/) with [`Docker Compose`](https://docs.docker.com/compose/) for containerization and orchestration
+
+# CI / CD Draft
+## Environments
+1) DEV:
+- No automated CI Action
+- Dev can start up:
+  - Frontend: via npm or firebase emulator
+  - Backend: via uvicorn or docker (TODO: deprecate docker)
+  - DB: use dockerized postgres, 
+- Precommit hook: Linting
+2) Test:
+- linting & unit tests on every pushed commit of all branches
+- Backend: no deployment, just Github Action tests
+- DB: azure dev db
+3) Staging
+- deployed version of staging branch
+  - Frontend: to firebase staging
+  - Backend: deployed to Azure staging
+  - DB: azure staging db
+- CI Action triggered on:
+  TODO: decide:
+    - PR request creation into main
+    - push commit to staging branch
+
+4) Production:
+- deployed version of main branch
+  - Frontend: to firebase prod
+  - Backend: deployed to Azure prod
+  - DB: azure prod db
+- CI Action triggered on push commit to main
