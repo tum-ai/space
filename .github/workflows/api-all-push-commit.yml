@@ -1,4 +1,4 @@
-name: Run pytest
+name: API CI - lint and pytest
 
 on:
   push:
@@ -24,8 +24,7 @@ jobs:
           python-version: 3.8
 
       - name: Install dependencies
-        working-directory: ./app
-        run: pip install -r requirements.txt
+        run: pip install -r api/requirements.txt
 
       - name: Check Python Formatting
         uses: psf/black@stable
