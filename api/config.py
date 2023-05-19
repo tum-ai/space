@@ -1,6 +1,9 @@
 # Server initialization file
 
-from pathlib import Path
+from pathlib import (
+    Path,
+)
+
 import yaml
 
 
@@ -12,7 +15,7 @@ class Config:
     # Creates config field for each configuration in config.yaml
     def __init__(self):
         ROOT_PATH = Path(__file__)
-        self.yaml_config_path = ROOT_PATH.parent / 'config.yaml'
+        self.yaml_config_path = ROOT_PATH.parent / "config.yaml"
         self.config_dict = yaml.safe_load(open(self.yaml_config_path))
 
         for config in self.config_dict:
