@@ -1,6 +1,9 @@
 # Server initialization file
 
-from pathlib import Path
+from pathlib import (
+    Path,
+)
+
 import yaml
 
 
