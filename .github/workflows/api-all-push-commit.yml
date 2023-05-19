@@ -27,7 +27,7 @@ jobs:
         run: pip install -r api/requirements.txt
 
       - name: Lint with 
-        run: black --check api && isort --check-only api && cd ./api && flake8 .
+        run: cd ./api && black --check . && isort --check-only . && flake8 .
         # TODO: integrate mypy
         # && PYTHONPATH=/home/runner/work/space/space/api mypy api
 
