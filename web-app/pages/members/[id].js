@@ -7,6 +7,7 @@ import Icon from '/components/Icon';
 import Modal from '/components/Modal';
 import Page from '/components/Page';
 import { useRootModel } from '/providers/RootStoreProvider';
+import { Image } from 'next/image'
 
 const DEPARTMENTTOCOLOR = {
 	marketing: '',
@@ -33,7 +34,7 @@ const Profile = observer(() => {
 			// TODO: id=me needs a different endpoint!
 			memberModel.fetchMember(id);
 		}
-	}, [id]);
+	}, [memberModel, id]);
 	const profile = memberModel.member;
 
 	if (memberModel.loading) {
@@ -69,7 +70,7 @@ const Profile = observer(() => {
 				{/* name + image */}
 				<div className=' xl:col-span-2 flex flex-col items-start max-w-90 space-y-6'>
 					{profile.picture ? (
-						<img
+						<Image
 							className='rounded-full w-28 h-28 object-cover border drop-shadow-lg m-auto'
 							src={profile.picture}
 							alt='me'
@@ -88,7 +89,7 @@ const Profile = observer(() => {
 						</div>
 						{profile.socialNetworks &&
 							profile.socialNetworks.map((sn) => (
-								<a href={sn.link}>
+								<a key={sn.link} href={sn.link}>
 									{sn.type == 'Other' ? (
 										<Icon
 											name={'FaGlobe'}

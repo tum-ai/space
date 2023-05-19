@@ -1,12 +1,16 @@
-.PHONY: lint lint-fix
+.PHONY: lint lint-fix test
 
+PYTHONPATH=$(CURDIR)
 
 lint:
-	black --check .
-	isort --check-only .
-	flake8 .
-	mypy .
+	PYTHONPATH=${PYTHONPATH} black --check .
+	PYTHONPATH=${PYTHONPATH} isort --check-only .
+	PYTHONPATH=${PYTHONPATH} flake8 .
+	MYPYPATH=${PYTHONPATH} PYTHONPATH=${PYTHONPATH} mypy .
 
 lint-fix:
-	black .
-	isort .
+	PYTHONPATH=${PYTHONPATH} black .
+	PYTHONPATH=${PYTHONPATH} isort .
+
+test:
+	PYTHONPATH=${PYTHONPATH} pytest

@@ -1,10 +1,24 @@
 # Requirements for the FastAPI server and services
 # python 3.10
 
+# linting
+black
+isort
+flake8
+mypy
+typing_extensions
+
+# testing
+pytest
+
+# run
 fastapi~=0.88.0
 motor==3.1.1
 pydantic==1.10.4
-uvicorn==0.20.0
+uvicorn[standard]
+uvloop
+httptools
+gunicorn
 beanie==1.16.6
 pyyaml~=6.0
 starlette==0.22
@@ -14,3 +28,4 @@ python-dateutil
 psycopg2-binary
 sqlalchemy
 sqlalchemy-utils
+firebase-admin
