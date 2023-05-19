@@ -1,9 +1,8 @@
-# import time
+import time
 
 from fastapi import FastAPI, Request
 
 from config import CONFIG
-
 
 from security.firebase_auth import init_firebase_auth, verify_id_token
 
