@@ -1,6 +1,12 @@
 name: JS/TS Lint
 
-on: [push, pull_request]
+on:
+  push:
+    paths:
+    - 'web-app/**'
+    branches:
+      - main
+  workflow_dispatch:
 
 jobs:
   lint:
