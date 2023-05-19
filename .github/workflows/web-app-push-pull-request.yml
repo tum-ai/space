@@ -14,8 +14,8 @@ jobs:
     name: JS/TS Lint
     steps:
       - name: Install JS/TS Modules
-        working-directory: ./web-app
+        working-directory: web-app
         run: npm i 
       - name: Check JS/TS Formatting
-        working-directory: ./web-app
+        working-directory: web-app
         run: npm run lint
