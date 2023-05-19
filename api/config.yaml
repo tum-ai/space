@@ -15,13 +15,9 @@ AUTH:
     AUTH_CORE_INSTANCE: 'http://super.tokens:3567'
     AUTH_ALLOWED_ORIGINS:
         # Should contain AUTH_WEBSITE_DOMAIN
-        # TODO: make reference to AUTH_WEBSITE_DOMAIN
-        - 'http://space.tum-ai-dev.com:15950'
-        - 'http://space.tum-ai-dev.com:3000'
-        - 'http://auth.tum-ai-dev.com:15950'
-        - 'http://auth.tum-ai-dev.com:3000'
-        - 'http://localhost:3000'
-        - 'http://localhost:3001'
+        - 'http://space.tum-ai.com'
+        - 'http://space.staging.tum-ai.com'
+        - 'http://localhost'
     USERS_DASHBOARD_API_KEY: 'someApiKey'
 #-------------------------------------------------------------------------------#
 LOGGER:
