@@ -1,3 +1,7 @@
+from __future__ import (
+    annotations,
+)
+
 import enum
 from datetime import (
     datetime,
@@ -32,9 +36,17 @@ from sqlalchemy.orm import (
     relationship,
 )
 
+from certification.db_models import (
+    Certificate,
+    CertificationRequest,
+)
 from database.db_models import (
     Base,
     MixinAsDict,
+)
+from projects.db_models import (
+    Project,
+    ProjectMembership,
 )
 
 

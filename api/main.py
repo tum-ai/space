@@ -1,24 +1,30 @@
-import time
-
-from fastapi import FastAPI, Request
-
-from config import CONFIG
-
-from security.firebase_auth import init_firebase_auth, verify_id_token
-
-# from security.auth import create_auth_roles, init_server_auth
-from fastapi.middleware.cors import CORSMiddleware
-
-from template.routes import router as TemplateRouter
-
 import logging
 from logging.config import (
     dictConfig,
 )
 
+from fastapi import (
+    FastAPI,
+    Request,
+)
+
+# from security.auth import create_auth_roles, init_server_auth
+from fastapi.middleware.cors import (
+    CORSMiddleware,
+)
 from pydantic import (
     BaseModel,
 )
+
+from config import (
+    CONFIG,
+)
+
+# from security.firebase_auth import (
+#     init_firebase_auth,
+#     verify_id_token,
+# )
+# from template.routes import router as TemplateRouter
 
 
 class LogConfig(BaseModel):
@@ -115,7 +121,8 @@ async def root():
 
 @app.get("/auth-test", tags=["Root"])
 async def auth_test(request: Request):
-    headers = request.headers
+    # headers = request.headers
+    return {"msg": "unimplemented!"}
     # jwt = headers.get("authorization")
     # if jwt:
     #     return {"message": "Auth test:", "data": verify_id_token(jwt)}
