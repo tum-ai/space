@@ -1,10 +1,5 @@
-
 from __future__ import (
     annotations,
-)
-
-from sqlalchemy.ext.declarative import (
-    declarative_base,
 )
 
 import enum
@@ -23,6 +18,7 @@ from pydantic import (
     BaseModel,
 )
 from sqlalchemy import (
+    Boolean,
     CheckConstraint,
     Column,
     DateTime,
@@ -30,8 +26,10 @@ from sqlalchemy import (
     ForeignKey,
     Integer,
     String,
-    Boolean,
     func,
+)
+from sqlalchemy.ext.declarative import (
+    declarative_base,
 )
 from sqlalchemy.ext.hybrid import (
     hybrid_property,
@@ -41,10 +39,6 @@ from sqlalchemy.orm import (
     mapped_column,
     relationship,
 )
-from sqlalchemy.ext.declarative import (
-    declarative_base,
-)
-
 
 # don't touch this base class!
 Base = declarative_base()
@@ -394,7 +388,6 @@ class ProjectMembership(MixinAsDict, Base):
             f"ProjectMembership(profile_id={self.profile_id}, "
             + +f"project_handle={self.project_handle})"
         )
-
 
 
 class CertificationTemplate(MixinAsDict, Base):

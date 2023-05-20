@@ -16,6 +16,7 @@ def init_firebase_auth():
         ROOT.parent.parent / ".secrets" / "tumai-space-firebase-adminsdk.json"
     )
     app = firebase_admin.initialize_app(cred)
+    return app
 
 
 def verify_id_token(jwt):

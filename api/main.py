@@ -1,5 +1,3 @@
-
-
 from fastapi import (
     FastAPI,
     Request,
@@ -10,21 +8,22 @@ from fastapi.middleware.cors import (
     CORSMiddleware,
 )
 
-from utils.config import (
-    CONFIG,
+from database.setup import (
+    close_db_client,
+    setup_db_client,
 )
-
-from database.setup import (setup_db_client, close_db_client)
-
+from profiles.routes import router as ProfilesRouter
 from security.firebase_auth import (
     init_firebase_auth,
     verify_id_token,
 )
 from template.routes import router as TemplateRouter
-from profiles.routes import router as ProfilesRouter
-
-from utils.log import log
-
+from utils.config import (
+    CONFIG,
+)
+from utils.log import (
+    log,
+)
 
 app = FastAPI()
 db_client = None

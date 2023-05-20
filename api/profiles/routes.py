@@ -6,14 +6,15 @@ from typing import (
 from fastapi import (
     APIRouter,
     Body,
-    Depends,
     Request,
 )
 
+from database.db_models import (
+    Profile,
+)
 from database.profiles_connector import (
     create_db_profile,
     create_db_profiles,
-    debug_db_query,
     delete_db_profile,
     delete_db_profiles,
     list_db_departments,
@@ -29,9 +30,6 @@ from profiles.api_models import (
     ProfileInUpdate,
     ProfileOut,
     ProfileOutPublic,
-)
-from database.db_models import (
-    Profile,
 )
 from template.models import (
     BaseResponse,
@@ -282,7 +280,7 @@ async def get_profile(request: Request, profile_id: str) -> ResponseProfile:
 async def show_current_profile(
     request: Request,
 ) -> ResponseProfile:
-    firebase_uid = session.get_user_id()
+    firebase_uid = "TODO"
     db_profile: Profile = retrieve_db_profile_by_firebase_uid(
         request.app.state.sql_engine, firebase_uid
     )
@@ -380,7 +378,7 @@ async def update_current_profile(
     request: Request,
     data: Annotated[ProfileInUpdate, Body(embed=True)],
 ) -> ResponseProfile:
-    firebase_uid = session.get_user_id()
+    firebase_uid = "TODO"
     db_profile: Profile = retrieve_db_profile_by_firebase_uid(
         request.app.state.sql_engine, firebase_uid
     )
@@ -395,72 +393,3 @@ async def update_current_profile(
         "description": "Updated current profile",
         "data": udpated_profile,
     }
-
-
-##########################################################################################
-# TODO UPDATE ALL FUNCTIONS BELOW! #######################################################
-##########################################################################################
-
-
-# testing for frontend connection---------------------------------------------#
-@router.post(
-    "/test/checkrole",
-    response_description="Test if role is added to session",
-    response_model=Response,
-)
-async def test1():
-    # print(session.__dict__)
-    roles = await session.get_claim_value(UserRoleClaim)
-
-    if roles is None or "ADMIN" not in roles:
-        raise_invalid_claims_exception(
-            "User is not an admin", [ClaimValidationError(UserRoleClaim.key, None)]
-        )
-    else:
-        return {
-            "status": 200,
-            "status_code": 200,
-            "response_type": "success",
-            "description": "check role",
-            "data": "check completed",
-        }
-
-
-# add role to session user for testing ---------------------------------------#
-@router.post(
-    "/profiles/role", response_description="Add role to user", response_model=Response
-)
-async def add_role_to_user_func():
-    user_id = session.user_id
-    role = "ADMIN"
-    res = await add_role_to_user(user_id, role)
-
-    # add the user's roles to the user's session
-    await session.fetch_and_set_claim(UserRoleClaim)
-    # add the user's permissions to the user's session
-    await session.fetch_and_set_claim(PermissionClaim)
-
-    return {
-        "status_code": 200,
-        "response_type": "success",
-        "description": "attempted role add",
-        "data": res,
-    }
-    # '''if isinstance(res, UnknownRoleError):
-    #     # No such role exists
-
-    #     return
-
-    # if res.did_user_already_have_role:
-    #     # User already had this role
-    #     pass'''
-
-
-# TODO: DEBUG ####
-@router.get(
-    "/debug",
-    response_description="Retrieve a complete profile",
-    # response_model=Response,
-)
-async def debug(request: Request):
-    return debug_db_query(request.app.state.sql_engine)

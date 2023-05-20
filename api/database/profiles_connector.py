@@ -11,6 +11,13 @@ from sqlalchemy.orm import (
     Session,
 )
 
+from database.db_models import (  # PublicProfile
+    Department,
+    DepartmentMembership,
+    Profile,
+    Role,
+    SocialNetwork,
+)
 from database.setup import (
     setup_db_client_appless,
 )
@@ -18,13 +25,6 @@ from profiles.api_models import (
     ProfileInCreate,
     ProfileInUpdate,
     SocialNetworkIn,
-)
-from database.db_models import (  # PublicProfile
-    Department,
-    DepartmentMembership,
-    Profile,
-    Role,
-    SocialNetwork,
 )
 
 # department operations ##################################################################
@@ -265,9 +265,7 @@ def retrieve_db_profile_by_firebase_uid(
 ) -> Profile:
     with Session(sql_engine) as db_session:
         db_model = (
-            db_session.query(Profile)
-            .filter(Profile.firebase_uid == firebase_uid)
-            .one()
+            db_session.query(Profile).filter(Profile.firebase_uid == firebase_uid).one()
         )
 
         # asserts presence values

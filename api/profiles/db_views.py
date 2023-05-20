@@ -1,18 +1,5 @@
-from datetime import (
-    datetime,
-)
-
 from sqlalchemy import (
     Engine,
-    select,
-    text,
-)
-from sqlalchemy_utils import (
-    create_view,
-)
-
-from database.db_models import (
-    DepartmentMembership,
 )
 
 

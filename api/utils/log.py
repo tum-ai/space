@@ -2,6 +2,7 @@ import logging
 from logging.config import (
     dictConfig,
 )
+
 from pydantic import (
     BaseModel,
 )
@@ -9,6 +10,7 @@ from pydantic import (
 from utils.config import (
     CONFIG,
 )
+
 
 class LogConfig(BaseModel):
     """Logging configuration to be set for the server"""

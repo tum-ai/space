@@ -12,13 +12,15 @@ from sqlalchemy.orm import (
     sessionmaker,
 )
 
-from utils.log import log
-
+from database.db_models import (
+    Base,
+)
 from profiles.db_views import (
     init_views,
 )
-
-from database.db_models import Base
+from utils.log import (
+    log,
+)
 
 DBSession = scoped_session(sessionmaker())
 
@@ -36,7 +38,7 @@ def create_sqla_engine() -> Engine:
         conn_str,
         echo=True,
     )
-    return engine 
+    return engine
 
 
 async def setup_db_client(running_app: FastAPI):

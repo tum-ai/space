@@ -1,6 +1,5 @@
 from fastapi import (
     APIRouter,
-    Depends,
 )
 
 from database.templates_connector import (
@@ -44,7 +43,7 @@ async def add_template(
     return {
         "status_code": 200,
         "response_type": "success",
-        "description": f"Template message added successfully by {session.get_user_id()}.",
+        "description": "Template message added successfully by TODO.",
         # "data": new_template_message,
     }
 
@@ -72,6 +71,6 @@ async def show_template(
     return {
         "status_code": 404,
         "response_type": "error",
-        "description": f"TODO adjust. Requested by {session.get_user_id()}",
+        "description": "TODO adjust. Requested by TODO",
         "data": None,
     }
