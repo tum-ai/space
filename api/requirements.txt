@@ -9,6 +9,7 @@ mypy
 typing_extensions
 
 # testing
+httpx
 pytest
 
 # run

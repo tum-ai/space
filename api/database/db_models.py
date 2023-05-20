@@ -28,14 +28,12 @@ from sqlalchemy import (
     String,
     func,
 )
-from sqlalchemy.ext.declarative import (
-    declarative_base,
-)
 from sqlalchemy.ext.hybrid import (
     hybrid_property,
 )
 from sqlalchemy.orm import (
     Mapped,
+    declarative_base,
     mapped_column,
     relationship,
 )
