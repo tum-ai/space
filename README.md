@@ -79,22 +79,17 @@ It works as follows:
 ### Technical Stack
 In the beginning of the project the team formed and chose a technical stack. This will not be changed and is a final decision. 
 **Backend**: 
-  - Service Logic:
-
-    - Python using [`FastAPI`](https://github.com/tiangolo/fastapi) framework
-  - Database:
-    - [`MongoDB`](https://www.mongodb.com/) for all the services but analytics
-    - (coming up) [`InfluxDB`](https://www.influxdata.com/) for analytics service
+  - Service Logic: Python using [`FastAPI`](https://github.com/tiangolo/fastapi) framework
+  - Database: SQL on Azure
 
 **Frontend**:
 - [`NextJS`](https://nextjs.org/) framework for the website
 -  [`MobX`](https://mobx.js.org) for state management
 
 **DevOps**:
-- Deployed on Azure
-- (currently, will be replaced by Azure service) [`Traefik`](https://traefik.io/) as a reverse proxy 
-- [`SuperTokens`](https://supertokens.com/) for managing authentication, authorization and roles
-- [`Docker`](https://www.docker.com/) with [`Docker Compose`](https://docs.docker.com/compose/) for containerization and orchestration
+- Backend deployed on Azure
+- Firebase Authentication for managing authentication, authorization and roles
+- [`Docker`](https://www.docker.com/) with [`Docker Compose`](https://docs.docker.com/compose/) for containerization and orchestration (only backend & db)
 
 # CI / CD Draft
 ## Environments
@@ -118,10 +113,9 @@ In the beginning of the project the team formed and chose a technical stack. Thi
   TODO: decide:
     - PR request creation into main
     - push commit to staging branch
-
 4) Production:
 - deployed version of main branch
-  - Frontend: to firebase prod
-  - Backend: deployed to Azure prod (env environment=production)
-  - DB: azure prod db
+  - Frontend: Firebase Production
+  - Backend: Azure Production (env environment=production)
+  - DB: Azure Production DB
 - CI Action triggered on push commit to main
