@@ -70,6 +70,6 @@ jobs:
         uses: azure/webapps-deploy@v2
         id: deploy-to-webapp
         with:
-          app-name: 'tumai-space-api'
+          app-name: 'tumai-space-staging-api'
           slot-name: 'Production'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_F292746127E04206BF3B55C55532B963 }}
