@@ -34,13 +34,22 @@ jobs:
 
       - name: Run pytest
         run: PYTHONPATH=/home/runner/work/space/space/api pytest ./api
-      
+            
+      - name: write secret file
+        run: |
+          mkdir -p /home/runner/work/space/space/api/.secrets          
+          touch /home/runner/work/space/space/api/.secrets/tumai-space-firebase-adminsdk.json 
+          printf "$FIREBASE_ADMINSDK_CERTIFICATE_STAGING" >> /home/runner/work/space/space/api/.secrets/tumai-space-firebase-adminsdk.json
+
       - name: Upload artifact for deployment jobs
         uses: actions/upload-artifact@v2
         with:
           name: python-app
           path: |
-            . 
+            api/ 
+            !__pycache__/
+            !.mypy_cache/
+            !.pytest_cache/
             !venv/
 
   deploy:

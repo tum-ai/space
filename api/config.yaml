@@ -12,7 +12,6 @@ AUTH:
     API_DOMAIN: 'http://api.tum-ai-dev.com:15950'
     AUTH_WEBSITE_BASE_PATH: '/auth'
     AUTH_WEBSITE_DOMAIN: 'http://auth.tum-ai-dev.com:15950'
-    AUTH_CORE_INSTANCE: 'http://super.tokens:3567'
     AUTH_ALLOWED_ORIGINS:
         # Should contain AUTH_WEBSITE_DOMAIN
         - 'http://space.tum-ai.com'
