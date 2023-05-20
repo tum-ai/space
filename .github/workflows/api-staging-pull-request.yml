@@ -36,11 +36,10 @@ jobs:
         run: |
           mkdir -p /home/runner/work/space/space/api/.secrets          
           touch /home/runner/work/space/space/api/.secrets/tumai-space-firebase-adminsdk.json 
-          echo ${{ secrets.FIREBASE_ADMINSDK_CERTIFICATE }} > /home/runner/work/space/space/api/.secrets/tumai-space-firebase-adminsdk.json
+          echo "${{ secrets.FIREBASE_ADMINSDK_CERTIFICATE }}" > /home/runner/work/space/space/api/.secrets/tumai-space-firebase-adminsdk.json
 
       - name: Run pytest
         run: PYTHONPATH=/home/runner/work/space/space/api pytest ./api
-            
 
       - name: Upload artifact for deployment jobs
         uses: actions/upload-artifact@v2
