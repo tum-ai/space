@@ -72,4 +72,4 @@ jobs:
         with:
           app-name: 'tumai-space-staging-api'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_F292746127E04206BF3B55C55532B963 }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_C4B4CB5E5E3B454D88E1F49A2612A5A5 }}
