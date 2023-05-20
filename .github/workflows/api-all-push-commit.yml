@@ -34,9 +34,9 @@ jobs:
         run: |
           mkdir -p /home/runner/work/space/space/api/.secrets          
           touch /home/runner/work/space/space/api/.secrets/tumai-space-firebase-adminsdk.json 
-          printf "$FIREBASE_ADMINSDK_CERTIFICATE_STAGING" >> /home/runner/work/space/space/api/.secrets/tumai-space-firebase-adminsdk.json
+          echo "${{ secrets.FIREBASE_ADMINSDK_CERTIFICATE_STAGING }}" > /home/runner/work/space/space/api/.secrets/tumai-space-firebase-adminsdk.json
 
-      - run: printf "$FIREBASE_ADMINSDK_CERTIFICATE_STAGING"
+      - run: echo  "${{ secrets.FIREBASE_ADMINSDK_CERTIFICATE_STAGING }}"
       - run: cat /home/runner/work/space/space/api/.secrets/tumai-space-firebase-adminsdk.json
 
       - name: Run pytest
