@@ -32,5 +32,5 @@ class Config:
         return getattr(self, config_field)
 
 
-# Object that holds all the configuration values from config.yaml
+# holds all the configuration values from config.yaml
 CONFIG = Config()
