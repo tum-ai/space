@@ -1,4 +1,7 @@
 import os
+from urllib.parse import (
+    quote_plus,
+)
 
 from fastapi import (
     FastAPI,
@@ -33,7 +36,9 @@ def create_sqla_engine() -> Engine:
     DB_PASSWORD = os.getenv("DB_PASSWORD")
     assert DB_HOST is not None, "DB_HOST must not be empty!"
 
-    conn_str = f"postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+    conn_str = f"postgresql://{DB_USER}:%s@{DB_HOST}:{DB_PORT}/{DB_NAME}" % quote_plus(
+        DB_PASSWORD
+    )
     engine: Engine = create_engine(
         conn_str,
         echo=True,
