@@ -4,7 +4,7 @@ import Login from './components/auth/Login';
 import Register from './components/auth/Register';
 import Reset from './components/auth/Reset';
 import Dashboard from './components/auth/Dashboard';
-import { environment_name } from './env/environment';
+import { environment_name } from './environment';
 
 function App() {
   return (
