@@ -4,11 +4,12 @@ import Login from './components/auth/Login';
 import Register from './components/auth/Register';
 import Reset from './components/auth/Reset';
 import Dashboard from './components/auth/Dashboard';
+import { environment_name } from './environment';
 
 function App() {
   return (
     <div className="App">
-      <small>You are running this application in <b>{process.env.NODE_ENV}</b> mode.</small>
+      <small>You are running this application in <b>{environment_name}</b> mode.</small><br/>
       <BrowserRouter>
         <Routes>
             <Route path="/" element={<Login />} />
