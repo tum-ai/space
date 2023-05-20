@@ -15,7 +15,7 @@ services:
             POSTGRES_PASSWORD: space-db
             POSTGRES_DB: space-db
         networks:
-            - db-net
+            - backend-net
 
     # [BACKEND API] #######################################################
     tum-ai-space-api:
@@ -24,79 +24,24 @@ services:
         restart: unless-stopped
         hostname: api.tum-ai-dev.com
         container_name: tum-ai-space-api
-        command: 'uvicorn main:app --host 0.0.0.0 --port 15900 --proxy-headers --reload'
+        command: gunicorn main:app -k uvicorn.workers.UvicornWorker --workers=4 --reload --bind=0.0.0.0
         volumes:
             - ./api/:/code
         ports:
-        - 15900:15900
+        - 8000:8000
         depends_on:
             - space-db
         networks:
             - backend-net
-            - db-net
-        environment:  # only for dev environment
-            - DB_HOST = space.db
-            - DB_PORT = 5432
-            - DB_NAME = space-db
-            - DB_USER = space-db
-            - DB_PASSWORD = space-db
-
-    # [WEB APP] #######################################################
-    tum-ai-space-web-app:
-        image: tum-ai-space-web-app
-        build: ./web-app
-        restart: unless-stopped
-        hostname: space.tum-ai-dev.com
-        container_name: tum-ai-space-web-app
-        # ports: # enable enable this for debugging!
-        # TODO remove on production
-        # - 4000:4000
-        depends_on:
-            - tum-ai-space-api
-        volumes:
-            - ./web-app/:/app/
-        networks:
-            - backend-net
-        env_file:
-            - ./web-app/.env.local
-
-    # [CERTIFICATION SERVICE] #######################################################
-    
-    # serve static media files (for ceritification template rendering)
-    # space.files:
-    #     image: httpd:latest
-    #     container_name: space.files
-    #     hostname: space.files
-    #     ports:
-    #         - '9990:80'
-    #     volumes:
-    #         - ./.fileserver:/usr/local/apache2/htdocs
-    #     networks:
-    #         - backend-net
-    
-    # certification-api:
-    #     image: tum-ai-space-certification-api
-    #     build: ./certification-api
-    #     restart: unless-stopped
-    #     hostname: certify.tum-ai-dev.com
-    #     container_name: certification-api
-    #     ports:  # TODO remove in production
-    #       - 3008:80
-    #     depends_on:
-    #         - space.files
-    #     volumes:
-    #         - ./certification-api/src:/app/src/
-    #         - ./certification-api/templates:/app/templates/
-    #     networks:
-    #         - backend-net
+        environment:
+            - environment=development
+            - DB_HOST=space.db
+            - DB_PORT=5432
+            - DB_NAME=space-db
+            - DB_USER=space-db
+            - DB_PASSWORD=space-db
 
 networks:
-    reverse-net:
-        driver: bridge
-        name: reverse-net
     backend-net:
         driver: bridge
         name: backend-net
-    db-net:
-        driver: bridge
-        name: db-net

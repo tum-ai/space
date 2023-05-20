@@ -9,15 +9,9 @@ import {
     sendPasswordResetEmail,
     signOut,
 } from "firebase/auth";
-import { environment_name } from "../environment";
+import { environment_name } from "../env/environment";
 
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
 
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
-
-// TODO environment variables for differnt envs (prod, staging)
 const firebaseConfigProd = {
     apiKey: "AIzaSyDzvLalrCrtzp5gB3KGB2aH6j9EaD8Su5E",
     authDomain: "tumai-space.firebaseapp.com",
@@ -38,16 +32,16 @@ const firebaseConfigStaging = {
     measurementId: "G-ZNLMYF66DT"
 };
 
+
 var firebaseConfig = {}
 
 if (environment_name === 'production') {
     firebaseConfig = firebaseConfigProd;
     // TODO: staging
-  } else if (environment_name === 'development') {
+} else {
     firebaseConfig = firebaseConfigStaging;
-  } else {
-    throw new Error(`Invalid environment: ${environment_name}`);
-  }
+    // throw new Error(`Invalid environment: ${environment_name}`);
+}
 
 console.log("Env: ", environment_name)
 
