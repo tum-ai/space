@@ -84,8 +84,6 @@ erDiagram
         string title "required"
         string description "optional"
 
-		bool private "required, default=false"
-
         // relationalfk fields
         int reporter_id FK "required, references Profile, ondelete=CASCADE"
         Profile reporter "reference to reporter's Profile"

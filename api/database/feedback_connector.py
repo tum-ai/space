@@ -30,7 +30,6 @@ def create_feedback_item(
             type=new_item.type,
             title=new_item.title,
             description=new_item.description,
-            private=new_item.private,
             reporter_id=profile_id,
         )
         db_session.add(db_item)
@@ -47,16 +46,12 @@ def list_db_feedback_items_public_and_users(
     sql_engine: Engine,
     profile_id: int,
     page: int,
-    page_size: int,
-    only_current_user: bool = False,
+    page_size: int
 ) -> List[FeedbackItem]:
     with Session(sql_engine) as db_session:
         db_items: List[FeedbackItem] = db_session.query(FeedbackItem).filter(
-            or_(FeedbackItem.reporter_id == profile_id, ~FeedbackItem.private)
+            FeedbackItem.reporter_id == profile_id
         )
-
-        if only_current_user:
-            db_items = db_items.filter(FeedbackItem.private)
 
         # pagination
         db_items = db_items.offset(page_size * (page - 1)).limit(page_size).all()

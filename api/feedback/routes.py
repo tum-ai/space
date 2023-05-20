@@ -132,7 +132,6 @@ def list_feedback_items(
     request: Request,
     page: int = 1,
     page_size: int = 100,
-    only_current_user: bool = False,
     session: SessionContainer = Depends(verify_session()),
 ) -> ResponseFeedBackItemList:
     """
@@ -141,7 +140,6 @@ def list_feedback_items(
     Args:
         page: 1 based page index
         page_size:
-        only_current_user: will only show items of current user if activated
         session:
         request:
 
@@ -157,7 +155,6 @@ def list_feedback_items(
         db_profile.id,
         page,
         page_size,
-        only_current_user=only_current_user,
     )
     print("++++", db_items)
     out_items: List[FeedbackItemOut] = [
@@ -178,7 +175,7 @@ def list_feedback_items(
 
 @router.delete(
     "/items/",
-    response_description="delete all profiles",
+    response_description="Delete Feedback Items",
     response_model=ResponseDeletedIntList,
 )
 @async_error_handlers

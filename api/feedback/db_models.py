@@ -49,10 +49,6 @@ class FeedbackItem(MixinAsDict, Base):
     title: Mapped[str] = mapped_column(String(100), unique=True, nullable=False)
     description: Mapped[Optional[str]] = mapped_column(String(2048), nullable=True)
 
-    private: Mapped[Optional[bool]] = mapped_column(
-        Boolean, nullable=True, default=False
-    )
-
     # [RELATIONAL FK FIELDS] #############################################################
     # references Profile
     reporter_id: Mapped[int] = mapped_column(

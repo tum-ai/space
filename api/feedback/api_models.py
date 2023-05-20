@@ -19,15 +19,13 @@ class FeedbackItemIn(BaseModel):
     type: FeedbackItemType
     title: str
     description: Optional[str]
-    private: bool
 
     @classmethod
     def dummy(cls) -> "FeedbackItemIn":
         return FeedbackItemIn(
             type=FeedbackItemType.FEATURE,
             title="Some feedback title",
-            description="Some feedback description...",
-            private=False,
+            description="Some feedback description..."
         )
 
     class Config:
@@ -36,7 +34,6 @@ class FeedbackItemIn(BaseModel):
                 "type": FeedbackItemType.FEATURE,
                 "title": "Some feedback title",
                 "description": "Some feedback description...",
-                "private": False,
             }
         }
 
@@ -75,8 +72,6 @@ class FeedbackItemOut(BaseModel):
     title: str
     description: Optional[str]
 
-    private: bool
-
     reporter: FeedbackItemReporterOut
 
     @classmethod
@@ -86,7 +81,6 @@ class FeedbackItemOut(BaseModel):
             type=feedback_item.type,
             title=feedback_item.title,
             description=feedback_item.description,
-            private=feedback_item.private,
             reporter=FeedbackItemReporterOut.from_db_model(feedback_item.reporter),
         )
 
@@ -97,7 +91,6 @@ class FeedbackItemOut(BaseModel):
             type=FeedbackItemType.FEATURE,
             title="Some feedback title",
             description="Some feedback description...",
-            private=False,
             reporter=FeedbackItemReporterOut.dummy(),
         )
 
@@ -108,7 +101,6 @@ class FeedbackItemOut(BaseModel):
                 "type": FeedbackItemType.FEATURE,
                 "title": "Some feedback title",
                 "description": "Some feedback description...",
-                "private": False,
                 "reporter": FeedbackItemReporterOut.dummy(),
             }
         }
