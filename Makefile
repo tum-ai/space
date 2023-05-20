@@ -1,29 +1,9 @@
-$PHONY: install init_venv run_docker run_api run
 
-RED=\033[0;31m
-GREEN=\033[0;32m
-NC=\033[0m
+run-db:  # for running api locally outside of docker
+	sudo docker-compose up --build --remove-orphans -d space-db
 
-install:
-	# next js
-	curl -sL https://deb.nodesource.com/setup_14.x | sudo -E /bin/bash
-	sudo apt-get install nodejs -y
-	brew install postgresql@15
-	
-	# python3.10
-	printf "${RED}TODO: Please intall Python3.10 ${NC}\n"
-	python3.10 --version
+run:
+	sudo docker-compose up --build --remove-orphans -d
 
-init_venv:
-	python3.10 -m venv api/venv
-	. api/venv/bin/activate
-	python3.10 -m pip install -r api/requirements.txt
-	printf "${RED}TODO: ${NC} >> ${GREEN}. venv/bin/activate${NC}\n"
-
-run_docker:
-	sudo docker-compose up -d
-
-run_api:
-	cd api && uvicorn server.app:app --reload --port 15900 --host 0.0.0.0
-
-run: run_docker
+run-skip-build:  # does not rebuild the api image
+	sudo docker-compose up --remove-orphans -d

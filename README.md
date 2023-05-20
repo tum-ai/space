@@ -20,32 +20,41 @@ Make sure to have the following installed before running ```make```:
 
 ### Running the project
 Note: this setup guide currently only works on Linux systems as-is. 
+
+# TODO: rewrite acc. to /Makefile /api/Makefile /app/Makefile (try out first)
+
 1. Initial setup
-    ```bash
-    make # runs installation (venv etc.)
+  - Create `/api/.env`
     ```
-    Map tum-ai-dev.com domain to localhost.
-    Change your host file to map api.tum-ai-dev.com, auth.tum-ai-dev.com, space.tum-ai-dev.com to 127.0.0.1 (checkout this [guide](https://www.hostinger.com/tutorials/how-to-edit-hosts-file))
+    environment=development
+    DB_HOST=localhost
+    DB_PORT=5432
+    DB_NAME=space-db
+    DB_USER=space-db
+    DB_PASSWORD=space-db
+    ```
+
+  - Add Firebase Admin SDK Certificate (for staging env): Dev environment will use authentication of Staging Firebase project [Secrets file on Notion](https://www.notion.so/tum-ai/c893a21fc7034d3aa44f40d28fd71373?v=65bb26a99f124632ac28a8eabe3bf066)
+    ```bash
+    # store as /api/.secrets/tumai-space-firebase-adminsdk.json
+    ```
 
 2. Start backend
   Run the following from the root of the project
     ```bash
-    docker-compose up -d
+    make run
+
+    # outside of docker:
+    uvicorn main:app --host 0.0.0.0 --reload --port 8000
+
+    # with production wdgi server
+    cd api/ && ./startup.sh
     ```
 3. Start frontend
   Run the following from the root of the project
     ```bash
-    # optional (advanced) ----------------------------------------------------
-    # running uvicorn outside of docker (you have to change .reverse/.config/config.yml) to use your local ip as upstream server (in 'services' section)
-
-    uvicorn api.server.app:app --reload --port 15900 --host 0.0.0.0
-    # or: 
-    make run_api
-    # ------------------------------------------------------------------------
-
-    # otherwise if running inside docker restart the api container by
-    docker-compose down
-    docker-compose up -d
+    # ensure your backend / db is running
+    cd app && npm run start
     ```
 4. To start the auth web app (you might need to install next.js first):
     ```bash
@@ -93,7 +102,7 @@ In the beginning of the project the team formed and chose a technical stack. Thi
 **DevOps**:
 - Deployed on Azure
 - (currently, will be replaced by Azure service) [`Traefik`](https://traefik.io/) as a reverse proxy 
-- [`SuperTokens`](https://supertokens.com/) for managing authentication, authorization and roles
+- [`Firebase`](https://firebase.com/) for managing authentication
 - [`Docker`](https://www.docker.com/) with [`Docker Compose`](https://docs.docker.com/compose/) for containerization and orchestration
 
 # CI / CD Draft
@@ -102,7 +111,7 @@ In the beginning of the project the team formed and chose a technical stack. Thi
 - No automated CI Action
 - Dev can start up:
   - Frontend: via npm or firebase emulator
-  - Backend: via uvicorn or docker (TODO: deprecate docker)
+  - Backend: via uvicorn or docker compose
   - DB: use dockerized postgres, 
 - Precommit hook: Linting
 2) Test:
@@ -115,13 +124,11 @@ In the beginning of the project the team formed and chose a technical stack. Thi
   - Backend: deployed to Azure staging (env environment=staging)
   - DB: azure staging db
 - CI Action triggered on:
-  TODO: decide:
     - PR request creation into main
-    - push commit to staging branch
 
 4) Production:
 - deployed version of main branch
   - Frontend: to firebase prod
   - Backend: deployed to Azure prod (env environment=production)
   - DB: azure prod db
-- CI Action triggered on push commit to main
+- CI Action triggered on push commit to main (=merge PR)

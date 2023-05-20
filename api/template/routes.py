@@ -1,12 +1,5 @@
 from fastapi import (
     APIRouter,
-    Depends,
-)
-from supertokens_python.recipe.session import (
-    SessionContainer,
-)
-from supertokens_python.recipe.session.framework.fastapi import (
-    verify_session,
 )
 
 from database.templates_connector import (
@@ -40,19 +33,17 @@ async def list_all_templates():
 
 
 # Example of a route that requires authentication
-# Disclaimer: be sure to use verify_session() instead of verify_session (as a callable)
 @router.post(
     "/", response_description="Add a new template message", response_model=Response
 )
 async def add_template(
     # template: TemplateMessage = Body(...),
-    session: SessionContainer = Depends(verify_session()),
 ):
     # new_template_message = await add_template_message(template)
     return {
         "status_code": 200,
         "response_type": "success",
-        "description": f"Template message added successfully by {session.get_user_id()}.",
+        "description": "Template message added successfully by TODO.",
         # "data": new_template_message,
     }
 
@@ -65,7 +56,6 @@ async def add_template(
 )
 async def show_template(
     # id_: PydanticObjectId,
-    session: SessionContainer = Depends(verify_session()),
 ):
     # template_message = await retrieve_template_message(id_)
     # if template_message:
@@ -81,11 +71,6 @@ async def show_template(
     return {
         "status_code": 404,
         "response_type": "error",
-        "description": f"TODO adjust. Requested by {session.get_user_id()}",
+        "description": "TODO adjust. Requested by TODO",
         "data": None,
     }
-
-
-# TODO: Example of a protected admin route
-# https://supertokens.com/docs/thirdpartyemailpassword/common-customizations/sessions/
-# claims/claim-validators#adding-a-validator-check-to-a-specific-route

@@ -11,6 +11,13 @@ from sqlalchemy.orm import (
     Session,
 )
 
+from database.db_models import (  # PublicProfile
+    Department,
+    DepartmentMembership,
+    Profile,
+    Role,
+    SocialNetwork,
+)
 from database.setup import (
     setup_db_client_appless,
 )
@@ -18,13 +25,6 @@ from profiles.api_models import (
     ProfileInCreate,
     ProfileInUpdate,
     SocialNetworkIn,
-)
-from profiles.db_models import (  # PublicProfile
-    Department,
-    DepartmentMembership,
-    Profile,
-    Role,
-    SocialNetwork,
 )
 
 # department operations ##################################################################
@@ -110,10 +110,10 @@ def create_db_profile(
         return new_db_profile[0]
 
 
-def create_empty_db_profile(supertokens_id: str, email: str) -> List[Profile]:
+def create_empty_db_profile(firebase_uid: str, email: str) -> List[Profile]:
     with Session(setup_db_client_appless()) as db_session:
         db_profile = Profile(
-            supertokens_id=supertokens_id,
+            firebase_uid=firebase_uid,
             email=email,
             phone="",
             first_name="",
@@ -259,15 +259,13 @@ def retrieve_db_profile(sql_engine: Engine, profile_id: str) -> Profile:
         return db_model
 
 
-def retrieve_db_profile_by_supertokens_id(
+def retrieve_db_profile_by_firebase_uid(
     sql_engine: Engine,
-    supertokens_id: str,
+    firebase_uid: str,
 ) -> Profile:
     with Session(sql_engine) as db_session:
         db_model = (
-            db_session.query(Profile)
-            .filter(Profile.supertokens_id == supertokens_id)
-            .one()
+            db_session.query(Profile).filter(Profile.firebase_uid == firebase_uid).one()
         )
 
         # asserts presence values
