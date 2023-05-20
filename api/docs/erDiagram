@@ -90,11 +90,6 @@ erDiagram
         int reporter_id FK "required, references Profile, ondelete=CASCADE"
         Profile reporter "reference to reporter's Profile"
     }
-    FeedbackItemUpvote {
-        // managed fields
-        int feedback_item_id PK "FK references FeedbackItem, required"
-        int profile_id PK "FK references Profile, required"
-    }
     // ================================
     %% PROJECT SERVICE
     Project {
@@ -220,9 +215,6 @@ erDiagram
     %% FEEDBACK SERVICE
     // limit to at most 20 FeedbackItems per profile
 	Profile ||--o{ FeedbackItem: makes
-
-	Profile ||--o{ FeedbackItemUpvote: makes
-	FeedbackItem ||--o{ FeedbackItemUpvote: gets
 
     %% PROJECT SERVICE
     Profile ||--o{ ProjectMembership: has 

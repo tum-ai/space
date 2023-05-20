@@ -68,23 +68,3 @@ class FeedbackItem(MixinAsDict, Base):
 
     def __repr__(self) -> str:
         return f"FeedbackItem(id={self.id!r}, title={self.title!r})"
-
-
-class FeedbackItemUpvote(MixinAsDict, Base):
-    """database model"""
-
-    __tablename__ = "feedback_item_upvote"
-
-    # [MANAGED FIELDS] ###################################################################
-    feedback_item_id: Mapped[int] = mapped_column(
-        ForeignKey(FeedbackItem.id, ondelete="CASCADE"), primary_key=True
-    )
-    profile_id: Mapped[int] = mapped_column(
-        ForeignKey(Profile.id, ondelete="CASCADE"), primary_key=True
-    )
-
-    def __repr__(self) -> str:
-        return (
-            f"FeedbackItemUpvote(feedback_item_id={self.feedback_item_id!r}, "
-            f"profile_id={self.profile_id!r})"
-        )

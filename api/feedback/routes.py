@@ -121,8 +121,6 @@ class ResponseFeedBackItemList(BaseResponse):
             [FeedbackItemOut.dummy(), FeedbackItemOut.dummy()]
         )
 
-
-# TODO: include upvotes
 @router.get(
     "/items/",
     response_description="List all feedback items, paging supported",
@@ -214,6 +212,3 @@ async def delete_feedback_items(
         "description": "Profile list successfully deleted",
         "data": deleted_profiles,
     }
-
-
-# TODO: create upvote toggle endpoint (should be idempotent)
