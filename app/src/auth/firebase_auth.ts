@@ -9,7 +9,7 @@ import {
     sendPasswordResetEmail,
     signOut,
 } from "firebase/auth";
-import { environment_name } from "../environment";
+import { environment_name } from "../env/environment";
 
 
 const firebaseConfigProd = {
