@@ -2,7 +2,7 @@ from pydantic import (
     BaseModel,
 )
 
-from certification.db_models import (
+from database.db_models import (
     CertificationTemplate,
 )
 from profiles.api_models import (

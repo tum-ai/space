@@ -16,7 +16,7 @@ erDiagram
     Profile {
         // managed fields
         int id PK "AUTOINCREMENT"
-        string supertokens_id "optional, UNIQUE"
+        string firebase_uid "required, UNIQUE"
 
         // userchangable fields
         string email "required, maxlen(200)"

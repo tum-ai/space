@@ -6,38 +6,22 @@ from typing import (
 from fastapi import (
     APIRouter,
     Body,
-    Depends,
     Request,
 )
-from supertokens_python.recipe.session import (
-    SessionContainer,
-)
-from supertokens_python.recipe.session.exceptions import (
-    ClaimValidationError,
-    raise_invalid_claims_exception,
-)
-from supertokens_python.recipe.session.framework.fastapi import (
-    verify_session,
-)
-from supertokens_python.recipe.userroles import (
-    PermissionClaim,
-    UserRoleClaim,
-)
-from supertokens_python.recipe.userroles.asyncio import (
-    add_role_to_user,
-)
 
+from database.db_models import (
+    Profile,
+)
 from database.profiles_connector import (
     create_db_profile,
     create_db_profiles,
-    debug_db_query,
     delete_db_profile,
     delete_db_profiles,
     list_db_departments,
     list_db_profiles,
     retrieve_db_department,
     retrieve_db_profile,
-    retrieve_db_profile_by_supertokens_id,
+    retrieve_db_profile_by_firebase_uid,
     update_db_profile,
 )
 from profiles.api_models import (
@@ -46,9 +30,6 @@ from profiles.api_models import (
     ProfileInUpdate,
     ProfileOut,
     ProfileOutPublic,
-)
-from profiles.db_models import (
-    Profile,
 )
 from template.models import (
     BaseResponse,
@@ -142,7 +123,6 @@ class ResponseProfileList(BaseResponse):
 async def add_profiles(
     request: Request,
     data: Annotated[List[ProfileInCreate], Body(embed=True)],
-    # session: SessionContainer = Depends(verify_session())
 ):
     # TODO test and enable the commented out code
     # roles = await session.get_claim_value(UserRoleClaim)
@@ -175,7 +155,6 @@ class ResponseProfile(BaseResponse):
 async def add_profile(
     request: Request,
     data: Annotated[ProfileInCreate, Body(embed=True)],
-    # session: SessionContainer = Depends(verify_session())
 ) -> ResponseProfile:
     # TODO test and enable the commented out code
     # roles = await session.get_claim_value(UserRoleClaim)
@@ -291,19 +270,19 @@ async def get_profile(request: Request, profile_id: str) -> ResponseProfile:
     }
 
 
-# TODO test & logic to init profile with supertokens id
+# TODO test & logic to init profile with firebase_uid id
 @router.get(
     "/profile/",
     response_description="Retrieve the complete profile of the user "
-    + "currently logged in with SuperTokens",
+    + "currently logged in with FierBase",
     response_model=ResponseProfile,
 )
 async def show_current_profile(
-    request: Request, session: SessionContainer = Depends(verify_session())
+    request: Request,
 ) -> ResponseProfile:
-    supertokens_user_id = session.get_user_id()
-    db_profile: Profile = retrieve_db_profile_by_supertokens_id(
-        request.app.state.sql_engine, supertokens_user_id
+    firebase_uid = "TODO"
+    db_profile: Profile = retrieve_db_profile_by_firebase_uid(
+        request.app.state.sql_engine, firebase_uid
     )
     profile: ProfileOut = ProfileOut.from_db_model(db_profile)
     return {
@@ -373,7 +352,6 @@ async def update_profile(
     request: Request,
     profile_id: int,
     data: Annotated[ProfileInUpdate, Body(embed=True)],
-    # session: SessionContainer = Depends(verify_session())
 ) -> ResponseProfile:
     # TODO authorization
     updated_db_profile = update_db_profile(
@@ -399,11 +377,10 @@ async def update_profile(
 async def update_current_profile(
     request: Request,
     data: Annotated[ProfileInUpdate, Body(embed=True)],
-    session: SessionContainer = Depends(verify_session()),
 ) -> ResponseProfile:
-    supertokens_user_id = session.get_user_id()
-    db_profile: Profile = retrieve_db_profile_by_supertokens_id(
-        request.app.state.sql_engine, supertokens_user_id
+    firebase_uid = "TODO"
+    db_profile: Profile = retrieve_db_profile_by_firebase_uid(
+        request.app.state.sql_engine, firebase_uid
     )
     updated_db_profile = update_db_profile(
         request.app.state.sql_engine, db_profile.id, data
@@ -416,72 +393,3 @@ async def update_current_profile(
         "description": "Updated current profile",
         "data": udpated_profile,
     }
-
-
-##########################################################################################
-# TODO UPDATE ALL FUNCTIONS BELOW! #######################################################
-##########################################################################################
-
-
-# testing for frontend connection---------------------------------------------#
-@router.post(
-    "/test/checkrole",
-    response_description="Test if role is added to session",
-    response_model=Response,
-)
-async def test1(session: SessionContainer = Depends(verify_session())):
-    # print(session.__dict__)
-    roles = await session.get_claim_value(UserRoleClaim)
-
-    if roles is None or "ADMIN" not in roles:
-        raise_invalid_claims_exception(
-            "User is not an admin", [ClaimValidationError(UserRoleClaim.key, None)]
-        )
-    else:
-        return {
-            "status": 200,
-            "status_code": 200,
-            "response_type": "success",
-            "description": "check role",
-            "data": "check completed",
-        }
-
-
-# add role to session user for testing ---------------------------------------#
-@router.post(
-    "/profiles/role", response_description="Add role to user", response_model=Response
-)
-async def add_role_to_user_func(session: SessionContainer = Depends(verify_session())):
-    user_id = session.user_id
-    role = "ADMIN"
-    res = await add_role_to_user(user_id, role)
-
-    # add the user's roles to the user's session
-    await session.fetch_and_set_claim(UserRoleClaim)
-    # add the user's permissions to the user's session
-    await session.fetch_and_set_claim(PermissionClaim)
-
-    return {
-        "status_code": 200,
-        "response_type": "success",
-        "description": "attempted role add",
-        "data": res,
-    }
-    # '''if isinstance(res, UnknownRoleError):
-    #     # No such role exists
-
-    #     return
-
-    # if res.did_user_already_have_role:
-    #     # User already had this role
-    #     pass'''
-
-
-# TODO: DEBUG ####
-@router.get(
-    "/debug",
-    response_description="Retrieve a complete profile",
-    # response_model=Response,
-)
-async def debug(request: Request):
-    return debug_db_query(request.app.state.sql_engine)
