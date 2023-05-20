@@ -85,10 +85,10 @@ async def auth_test(request: Request):
         return {"msg": "No auth token supplied!"}
 
 
+# Prefix defined in router
+app.include_router(ProfilesRouter, tags=["Profile"])
+
 # Include here all the routes from the different modules
 app.include_router(TemplateRouter, prefix="/template", tags=["Template"])
 
 # app.include_router(CertificationRouter, prefix="/certification", tags=["Certification"])
-
-# Prefix defined in router
-app.include_router(ProfilesRouter, tags=["Profile"])
