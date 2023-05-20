@@ -78,7 +78,7 @@ app.add_middleware(
     allow_headers=allow_all,
 )
 
-# https://www.starlette.io/middleware/ scroll down to CORSMiddleware
+# https://www.starlette.io/middleware/ scroll to CORSMiddleware
 # log.debug(CONFIG.get("AUTH_ALLOWED_ORIGINS")),
 # app.add_middleware(
 #     CORSMiddleware,
