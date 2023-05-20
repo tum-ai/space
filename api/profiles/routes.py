@@ -9,23 +9,6 @@ from fastapi import (
     Depends,
     Request,
 )
-from supertokens_python.recipe.session import (
-    SessionContainer,
-)
-from supertokens_python.recipe.session.exceptions import (
-    ClaimValidationError,
-    raise_invalid_claims_exception,
-)
-from supertokens_python.recipe.session.framework.fastapi import (
-    verify_session,
-)
-from supertokens_python.recipe.userroles import (
-    PermissionClaim,
-    UserRoleClaim,
-)
-from supertokens_python.recipe.userroles.asyncio import (
-    add_role_to_user,
-)
 
 from database.profiles_connector import (
     create_db_profile,
@@ -37,7 +20,7 @@ from database.profiles_connector import (
     list_db_profiles,
     retrieve_db_department,
     retrieve_db_profile,
-    retrieve_db_profile_by_supertokens_id,
+    retrieve_db_profile_by_firebase_uid,
     update_db_profile,
 )
 from profiles.api_models import (
@@ -47,7 +30,7 @@ from profiles.api_models import (
     ProfileOut,
     ProfileOutPublic,
 )
-from profiles.db_models import (
+from database.db_models import (
     Profile,
 )
 from template.models import (
@@ -142,7 +125,6 @@ class ResponseProfileList(BaseResponse):
 async def add_profiles(
     request: Request,
     data: Annotated[List[ProfileInCreate], Body(embed=True)],
-    # session: SessionContainer = Depends(verify_session())
 ):
     # TODO test and enable the commented out code
     # roles = await session.get_claim_value(UserRoleClaim)
@@ -175,7 +157,6 @@ class ResponseProfile(BaseResponse):
 async def add_profile(
     request: Request,
     data: Annotated[ProfileInCreate, Body(embed=True)],
-    # session: SessionContainer = Depends(verify_session())
 ) -> ResponseProfile:
     # TODO test and enable the commented out code
     # roles = await session.get_claim_value(UserRoleClaim)
@@ -291,19 +272,19 @@ async def get_profile(request: Request, profile_id: str) -> ResponseProfile:
     }
 
 
-# TODO test & logic to init profile with supertokens id
+# TODO test & logic to init profile with firebase_uid id
 @router.get(
     "/profile/",
     response_description="Retrieve the complete profile of the user "
-    + "currently logged in with SuperTokens",
+    + "currently logged in with FierBase",
     response_model=ResponseProfile,
 )
 async def show_current_profile(
-    request: Request, session: SessionContainer = Depends(verify_session())
+    request: Request,
 ) -> ResponseProfile:
-    supertokens_user_id = session.get_user_id()
-    db_profile: Profile = retrieve_db_profile_by_supertokens_id(
-        request.app.state.sql_engine, supertokens_user_id
+    firebase_uid = session.get_user_id()
+    db_profile: Profile = retrieve_db_profile_by_firebase_uid(
+        request.app.state.sql_engine, firebase_uid
     )
     profile: ProfileOut = ProfileOut.from_db_model(db_profile)
     return {
@@ -373,7 +354,6 @@ async def update_profile(
     request: Request,
     profile_id: int,
     data: Annotated[ProfileInUpdate, Body(embed=True)],
-    # session: SessionContainer = Depends(verify_session())
 ) -> ResponseProfile:
     # TODO authorization
     updated_db_profile = update_db_profile(
@@ -399,11 +379,10 @@ async def update_profile(
 async def update_current_profile(
     request: Request,
     data: Annotated[ProfileInUpdate, Body(embed=True)],
-    session: SessionContainer = Depends(verify_session()),
 ) -> ResponseProfile:
-    supertokens_user_id = session.get_user_id()
-    db_profile: Profile = retrieve_db_profile_by_supertokens_id(
-        request.app.state.sql_engine, supertokens_user_id
+    firebase_uid = session.get_user_id()
+    db_profile: Profile = retrieve_db_profile_by_firebase_uid(
+        request.app.state.sql_engine, firebase_uid
     )
     updated_db_profile = update_db_profile(
         request.app.state.sql_engine, db_profile.id, data
@@ -429,7 +408,7 @@ async def update_current_profile(
     response_description="Test if role is added to session",
     response_model=Response,
 )
-async def test1(session: SessionContainer = Depends(verify_session())):
+async def test1():
     # print(session.__dict__)
     roles = await session.get_claim_value(UserRoleClaim)
 
@@ -451,7 +430,7 @@ async def test1(session: SessionContainer = Depends(verify_session())):
 @router.post(
     "/profiles/role", response_description="Add role to user", response_model=Response
 )
-async def add_role_to_user_func(session: SessionContainer = Depends(verify_session())):
+async def add_role_to_user_func():
     user_id = session.user_id
     role = "ADMIN"
     res = await add_role_to_user(user_id, role)

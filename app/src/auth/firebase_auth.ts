@@ -62,6 +62,10 @@ const signInWithGoogle = async () => {
     }
 };
 
+const getUserAuthToken = async () => {
+    return await auth.currentUser?.getIdToken();
+}
+
 const logInWithEmailAndPassword = async (email: string, password: string) => {
     try {
         await signInWithEmailAndPassword(auth, email, password);
@@ -96,6 +100,7 @@ const logout = () => {
 export {
     auth,
     signInWithGoogle,
+    getUserAuthToken,
     logInWithEmailAndPassword,
     registerWithEmailAndPassword,
     sendPasswordReset,

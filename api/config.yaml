@@ -17,6 +17,9 @@ AUTH:
         - 'http://space.tum-ai.com'
         - 'http://space.staging.tum-ai.com'
         - 'http://localhost'
+        - 'http://localhost:3000'
+        - 'http://192.168.178.21'
+        - 'http://192.168.178.21:3000'
     USERS_DASHBOARD_API_KEY: 'someApiKey'
 #-------------------------------------------------------------------------------#
 LOGGER:

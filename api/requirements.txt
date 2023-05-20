@@ -22,7 +22,6 @@ gunicorn
 beanie==1.16.6
 pyyaml~=6.0
 starlette==0.22
-supertokens_python
 pydantic_computed
 python-dateutil
 psycopg2-binary
