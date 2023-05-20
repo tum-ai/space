@@ -18,6 +18,8 @@ Make sure to have the following installed before running ```make```:
 - Brew, see [here](https://brew.sh) for installation
 - Docker with the Compose plugin, see [here](https://docs.docker.com/get-docker/) for installation
 
+Also make sure to have [pre-commit](https://pre-commit.com) installed by running ```pre-commit install``` once.
+
 ### Running the project
 Note: this setup guide currently only works on Linux systems as-is. 
 
