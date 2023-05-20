@@ -112,7 +112,7 @@ In the beginning of the project the team formed and chose a technical stack. Thi
 3) Staging
 - deployed version of staging branch
   - Frontend: to firebase staging
-  - Backend: deployed to Azure staging
+  - Backend: deployed to Azure staging (env environment=staging)
   - DB: azure staging db
 - CI Action triggered on:
   TODO: decide:
@@ -122,6 +122,6 @@ In the beginning of the project the team formed and chose a technical stack. Thi
 4) Production:
 - deployed version of main branch
   - Frontend: to firebase prod
-  - Backend: deployed to Azure prod
+  - Backend: deployed to Azure prod (env environment=production)
   - DB: azure prod db
 - CI Action triggered on push commit to main

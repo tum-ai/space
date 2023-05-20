@@ -4,7 +4,6 @@ on:
   push:
     branches-ignore:
       - main
-      - staging
     paths:
     - 'app/**'
   workflow_dispatch:
@@ -17,6 +16,9 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+      - name: Setup environment type
+        working-directory: ./app
+        run: echo "REACT_APP_ENVIRONMENT=development" > .env
       - name: CI & Build
         working-directory: ./app
         run: npm ci && npm run build
