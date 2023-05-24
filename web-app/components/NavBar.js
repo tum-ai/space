@@ -2,10 +2,6 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
-import {
-	signOut,
-	useSessionContext,
-} from 'supertokens-auth-react/recipe/session';
 import Icon from '/components/Icon';
 
 function NavBar() {
@@ -18,17 +14,7 @@ function NavBar() {
 }
 
 function NavBarDesktop() {
-	const session = useSessionContext();
 	const router = useRouter();
-	function logoutClicked() {
-		signOut()
-			.then(() => {
-				router.reload();
-			})
-			.catch(() => {
-				console.log('Could not sign out.');
-			});
-	}
 	return (
 		<div className='lg:flex hidden w-full bg-gray-100 p-4 lg:p-6 flex space-x-6 items-center dark:bg-black sticky top-0 z-20'>
 			<div>
@@ -113,7 +99,7 @@ function NavBarDesktop() {
 						News
 					</Link>
 				</div>
-				<div className='flex space-x-4'>
+				{/* <div className='flex space-x-4'>
 					{session.doesSessionExist ? (
 						<>
 							<Link
@@ -143,14 +129,14 @@ function NavBarDesktop() {
 							</a>
 						</>
 					)}
-				</div>
+				</div> */}
 			</div>
 		</div>
 	);
 }
 
 function NavBarMobile() {
-	const session = useSessionContext();
+	// const session = useSessionContext();
 	const router = useRouter();
 	function logoutClicked() {
 		signOut()

@@ -1,12 +1,9 @@
 import { useEffect } from 'react';
-import SuperTokensReact, { SuperTokensWrapper } from 'supertokens-auth-react';
-import * as SuperTokensConfig from '../config/frontendConfig';
 import { RootStoreProvider } from '../providers/RootStoreProvider';
+import { AuthContext } from '../context/AuthContext';
 import '../styles/globals.css';
 
-if (typeof window !== 'undefined') {
-	SuperTokensReact.init(SuperTokensConfig.frontendConfig());
-}
+
 function App({ Component, pageProps }) {
 	useEffect(() => {
 		document.documentElement.style.setProperty(
@@ -15,11 +12,11 @@ function App({ Component, pageProps }) {
 		);
 	}, []);
 	return (
-		<SuperTokensWrapper>
+		// <AuthContext>
 			<RootStoreProvider hydrationData={pageProps.hydrationData}>
 				<Component {...pageProps} />
 			</RootStoreProvider>
-		</SuperTokensWrapper>
+		// </AuthContext>
 	);
 }
 
