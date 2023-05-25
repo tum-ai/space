@@ -3,14 +3,7 @@ from typing import (
     Union,
 )
 
-from template.models import (
-    TemplateMessage,
-)
-
 # from beanie import PydanticObjectId
-
-
-templates_collection = TemplateMessage
 
 
 ##########################################################################################
@@ -18,14 +11,15 @@ templates_collection = TemplateMessage
 ##########################################################################################
 
 
-async def retrieve_all_template_messages() -> List[TemplateMessage]:
-    templates = await templates_collection.find_all().to_list()
-    return templates
+async def retrieve_all_template_messages():  # -> List[TemplateMessage]:
+    # templates = await templates_collection.find_all().to_list()
+    # return templates
+    pass
 
 
 async def retrieve_template_message(
     # template_message_id: PydanticObjectId,
-) -> Union[bool, TemplateMessage]:
+):  # -> Union[bool, TemplateMessage]:
     # template_message = await templates_collection.get(template_message_id)
     # if template_message:
     #     return template_message
@@ -35,10 +29,11 @@ async def retrieve_template_message(
 
 
 async def add_template_message(
-    new_template_message: TemplateMessage,
-) -> TemplateMessage:
-    template_message = await new_template_message.create()
-    return template_message
+    # new_template_message: TemplateMessage,
+):  # -> TemplateMessage:
+    # template_message = await new_template_message.create()
+    # return template_message
+    pass
 
 
 async def delete_template_message(
@@ -56,7 +51,7 @@ async def delete_template_message(
 async def update_template_message_data(
     # template_message_id: PydanticObjectId,
     data: dict,
-) -> Union[bool, TemplateMessage]:
+):  # -> Union[bool, TemplateMessage]:
     # update_body = {k: v for k, v in data.items() if v is not None}
     # update_query = {"$set": {field: value for field, value in update_body.items()}}
     # template_message = await templates_collection.get(template_message_id)
