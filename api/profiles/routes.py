@@ -10,24 +10,17 @@ from fastapi import (
     Request,
 )
 
-from database.db_models import (
-    Profile,
-)
 from database.profiles_connector import (
-    create_db_profile,
-    create_db_profiles,
     delete_db_profile,
     delete_db_profiles,
     list_db_departments,
     list_db_profiles,
     retrieve_db_department,
     retrieve_db_profile,
-    retrieve_db_profile_by_firebase_uid,
     update_db_profile,
 )
 from profiles.api_models import (
     DepartmentOut,
-    ProfileInCreate,
     ProfileInUpdate,
     ProfileOut,
     ProfileOutPublic,
@@ -234,7 +227,8 @@ def get_public_profile(request: Request, profile_id: int):
 
 @router.get(
     "/me",
-    response_description="Retrieve the complete profile of the user currently logged in with FireBase",
+    response_description="Retrieve the complete profile of the user currently \
+    logged in with FireBase",
     response_model=Union[ResponseProfile, ErrorResponse],
 )
 @ensure_authenticated

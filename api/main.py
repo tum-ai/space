@@ -1,7 +1,3 @@
-from typing import (
-    Any,
-)
-
 from fastapi import (
     FastAPI,
     Request,
@@ -23,7 +19,6 @@ from security.decorators import (
 from security.firebase_auth import (
     init_firebase_auth,
 )
-from template.routes import router as TemplateRouter
 from utils.config import (
     CONFIG,
 )
@@ -85,8 +80,5 @@ def auth_test(request: Request):
 
 # Prefix defined in router
 app.include_router(ProfilesRouter, tags=["Profile"])
-
-# Include here all the routes from the different modules
-app.include_router(TemplateRouter, prefix="/template", tags=["Template"])
 
 # app.include_router(CertificationRouter, prefix="/certification", tags=["Certification"])

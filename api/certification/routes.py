@@ -6,15 +6,15 @@ from fastapi import (
     APIRouter,
     Request,
 )
+from template.models import (
+    BaseResponse,
+)
 
 from certification.models import (
     CertificationTemplateOut,
 )
 from database.certificates_connector import (
     list_db_certification_templates,
-)
-from template.models import (
-    BaseResponse,
 )
 from utils.error_handlers import (
     async_error_handlers,

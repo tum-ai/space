@@ -1,9 +1,6 @@
 from functools import (
     wraps,
 )
-from typing import (
-    Callable,
-)
 
 
 def response_error(code: int, description: str):
