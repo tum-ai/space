@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { RootStoreProvider } from '../providers/RootStoreProvider';
-import { AuthContext } from '../context/AuthContext';
+import { AuthContextProvider } from '../context/AuthContext';
 import '../styles/globals.css';
 
 
@@ -12,11 +12,11 @@ function App({ Component, pageProps }) {
 		);
 	}, []);
 	return (
-		// <AuthContext>
+		<AuthContextProvider>
 			<RootStoreProvider hydrationData={pageProps.hydrationData}>
 				<Component {...pageProps} />
 			</RootStoreProvider>
-		// </AuthContext>
+		</AuthContextProvider>
 	);
 }
 

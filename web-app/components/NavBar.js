@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import Icon from '/components/Icon';
+import { useAuth } from '../context/AuthContext';
 
 function NavBar() {
 	return (
@@ -15,6 +16,10 @@ function NavBar() {
 
 function NavBarDesktop() {
 	const router = useRouter();
+	const { user } = useAuth();
+
+	console.log(user);
+
 	return (
 		<div className='lg:flex hidden w-full bg-gray-100 p-4 lg:p-6 flex space-x-6 items-center dark:bg-black sticky top-0 z-20'>
 			<div>
@@ -129,7 +134,26 @@ function NavBarDesktop() {
 							</a>
 						</>
 					)}
-				</div> */}
+				</div> */
+				// TODO display name when logged in
+					<div>
+						<a
+							href={
+								"/login"
+							}
+							className='bg-white dark:bg-gray-700 p-2 rounded'
+						>
+							Login
+						</a>
+						<a
+							href={
+								"/signup"
+							}
+							className='bg-white dark:bg-gray-700 p-2 rounded'
+						>
+							Signup
+						</a>
+					</div>}
 			</div>
 		</div>
 	);
@@ -244,7 +268,7 @@ function NavBarMobile() {
 						News
 					</Link>
 					<div className='flex space-x-4'>
-						{session.doesSessionExist ? (
+						{/* {session.doesSessionExist ? (
 							<>
 								<Link
 									href='/members/me'
@@ -272,7 +296,7 @@ function NavBarMobile() {
 									Login
 								</a>
 							</>
-						)}
+						)} */}
 					</div>
 				</div>
 			)}
