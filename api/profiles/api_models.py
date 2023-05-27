@@ -121,7 +121,7 @@ class ProfileInCreateUpdateBase(BaseModel):
     phone: Optional[str]
     first_name: str
     last_name: str
-    birthday: date
+    birthday: Optional[date]
     nationality: Optional[str]
     description: Optional[str]
 
@@ -183,7 +183,7 @@ class ProfileOut(BaseModel):
     phone: Optional[str]
     first_name: str
     last_name: str
-    birthday: date
+    birthday: Optional[date]
     nationality: Optional[str]
     description: Optional[str]
 
@@ -304,7 +304,7 @@ class ProfileOutPublic(BaseModel):
     social_networks: List["SocialNetworkOut"]
 
     @classmethod
-    def from_db_model(cls, profile: Profile) -> "ProfileOut":
+    def from_db_model(cls, profile: Profile) -> "ProfileOutPublic":
         return ProfileOutPublic(
             id=profile.id,
             first_name=profile.first_name,
