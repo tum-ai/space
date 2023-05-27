@@ -64,45 +64,6 @@ function NavBarDesktop() {
 					>
 						Team
 					</Link>
-					<Link
-						href={'/projects'}
-						className={
-							'text-gray-500 hover:text-black dark:hover:text-white hover:underline ' +
-							(router.asPath?.includes('/projects') &&
-								'font-bold')
-						}
-					>
-						Projects
-					</Link>
-					<Link
-						href={'/campaigns'}
-						className={
-							'text-gray-500 hover:text-black dark:hover:text-white hover:underline ' +
-							(router.asPath?.includes('/campaigns') &&
-								'font-bold')
-						}
-					>
-						Campaigns
-					</Link>
-					<Link
-						href={'/services'}
-						className={
-							'text-gray-500 hover:text-black dark:hover:text-white hover:underline ' +
-							(router.asPath?.includes('/services') &&
-								'font-bold')
-						}
-					>
-						Services
-					</Link>
-					<Link
-						href={'/news'}
-						className={
-							'text-gray-500 hover:text-black dark:hover:text-white hover:underline ' +
-							(router.asPath?.includes('/news') && 'font-bold')
-						}
-					>
-						News
-					</Link>
 				</div>
 				{/* <div className='flex space-x-4'>
 					{session.doesSessionExist ? (
@@ -227,45 +188,6 @@ function NavBarMobile() {
 						}
 					>
 						Team
-					</Link>
-					<Link
-						href={'/projects'}
-						className={
-							'text-gray-500 hover:text-black dark:hover:text-white hover:underline ' +
-							(router.asPath?.includes('/projects') &&
-								'font-bold')
-						}
-					>
-						Projects
-					</Link>
-					<Link
-						href={'/campaigns'}
-						className={
-							'text-gray-500 hover:text-black dark:hover:text-white hover:underline ' +
-							(router.asPath?.includes('/campaigns') &&
-								'font-bold')
-						}
-					>
-						Campaigns
-					</Link>
-					<Link
-						href={'/services'}
-						className={
-							'text-gray-500 hover:text-black dark:hover:text-white hover:underline ' +
-							(router.asPath?.includes('/services') &&
-								'font-bold')
-						}
-					>
-						Services
-					</Link>
-					<Link
-						href={'/news'}
-						className={
-							'text-gray-500 hover:text-black dark:hover:text-white hover:underline ' +
-							(router.asPath?.includes('/news') && 'font-bold')
-						}
-					>
-						News
 					</Link>
 					<div className='flex space-x-4'>
 						{/* {session.doesSessionExist ? (
