@@ -6,6 +6,7 @@ import { useRouter } from 'next/router'
 import '../styles/globals.css';
 
 const noAuthRequired = ["/", "/login", "/members"];
+
 function App({ Component, pageProps }) {
 	const router = useRouter()
 	useEffect(() => {
@@ -17,17 +18,11 @@ function App({ Component, pageProps }) {
 	return (
 		<AuthContextProvider>
 			<RootStoreProvider hydrationData={pageProps.hydrationData}>
-			{noAuthRequired.includes(router.pathname) ? (
+
 				<Component {...pageProps} />
-			) : (
-				<ProtectedRoute>
-						<Component {...pageProps} />
-				</ProtectedRoute>
-			)
-			}
+
 			</RootStoreProvider>
 		</AuthContextProvider>
-
 	);
 }
 
