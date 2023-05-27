@@ -18,7 +18,6 @@ from pydantic import (
     BaseModel,
 )
 from sqlalchemy import (
-    Boolean,
     CheckConstraint,
     Column,
     DateTime,
@@ -47,6 +46,14 @@ class MixinAsDict:
         return {c.name: getattr(self, c.name) for c in self.__table__.columns}
 
 
+class PositionType(enum.Enum):
+    TEAMLEAD = "Teamlead"
+    PRESIDENT = "President"
+    MEMBER = "Member"
+    ALUMNI = "Alumni"
+    APPLICANT = "Applicant"
+
+
 class Department(MixinAsDict, Base):
     """database model"""
 
@@ -65,21 +72,8 @@ class Department(MixinAsDict, Base):
         "DepartmentMembership", back_populates="department"
     )
 
-    # back reference from Project
-    projects: Mapped[List["Project"]] = relationship(
-        "Project", back_populates="department"
-    )
-
     def __repr__(self) -> str:
         return f"Department(id={self.handle!r}, name={self.name!r})"
-
-
-class Role(enum.Enum):
-    TEAMLEAD = "Teamlead"
-    PRESIDENT = "President"
-    MEMBER = "Member"
-    ALUMNI = "Alumni"
-    APPLICANT = "Applicant"
 
 
 class JobHistoryElement(BaseModel):
@@ -106,16 +100,6 @@ class JobHistoryElement(BaseModel):
                 "date_to": "31.03.2023",
             }
         }
-
-
-# TODO: see https://sqlalchemy-imageattach.readthedocs.io/en/0.8.0/api/entity.html
-# class UserPicture(Base, Image):
-#     '''User's profile picture.'''
-#
-#     user_id = Column(Integer, ForeignKey('User.id'), primary_key=True)
-#     user = relationship('User')
-#
-#     __tablename__ = 'user_picture'
 
 
 class Profile(MixinAsDict, Base):
@@ -168,24 +152,9 @@ class Profile(MixinAsDict, Base):
         "DepartmentMembership", back_populates="profile"
     )
 
-    # back reference from ProjectMembership
-    project_memberships: Mapped[List["ProjectMembership"]] = relationship(
-        "ProjectMembership", back_populates="profile"
-    )
-
-    # back reference from CertificationRequest
-    certification_requests: Mapped[List["CertificationRequest"]] = relationship(
-        "CertificationRequest", back_populates="profile"
-    )
-
-    # back reference from Certificate
-    received_certificates: Mapped[List["Certificate"]] = relationship(
-        "Certificate", back_populates="profile", foreign_keys="Certificate.profile_id"
-    )
-
-    # back reference from Certificate
-    issued_certificates: Mapped[List["Certificate"]] = relationship(
-        "Certificate", back_populates="issuer", foreign_keys="Certificate.issuer_id"
+    # back reference from RoleHoldership
+    role_holderships: Mapped[List["RoleHoldership"]] = relationship(
+        "RoleHoldership", back_populates="profile"
     )
 
     # [AUTOMATIC/COMPUTED FIELDS] ########################################################
@@ -293,7 +262,7 @@ class DepartmentMembership(MixinAsDict, Base):
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
 
     # [SUPERVISOR CHANGEABLE FIELDS] #####################################################
-    role = Column(Enum(Role), nullable=False)
+    position = Column(Enum(PositionType), nullable=False)
     time_from = Column(DateTime, nullable=True)
     time_to = Column(DateTime, nullable=True)
 
@@ -319,239 +288,47 @@ class DepartmentMembership(MixinAsDict, Base):
         )
 
 
-class Project(MixinAsDict, Base):
-    """database model"""
-
-    __tablename__ = "project"
-
-    # [MANAGED FIELDS] ###################################################################
-    handle: Mapped[str] = mapped_column(String(20), primary_key=True)
-
-    # [USER CHANGEABLE FIELDS] ###########################################################
-    name: Mapped[str] = mapped_column(String(80), unique=True, nullable=False)
-    description: Mapped[Optional[str]] = mapped_column(String(2048), nullable=True)
-
-    # [RELATIONAL FK FIELDS] #############################################################
-    department_handle: Mapped[Optional[str]] = mapped_column(
-        ForeignKey("department.handle", ondelete="SET NULL"), nullable=True
-    )
-    department: Mapped[Optional["Department"]] = relationship(
-        "Department", back_populates="projects"
-    )
-
-    # back reference from ProjectMembership
-    memberships: Mapped[List["ProjectMembership"]] = relationship(
-        "ProjectMembership", back_populates="project"
-    )
-
-    # [AUTOMATIC/COMPUTED FIELDS] ########################################################
-    time_created = Column(DateTime(timezone=True), server_default=func.now())
-    time_updated = Column(DateTime(timezone=True), onupdate=func.now())
-
-    def __repr__(self) -> str:
-        return f"Project(handle={self.handle!r}, name={self.name!r})"
-
-
-class ProjectRole(enum.Enum):
-    CLIENT = "Client"
-    LEAD = "ProjectLead"
-    PM = "ProductManager"
-    MEMBER = "Member"
-
-
-class ProjectMembership(MixinAsDict, Base):
+class Role(MixinAsDict, Base):
     """database relation"""
 
-    __tablename__ = "project_membership"
+    __tablename__ = "role"
 
-    # [MANAGED FIELDS] ###################################################################
-    profile_id: Mapped[int] = mapped_column(ForeignKey(Profile.id), primary_key=True)
-    project_handle: Mapped[str] = mapped_column(
-        ForeignKey(Project.handle), primary_key=True
-    )
-
-    # [SUPERVISOR CHANGEABLE FIELDS] #####################################################
-    role = Column(Enum(ProjectRole), nullable=False)
-    time_from = Column(DateTime, nullable=True)
-    time_to = Column(DateTime, nullable=True)
+    handle: Mapped[str] = mapped_column(primary_key=True)
+    description: Mapped[Optional[str]] = mapped_column(nullable=True)
 
     # [RELATIONAL FK FIELDS] #############################################################
-    profile: Mapped["Profile"] = relationship(
-        "Profile", back_populates="project_memberships"
-    )
-    project: Mapped["Project"] = relationship("Project", back_populates="memberships")
 
-    def __repr__(self) -> str:
-        return (
-            f"ProjectMembership(profile_id={self.profile_id}, "
-            + +f"project_handle={self.project_handle})"
-        )
-
-
-class CertificationTemplate(MixinAsDict, Base):
-    """database model"""
-
-    __tablename__ = "certification_template"
-
-    # [MANAGED FIELDS] ###################################################################
-    handle: Mapped[str] = mapped_column(String(20), primary_key=True)
-
-    # [USER CHANGEABLE FIELDS] ###########################################################
-    # types: short, long, number
-    # e.g. "name:short,description:long,prize:short"
-    csv_replacors_with_types: Mapped[str] = mapped_column(String, nullable=False)
-
-    # [RELATIONAL FK FIELDS] #############################################################
-    # back reference from CertificationRequest
-    requests: Mapped[List["CertificationRequest"]] = relationship(
-        "CertificationRequest", back_populates="template"
-    )
-
-    # back reference from Certificate
-    certificates: Mapped[List["Certificate"]] = relationship(
-        "Certificate", back_populates="template"
+    # back reference from RoleHoldership
+    holderships: Mapped[List["RoleHoldership"]] = relationship(
+        "RoleHoldership", back_populates="role"
     )
 
     def __repr__(self) -> str:
-        return f"CertificationTemplate(id={self.handle})"
+        return f"Role(handle={self.handle!r}, description={self.description})"
 
 
-class CertificationRequest(MixinAsDict, Base):
-    """database model"""
+class RoleHoldership(MixinAsDict, Base):
+    """database relation"""
 
-    __tablename__ = "certification_requests"
-
-    # [MANAGED FIELDS] ###################################################################
-    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
-
-    # [CONST FIELDS] #####################################################################
-    csv_replacors_values: Mapped[str] = mapped_column(String, nullable=True)
-
-    # [RELATIONAL FK FIELDS] #############################################################
-    profile_id: Mapped[int] = mapped_column(ForeignKey(Profile.id), nullable=False)
-    profile: Mapped["Profile"] = relationship(
-        "Profile", back_populates="certification_requests"
-    )
-
-    template_handle: Mapped[str] = mapped_column(
-        ForeignKey(CertificationTemplate.handle), nullable=False
-    )
-    template: Mapped["CertificationTemplate"] = relationship(
-        "CertificationTemplate", back_populates="requests"
-    )
-
-    # back reference from CertificationFeedback
-    feedback: Mapped[List["CertificationFeedback"]] = relationship(
-        "CertificationFeedback", back_populates="request"
-    )
-
-    # back reference from Certificate
-    certificate: Mapped["Certificate"] = relationship(
-        "Certificate", back_populates="request"
-    )
-
-    # [AUTOMATIC/COMPUTED FIELDS] ########################################################
-    time_created = Column(DateTime(timezone=True), server_default=func.now())
-    time_updated = Column(DateTime(timezone=True), onupdate=func.now())
-
-    def __repr__(self) -> str:
-        return f"CertificationRequest(id={self.handle!r}, name={self.name!r})"
-
-
-class CertificationFeedback(MixinAsDict, Base):
-    """database model"""
-
-    __tablename__ = "certification_feedback"
-
-    # [MANAGED FIELDS] ###################################################################
-    request_id: Mapped[int] = mapped_column(
-        ForeignKey(CertificationRequest.id, ondelete="SET NULL"), primary_key=True
-    )
-    approver_id: Mapped[int] = mapped_column(
-        ForeignKey(Profile.id, ondelete="SET NULL"), primary_key=True
-    )
-
-    # [USER CHANGEABLE FIELDS] ###########################################################
-    approved: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
-    feedback_text: Mapped[str] = mapped_column(String(400))
-    csv_replacors_values: Mapped[str] = mapped_column(String, nullable=True)
-
-    # [RELATIONAL FK FIELDS] #############################################################
-    request: Mapped["CertificationRequest"] = relationship(
-        "CertificationRequest", back_populates="feedback"
-    )
-    approver: Mapped["Profile"] = relationship("Profile")
-
-    __table_args__ = (
-        (
-            CheckConstraint(
-                "(approved) <> (NOT csv_replacors_values IS NULL)",
-                name="handle_xor_link",
-            )
-        ),
-    )
-
-    # [AUTOMATIC/COMPUTED FIELDS] ########################################################
-    time_created = Column(DateTime(timezone=True), server_default=func.now())
-    time_updated = Column(DateTime(timezone=True), onupdate=func.now())
-
-    def __repr__(self) -> str:
-        return (
-            f"CertificationFeedback(request_id={self.request_id}, "
-            f"approver_id={self.approver_id}, "
-            f"approved={self.approved})"
-        )
-
-
-class Certificate(MixinAsDict, Base):
-    """database model"""
-
-    __tablename__ = "certificate"
-
-    # [MANAGED FIELDS] ###################################################################
-    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-
-    # [CONST FIELDS] #####################################################################
-    csv_replacors_values: Mapped[str] = mapped_column(String, nullable=True)
-    cdn_download_link: Mapped[str] = mapped_column(String(2048), nullable=False)
-    cdn_expiry = Column(DateTime(timezone=True), nullable=False)
+    __tablename__ = "role_holdership"
 
     # [RELATIONAL FK FIELDS] #############################################################
     profile_id: Mapped[int] = mapped_column(
-        ForeignKey(Profile.id, ondelete="CASCADE"), nullable=False
+        ForeignKey(Profile.id, ondelete="CASCADE"), primary_key=True, nullable=False
     )
     profile: Mapped["Profile"] = relationship(
-        "Profile", back_populates="received_certificates", foreign_keys=[profile_id]
+        "Profile", back_populates="role_holderships", cascade="all,delete"
     )
 
-    issuer_id: Mapped[int] = mapped_column(
-        ForeignKey(Profile.id, ondelete="SET NULL"), nullable=True
+    role_handle: Mapped[str] = mapped_column(
+        ForeignKey(Role.handle), primary_key=True, nullable=False
     )
-    issuer: Mapped["Profile"] = relationship(
-        "Profile", back_populates="issued_certificates", foreign_keys=[issuer_id]
+    role: Mapped["Role"] = relationship(
+        "Role", back_populates="holderships", cascade="all,delete"
     )
-
-    template_handle: Mapped[str] = mapped_column(
-        ForeignKey(CertificationTemplate.handle, ondelete="SET NULL"), nullable=False
-    )
-    template: Mapped["CertificationTemplate"] = relationship(
-        "CertificationTemplate", back_populates="certificates"
-    )
-
-    request_id: Mapped[int] = mapped_column(
-        ForeignKey(CertificationRequest.id, ondelete="SET NULL"), nullable=True
-    )
-    request: Mapped["CertificationRequest"] = relationship(
-        "CertificationRequest", back_populates="certificate"
-    )
-
-    # [AUTOMATIC/COMPUTED FIELDS] ########################################################
-    time_created = Column(DateTime(timezone=True), server_default=func.now())
-    time_updated = Column(DateTime(timezone=True), onupdate=func.now())
 
     def __repr__(self) -> str:
         return (
-            f"Certificate(id={self.id}, profile_id={self.profile_id}, "
-            f"issuer_id={self.issuer_id}, template_handle={self.template_handle}, "
-            f"request_id={self.request_id})"
+            f"RoleHoldership(profile_id={self.profile_id!r}, "
+            f"role_handle={self.role_handle!r})"
         )

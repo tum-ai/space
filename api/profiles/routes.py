@@ -27,7 +27,7 @@ from profiles.api_models import (
 )
 from security.decorators import (
     ensure_authenticated,
-    ensure_role,
+    ensure_authorization,
 )
 from utils.error_handlers import (
     error_handlers,
@@ -156,7 +156,7 @@ def get_department(request: Request, handle: str):
 )
 @enable_paging(max_page_size=100)
 @error_handlers
-@ensure_role(any_of=[(None, "board")])
+@ensure_authorization(any_of_positions=[(None, "board")])
 def list_profiles(request: Request, page: int = 1, page_size: int = 100):
     db_profiles = list_db_profiles(request.app.state.sql_engine, page, page_size)
     out_profiles: List[ProfileOut] = [ProfileOut.from_db_model(p) for p in db_profiles]
@@ -198,7 +198,7 @@ def list_public_profiles(request: Request, page: int = 1, page_size: int = 100):
     response_model=Union[ResponseProfile, ErrorResponse],
 )
 @error_handlers
-@ensure_role(any_of=[(None, "board")])
+@ensure_authorization(any_of_positions=[(None, "board")])
 def get_profile(request: Request, profile_id: int):
     db_model = retrieve_db_profile(request.app.state.sql_engine, profile_id)
     return {
@@ -248,7 +248,7 @@ def show_current_profile(request: Request):
     response_model=Union[ResponseDeletedProfileList, ErrorResponse],
 )
 @error_handlers
-@ensure_role(any_of=[(None, "board")])
+@ensure_authorization(any_of_positions=[(None, "board")])
 def delete_profiles(request: Request, profile_ids: List[int]):
     deleted_profiles = delete_db_profiles(request.app.state.sql_engine, profile_ids)
     return {
@@ -265,7 +265,7 @@ def delete_profiles(request: Request, profile_ids: List[int]):
     response_model=Union[BaseResponse, ErrorResponse],
 )
 @error_handlers
-@ensure_role(any_of=[(None, "board")])
+@ensure_authorization(any_of_positions=[(None, "board")])
 def delete_profile(request: Request, profile_id: int):
     if not delete_db_profile(request.app.state.sql_engine, profile_id):
         return {
@@ -307,7 +307,7 @@ def delete_own_profile(request: Request):
     response_model=Union[ResponseProfile, ErrorResponse],
 )
 @error_handlers
-@ensure_role(any_of=[(None, "board")])
+@ensure_authorization(any_of_positions=[(None, "board")])
 def update_profile(
     request: Request,
     profile_id: int,
