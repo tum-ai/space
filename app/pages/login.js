@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useRouter } from 'next/navigation'
+import ProtectedRoute from "../components/ProtectedRoute";
 
 function Page() {
     const { user, login } = useAuth()
@@ -21,8 +22,8 @@ function Page() {
             console.log(err)
         }
     }
-
-    return (<div className="wrapper">
+    return <ProtectedRoute>
+     <div className="wrapper">
         <div className="form-wrapper">
             <h1 className="mt-60 mb-30">Sign up</h1>
             <form onSubmit={handleLogin} className="form">
@@ -45,7 +46,7 @@ function Page() {
                 <button type="submit">Log in</button>
             </form>
         </div>
-    </div>);
+    </div></ProtectedRoute>;
 }
 
 export default Page;
