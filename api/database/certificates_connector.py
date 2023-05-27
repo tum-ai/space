@@ -2,12 +2,11 @@ from typing import (
     List,
 )
 
-from sqlalchemy.orm import (
-    Session,
-)
-
 from certification.db_models import (
     CertificationTemplate,
+)
+from sqlalchemy.orm import (
+    Session,
 )
 
 
