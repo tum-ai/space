@@ -13,11 +13,12 @@ from database.setup import (
     setup_db_client,
 )
 from profiles.routes import router as ProfilesRouter
+from security.decorators import (
+    ensure_authenticated,
+)
 from security.firebase_auth import (
     init_firebase_auth,
-    verify_id_token,
 )
-from template.routes import router as TemplateRouter
 from utils.config import (
     CONFIG,
 )
@@ -72,23 +73,12 @@ async def root():
 
 
 @app.get("/auth-test", tags=["Root"])
-async def auth_test(request: Request):
-    headers = request.headers
-    jwt = headers.get("authorization")
-    if jwt:
-        user = verify_id_token(jwt)
-        if user:
-            return {"msg": "Auth test: success", "data": user}
-        else:
-            return {"msg": "Auth test: failed"}
-    else:
-        return {"msg": "No auth token supplied!"}
+@ensure_authenticated
+def auth_test(request: Request):
+    return {"msg": "Auth test: success"}
 
 
 # Prefix defined in router
 app.include_router(ProfilesRouter, tags=["Profile"])
-
-# Include here all the routes from the different modules
-app.include_router(TemplateRouter, prefix="/template", tags=["Template"])
 
 # app.include_router(CertificationRouter, prefix="/certification", tags=["Certification"])

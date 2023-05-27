@@ -1,6 +1,7 @@
 from typing import (
     Annotated,
     List,
+    Union,
 )
 
 from fastapi import (
@@ -9,43 +10,41 @@ from fastapi import (
     Request,
 )
 
-from database.db_models import (
-    Profile,
-)
 from database.profiles_connector import (
-    create_db_profile,
-    create_db_profiles,
     delete_db_profile,
     delete_db_profiles,
     list_db_departments,
     list_db_profiles,
     retrieve_db_department,
     retrieve_db_profile,
-    retrieve_db_profile_by_firebase_uid,
     update_db_profile,
 )
 from profiles.api_models import (
     DepartmentOut,
-    ProfileInCreate,
     ProfileInUpdate,
     ProfileOut,
     ProfileOutPublic,
 )
-from template.models import (
-    BaseResponse,
-    Response,
+from security.decorators import (
+    ensure_authenticated,
+    ensure_role,
 )
 from utils.error_handlers import (
-    async_error_handlers,
+    error_handlers,
 )
 from utils.paging import (
     enable_paging,
 )
+from utils.response import (
+    BaseResponse,
+    ErrorResponse,
+)
 
 router = APIRouter()
 
+# response types #########################################################################
 
-# department operations ##################################################################
+
 class ResponseDepartmentList(BaseResponse):
     data: List[DepartmentOut]
 
@@ -55,90 +54,11 @@ class ResponseDepartmentList(BaseResponse):
         )
 
 
-@router.get(
-    "/departments/",
-    response_description="List all departments, no paging support",
-    response_model=ResponseDepartmentList,
-)
-@async_error_handlers
-async def list_departments(request: Request) -> ResponseDepartmentList:
-    db_departments = list_db_departments(request.app.state.sql_engine)
-    out_departments: List[DepartmentOut] = [
-        DepartmentOut.from_db_model(dep) for dep in db_departments
-    ]
-    return {
-        "status_code": 200,
-        "response_type": "success",
-        "description": "Department list successfully received",
-        "data": out_departments,
-    }
-
-
 class ResponseDepartment(BaseResponse):
     data: DepartmentOut
 
     class Config:
         schema_extra = BaseResponse.schema_wrapper(DepartmentOut.dummy())
-
-
-@router.get(
-    "/department/{handle}",
-    response_description="Get a department by its handle",
-    response_model=ResponseDepartment,
-)
-@async_error_handlers
-async def get_department(request: Request, handle: str) -> ResponseDepartment:
-    db_model = retrieve_db_department(request.app.state.sql_engine, handle)
-    return {
-        "status_code": 200,
-        "response_type": "success",
-        "description": "Retrieved Department successfully",
-        "data": DepartmentOut.from_db_model(db_model),
-    }
-
-
-# profile operations #####################################################################
-# TODO: department memberships to profile responses
-
-
-class ResponseProfileList(BaseResponse):
-    data: List[ProfileOut]
-
-    class Config:
-        schema_extra = BaseResponse.schema_wrapper(
-            [
-                ProfileOut.dummy(),
-                ProfileOut.dummy(),
-            ]
-        )
-
-
-# TODO rate limits?
-@router.post(
-    "/profiles/",
-    response_description="Batch add profiles",
-    response_model=ResponseProfileList,
-)
-@async_error_handlers
-async def add_profiles(
-    request: Request,
-    data: Annotated[List[ProfileInCreate], Body(embed=True)],
-):
-    # TODO test and enable the commented out code
-    # roles = await session.get_claim_value(UserRoleClaim)
-    # if roles is None or "ADMIN" not in roles:
-    #     raise_invalid_claims_exception("User is not an admin", [
-    #         ClaimValidationError(UserRoleClaim.key, None)])
-    # else:
-
-    new_db_profiles = create_db_profiles(request.app.state.sql_engine, data)
-    new_profiles = [ProfileOut.from_db_model(p) for p in new_db_profiles]
-    return {
-        "status_code": 201,
-        "response_type": "success",
-        "description": "Created profiles",
-        "data": new_profiles,
-    }
 
 
 class ResponseProfile(BaseResponse):
@@ -148,50 +68,20 @@ class ResponseProfile(BaseResponse):
         schema_extra = BaseResponse.schema_wrapper(ProfileOut.dummy())
 
 
-@router.post(
-    "/profile/", response_description="Add profile", response_model=ResponseProfile
-)
-@async_error_handlers
-async def add_profile(
-    request: Request,
-    data: Annotated[ProfileInCreate, Body(embed=True)],
-) -> ResponseProfile:
-    # TODO test and enable the commented out code
-    # roles = await session.get_claim_value(UserRoleClaim)
-    # if roles is None or "ADMIN" not in roles:
-    #     raise_invalid_claims_exception("User is not an admin", [
-    #         ClaimValidationError(UserRoleClaim.key, None)])
-    # else:
+class ResponsePublicProfile(BaseResponse):
+    data: ProfileOutPublic
 
-    new_db_profile = create_db_profile(request.app.state.sql_engine, data)
-    new_profile = ProfileOut.from_db_model(new_db_profile)
-    return {
-        "status_code": 201,
-        "response_type": "success",
-        "description": "Created profile",
-        "data": new_profile,
-    }
+    class Config:
+        schema_extra = BaseResponse.schema_wrapper(ProfileOutPublic.dummy())
 
 
-@router.get(
-    "/profiles/admin",
-    response_description="List all profiles, paging support",
-    response_model=ResponseProfileList,
-)
-@async_error_handlers
-@enable_paging(max_page_size=100)
-def list_profiles(
-    request: Request, page: int = 1, page_size: int = 100
-) -> ResponseProfileList:
-    # TODO authorization: only presidents / team leads
-    db_profiles = list_db_profiles(request.app.state.sql_engine, page, page_size)
-    out_profiles: List[ProfileOut] = [ProfileOut.from_db_model(p) for p in db_profiles]
-    return {
-        "status_code": 200,
-        "response_type": "success",
-        "description": "Admin Profile list successfully received",
-        "data": out_profiles,
-    }
+class ResponseProfileList(BaseResponse):
+    data: List[ProfileOut]
+
+    class Config:
+        schema_extra = BaseResponse.schema_wrapper(
+            [ProfileOut.dummy(), ProfileOut.dummy()]
+        )
 
 
 class ResponsePublicProfileList(BaseResponse):
@@ -206,16 +96,88 @@ class ResponsePublicProfileList(BaseResponse):
         )
 
 
+class ResponseDeletedProfileList(BaseResponse):
+    """data contains ids of deleted profiles"""
+
+    data: List[int]
+
+    class Config:
+        schema_extra = BaseResponse.schema_wrapper([43, 32])
+
+
+# department operations ##################################################################
+
+
+@router.get(
+    "/departments/",
+    response_description="List all departments, no paging support",
+    response_model=Union[ResponseDepartmentList, ErrorResponse],
+)
+@error_handlers
+def list_departments(request: Request):
+    db_departments = list_db_departments(request.app.state.sql_engine)
+    out_departments: List[DepartmentOut] = [
+        DepartmentOut.from_db_model(dep) for dep in db_departments
+    ]
+    return {
+        "status_code": 200,
+        "response_type": "success",
+        "description": "Department list successfully received",
+        "data": out_departments,
+    }
+
+
+@router.get(
+    "/department/{handle}",
+    response_description="Get a department by its handle",
+    response_model=Union[ResponseDepartment, ErrorResponse],
+)
+@error_handlers
+def get_department(request: Request, handle: str):
+    db_model = retrieve_db_department(request.app.state.sql_engine, handle)
+    return {
+        "status_code": 200,
+        "response_type": "success",
+        "description": "Retrieved Department successfully",
+        "data": DepartmentOut.from_db_model(db_model),
+    }
+
+
+# UPDATE and DELETE via direct db access
+
+# profile operations #####################################################################
+# TODO: department memberships to profile responses
+
+
+@router.get(
+    "/profiles/admin",
+    response_description="List all profiles, paging support",
+    response_model=Union[ResponseProfileList, ErrorResponse],
+)
+@enable_paging(max_page_size=100)
+@error_handlers
+@ensure_role(any_of=[(None, "board")])
+def list_profiles(request: Request, page: int = 1, page_size: int = 100):
+    db_profiles = list_db_profiles(request.app.state.sql_engine, page, page_size)
+    out_profiles: List[ProfileOut] = [ProfileOut.from_db_model(p) for p in db_profiles]
+    return {
+        "status_code": 200,
+        "response_type": "success",
+        "description": "Admin Profile list successfully received",
+        "page": page,
+        "page_size": page_size,
+        "data": out_profiles,
+    }
+
+
 @router.get(
     "/profiles/",
     response_description="List all profiles, paging support",
-    response_model=ResponsePublicProfileList,
+    response_model=Union[ResponsePublicProfileList, ErrorResponse],
 )
-@async_error_handlers
 @enable_paging(max_page_size=100)
-def list_public_profiles(
-    request: Request, page: int = 1, page_size: int = 100
-) -> ResponsePublicProfileList:
+@error_handlers
+def list_public_profiles(request: Request, page: int = 1, page_size: int = 100):
     db_profiles = list_db_profiles(request.app.state.sql_engine, page, page_size)
     out_public_profiles: List[ProfileOutPublic] = [
         ProfileOutPublic.from_db_model(p) for p in db_profiles
@@ -224,26 +186,36 @@ def list_public_profiles(
         "status_code": 200,
         "response_type": "success",
         "description": "PublicProfile list successfully received",
+        "page": page,
+        "page_size": page_size,
         "data": out_public_profiles,
     }
 
 
-class ResponsePublicProfile(BaseResponse):
-    data: ProfileOutPublic
-
-    class Config:
-        schema_extra = BaseResponse.schema_wrapper(ProfileOutPublic.dummy())
+@router.get(
+    "/profile/{profile_id}/admin",
+    response_description="Get a profile by its profile_id",
+    response_model=Union[ResponseProfile, ErrorResponse],
+)
+@error_handlers
+@ensure_role(any_of=[(None, "board")])
+def get_profile(request: Request, profile_id: int):
+    db_model = retrieve_db_profile(request.app.state.sql_engine, profile_id)
+    return {
+        "status_code": 200,
+        "response_type": "success",
+        "description": "Retrieved profile successfully",
+        "data": ProfileOut.from_db_model(db_model),
+    }
 
 
 @router.get(
     "/profile/{profile_id}",
     response_description="Get a public profile by its profile_id",
-    response_model=ResponsePublicProfile,
+    response_model=Union[ResponsePublicProfile, ErrorResponse],
 )
-@async_error_handlers
-async def get_public_profile(
-    request: Request, profile_id: str
-) -> ResponsePublicProfile:
+@error_handlers
+def get_public_profile(request: Request, profile_id: int):
     db_model = retrieve_db_profile(request.app.state.sql_engine, profile_id)
     return {
         "status_code": 200,
@@ -254,37 +226,14 @@ async def get_public_profile(
 
 
 @router.get(
-    "/profile/{profile_id}/admin",
-    response_description="Get a profile by its profile_id",
-    response_model=ResponseProfile,
+    "/me",
+    response_description="Retrieve the complete profile of the user currently \
+    logged in with FireBase",
+    response_model=Union[ResponseProfile, ErrorResponse],
 )
-@async_error_handlers
-async def get_profile(request: Request, profile_id: str) -> ResponseProfile:
-    # TODO access control
-    db_model = retrieve_db_profile(request.app.state.sql_engine, profile_id)
-    return {
-        "status_code": 200,
-        "response_type": "success",
-        "description": "Retrieved profile successfully",
-        "data": ProfileOut.from_db_model(db_model),
-    }
-
-
-# TODO test & logic to init profile with firebase_uid id
-@router.get(
-    "/profile/",
-    response_description="Retrieve the complete profile of the user "
-    + "currently logged in with FierBase",
-    response_model=ResponseProfile,
-)
-async def show_current_profile(
-    request: Request,
-) -> ResponseProfile:
-    firebase_uid = "TODO"
-    db_profile: Profile = retrieve_db_profile_by_firebase_uid(
-        request.app.state.sql_engine, firebase_uid
-    )
-    profile: ProfileOut = ProfileOut.from_db_model(db_profile)
+@ensure_authenticated
+def show_current_profile(request: Request):
+    profile: ProfileOut = ProfileOut.from_db_model(request.state.profile)
     return {
         "status_code": 200,
         "response_type": "success",
@@ -293,25 +242,14 @@ async def show_current_profile(
     }
 
 
-class ResponseDeletedProfileList(BaseResponse):
-    """data contains ids of deleted profiles"""
-
-    data: List[int]
-
-    class Config:
-        schema_extra = BaseResponse.schema_wrapper([43, 32])
-
-
 @router.delete(
     "/profiles/",
     response_description="delete all profiles",
-    response_model=ResponseDeletedProfileList,
+    response_model=Union[ResponseDeletedProfileList, ErrorResponse],
 )
-@async_error_handlers
-async def delete_profiles(
-    request: Request, profile_ids: List[int]
-) -> ResponseDeletedProfileList:
-    # TODO authorization
+@error_handlers
+@ensure_role(any_of=[(None, "board")])
+def delete_profiles(request: Request, profile_ids: List[int]):
     deleted_profiles = delete_db_profiles(request.app.state.sql_engine, profile_ids)
     return {
         "status_code": 200,
@@ -324,12 +262,33 @@ async def delete_profiles(
 @router.delete(
     "/profile/{profile_id}",
     response_description="delete a profile",
-    response_model=Response,
+    response_model=Union[BaseResponse, ErrorResponse],
 )
-@async_error_handlers
-async def delete_profile(request: Request, profile_id: int) -> Response:
-    # TODO authorization (myself or admin)
+@error_handlers
+@ensure_role(any_of=[(None, "board")])
+def delete_profile(request: Request, profile_id: int):
     if not delete_db_profile(request.app.state.sql_engine, profile_id):
+        return {
+            "status_code": 400,
+            "response_type": "error",
+            "description": "deletion was not possible!",
+        }
+    return {
+        "status_code": 200,
+        "response_type": "success",
+        "description": "Profile successfully deleted",
+    }
+
+
+@router.delete(
+    "/me",
+    response_description="delete my own profile",
+    response_model=Union[BaseResponse, ErrorResponse],
+)
+@error_handlers
+@ensure_authenticated
+def delete_own_profile(request: Request):
+    if not delete_db_profile(request.app.state.sql_engine, request.state.profile.id):
         return {
             "status_code": 400,
             "response_type": "error",
@@ -345,19 +304,18 @@ async def delete_profile(request: Request, profile_id: int) -> Response:
 @router.patch(
     "/profile/{profile_id}",
     response_description="Update profile",
-    response_model=ResponseProfile,
+    response_model=Union[ResponseProfile, ErrorResponse],
 )
-@async_error_handlers
-async def update_profile(
+@error_handlers
+@ensure_role(any_of=[(None, "board")])
+def update_profile(
     request: Request,
     profile_id: int,
     data: Annotated[ProfileInUpdate, Body(embed=True)],
-) -> ResponseProfile:
-    # TODO authorization
+):
     updated_db_profile = update_db_profile(
         request.app.state.sql_engine, profile_id, data
     )
-    # TODO: handle 404
     udpated_profile = ProfileOut.from_db_model(updated_db_profile)
     return {
         "status_code": 201,
@@ -367,25 +325,21 @@ async def update_profile(
     }
 
 
-# TODO test endpoint
+# TODO restrict name changes for own profile?
 @router.patch(
-    "/profile/",
+    "/me",
     response_description="Update logged in users profile",
-    response_model=ResponseProfile,
+    response_model=Union[ResponseProfile, ErrorResponse],
 )
-@async_error_handlers
-async def update_current_profile(
+@error_handlers
+@ensure_authenticated
+def update_current_profile(
     request: Request,
     data: Annotated[ProfileInUpdate, Body(embed=True)],
-) -> ResponseProfile:
-    firebase_uid = "TODO"
-    db_profile: Profile = retrieve_db_profile_by_firebase_uid(
-        request.app.state.sql_engine, firebase_uid
-    )
+):
     updated_db_profile = update_db_profile(
-        request.app.state.sql_engine, db_profile.id, data
+        request.app.state.sql_engine, request.state.profile.id, data
     )
-    # TODO: handle 404
     udpated_profile = ProfileOut.from_db_model(updated_db_profile)
     return {
         "status_code": 201,
@@ -393,3 +347,6 @@ async def update_current_profile(
         "description": "Updated current profile",
         "data": udpated_profile,
     }
+
+
+# TODO department membership maintainance
