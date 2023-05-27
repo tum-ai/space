@@ -1,10 +1,13 @@
 import { useEffect } from 'react';
 import { RootStoreProvider } from '../providers/RootStoreProvider';
 import { AuthContextProvider } from '../context/AuthContext';
+import ProtectedRoute from '../components/ProtectedRoute'
+import { useRouter } from 'next/router'
 import '../styles/globals.css';
 
-
+const noAuthRequired = ["/", "/login", "/members"];
 function App({ Component, pageProps }) {
+	const router = useRouter()
 	useEffect(() => {
 		document.documentElement.style.setProperty(
 			'--vh',
@@ -14,9 +17,17 @@ function App({ Component, pageProps }) {
 	return (
 		<AuthContextProvider>
 			<RootStoreProvider hydrationData={pageProps.hydrationData}>
+			{noAuthRequired.includes(router.pathname) ? (
 				<Component {...pageProps} />
+			) : (
+				<ProtectedRoute>
+						<Component {...pageProps} />
+				</ProtectedRoute>
+			)
+			}
 			</RootStoreProvider>
 		</AuthContextProvider>
+
 	);
 }
 
