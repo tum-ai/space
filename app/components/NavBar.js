@@ -100,19 +100,11 @@ function NavBarDesktop() {
 					<div>
 						<a
 							href={
-								"/login"
+								"/auth"
 							}
 							className='bg-white dark:bg-gray-700 p-2 rounded'
 						>
-							Login
-						</a>
-						<a
-							href={
-								"/signup"
-							}
-							className='bg-white dark:bg-gray-700 p-2 rounded'
-						>
-							Signup
+							Log in or sign up
 						</a>
 					</div>}
 			</div>

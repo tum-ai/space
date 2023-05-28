@@ -6,12 +6,9 @@ const ProtectedRoute = ({children}) => {
     const { user, loading } = useAuth()
     const router = useRouter()
 
-    // TODO 404 page
     useEffect(() => {
         if (!user) {
-            console.log('use effect');
-            console.log(user);
-            router.push('/login')
+            router.push('/auth')
         }
     }, [user])
 
@@ -23,6 +20,7 @@ const ProtectedRoute = ({children}) => {
         return <>{children}</>
     }
 
+    return <div>404 ...</div>
 }
 
 export default ProtectedRoute
