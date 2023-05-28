@@ -15,12 +15,16 @@ from database.setup import (
 from profiles.routes import router as ProfilesRouter
 from security.decorators import (
     ensure_authenticated,
+    ensure_authorization,
 )
 from security.firebase_auth import (
     init_firebase_auth,
 )
 from utils.config import (
     CONFIG,
+)
+from utils.error_handlers import (
+    error_handlers,
 )
 from utils.log import (
     log,
@@ -72,10 +76,24 @@ async def root():
     return {"msg": "Welcome to tumai-space"}
 
 
-@app.get("/auth-test", tags=["Root"])
+@app.get("/auth-test", tags=["auth-test"])
 @ensure_authenticated
 def auth_test(request: Request):
     return {"msg": "Auth test: success"}
+
+
+@app.get("/admin-test", tags=["admin-test"])
+@error_handlers
+@ensure_authorization(any_of_positions=[(None, "board")])
+def authorization_position_test(request: Request):
+    return {"msg": "Admin test: success"}
+
+
+@app.get("/role-test", tags=["role-test"])
+@error_handlers
+@ensure_authorization(any_of_roles=["test-role"])
+def authorization_role_test(request: Request):
+    return {"msg": "Role test: success"}
 
 
 # Prefix defined in router

@@ -19,8 +19,9 @@ from sqlalchemy.orm import (
 from database.db_models import (  # PublicProfile
     Department,
     DepartmentMembership,
+    PositionType,
     Profile,
-    Role,
+    RoleHoldership,
     SocialNetwork,
 )
 from database.setup import (
@@ -368,32 +369,34 @@ def delete_db_profile(sql_engine: Engine, profile_id: int) -> bool:
         return True
 
 
-def profile_has_one_of_roles(
+def profile_has_one_of_positions(
     sql_engine: Engine,
     profile_id: int,
-    any_of: List[Tuple[Optional[Role], Optional[str]]],
+    any_of: List[Tuple[Optional[PositionType], Optional[str]]],
 ) -> bool:
     or_statement = False
-    for role, department_handle in any_of:
-        if (role is None) and (department_handle is None):
+    for position, department_handle in any_of:
+        if (position is None) and (department_handle is None):
             or_statement = True
             break
 
-        if role is None:
+        if position is None:
             or_statement = or_(
                 or_statement,
                 (DepartmentMembership.department_handle == department_handle),
             )
 
         elif department_handle is None:
-            or_statement = or_(or_statement, (DepartmentMembership.role == role))
+            or_statement = or_(
+                or_statement, (DepartmentMembership.position == position)
+            )
 
         else:
             or_statement = or_(
                 or_statement,
                 and_(
                     (DepartmentMembership.department_handle == department_handle),
-                    (DepartmentMembership.role == role),
+                    (DepartmentMembership.position == position),
                 ),
             )
 
@@ -406,28 +409,21 @@ def profile_has_one_of_roles(
         return found >= 1
 
 
-# TODO: debug #########
-def debug_db_query(sql_engine):
-    with Session(sql_engine) as db_session:
-        # db_models = db_session\
-        #     .query(DepartmentMembership)\
-        #     .where(
-        #         # DepartmentMembership.department_handle == 'dev'
-        #         (DepartmentMembership.time_from <= datetime.datetime.now())
-        #         &
-        #         ((DepartmentMembership.time_to >= datetime.datetime.now()) |
-        #       (DepartmentMembership.time_to is None))
-        #     ) \
-        #     .limit(100)\
-        #     .all()
+def profile_has_one_of_roles(
+    sql_engine: Engine,
+    profile_id: int,
+    any_of: List[str],
+) -> bool:
+    or_statement = False
+    for role_handle in any_of:
+        if role_handle is None:
+            continue
+        or_statement = or_(RoleHoldership.role_handle == role_handle, or_statement)
 
-        # print("")
-        obj = DepartmentMembership(
-            role=Role.TEAMLEAD,
-            time_from=datetime.datetime.now() - datetime.timedelta(days=180),
-            time_to=datetime.datetime.now() + datetime.timedelta(days=180),
-            profile_id=42,
-            department_handle="dev",
+    with Session(sql_engine) as db_session:
+        found = (
+            db_session.query(RoleHoldership)
+            .where(and_(RoleHoldership.profile_id == profile_id, or_statement))
+            .count()
         )
-        db_session.add(obj)
-        db_session.commit()
+        return found >= 1

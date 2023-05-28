@@ -78,7 +78,7 @@ erDiagram
         datetime time_to "optional"
     }
     Role {
-        string role_handle PK "maxlen(50)"
+        string handle PK "maxlen(50)"
         string description "optional"
     }
     RoleHoldership {

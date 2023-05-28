@@ -13,9 +13,10 @@ from fastapi import (
 )
 
 from database.db_models import (
-    Role,
+    PositionType,
 )
 from database.profiles_connector import (
+    profile_has_one_of_positions,
     profile_has_one_of_roles,
     retrieve_or_create_db_profile_by_firebase_uid,
 )
@@ -59,14 +60,22 @@ def __ensure_auth(func: Callable, request: Request, *args, **kwargs):
     request.state.fb_user = fb_user
     request.state.profile = profile
 
-    any_of: List[Tuple[Optional[Role], Optional[str]]] = kwargs.pop("any_of", [])
-    if len(any_of) > 0:
-        succeeded = profile_has_one_of_roles(
-            request.app.state.sql_engine, profile.id, any_of
-        )
+    any_of_positions: Optional[
+        List[Tuple[Optional[PositionType], Optional[str]]]
+    ] = kwargs.pop("any_of_positions", None)
+    any_of_roles: Optional[List[str]] = kwargs.pop("any_of_roles", None)
 
-    else:
+    succeeded = False
+    if any_of_positions is None and any_of_roles is None:
         succeeded = True
+    if not succeeded and len(any_of_positions or []) > 0:
+        succeeded = profile_has_one_of_positions(
+            request.app.state.sql_engine, profile.id, any_of_positions or []
+        )
+    if not succeeded and len(any_of_roles or []) > 0:
+        succeeded = profile_has_one_of_roles(
+            request.app.state.sql_engine, profile.id, any_of_roles or []
+        )
 
     if not succeeded:
         return RESPONSE_UNAUTHORIZED
@@ -82,19 +91,29 @@ def ensure_authenticated(func: Callable) -> Callable:
     return wrapper
 
 
-def ensure_role(any_of: List[Tuple[Optional[Role], Optional[str]]]) -> Callable:
+def ensure_authorization(
+    any_of_positions: List[Tuple[Optional[PositionType], Optional[str]]] = [],
+    any_of_roles: List[str] = [],
+) -> Callable:
     """
+    If any in on of any_of_position or any_of_role is found for
+    the user, authorization is granted
+
     Args:
-        any_of: ensures the logged in user to have one of the certain authorization
-            privileges: tuple(role, department_handle); null values in one of the
+        any_of_position: ensures the logged in user to have one
+            of the certain authorization privileges: tuple(position, department_handle);
+            null values in one of the
             tuple elements are interpreted as wildcards.
-            (None, None) means any role in any department --> e.g. not an applicant
+            (None, None) means any position in any department --> e.g. not an applicant
+        any_of_role (List[role_handle]): ensures that the user has any of the
+            given authorization roles, no wildcard behavior here
     """
 
     def outer_wrapper(func: Callable) -> Callable:
         @wraps(func)
         def wrapper(request: Request, *args, **kwargs):
-            kwargs["any_of"] = any_of
+            kwargs["any_of_positions"] = any_of_positions
+            kwargs["any_of_roles"] = any_of_roles
             return __ensure_auth(func, request, *args, **kwargs)
 
         return wrapper
