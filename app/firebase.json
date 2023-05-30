@@ -1,6 +1,12 @@
 {
   "hosting": {
     "source": ".",
+    "rewrites": [
+      {
+        "source": "**",
+        "function": "nextServer"
+      }
+    ],
     "ignore": [
       "firebase.json",
       "**/.*",
@@ -33,5 +39,9 @@
       "port": 1111
     },
     "singleProjectMode": true
+  },
+  "functions": {
+    "source": ".",
+    "runtime": "nodejs12"
   }
 }
