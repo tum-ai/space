@@ -404,7 +404,14 @@ def profile_has_one_of_positions(
     with Session(sql_engine) as db_session:
         found = (
             db_session.query(DepartmentMembership)
-            .filter(and_(DepartmentMembership.profile_id == profile_id, or_statement))
+            .filter(
+                and_(
+                    DepartmentMembership.profile_id == profile_id,
+                    or_statement,
+                    (DepartmentMembership.time_from < datetime.datetime.now()),
+                    (DepartmentMembership.time_to > datetime.datetime.now()),
+                )
+            )
             .count()
         )
         return found >= 1

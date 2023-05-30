@@ -45,11 +45,7 @@ class DepartmentOut(BaseModel):
 
     @classmethod
     def dummy(cls) -> "DepartmentOut":
-        return DepartmentOut(
-            handle="dummy",
-            name="DummyDepartment",
-            description="This is a dummy department!",
-        )
+        return DepartmentOut.parse_obj(cls.Config.schema_extra["example"])
 
     # TODO evaluate if member this here (or first 10 members) or in separate endpoint
     # TODO most recent projects? or in extra endpoint
@@ -66,6 +62,29 @@ class DepartmentOut(BaseModel):
 
 
 # profile operations #####################################################################
+
+
+class ProfileMemberInvitation(BaseModel):
+    email: str
+    first_name: str
+    last_name: str
+    department_handle: str
+    department_position: str
+
+    @classmethod
+    def dummy(cls) -> "ProfileMemberInvitation":
+        return ProfileMemberInvitation.parse_obj(cls.Config.schema_extra["example"])
+
+    class Config:
+        schema_extra = {
+            "example": {
+                "email": "test@mymail.com",
+                "first_name": "Max",
+                "last_name": "Mustermann",
+                "department_handle": "dev",
+                "department_position": "Member",
+            }
+        }
 
 
 class SocialNetworkIn(BaseModel):
@@ -101,9 +120,7 @@ class SocialNetworkOut(BaseModel):
 
     @classmethod
     def dummy(cls) -> "SocialNetworkOut":
-        return SocialNetworkOut(
-            profile_id=32, type=SocialNetworkType.GITHUB, handle="tum_ai", link=""
-        )
+        return SocialNetworkOut.parse_obj(cls.Config.schema_extra["example"])
 
     class Config:
         schema_extra = {
@@ -137,6 +154,10 @@ class ProfileInCreateUpdateBase(BaseModel):
     time_joined: Optional[datetime]
 
     social_networks: List["SocialNetworkIn"]
+
+    @classmethod
+    def dummy(cls) -> "ProfileInCreateUpdateBase":
+        return ProfileInCreateUpdateBase.parse_obj(cls.Config.schema_extra["example"])
 
     class Config:
         schema_extra = {
@@ -226,31 +247,7 @@ class ProfileOut(BaseModel):
 
     @classmethod
     def dummy(cls) -> "ProfileOut":
-        return ProfileOut(
-            id=2,
-            firebase_uid="SnMRJyesPzZI6teM684qhUxgH2g2",
-            email="test@mymail.com",
-            phone="+42 42424242",
-            first_name="Max",
-            last_name="Mustermann",
-            birthday=date(2000, 12, 30),
-            nationality="German",
-            description="Hi and welcome!",
-            activity_status="active",
-            degree_level="B.Sc.",
-            degree_name="Computer Science",
-            degree_semester="5",
-            university="TUM",
-            job_history=[
-                JobHistoryElement.dummy(),
-                JobHistoryElement.dummy(),
-            ],
-            time_joined=datetime.now(),
-            social_networks=[
-                SocialNetworkOut.dummy(),
-                SocialNetworkOut.dummy(),
-            ],
-        )
+        return ProfileOut.parse_obj(cls.Config.schema_extra["example"])
 
     class Config:
         schema_extra = {
@@ -323,26 +320,7 @@ class ProfileOutPublic(BaseModel):
 
     @classmethod
     def dummy(cls) -> "ProfileOutPublic":
-        return ProfileOutPublic(
-            id=2,
-            first_name="Max",
-            last_name="Mustermann",
-            description="Hi and welcome!",
-            activity_status="active",
-            degree_level="B.Sc.",
-            degree_name="Computer Science",
-            degree_semester="5",
-            university="TUM",
-            job_history=[
-                JobHistoryElement.dummy(),
-                JobHistoryElement.dummy(),
-            ],
-            time_joined=datetime.now(),
-            social_networks=[
-                SocialNetworkOut.dummy(),
-                SocialNetworkOut.dummy(),
-            ],
-        )
+        return ProfileOutPublic.parse_obj(cls.Config.schema_extra["example"])
 
     class Config:
         schema_extra = {
@@ -362,8 +340,8 @@ class ProfileOutPublic(BaseModel):
                 ],
                 "time_joined": datetime.now(),
                 "social_networks": [
-                    SocialNetworkIn.dummy(),
-                    SocialNetworkIn.dummy(),
+                    SocialNetworkOut.dummy(),
+                    SocialNetworkOut.dummy(),
                 ],
             }
         }

@@ -10,6 +10,9 @@ from fastapi import (
     Request,
 )
 
+from database.db_models import (
+    PositionType,
+)
 from database.profiles_connector import (
     delete_db_profile,
     delete_db_profiles,
@@ -22,6 +25,7 @@ from database.profiles_connector import (
 from profiles.api_models import (
     DepartmentOut,
     ProfileInUpdate,
+    ProfileMemberInvitation,
     ProfileOut,
     ProfileOutPublic,
 )
@@ -147,6 +151,35 @@ def get_department(request: Request, handle: str):
 
 # profile operations #####################################################################
 # TODO: department memberships to profile responses
+
+
+# TODO create <admin_users>, <invite_members> role
+@router.get(
+    "/profiles/invite/members",
+    response_description="Create Profiles for new members and sendout invitation emails",
+    response_model=Union[ResponseProfileList, ErrorResponse],
+)
+@error_handlers
+@ensure_authorization(
+    any_of_positions=[(PositionType.TEAMLEAD, "community"), (None, "board")],
+    # any_of_roles=["invite_members"]
+)
+def invite_members(
+    request: Request,
+    data: Annotated[List[ProfileMemberInvitation], Body(embed=True)],
+):
+    # db_profiles = list_db_profiles(request.app.state.sql_engine)
+    # out_profiles: List[ProfileOut] = [ProfileOut.from_db_model(p) for p in db_profiles]
+
+    # TODO: implement actual logic!
+
+    invited_profiles: List[ProfileOut] = []
+    return {
+        "status_code": 200,
+        "response_type": "success",
+        "description": "Members invited successfully",
+        "data": invited_profiles,
+    }
 
 
 @router.get(
