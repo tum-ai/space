@@ -287,7 +287,6 @@ class ProfileOutPublic(BaseModel):
 
     first_name: str
     last_name: str
-    nationality: Optional[str]
     description: Optional[str]
 
     # profile_picture  # TODO
@@ -309,7 +308,6 @@ class ProfileOutPublic(BaseModel):
             id=profile.id,
             first_name=profile.first_name,
             last_name=profile.last_name,
-            nationality=profile.nationality,
             description=profile.description,
             activity_status=profile.activity_status,
             degree_level=profile.degree_level,
@@ -329,7 +327,6 @@ class ProfileOutPublic(BaseModel):
             id=2,
             first_name="Max",
             last_name="Mustermann",
-            nationality="German",
             description="Hi and welcome!",
             activity_status="active",
             degree_level="B.Sc.",
@@ -353,7 +350,6 @@ class ProfileOutPublic(BaseModel):
                 "id": 42,
                 "first_name": "Max",
                 "last_name": "Mustermann",
-                "nationality": "German",
                 "description": "Hi and welcome!",
                 "activity_status": "active",
                 "degree_level": "B.Sc.",
