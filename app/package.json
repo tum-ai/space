@@ -4,7 +4,7 @@
 	"private": true,
 	"scripts": {
 		"dev": "next dev",
-		"start": "env-cmd -f .env next start",
+		"start": "env-cmd -f .env next start && env-cmd -f .env next export",
 		"build": "env-cmd -f .env next build"
 	  },
 	"dependencies": {
