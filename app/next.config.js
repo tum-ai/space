@@ -1,7 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
 	// output to build
-	distDir: "build",
+	output: "build",
+	swcMinify: true,
 	reactStrictMode: true,
 	images: {
 		remotePatterns: [
