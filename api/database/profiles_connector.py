@@ -53,12 +53,13 @@ def retrieve_db_department(sql_engine: Engine, handle: str) -> Department:
 # profile operations #####################################################################
 
 
-def create_db_profiles_form_fb_user(
+def create_db_profile_form_fb_user(
     sql_engine: Engine,
     fb_user: Any,
-) -> List[Profile]:
+) -> Profile:
     with Session(sql_engine) as db_session:
-        names = fb_user["name"].split(" ", 1)
+        print(fb_user)
+        names = fb_user.get("name", "Unnamed Alien").split(" ", 1)
         first_name = names[0]
         last_name = names[1] if len(names) > 1 else ""
 
@@ -106,7 +107,7 @@ def retrieve_or_create_db_profile_by_firebase_uid(
             .one_or_none()
         )
         if db_model is None:
-            return create_db_profiles_form_fb_user(sql_engine, fb_user)
+            return create_db_profile_form_fb_user(sql_engine, fb_user)
         else:
             if not db_model:
                 raise KeyError
