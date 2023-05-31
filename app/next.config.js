@@ -2,7 +2,7 @@
 const nextConfig = {
 	// output to build
 	distDir: "build",
-	output: "standalone",
+	output: "export",
 	swcMinify: true,
 	reactStrictMode: true,
 	images: {
