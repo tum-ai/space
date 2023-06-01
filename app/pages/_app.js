@@ -5,7 +5,6 @@ import { useRouter } from 'next/router'
 import '../styles/globals.css';
 
 function App({ Component, pageProps }) {
-	const router = useRouter()
 	useEffect(() => {
 		document.documentElement.style.setProperty(
 			'--vh',
