@@ -1,6 +1,6 @@
 'use client'
 import React, { useState } from "react";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../providers/AuthContextProvider";
 import { useRouter } from 'next/navigation'
 import Banner from "../components/Banner";
 import Page from '/components/Page';
