@@ -30,7 +30,11 @@ from database.setup import (
 from profiles.api_models import (
     ProfileInCreate,
     ProfileInUpdate,
+    ProfileMemberInvitation,
     SocialNetworkIn,
+)
+from security.firebase_auth import (
+    create_invite_email_user,
 )
 
 # department operations ##################################################################
@@ -53,7 +57,63 @@ def retrieve_db_department(sql_engine: Engine, handle: str) -> Department:
 # profile operations #####################################################################
 
 
-def create_db_profile_form_fb_user(
+def invite_new_members(
+    sql_engine: Engine,
+    new_profiles: List[ProfileMemberInvitation],
+):
+    created_profiles = []
+
+    for new_profile in new_profiles:
+        display_name = f"{new_profile.first_name} {new_profile.last_name}"
+        if len(new_profile.email) < 2 or len(display_name) < 3:
+            # TODO: error response
+            continue
+
+        created_fb_user, created_email_verifacation_link = create_invite_email_user(
+            display_name=display_name, email=new_profile.email
+        )
+
+    # with Session(sql_engine) as db_session:
+
+    #     print(fb_user)
+    #     names = fb_user.get("name", "Unnamed Alien").split(" ", 1)
+    #     first_name = names[0]
+    #     last_name = names[1] if len(names) > 1 else ""
+
+    #     # TODO: how handle email_verified?
+    #     # TODO use picture
+    #     # TODO: update requiredness of fields
+
+    #     db_profile = Profile(
+    #         firebase_uid=fb_user["uid"],
+    #         email=fb_user["email"],
+    #         phone="",
+    #         first_name=first_name,
+    #         last_name=last_name,
+    #         # birthday=,
+    #         # nationality=new_profile.nationality,
+    #         # description=new_profile.description,
+    #         # activity_status=new_profile.activity_status,
+    #         # degree_level=new_profile.degree_level,
+    #         # degree_name=new_profile.degree_name,
+    #         # degree_semester=new_profile.degree_semester,
+    #         # degree_semester_last_change_date=datetime.datetime.now(),
+    #         # university=new_profile.university,
+    #         # job_history=job_history_encoded,
+    #         # time_joined=,
+    #     )
+    #     db_session.add(db_profile)
+    #     db_session.commit()
+
+    #     # asserts presence of id, triggers a db refresh
+    #     assert db_profile.id
+    #     for sn in db_profile.social_networks:
+    #         assert sn.profile_id
+
+    #     return db_profile
+
+
+def create_db_profile_from_fb_user(
     sql_engine: Engine,
     fb_user: Any,
 ) -> Profile:
@@ -107,7 +167,7 @@ def retrieve_or_create_db_profile_by_firebase_uid(
             .one_or_none()
         )
         if db_model is None:
-            return create_db_profile_form_fb_user(sql_engine, fb_user)
+            return create_db_profile_from_fb_user(sql_engine, fb_user)
         else:
             if not db_model:
                 raise KeyError

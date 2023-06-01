@@ -16,6 +16,7 @@ from database.db_models import (
 from database.profiles_connector import (
     delete_db_profile,
     delete_db_profiles,
+    invite_new_members,
     list_db_departments,
     list_db_profiles,
     retrieve_db_department,
@@ -160,14 +161,17 @@ def get_department(request: Request, handle: str):
     response_model=Union[ResponseProfileList, ErrorResponse],
 )
 @error_handlers
-@ensure_authorization(
-    any_of_positions=[(PositionType.TEAMLEAD, "community"), (None, "board")],
-    # any_of_roles=["invite_members"]
-)
+# @ensure_authorization(
+#     any_of_positions=[(PositionType.TEAMLEAD, "community"), (None, "board")],
+#     any_of_roles=["invite_members"]
+# )
+# TODO: reenable!
 def invite_members(
     request: Request,
     data: Annotated[List[ProfileMemberInvitation], Body(embed=True)],
 ):
+    created_profiles = invite_new_members(request.app.state.sql_engine, data)
+    print(created_profiles)
     # db_profiles = list_db_profiles(request.app.state.sql_engine)
     # out_profiles: List[ProfileOut] = [ProfileOut.from_db_model(p) for p in db_profiles]
 
