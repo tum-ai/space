@@ -1,47 +1,13 @@
 {
   "hosting": {
     "source": ".",
-    "rewrites": [
-      {
-        "source": "**",
-        "function": "nextServer"
-      }
-    ],
     "ignore": [
       "firebase.json",
       "**/.*",
       "**/node_modules/**"
-    ]
-  },
-  "storage": {
-    "rules": "storage.rules"
-  },
-  "emulators": {
-    "auth": {
-      "host": "0.0.0.0",
-      "port": 9099
-    },
-    "hosting": {
-      "host": "0.0.0.0",
-      "port": 5000
-    },
-    "pubsub": {
-      "host": "0.0.0.0",
-      "port": 8085
-    },
-    "storage": {
-      "host": "0.0.0.0",
-      "port": 9199
-    },
-    "ui": {
-      "host": "0.0.0.0",
-      "enabled": true,
-      "port": 1111
-    },
-    "singleProjectMode": true
-  },
-  "functions": {
-    "source": ".",
-    "runtime": "nodejs12"
+    ],
+    "frameworksBackend": {
+      "region": "europe-west1"
+    }
   }
 }
