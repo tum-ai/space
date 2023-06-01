@@ -210,7 +210,17 @@ function NavBarMobile() {
 									Login
 								</a>
 							</>
-						)} */}
+						)} */
+						<div>
+						<a
+							href={
+								"/auth"
+							}
+							className='bg-white dark:bg-gray-700 p-2 rounded'
+						>
+							Log in or sign up
+						</a>
+					</div>}
 					</div>
 				</div>
 			)}
