@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import Icon from '/components/Icon';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '/providers/AuthContextProvider';
 
 function NavBar() {
 	return (

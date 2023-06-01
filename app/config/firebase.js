@@ -1,9 +1,9 @@
 import { initializeApp } from 'firebase/app'
 import { getAuth } from 'firebase/auth'
-import { environment_name } from "../environment";
+import { environment_name } from "../config/environment";
 
 const firebaseConfigProd = {
-  apiKey: "AIzaSyDzvLalrCrtzp5gB3KGB2aH6j9EaD8Su5E",
+  apiKey: process.env.FIREBASE_PROD_API_KEY,
   authDomain: "tumai-space.firebaseapp.com",
   projectId: "tumai-space",
   storageBucket: "tumai-space.appspot.com",
@@ -13,7 +13,7 @@ const firebaseConfigProd = {
 };
 
 const firebaseConfigStaging = {
-  apiKey: "AIzaSyCVM4ATMlidtjev2B7u0fB8bQhXnfOkSoI",
+  apiKey: process.env.FIREBASE_STAGING_API_KEY,
   authDomain: "tumai-space-staging.firebaseapp.com",
   projectId: "tumai-space-staging",
   storageBucket: "tumai-space-staging.appspot.com",

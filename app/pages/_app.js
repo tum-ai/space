@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
 import { RootStoreProvider } from '../providers/RootStoreProvider';
-import { AuthContextProvider } from '../context/AuthContext';
-import { useRouter } from 'next/router'
+import { AuthContextProvider } from '../providers/AuthContextProvider';
 import '../styles/globals.css';
 
 function App({ Component, pageProps }) {
