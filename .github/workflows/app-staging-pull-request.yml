@@ -32,5 +32,3 @@ jobs:
           channelId: live
           projectId: tumai-space-staging
           entryPoint: ./app
-        env:
-          FIREBASE_CLI_EXPERIMENTS: webframeworks
