@@ -14,9 +14,13 @@ from sqlalchemy.orm import (
     scoped_session,
     sessionmaker,
 )
+from sqlalchemy.orm.session import (
+    Session,
+)
 
 from database.db_models import (
     Base,
+    Role,
 )
 from profiles.db_views import (
     init_views,
@@ -61,6 +65,9 @@ async def setup_db_client(running_app: FastAPI):
 
     Base.metadata.create_all(running_app.state.sql_engine, checkfirst=True)
 
+    # add pre-existing roles
+    upset_roles(running_app.state.sql_engine)
+
 
 def setup_db_client_appless() -> Engine:
     log.info("Setting up sqlalchemy/postgres database connection")
@@ -73,3 +80,15 @@ async def close_db_client(running_app: FastAPI):
     log.info("Closing sqlalchemy/postgres database connection")
     if running_app.state.sql_engine is not None:
         running_app.state.sql_engine.dispose()
+
+
+def upset_roles(engine: Engine):
+    core_roles = [
+        Role(handle="admin", description="Administrator"),
+        Role(handle="invite_members", description="Member Invitations"),
+    ]
+
+    with Session(engine) as session:
+        for role in core_roles:
+            session.merge(role)
+        session.commit()

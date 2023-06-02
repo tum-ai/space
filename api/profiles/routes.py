@@ -1,5 +1,6 @@
 from typing import (
     Annotated,
+    Any,
     List,
     Union,
 )
@@ -80,6 +81,14 @@ class ResponsePublicProfile(BaseResponse):
         schema_extra = BaseResponse.schema_wrapper(ProfileOutPublic.dummy())
 
 
+class ResponseInviteProfilesList(BaseResponse):
+    succeeded: List[ProfileOut]
+    failed: List[Any]
+
+    class Config:
+        schema_extra = BaseResponse.schema_wrapper([])  # TODO
+
+
 class ResponseProfileList(BaseResponse):
     data: List[ProfileOut]
 
@@ -154,35 +163,33 @@ def get_department(request: Request, handle: str):
 # TODO: department memberships to profile responses
 
 
-# TODO create <admin_users>, <invite_members> role
 @router.get(
     "/profiles/invite/members",
     response_description="Create Profiles for new members and sendout invitation emails",
-    response_model=Union[ResponseProfileList, ErrorResponse],
+    response_model=Union[ResponseInviteProfilesList, ErrorResponse],
 )
 @error_handlers
-# @ensure_authorization(
-#     any_of_positions=[(PositionType.TEAMLEAD, "community"), (None, "board")],
-#     any_of_roles=["invite_members"]
-# )
-# TODO: reenable!
+@ensure_authorization(
+    any_of_positions=[(PositionType.TEAMLEAD, "community"), (None, "board")],
+    any_of_roles=["invite_members"],
+)
 def invite_members(
     request: Request,
     data: Annotated[List[ProfileMemberInvitation], Body(embed=True)],
 ):
-    created_profiles = invite_new_members(request.app.state.sql_engine, data)
-    print(created_profiles)
-    # db_profiles = list_db_profiles(request.app.state.sql_engine)
-    # out_profiles: List[ProfileOut] = [ProfileOut.from_db_model(p) for p in db_profiles]
-
-    # TODO: implement actual logic!
-
-    invited_profiles: List[ProfileOut] = []
+    created_profiles, error_profiles = invite_new_members(
+        request.app.state.sql_engine, data
+    )
+    created_profiles_out = [ProfileOut.from_db_model(p) for p in created_profiles]
+    error_profiles_out = [
+        {"data": err_data, "error": err} for err_data, err in error_profiles
+    ]
     return {
         "status_code": 200,
         "response_type": "success",
         "description": "Members invited successfully",
-        "data": invited_profiles,
+        "succeeded": created_profiles_out,
+        "failed": error_profiles_out,
     }
 
 

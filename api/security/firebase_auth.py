@@ -2,17 +2,19 @@ from pathlib import (
     Path,
 )
 from typing import (
-    Tuple,
+    Union,
 )
 
 import firebase_admin
 from firebase_admin import (
-    App,
     auth,
     credentials,
 )
 from firebase_admin.auth import (
     UserRecord,
+)
+from firebase_admin.exceptions import (
+    AlreadyExistsError,
 )
 
 ROOT = Path(__file__)
@@ -35,11 +37,18 @@ def verify_id_token(jwt):
         return None
 
 
-def create_invite_email_user(display_name: str, email: str) -> Tuple[UserRecord, str]:
-    # TODO: handle email already exists
-    new_user: UserRecord = auth.create_user(
-        display_name=display_name, email=email, email_verified=False
-    )
-    email_activation_link = auth.generate_email_verification_link(new_user.email)
-    print(email_activation_link)
-    return new_user, email_activation_link
+def create_invite_email_user(display_name: str, email: str) -> Union[UserRecord, str]:
+    """
+    Returns:
+        UserRecord: if successful
+        str: error message if unsuccessful
+    """
+    try:
+        new_user: UserRecord = auth.create_user(
+            display_name=display_name, email=email, email_verified=False
+        )
+        return new_user
+    except AlreadyExistsError:
+        return "UserAlreadyExists"
+    except Exception:
+        return "FirebaseError"
