@@ -118,10 +118,10 @@ In the beginning of the project the team formed and chose a technical stack. Thi
 -  [`MobX`](https://mobx.js.org) for state management
 - Firebase Auth for authentication
 
-**DevOps**:
-- Backend deployed on Azure
+**Deployment**:
+- Backend and DB on Azure, will move to Google Cloud
 - Firebase Authentication for managing authentication, authorization and roles
-- [`Docker`](https://www.docker.com/) with [`Docker Compose`](https://docs.docker.com/compose/) for containerization and orchestration (only backend & db)
+- [`Docker`](https://www.docker.com/) with [`Docker Compose`](https://docs.docker.com/compose/) for containerization and orchestration of the backend and DB
 
 ## Documentation
 To view an ERD of the system, paste ```api/docs/erDiagram``` file into a mermaid-style viewer like [this](https://mermaid.live/).
