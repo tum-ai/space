@@ -108,22 +108,24 @@ It works as follows:
 
 ### Technical Stack
 In the beginning of the project the team formed and chose a technical stack. This will not be changed and is a final decision. 
+
 **Backend**: 
-  - Service Logic: Python using [`FastAPI`](https://github.com/tiangolo/fastapi) framework
-  - Database: PostgreSQL
+  - Service Logic: `Python` using [`FastAPI`](https://github.com/tiangolo/fastapi) framework (apiDocs via `Pydantic` models)
+  - Database: `PostgreSQL` on Azure through `SQLAlchemy 2.0`
 
 **Frontend**:
 - [`NextJS`](https://nextjs.org/) framework for the website
 -  [`MobX`](https://mobx.js.org) for state management
 - Firebase Auth for authentication
 
-**Deployment**:
-- Frontend on Firebase Hosting
-- Backend and DB on Azure, will move to Google Cloud
-- [`Docker`](https://www.docker.com/) with [`Docker Compose`](https://docs.docker.com/compose/) for containerization and orchestration of the backend and DB
+**DevOps**:
+- Backend deployed on Azure
+- Firebase Authentication for managing authentication, authorization and roles
+- [`Docker`](https://www.docker.com/) with [`Docker Compose`](https://docs.docker.com/compose/) for containerization and orchestration (only backend & db)
 
 ## Documentation
-To view an ERD of the system, copy the ```api/docs/erDiagram``` file and paste it into a mermaid-style viewer like [this](https://mermaid.live/).
+To view an ERD of the system, paste ```api/docs/erDiagram``` file into a mermaid-style viewer like [this](https://mermaid.live/).
+Alternatively, checkout the [/api/README.md](https://github.com/tum-ai/space/tree/main/api) on GitHub.
 
 Documentation on the [frontend](https://www.notion.so/tum-ai/Frontend-Development-Guide-Documentation-259fdf1c5c1446d29fee4f16a39d4c0c?pvs=4) and [backend](https://www.notion.so/tum-ai/Backend-Development-Guide-Documentation-4c408603fb65439d94293c5189435770?pvs=4) as well as instructions on how to add services, pages etc. can be seen on the linked Notion pages.
 
