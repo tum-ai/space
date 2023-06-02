@@ -15,6 +15,7 @@ from database.db_models import (
     Department,
     JobHistoryElement,
     Profile,
+    Role,
     SocialNetwork,
     SocialNetworkType,
 )
@@ -62,6 +63,27 @@ class DepartmentOut(BaseModel):
 
 
 # profile operations #####################################################################
+
+
+class RoleInOut(BaseModel):
+    handle: str
+    description: str
+
+    @classmethod
+    def from_db_model(cls, role: Role) -> "RoleInOut":
+        return RoleInOut(handle=role.handle, description=role.description)
+
+    @classmethod
+    def dummy(cls) -> "RoleInOut":
+        return RoleInOut.parse_obj(cls.Config.schema_extra["example"])
+
+    class Config:
+        schema_extra = {
+            "example": {
+                "handle": "admin",
+                "description": "Administrator",
+            }
+        }
 
 
 class ProfileMemberInvitation(BaseModel):

@@ -21,6 +21,7 @@ from database.db_models import (  # PublicProfile
     DepartmentMembership,
     PositionType,
     Profile,
+    Role,
     RoleHoldership,
     SocialNetwork,
 )
@@ -55,6 +56,18 @@ def retrieve_db_department(sql_engine: Engine, handle: str) -> Department:
 
 
 # profile operations #####################################################################
+
+
+def list_db_roles(sql_engine: Engine) -> List[Role]:
+    with Session(sql_engine) as db_session:
+        db_roles: List[Role] = db_session.query(Role).all()
+
+        # asserts presence of id, triggers a db refresh
+        for db_role in db_roles:
+            if not db_role.handle:
+                raise KeyError
+
+        return db_roles
 
 
 def invite_new_members(

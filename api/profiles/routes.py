@@ -20,6 +20,7 @@ from database.profiles_connector import (
     invite_new_members,
     list_db_departments,
     list_db_profiles,
+    list_db_roles,
     retrieve_db_department,
     retrieve_db_profile,
     update_db_profile,
@@ -30,6 +31,7 @@ from profiles.api_models import (
     ProfileMemberInvitation,
     ProfileOut,
     ProfileOutPublic,
+    RoleInOut,
 )
 from security.decorators import (
     ensure_authenticated,
@@ -65,6 +67,15 @@ class ResponseDepartment(BaseResponse):
 
     class Config:
         schema_extra = BaseResponse.schema_wrapper(DepartmentOut.dummy())
+
+
+class ResponseRoleList(BaseResponse):
+    data: List[RoleInOut]
+
+    class Config:
+        schema_extra = BaseResponse.schema_wrapper(
+            [RoleInOut.dummy(), RoleInOut.dummy()]
+        )
 
 
 class ResponseProfile(BaseResponse):
@@ -191,6 +202,29 @@ def invite_members(
         "succeeded": created_profiles_out,
         "failed": error_profiles_out,
     }
+
+
+@router.get(
+    "/roles",
+    response_description="List all roles availlable in TUM.ai Space",
+    response_model=Union[ResponseRoleList, ErrorResponse],
+)
+@error_handlers
+# @ensure_authenticated  # TODO: reenable
+def list_roles(request: Request):
+    db_roles = list_db_roles(request.app.state.sql_engine)
+    out_roles: List[RoleInOut] = [RoleInOut.from_db_model(r) for r in db_roles]
+    return {
+        "status_code": 200,
+        "response_type": "success",
+        "description": "Members invited successfully",
+        "data": out_roles,
+    }
+
+
+# TODO: GET /role/holderships (filter by profile_id, role_id)
+# TODO: POST /role/holdership
+# TODO: DELTE /role/holdership
 
 
 @router.get(
