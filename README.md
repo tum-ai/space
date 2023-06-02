@@ -15,8 +15,7 @@ See [here](#working-on-a-linear-ticket) for how to work and develop on a Linear 
 | .fileserver/certification/ | Resources needed for generating a certificate |
 | .github/workflows/  |   |
 | api/ | Backend, services |
-| app/ | New Firebase Frontend |
-| web-app/  | Previous Frontend, authentication will be migrated over to ap/ |
+| app/ | Frontend |
 
 ## Development
 
@@ -29,7 +28,9 @@ Make sure to have the following installed before running ```make```:
 
 ### Running it
 **Backend**
-```TODO```
+```make run docker```
+or 
+```make run api```
 **Frontend**
 ```npm run dev```
 
@@ -51,19 +52,20 @@ It works as follows:
 In the beginning of the project the team formed and chose a technical stack. This will not be changed and is a final decision. 
 **Backend**: 
   - Service Logic: Python using [`FastAPI`](https://github.com/tiangolo/fastapi) framework
-  - Database: SQL on Azure
+  - Database: PostgreSQL
 
 **Frontend**:
 - [`NextJS`](https://nextjs.org/) framework for the website
 -  [`MobX`](https://mobx.js.org) for state management
+- Firebase Auth for authentication
 
-**DevOps**:
-- Backend deployed on Azure
-- Firebase Authentication for managing authentication, authorization and roles
-- [`Docker`](https://www.docker.com/) with [`Docker Compose`](https://docs.docker.com/compose/) for containerization and orchestration (only backend & db)
+**Deployment**:
+- Frontend on Firebase Hosting
+- Backend and DB on Azure, will move to Google Cloud
+- [`Docker`](https://www.docker.com/) with [`Docker Compose`](https://docs.docker.com/compose/) for containerization and orchestration of the backend and DB
 
 ## Documentation
-To view an ERD of the system, copy the ```api/docs/erDiagram``` file, remove all the comments starting with ```//``` and paste it into a mermaid-style viewer like [this](https://mermaid.live/).
+To view an ERD of the system, copy the ```api/docs/erDiagram``` file and paste it into a mermaid-style viewer like [this](https://mermaid.live/).
 
 Documentation on the [frontend](https://www.notion.so/tum-ai/Frontend-Development-Guide-Documentation-259fdf1c5c1446d29fee4f16a39d4c0c?pvs=4) and [backend](https://www.notion.so/tum-ai/Backend-Development-Guide-Documentation-4c408603fb65439d94293c5189435770?pvs=4) as well as instructions on how to add services, pages etc. can be seen on the linked Notion pages.
 
