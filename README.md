@@ -32,7 +32,11 @@ Make sure to have the following installed before running ```make```:
 or 
 ```make run api```
 **Frontend**
-```npm run dev```
+```npm run dev``` in ```app/```
+
+**Using the precommit hook**
+```pre-commit run --all``` to trigger this manually
+```pre-commit install``` to trigger this on every commit
 
 ### Working on a Linear ticket
 Working with Linear tickets is very similar to working with GitHub issues.
@@ -69,31 +73,26 @@ To view an ERD of the system, copy the ```api/docs/erDiagram``` file and paste i
 
 Documentation on the [frontend](https://www.notion.so/tum-ai/Frontend-Development-Guide-Documentation-259fdf1c5c1446d29fee4f16a39d4c0c?pvs=4) and [backend](https://www.notion.so/tum-ai/Backend-Development-Guide-Documentation-4c408603fb65439d94293c5189435770?pvs=4) as well as instructions on how to add services, pages etc. can be seen on the linked Notion pages.
 
-# CI / CD Draft
-## Environments
-1) DEV:
-- No automated CI Action
-- Dev can start up:
-  - Frontend: via npm or firebase emulator
-  - Backend: via uvicorn or docker (TODO: deprecate docker)
-  - DB: use dockerized postgres, 
-- Precommit hook: Linting
-2) Test:
-- linting & unit tests on every pushed commit of all branches
-- Backend: no deployment, just Github Action tests
-- DB: azure dev db
-3) Staging
-- deployed version of staging branch
-  - Frontend: to firebase staging
-  - Backend: deployed to Azure staging (environment=staging)
-  - DB: azure staging db
-- CI Action triggered on:
-  TODO: decide:
-    - PR request creation into main
-    - push commit to staging branch
-4) Production:
-- deployed version of main branch
-  - Frontend: Firebase Production
-  - Backend: Azure Production (environment=production)
-  - DB: Azure Production DB
+# CI/CD and Environments
+**1. Development (Local)**
+  - See [this section](#running-it)
+  - Precommit hook to ensure linting
+
+**2. Staging**
+- Deployed version of the staging branch
+  - Frontend deployed to Firebase staging project ("tumai-space-staging")
+  - Backend deployed to Azure Staging
+  - Uses an Azure Staging DB
+- CI Action is triggered on PR creation into main
+
+**3. Production**:
+- Deployed version of the main branch
+  - Frontend deployed to Firebase production project ("tumai-space")
+  - Backend deployed to Azure Production 
+  - Uses an Azure Production DB
 - CI Action triggered on push commit to main
+
+One could also see the **Testing** CI part as an environment:
+- Runs linting & unit tests on every pushed commit of all branches
+- No deployment
+- Uses an Azure Dev DB
