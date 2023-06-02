@@ -11,7 +11,7 @@ from pydantic import (
     BaseModel,
 )
 
-from profiles.db_models import (
+from database.db_models import (
     Department,
     JobHistoryElement,
     Profile,
@@ -121,7 +121,7 @@ class ProfileInCreateUpdateBase(BaseModel):
     phone: Optional[str]
     first_name: str
     last_name: str
-    birthday: date
+    birthday: Optional[date]
     nationality: Optional[str]
     description: Optional[str]
 
@@ -177,13 +177,13 @@ class ProfileInUpdate(ProfileInCreateUpdateBase):
 # only for privileged users
 class ProfileOut(BaseModel):
     id: int
-    supertokens_id: Optional[str]
+    firebase_uid: str
 
     email: str
     phone: Optional[str]
     first_name: str
     last_name: str
-    birthday: date
+    birthday: Optional[date]
     nationality: Optional[str]
     description: Optional[str]
 
@@ -204,7 +204,7 @@ class ProfileOut(BaseModel):
     def from_db_model(cls, profile: Profile) -> "ProfileOut":
         return ProfileOut(
             id=profile.id,
-            supertokens_id=profile.supertokens_id,
+            firebase_uid=profile.firebase_uid,
             email=profile.email,
             phone=profile.phone,
             first_name=profile.first_name,
@@ -228,7 +228,7 @@ class ProfileOut(BaseModel):
     def dummy(cls) -> "ProfileOut":
         return ProfileOut(
             id=2,
-            supertokens_id="asdfHIUSF7",
+            firebase_uid="SnMRJyesPzZI6teM684qhUxgH2g2",
             email="test@mymail.com",
             phone="+42 42424242",
             first_name="Max",
@@ -256,7 +256,7 @@ class ProfileOut(BaseModel):
         schema_extra = {
             "example": {
                 "id": 42,
-                "supertokens_id": "asdfHIUSF7",
+                "firebase_uid": "SnMRJyesPzZI6teM684qhUxgH2g2",
                 "email": "test@mymail.com",
                 "phone": "+42 42424242",
                 "first_name": "Max",
@@ -287,7 +287,6 @@ class ProfileOutPublic(BaseModel):
 
     first_name: str
     last_name: str
-    nationality: Optional[str]
     description: Optional[str]
 
     # profile_picture  # TODO
@@ -304,12 +303,11 @@ class ProfileOutPublic(BaseModel):
     social_networks: List["SocialNetworkOut"]
 
     @classmethod
-    def from_db_model(cls, profile: Profile) -> "ProfileOut":
+    def from_db_model(cls, profile: Profile) -> "ProfileOutPublic":
         return ProfileOutPublic(
             id=profile.id,
             first_name=profile.first_name,
             last_name=profile.last_name,
-            nationality=profile.nationality,
             description=profile.description,
             activity_status=profile.activity_status,
             degree_level=profile.degree_level,
@@ -329,7 +327,6 @@ class ProfileOutPublic(BaseModel):
             id=2,
             first_name="Max",
             last_name="Mustermann",
-            nationality="German",
             description="Hi and welcome!",
             activity_status="active",
             degree_level="B.Sc.",
@@ -353,7 +350,6 @@ class ProfileOutPublic(BaseModel):
                 "id": 42,
                 "first_name": "Max",
                 "last_name": "Mustermann",
-                "nationality": "German",
                 "description": "Hi and welcome!",
                 "activity_status": "active",
                 "degree_level": "B.Sc.",

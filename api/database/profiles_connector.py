@@ -1,16 +1,29 @@
 import datetime
 from typing import (
+    Any,
     List,
+    Optional,
+    Tuple,
 )
 
 from sqlalchemy import (
     Engine,
+    and_,
     delete,
+    or_,
 )
 from sqlalchemy.orm import (
     Session,
 )
 
+from database.db_models import (  # PublicProfile
+    Department,
+    DepartmentMembership,
+    PositionType,
+    Profile,
+    RoleHoldership,
+    SocialNetwork,
+)
 from database.setup import (
     setup_db_client_appless,
 )
@@ -18,13 +31,6 @@ from profiles.api_models import (
     ProfileInCreate,
     ProfileInUpdate,
     SocialNetworkIn,
-)
-from profiles.db_models import (  # PublicProfile
-    Department,
-    DepartmentMembership,
-    Profile,
-    Role,
-    SocialNetwork,
 )
 
 # department operations ##################################################################
@@ -45,6 +51,92 @@ def retrieve_db_department(sql_engine: Engine, handle: str) -> Department:
 
 
 # profile operations #####################################################################
+
+
+def create_db_profile_form_fb_user(
+    sql_engine: Engine,
+    fb_user: Any,
+) -> Profile:
+    with Session(sql_engine) as db_session:
+        print(fb_user)
+        names = fb_user.get("name", "Unnamed Alien").split(" ", 1)
+        first_name = names[0]
+        last_name = names[1] if len(names) > 1 else ""
+
+        # TODO: how handle email_verified?
+        # TODO use picture
+        # TODO: update requiredness of fields
+
+        db_profile = Profile(
+            firebase_uid=fb_user["uid"],
+            email=fb_user["email"],
+            phone="",
+            first_name=first_name,
+            last_name=last_name,
+            # birthday=,
+            # nationality=new_profile.nationality,
+            # description=new_profile.description,
+            # activity_status=new_profile.activity_status,
+            # degree_level=new_profile.degree_level,
+            # degree_name=new_profile.degree_name,
+            # degree_semester=new_profile.degree_semester,
+            # degree_semester_last_change_date=datetime.datetime.now(),
+            # university=new_profile.university,
+            # job_history=job_history_encoded,
+            # time_joined=,
+        )
+        db_session.add(db_profile)
+        db_session.commit()
+
+        # asserts presence of id, triggers a db refresh
+        assert db_profile.id
+        for sn in db_profile.social_networks:
+            assert sn.profile_id
+
+        return db_profile
+
+
+def retrieve_or_create_db_profile_by_firebase_uid(
+    sql_engine: Engine,
+    fb_user: Any,
+) -> Profile:
+    with Session(sql_engine) as db_session:
+        db_model = (
+            db_session.query(Profile)
+            .filter(Profile.firebase_uid == fb_user["uid"])
+            .one_or_none()
+        )
+        if db_model is None:
+            return create_db_profile_form_fb_user(sql_engine, fb_user)
+        else:
+            if not db_model:
+                raise KeyError
+
+            for sn in db_model.social_networks:
+                if not sn.profile_id:
+                    raise KeyError
+
+            return db_model
+
+
+def retrieve_db_profile_by_firebase_uid(
+    sql_engine: Engine,
+    firebase_uid: str,
+) -> Profile:
+    with Session(sql_engine) as db_session:
+        db_model = (
+            db_session.query(Profile).filter(Profile.firebase_uid == firebase_uid).one()
+        )
+
+        # asserts presence values
+        if not db_model:
+            raise KeyError
+
+        for sn in db_model.social_networks:
+            if not sn.profile_id:
+                raise KeyError
+
+        return db_model
 
 
 def create_db_profiles(
@@ -108,12 +200,14 @@ def create_db_profile(
     new_db_profile = create_db_profiles(sql_engine, [new_profile])
     if len(new_db_profile) >= 1:
         return new_db_profile[0]
+    else:
+        raise ValueError
 
 
-def create_empty_db_profile(supertokens_id: str, email: str) -> List[Profile]:
+def create_empty_db_profile(firebase_uid: str, email: str) -> Profile:
     with Session(setup_db_client_appless()) as db_session:
         db_profile = Profile(
-            supertokens_id=supertokens_id,
+            firebase_uid=firebase_uid,
             email=email,
             phone="",
             first_name="",
@@ -143,7 +237,7 @@ def update_db_profile(
     sql_engine: Engine,
     profile_id: int,
     profile_to_update: ProfileInUpdate,
-) -> List[Profile]:
+) -> Profile:
     with Session(sql_engine) as db_session:
         job_history_encoded = Profile.encode_job_history(profile_to_update.job_history)
 
@@ -244,31 +338,9 @@ def list_db_profiles(sql_engine: Engine, page: int, page_size: int) -> List[Prof
         return db_profiles
 
 
-def retrieve_db_profile(sql_engine: Engine, profile_id: str) -> Profile:
+def retrieve_db_profile(sql_engine: Engine, profile_id: int) -> Profile:
     with Session(sql_engine) as db_session:
         db_model = db_session.query(Profile).get(profile_id)
-
-        # asserts presence values
-        if not db_model:
-            raise KeyError
-
-        for sn in db_model.social_networks:
-            if not sn.profile_id:
-                raise KeyError
-
-        return db_model
-
-
-def retrieve_db_profile_by_supertokens_id(
-    sql_engine: Engine,
-    supertokens_id: str,
-) -> Profile:
-    with Session(sql_engine) as db_session:
-        db_model = (
-            db_session.query(Profile)
-            .filter(Profile.supertokens_id == supertokens_id)
-            .one()
-        )
 
         # asserts presence values
         if not db_model:
@@ -298,28 +370,61 @@ def delete_db_profile(sql_engine: Engine, profile_id: int) -> bool:
         return True
 
 
-# TODO: debug #########
-def debug_db_query(sql_engine):
-    with Session(sql_engine) as db_session:
-        # db_models = db_session\
-        #     .query(DepartmentMembership)\
-        #     .where(
-        #         # DepartmentMembership.department_handle == 'dev'
-        #         (DepartmentMembership.time_from <= datetime.datetime.now())
-        #         &
-        #         ((DepartmentMembership.time_to >= datetime.datetime.now()) |
-        #       (DepartmentMembership.time_to is None))
-        #     ) \
-        #     .limit(100)\
-        #     .all()
+def profile_has_one_of_positions(
+    sql_engine: Engine,
+    profile_id: int,
+    any_of: List[Tuple[Optional[PositionType], Optional[str]]],
+) -> bool:
+    or_statement = False
+    for position, department_handle in any_of:
+        if (position is None) and (department_handle is None):
+            or_statement = True
+            break
 
-        # print("")
-        obj = DepartmentMembership(
-            role=Role.TEAMLEAD,
-            time_from=datetime.datetime.now() - datetime.timedelta(days=180),
-            time_to=datetime.datetime.now() + datetime.timedelta(days=180),
-            profile_id=42,
-            department_handle="dev",
+        if position is None:
+            or_statement = or_(
+                or_statement,
+                (DepartmentMembership.department_handle == department_handle),
+            )
+
+        elif department_handle is None:
+            or_statement = or_(
+                or_statement, (DepartmentMembership.position == position)
+            )
+
+        else:
+            or_statement = or_(
+                or_statement,
+                and_(
+                    (DepartmentMembership.department_handle == department_handle),
+                    (DepartmentMembership.position == position),
+                ),
+            )
+
+    with Session(sql_engine) as db_session:
+        found = (
+            db_session.query(DepartmentMembership)
+            .filter(and_(DepartmentMembership.profile_id == profile_id, or_statement))
+            .count()
         )
-        db_session.add(obj)
-        db_session.commit()
+        return found >= 1
+
+
+def profile_has_one_of_roles(
+    sql_engine: Engine,
+    profile_id: int,
+    any_of: List[str],
+) -> bool:
+    or_statement = False
+    for role_handle in any_of:
+        if role_handle is None:
+            continue
+        or_statement = or_(RoleHoldership.role_handle == role_handle, or_statement)
+
+    with Session(sql_engine) as db_session:
+        found = (
+            db_session.query(RoleHoldership)
+            .where(and_(RoleHoldership.profile_id == profile_id, or_statement))
+            .count()
+        )
+        return found >= 1

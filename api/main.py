@@ -1,8 +1,3 @@
-import logging
-from logging.config import (
-    dictConfig,
-)
-
 from fastapi import (
     FastAPI,
     Request,
@@ -12,82 +7,45 @@ from fastapi import (
 from fastapi.middleware.cors import (
     CORSMiddleware,
 )
-from pydantic import (
-    BaseModel,
-)
 
-from config import (
+from database.setup import (
+    close_db_client,
+    setup_db_client,
+)
+from profiles.routes import router as ProfilesRouter
+from security.decorators import (
+    ensure_authenticated,
+    ensure_authorization,
+)
+from security.firebase_auth import (
+    init_firebase_auth,
+)
+from utils.config import (
     CONFIG,
 )
-
-# from security.firebase_auth import (
-#     init_firebase_auth,
-#     verify_id_token,
-# )
-# from template.routes import router as TemplateRouter
-
-
-class LogConfig(BaseModel):
-    """Logging configuration to be set for the server"""
-
-    LOGGER_NAME: str = CONFIG.get("LOGGER_NAME")
-    LOG_FORMAT: str = "%(levelprefix)s | %(asctime)s | %(message)s"
-    LOG_LEVEL: str = CONFIG.get("LOG_LEVEL")
-
-    # Logging config
-    version = 1
-    disable_existing_loggers = False
-    # formatters = {
-    #     "default": {
-    #         "()": "uvicorn.logging.DefaultFormatter",
-    #         "fmt": LOG_FORMAT,
-    #         "datefmt": "%Y-%m-%d %H:%M:%S",
-    #     },
-    # }
-    # handlers = {
-    #     "default": {
-    #         "formatter": "default",
-    #         "class": "logging.StreamHandler",
-    #         "stream": "ext://sys.stderr",
-    #     },
-    # }
-    # loggers = {
-    #     LOGGER_NAME: {"handlers": ["default"], "level": LOG_LEVEL},
-    # }
-
-
-dictConfig(LogConfig().dict())
-log = logging.getLogger(CONFIG.get("LOGGER_NAME"))
-
+from utils.error_handlers import (
+    error_handlers,
+)
+from utils.log import (
+    log,
+)
 
 app = FastAPI()
 db_client = None
 
 # synchronous setup
 # ------------------------------------------------------------------------------#
-# init_server_auth()  # supertokens - outdated
+init_firebase_auth()
 
-# init_firebase_auth()
-
+log.debug(CONFIG.get("AUTH_ALLOWED_ORIGINS"))
 allow_all = ["*"]
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=allow_all,  # TODO: adjust for production
+    allow_origins=CONFIG.get("AUTH_ALLOWED_ORIGINS"),
     allow_credentials=True,
     allow_methods=allow_all,
     allow_headers=allow_all,
 )
-
-# https://www.starlette.io/middleware/ scroll to CORSMiddleware
-# log.debug(CONFIG.get("AUTH_ALLOWED_ORIGINS")),
-# app.add_middleware(
-#     CORSMiddleware,
-#     allow_origins=CONFIG.get("AUTH_ALLOWED_ORIGINS"),
-#     allow_credentials=True,
-#     allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
-#     allow_headers=["Content-Type"] + get_all_cors_headers(),
-# )
-# TODO: add CORSMiddleware for other subdomains
 # ------------------------------------------------------------------------------#
 
 
@@ -98,9 +56,8 @@ async def startup_event():
     This function is called when the server starts up.
     It is used to set up the database connection and other configurations.
     """
-    # TODO
-    # await setup_db_client(app)
-    # await create_auth_roles()
+    log.debug("async setup..."),
+    await setup_db_client(app)
 
 
 @app.on_event("shutdown")
@@ -109,8 +66,8 @@ async def shutdown_event():
     This function is called when the application shuts down.
     It is used to perform any cleanup tasks.
     """
-    # TODO
-    # await close_db_client(app)
+    log.debug("async shutdown..."),
+    await close_db_client(app)
 
 
 # TODO: redirect to the main tumai-space page
@@ -119,21 +76,27 @@ async def root():
     return {"msg": "Welcome to tumai-space"}
 
 
-@app.get("/auth-test", tags=["Root"])
-async def auth_test(request: Request):
-    # headers = request.headers
-    return {"msg": "unimplemented!"}
-    # jwt = headers.get("authorization")
-    # if jwt:
-    #     return {"message": "Auth test:", "data": verify_id_token(jwt)}
-    # else:
-    #     return {"message": "No auth token supplied!"}
+@app.get("/auth-test", tags=["auth-test"])
+@ensure_authenticated
+def auth_test(request: Request):
+    return {"msg": "Auth test: success"}
 
 
-# Include here all the routes from the different modules
-# app.include_router(TemplateRouter, prefix="/template", tags=["Template"])
+@app.get("/admin-test", tags=["admin-test"])
+@error_handlers
+@ensure_authorization(any_of_positions=[(None, "board")])
+def authorization_position_test(request: Request):
+    return {"msg": "Admin test: success"}
 
-# app.include_router(CertificationRouter, prefix="/certification", tags=["Certification"])
+
+@app.get("/role-test", tags=["role-test"])
+@error_handlers
+@ensure_authorization(any_of_roles=["test-role"])
+def authorization_role_test(request: Request):
+    return {"msg": "Role test: success"}
+
 
 # Prefix defined in router
-# app.include_router(ProfilesRouter, tags=["Profile"])
+app.include_router(ProfilesRouter, tags=["Profile"])
+
+# app.include_router(CertificationRouter, prefix="/certification", tags=["Certification"])
