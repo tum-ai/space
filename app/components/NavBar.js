@@ -2,11 +2,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
-import {
-	signOut,
-	useSessionContext,
-} from 'supertokens-auth-react/recipe/session';
 import Icon from '/components/Icon';
+import { useAuth } from '/providers/AuthContextProvider';
 
 function NavBar() {
 	return (
@@ -18,17 +15,11 @@ function NavBar() {
 }
 
 function NavBarDesktop() {
-	const session = useSessionContext();
 	const router = useRouter();
-	function logoutClicked() {
-		signOut()
-			.then(() => {
-				router.reload();
-			})
-			.catch(() => {
-				console.log('Could not sign out.');
-			});
-	}
+	const { user } = useAuth();
+
+	console.log(user);
+
 	return (
 		<div className='lg:flex hidden w-full bg-gray-100 p-4 lg:p-6 flex space-x-6 items-center dark:bg-black sticky top-0 z-20'>
 			<div>
@@ -74,46 +65,17 @@ function NavBarDesktop() {
 						Team
 					</Link>
 					<Link
-						href={'/projects'}
+						href={'/feedback'}
 						className={
 							'text-gray-500 hover:text-black dark:hover:text-white hover:underline ' +
-							(router.asPath?.includes('/projects') &&
+							(router.asPath?.includes('/feedback') &&
 								'font-bold')
 						}
 					>
-						Projects
-					</Link>
-					<Link
-						href={'/campaigns'}
-						className={
-							'text-gray-500 hover:text-black dark:hover:text-white hover:underline ' +
-							(router.asPath?.includes('/campaigns') &&
-								'font-bold')
-						}
-					>
-						Campaigns
-					</Link>
-					<Link
-						href={'/services'}
-						className={
-							'text-gray-500 hover:text-black dark:hover:text-white hover:underline ' +
-							(router.asPath?.includes('/services') &&
-								'font-bold')
-						}
-					>
-						Services
-					</Link>
-					<Link
-						href={'/news'}
-						className={
-							'text-gray-500 hover:text-black dark:hover:text-white hover:underline ' +
-							(router.asPath?.includes('/news') && 'font-bold')
-						}
-					>
-						News
+						Feedback
 					</Link>
 				</div>
-				<div className='flex space-x-4'>
+				{/* <div className='flex space-x-4'>
 					{session.doesSessionExist ? (
 						<>
 							<Link
@@ -143,14 +105,25 @@ function NavBarDesktop() {
 							</a>
 						</>
 					)}
-				</div>
+				</div> */
+				// TODO display name when logged in
+					<div>
+						<a
+							href={
+								"/auth"
+							}
+							className='bg-white dark:bg-gray-700 p-2 rounded'
+						>
+							Log in or sign up
+						</a>
+					</div>}
 			</div>
 		</div>
 	);
 }
 
 function NavBarMobile() {
-	const session = useSessionContext();
+	// const session = useSessionContext();
 	const router = useRouter();
 	function logoutClicked() {
 		signOut()
@@ -219,46 +192,17 @@ function NavBarMobile() {
 						Team
 					</Link>
 					<Link
-						href={'/projects'}
+						href={'/feedback'}
 						className={
 							'text-gray-500 hover:text-black dark:hover:text-white hover:underline ' +
-							(router.asPath?.includes('/projects') &&
+							(router.asPath?.includes('/feedback') &&
 								'font-bold')
 						}
 					>
-						Projects
-					</Link>
-					<Link
-						href={'/campaigns'}
-						className={
-							'text-gray-500 hover:text-black dark:hover:text-white hover:underline ' +
-							(router.asPath?.includes('/campaigns') &&
-								'font-bold')
-						}
-					>
-						Campaigns
-					</Link>
-					<Link
-						href={'/services'}
-						className={
-							'text-gray-500 hover:text-black dark:hover:text-white hover:underline ' +
-							(router.asPath?.includes('/services') &&
-								'font-bold')
-						}
-					>
-						Services
-					</Link>
-					<Link
-						href={'/news'}
-						className={
-							'text-gray-500 hover:text-black dark:hover:text-white hover:underline ' +
-							(router.asPath?.includes('/news') && 'font-bold')
-						}
-					>
-						News
+						Feedback
 					</Link>
 					<div className='flex space-x-4'>
-						{session.doesSessionExist ? (
+						{/* {session.doesSessionExist ? (
 							<>
 								<Link
 									href='/members/me'
@@ -286,7 +230,17 @@ function NavBarMobile() {
 									Login
 								</a>
 							</>
-						)}
+						)} */
+						<div>
+						<a
+							href={
+								"/auth"
+							}
+							className='bg-white dark:bg-gray-700 p-2 rounded'
+						>
+							Log in or sign up
+						</a>
+					</div>}
 					</div>
 				</div>
 			)}

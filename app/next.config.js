@@ -1,5 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+	distDir: "build",
+	trailingSlash: true,
+	output: "export",
+	swcMinify: true,
 	reactStrictMode: true,
 	images: {
 		remotePatterns: [
@@ -10,6 +14,7 @@ const nextConfig = {
 				pathname: '/photos/**',
 			},
 		],
+		unoptimized: true
 	},
 };
 
