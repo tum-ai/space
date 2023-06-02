@@ -4,10 +4,18 @@ TUM.ai space is a system that tackles and solves three main issues:
   2. Increasing clarity, visibility and linking of internal information that is otherwise hard to find (ie a slack message) as a single source of truth
   3. Combine existing systems like application systems into a more managable and extensible format
 
-## Organization & team
+## Organization
 Project planning is done over [Linear](https://linear.app/tum-ai/project/tumai-space-5b8716e29acb). All relevant issues and tasks are placed there, the GitHub issues in this repository are outdated and will slowly be removed.
 
 See [here](#working-on-a-linear-ticket) for how to work and develop on a Linear ticket.
+
+## Repo Structure
+| Directory | Explanation |
+|---|---|
+| .fileserver/certification/ | Resources needed for generating a certificate |
+| .github/workflows/  |   |
+| api/ | Backend, services |
+| app/ | Frontend |
 
 ## Development
 
@@ -72,6 +80,17 @@ To verify the installation and setup try out the following:
 - Visit http://auth.tum-ai-dev.com:15950/, you should be redirected to the login page.
 - Visit http://api.tum-ai-dev.com:15950/auth/dashboard to see all the registered users.
 - Visit http://api.tum-ai-dev.com:15950/docs to see the dashboard of the available routes.
+### Running it
+**Backend**
+```make run docker```
+or 
+```make run api```
+**Frontend**
+```npm run dev``` in ```app/```
+
+**Using the precommit hook**
+```pre-commit run --all``` to trigger this manually
+```pre-commit install``` to trigger this on every commit
 
 ### Working on a Linear ticket
 Working with Linear tickets is very similar to working with GitHub issues.
@@ -89,17 +108,26 @@ It works as follows:
 
 ### Technical Stack
 In the beginning of the project the team formed and chose a technical stack. This will not be changed and is a final decision. 
-**Backend**: 
-  - Service Logic:
 
-    - Python using [`FastAPI`](https://github.com/tiangolo/fastapi) framework
-  - Database:
-    - [`MongoDB`](https://www.mongodb.com/) for all the services but analytics
-    - (coming up) [`InfluxDB`](https://www.influxdata.com/) for analytics service
+**Backend**: 
+  - Service Logic: `Python` using [`FastAPI`](https://github.com/tiangolo/fastapi) framework (apiDocs via `Pydantic` models)
+  - Database: `PostgreSQL` on Azure through `SQLAlchemy 2.0`
 
 **Frontend**:
 - [`NextJS`](https://nextjs.org/) framework for the website
 -  [`MobX`](https://mobx.js.org) for state management
+- Firebase Auth for authentication
+
+**Deployment**:
+- Backend and DB on Azure, will move to Google Cloud
+- Firebase Authentication for managing authentication, authorization and roles
+- [`Docker`](https://www.docker.com/) with [`Docker Compose`](https://docs.docker.com/compose/) for containerization and orchestration of the backend and DB
+
+## Documentation
+To view an ERD of the system, paste ```api/docs/erDiagram``` file into a mermaid-style viewer like [this](https://mermaid.live/).
+Alternatively, checkout the [/api/README.md](https://github.com/tum-ai/space/tree/main/api) on GitHub.
+
+Documentation on the [frontend](https://www.notion.so/tum-ai/Frontend-Development-Guide-Documentation-259fdf1c5c1446d29fee4f16a39d4c0c?pvs=4) and [backend](https://www.notion.so/tum-ai/Backend-Development-Guide-Documentation-4c408603fb65439d94293c5189435770?pvs=4) as well as instructions on how to add services, pages etc. can be seen on the linked Notion pages.
 
 **DevOps**:
 - Deployed on Azure
@@ -107,30 +135,21 @@ In the beginning of the project the team formed and chose a technical stack. Thi
 - [`Firebase`](https://firebase.com/) for managing authentication
 - [`Docker`](https://www.docker.com/) with [`Docker Compose`](https://docs.docker.com/compose/) for containerization and orchestration
 
-# CI / CD Draft
-## Environments
-1) DEV:
-- No automated CI Action
-- Dev can start up:
-  - Frontend: via npm or firebase emulator
-  - Backend: via uvicorn or docker compose
-  - DB: use dockerized postgres, 
-- Precommit hook: Linting
-2) Test:
-- linting & unit tests on every pushed commit of all branches
-- Backend: no deployment, just Github Action tests
-- DB: azure dev db
-3) Staging
-- deployed version of staging branch
-  - Frontend: to firebase staging
-  - Backend: deployed to Azure staging (env environment=staging)
-  - DB: azure staging db
-- CI Action triggered on:
-    - PR request creation into main
+**2. Staging**
+- Deployed version of the staging branch
+  - Frontend deployed to Firebase staging project ("tumai-space-staging")
+  - Backend deployed to Azure Staging
+  - Uses an Azure Staging DB
+- CI Action is triggered on PR creation into main
 
-4) Production:
-- deployed version of main branch
-  - Frontend: to firebase prod
-  - Backend: deployed to Azure prod (env environment=production)
-  - DB: azure prod db
+**3. Production**:
+- Deployed version of the main branch
+  - Frontend deployed to Firebase production project ("tumai-space")
+  - Backend deployed to Azure Production 
+  - Uses an Azure Production DB
 - CI Action triggered on push commit to main (=merge PR)
+
+One could also see the **Testing** CI part as an environment:
+- Runs linting & unit tests on every pushed commit of all branches
+- No deployment
+- Uses an Azure Dev DB
