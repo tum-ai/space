@@ -1,9 +1,13 @@
 from functools import (
     wraps,
 )
+from typing import (
+    Any,
+    Callable,
+)
 
 
-def response_error(code: int, description: str):
+def response_error(code: int, description: str) -> dict:
     return {
         "status_code": code,
         "response_type": "error",
@@ -11,9 +15,9 @@ def response_error(code: int, description: str):
     }
 
 
-def error_handlers(func):
+def error_handlers(func: Callable) -> Any:
     @wraps(func)
-    def wrapper(*args, **kwargs):
+    def wrapper(*args: Any, **kwargs: Any) -> Any:
         try:
             return func(*args, **kwargs)
         except KeyError:

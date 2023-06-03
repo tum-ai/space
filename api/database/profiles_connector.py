@@ -1,4 +1,5 @@
 import datetime
+import traceback
 from typing import (
     Any,
     List,
@@ -16,7 +17,19 @@ from sqlalchemy.orm import (
     Session,
 )
 
-from database.db_models import (  # PublicProfile
+from profiles.api_models import (
+    ProfileInCreate,
+    ProfileInUpdate,
+    ProfileMemberInvitation,
+    RoleHoldershipInOut,
+    RoleHoldershipUpdateInOut,
+    SocialNetworkIn,
+)
+from security.firebase_auth import (
+    create_invite_email_user,
+)
+
+from .db_models import (  # PublicProfile
     Department,
     DepartmentMembership,
     PositionType,
@@ -25,17 +38,8 @@ from database.db_models import (  # PublicProfile
     RoleHoldership,
     SocialNetwork,
 )
-from database.setup import (
+from .setup import (
     setup_db_client_appless,
-)
-from profiles.api_models import (
-    ProfileInCreate,
-    ProfileInUpdate,
-    ProfileMemberInvitation,
-    SocialNetworkIn,
-)
-from security.firebase_auth import (
-    create_invite_email_user,
 )
 
 # department operations ##################################################################
@@ -68,6 +72,104 @@ def list_db_roles(sql_engine: Engine) -> List[Role]:
                 raise KeyError
 
         return db_roles
+
+
+def list_db_roleholderships(
+    sql_engine: Engine,
+    profile_id: Optional[int] = None,
+    role_handle: Optional[str] = None,
+) -> List[RoleHoldership]:
+    with Session(sql_engine) as db_session:
+        filter = True
+        if profile_id is not None:
+            filter = and_(filter, RoleHoldership.profile_id == profile_id)
+        if role_handle is not None:
+            filter = and_(filter, RoleHoldership.role_handle == role_handle)
+        db_role_holderships: List[RoleHoldership] = (
+            db_session.query(RoleHoldership).filter(filter).all()
+        )
+
+        # asserts presence of id, triggers a db refresh
+        for db_rh in db_role_holderships:
+            if not db_rh.profile_id:
+                raise KeyError
+            if not db_rh.role_handle:
+                raise KeyError
+
+            if not db_rh.profile.id:
+                raise KeyError
+            for sn in db_rh.profile.social_networks:
+                if not sn.profile_id:
+                    raise KeyError
+
+            if not db_rh.role.handle:
+                raise KeyError
+
+        return db_role_holderships
+
+
+def update_db_roleholderships(
+    sql_engine: Engine, new_role_holderships: List[RoleHoldershipUpdateInOut]
+) -> Tuple[List[RoleHoldershipUpdateInOut], List[Tuple[RoleHoldershipInOut, str]]]:
+    """
+    Returns:
+        List[Profile]: successfully created role holderships
+        List[Tuple[RoleHoldership, str]]: failed role holderships with error message
+    """
+    created_profiles = []
+    error_profiles = []
+
+    for new_role_holdership in new_role_holderships:
+        try:
+            with Session(sql_engine) as db_session:
+                if new_role_holdership.method == "create":
+                    created_role_holdership = RoleHoldership(
+                        profile_id=new_role_holdership.profile_id,
+                        role_handle=new_role_holdership.role_handle,
+                    )
+                    db_session.add(created_role_holdership)
+                    db_session.commit()
+
+                    created_profiles.append(
+                        RoleHoldershipUpdateInOut.from_db_model(
+                            created_role_holdership,
+                            new_role_holdership.method,
+                        )
+                    )
+
+                elif new_role_holdership.method == "delete":
+                    db_session.query(RoleHoldership).filter(
+                        and_(
+                            RoleHoldership.profile_id == new_role_holdership.profile_id,
+                            RoleHoldership.role_handle
+                            == new_role_holdership.role_handle,
+                        )
+                    ).delete()
+                    db_session.commit()
+                    created_profiles.append(new_role_holdership)
+
+                else:
+                    error_profiles.append(
+                        (
+                            new_role_holdership,
+                            f"Method {new_role_holdership.method} does not exist!",
+                        )
+                    )
+
+        except Exception as e:
+            if "unique constraint" in str(e):
+                error_profiles.append((new_role_holdership, "Already exists!"))
+            else:
+                traceback.print_exc()
+                error_profiles.append(
+                    (
+                        new_role_holdership,
+                        str(e) or "Unknown error while creating role holdership!",
+                    )
+                )
+            continue
+
+    return created_profiles, error_profiles
 
 
 def invite_new_members(

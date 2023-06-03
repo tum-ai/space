@@ -6,7 +6,7 @@ lint:
 	PYTHONPATH=${PYTHONPATH} black --check .
 	PYTHONPATH=${PYTHONPATH} isort --check-only .
 	PYTHONPATH=${PYTHONPATH} flake8 .
-	# MYPYPATH=${PYTHONPATH} PYTHONPATH=${PYTHONPATH} mypy .
+	# MYPYPATH=${PYTHONPATH} PYTHONPATH=${PYTHONPATH} mypy --namespace-packages --explicit-package-bases .
 
 lint-fix:
 	PYTHONPATH=${PYTHONPATH} black .

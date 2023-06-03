@@ -3,7 +3,7 @@ import {
   onAuthStateChanged,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
-  signOut,
+  signOut
 } from 'firebase/auth'
 import { auth } from '../config/firebase'
 
@@ -39,6 +39,10 @@ export const AuthContextProvider = ({ children }) => {
 
   const login = (email, password) => {
     return signInWithEmailAndPassword(auth, email, password)
+  }
+  
+  const getUserAuthToken = async  () => {
+    return await auth.currentUser?.getIdToken();
   }
 
   const logout = async () => {

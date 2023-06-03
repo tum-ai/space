@@ -51,7 +51,7 @@ app.add_middleware(
 
 # asynchronous setup
 @app.on_event("startup")
-async def startup_event():
+async def startup_event() -> None:
     """
     This function is called when the server starts up.
     It is used to set up the database connection and other configurations.
@@ -61,7 +61,7 @@ async def startup_event():
 
 
 @app.on_event("shutdown")
-async def shutdown_event():
+async def shutdown_event() -> None:
     """
     This function is called when the application shuts down.
     It is used to perform any cleanup tasks.
@@ -72,27 +72,27 @@ async def shutdown_event():
 
 # TODO: redirect to the main tumai-space page
 @app.get("/", tags=["Root"])
-async def root():
+async def root() -> dict:
     return {"msg": "Welcome to tumai-space"}
 
 
 @app.get("/auth-test", tags=["auth-test"])
 @ensure_authenticated
-def auth_test(request: Request):
+def auth_test(request: Request) -> dict:
     return {"msg": "Auth test: success"}
 
 
 @app.get("/admin-test", tags=["admin-test"])
 @error_handlers
 @ensure_authorization(any_of_positions=[(None, "board")])
-def authorization_position_test(request: Request):
+def authorization_position_test(request: Request) -> dict:
     return {"msg": "Admin test: success"}
 
 
 @app.get("/role-test", tags=["role-test"])
 @error_handlers
 @ensure_authorization(any_of_roles=["test-role"])
-def authorization_role_test(request: Request):
+def authorization_role_test(request: Request) -> dict:
     return {"msg": "Role test: success"}
 
 

@@ -18,15 +18,16 @@ from sqlalchemy.orm.session import (
     Session,
 )
 
-from database.db_models import (
-    Base,
-    Role,
-)
 from profiles.db_views import (
     init_views,
 )
 from utils.log import (
     log,
+)
+
+from .db_models import (
+    Role,
+    SaBaseModel,
 )
 
 DBSession = scoped_session(sessionmaker())
@@ -50,7 +51,7 @@ def create_sqla_engine() -> Engine:
     return engine
 
 
-async def setup_db_client(running_app: FastAPI):
+async def setup_db_client(running_app: FastAPI) -> None:
     log.info("Setting up sqlalchemy/postgres database connection")
     # sqlalchemy: postgres db
     running_app.state.sql_engine: Engine = create_sqla_engine()
@@ -58,12 +59,12 @@ async def setup_db_client(running_app: FastAPI):
     # create/initialize tables
     DBSession.configure(bind=running_app.state.sql_engine)
 
-    Base.metadata.bind = running_app.state.sql_engine
+    SaBaseModel.metadata.bind = running_app.state.sql_engine
 
     # create views
-    init_views(running_app.state.sql_engine, Base)
+    init_views(running_app.state.sql_engine, SaBaseModel)
 
-    Base.metadata.create_all(running_app.state.sql_engine, checkfirst=True)
+    SaBaseModel.metadata.create_all(running_app.state.sql_engine, checkfirst=True)
 
     # add pre-existing roles
     upset_roles(running_app.state.sql_engine)
@@ -76,16 +77,17 @@ def setup_db_client_appless() -> Engine:
     return create_sqla_engine()
 
 
-async def close_db_client(running_app: FastAPI):
+async def close_db_client(running_app: FastAPI) -> None:
     log.info("Closing sqlalchemy/postgres database connection")
     if running_app.state.sql_engine is not None:
         running_app.state.sql_engine.dispose()
 
 
-def upset_roles(engine: Engine):
+def upset_roles(engine: Engine) -> None:
     core_roles = [
         Role(handle="admin", description="Administrator"),
         Role(handle="invite_members", description="Member Invitations"),
+        Role(handle="role_assignment", description="Role Assignments"),
     ]
 
     with Session(engine) as session:

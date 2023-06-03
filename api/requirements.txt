@@ -30,3 +30,4 @@ sqlalchemy
 sqlalchemy-utils
 firebase-admin
 types-python-dateutil
+types-pyyaml
