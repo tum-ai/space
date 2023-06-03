@@ -41,6 +41,18 @@ services:
             - DB_USER=space-db
             - DB_PASSWORD=space-db
 
+    # [CERTIFICATION API] #################################################
+    space.files:
+        image: httpd:latest
+        container_name: space.files
+        hostname: space.files
+        ports:
+            - '9990:80'
+        volumes:
+            - ./.fileserver:/usr/local/apache2/htdocs
+        networks:
+            - backend-net
+
 networks:
     backend-net:
         driver: bridge
