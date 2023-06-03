@@ -1,5 +1,4 @@
 import express, {Express, Request, Response} from "express";
-import multiparty from 'multiparty'
 import dotenv from 'dotenv'
 import helmet from "helmet";
 import cors from "cors";
@@ -7,6 +6,7 @@ import morgan from "morgan";
 import instantiate_template from "./instantiate_template";
 import {Buffer} from "buffer";
 import {TEMPLATE_DICTS, TEMPLATE_FILES, TEMPLATES} from "./templates";
+const bodyParser = require('body-parser');
 import * as fs from "fs";
 
 dotenv.config()
@@ -25,6 +25,8 @@ server.use(cors());
 // adding morgan to log HTTP requests
 server.use(morgan('combined'));
 
+server.use(bodyParser.json());
+
 // serve static files / assets for certificate rendering
 server.use('/static', express.static('templates/certificates'))
 
@@ -37,8 +39,13 @@ server.get('/', (req: Request, res: Response) => {
     res.status(200).json({"status": "success"});
 })
 
-server.post('/create-certificate/:template', (req: Request, res: Response) => {
-    const form = new multiparty.Form()
+server.post('/create-certificate/:template', async (req: Request, res: Response) => {
+    const json_body = req.body;
+
+    var fields: { [key: string]: string } = {};
+    for (const key in json_body) {
+        fields[key] = json_body[key]
+    }
 
     const template = req.params.template ?? "";
     if (!TEMPLATES.includes(template)) {
@@ -47,37 +54,29 @@ server.post('/create-certificate/:template', (req: Request, res: Response) => {
 
     let template_dict: any = {};
 
-    // Parse request form
-    form.parse(req, async function (err, fields, files) {
-        if (err != null) {
-            console.log(err)
-            return errorResponse(res, 400, 'malformed request!')
+    // Field extraction
+    for (const key in TEMPLATE_DICTS[template]) {
+        template_dict["#{" + key + "}"] = TEMPLATE_DICTS[template][key];
+        if (TEMPLATE_DICTS[template][key].length > 0) continue;
+        template_dict["#{" + key + "}"] = fields[key.toLowerCase()] ?? ''
+
+    }
+
+    for (const key in template_dict) {
+        if(("" + template_dict[key]).length <= 0) {
+            return errorResponse(res, 400, key + ' is missing in template replacers!')
         }
+    }
 
-        // Field extraction
-        for (const key in TEMPLATE_DICTS[template]) {
-            template_dict["#{" + key + "}"] = TEMPLATE_DICTS[template][key];
-            if (TEMPLATE_DICTS[template][key].length > 0) continue;
-            template_dict["#{" + key + "}"] = fields[key.toLowerCase()] ?? ''
+    const templateFilePath: string = TEMPLATE_FILES[template]
+    const resultPdfBuffer = await instantiate_template(templateFilePath, template_dict);
 
-        }
-
-        for (const key in template_dict) {
-            if(("" + template_dict[key]).length <= 0) {
-                return errorResponse(res, 400, key + ' is missing in template replacers!')
-            }
-        }
-
-        const templateFilePath: string = TEMPLATE_FILES[template]
-        const resultPdfBuffer = await instantiate_template(templateFilePath, template_dict);
-
-        // [build response] ===============
-        res.status(201).type('pdf')
-        res.setHeader('Content-Disposition', 'attachment; filename=tumai-certificate.pdf')
-        res.send(resultPdfBuffer)
-        // res.json({ message: 'success' })
-        //= =================================
-    })
+    // [build response] ===============
+    res.status(201).type('pdf')
+    res.setHeader('Content-Disposition', 'attachment; filename=tumai-certificate.pdf')
+    res.send(resultPdfBuffer)
+    // res.json({ message: 'success' })
+    //= =================================
 })
 
 
