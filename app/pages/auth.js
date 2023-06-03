@@ -35,7 +35,7 @@ function Auth() {
         console.log(data)
         try {
             await signup(data.email, data.password)
-            router.push('/')
+            router.push('/members/signup-form')
         } catch (err) {
             setError(true)
             // TODO case handling and proper output
