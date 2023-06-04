@@ -26,6 +26,7 @@ class BaseResponse(BaseModel):
                 "status_code": 200,
                 "response_type": "success",
                 "description": "Operation successful",
+                "data": data,
             }
         }
 
