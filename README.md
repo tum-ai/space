@@ -29,11 +29,7 @@ Make sure to have the following installed before running ```make```:
 Also make sure to have [pre-commit](https://pre-commit.com) installed by running ```pre-commit install``` once.
 
 ### Running the project
-Note: this setup guide currently only works on Linux systems as-is. 
-
-# TODO: rewrite acc. to /Makefile /api/Makefile /app/Makefile (try out first)
-
-1. Initial setup
+**Initial setup**
   - Create `/api/.env`
     ```
     environment=development
@@ -43,48 +39,22 @@ Note: this setup guide currently only works on Linux systems as-is.
     DB_USER=space-db
     DB_PASSWORD=space-db
     ```
-
+  - Create `/app/.env`
+    ```
+    environment=development
+    ```
   - Add Firebase Admin SDK Certificate (for staging env): Dev environment will use authentication of Staging Firebase project [Secrets file on Notion](https://www.notion.so/tum-ai/c893a21fc7034d3aa44f40d28fd71373?v=65bb26a99f124632ac28a8eabe3bf066)
     ```bash
     # store as /api/.secrets/tumai-space-firebase-adminsdk.json
     ```
 
-2. Start backend
-  Run the following from the root of the project
-    ```bash
-    make run
-
-    # outside of docker:
-    uvicorn main:app --host 0.0.0.0 --reload --port 8000
-
-    # with production wdgi server
-    cd api/ && ./startup.sh
-    ```
-3. Start frontend
-  Run the following from the root of the project
-    ```bash
-    # ensure your backend / db is running
-    cd app && npm run start
-    ```
-4. To start the auth web app (you might need to install next.js first):
-    ```bash
-    # optional (advanced) ----------------------------------------------------
-    # running node outside of docker:
-    cd auth-web-app
-    # maybe necessary: npm i next
-    npm run dev
-    # ------------------------------------------------------------------------
-    ```
-  
-To verify the installation and setup try out the following: 
-- Visit http://auth.tum-ai-dev.com:15950/, you should be redirected to the login page.
-- Visit http://api.tum-ai-dev.com:15950/auth/dashboard to see all the registered users.
-- Visit http://api.tum-ai-dev.com:15950/docs to see the dashboard of the available routes.
 ### Running it
 **Backend**
 ```make run docker```
 or 
 ```make run api```
+or 
+```uvicorn main:app --host 0.0.0.0 --reload --port 8000```
 **Frontend**
 ```npm run dev``` in ```app/```
 
@@ -131,7 +101,6 @@ Documentation on the [frontend](https://www.notion.so/tum-ai/Frontend-Developmen
 
 **DevOps**:
 - Deployed on Azure
-- (currently, will be replaced by Azure service) [`Traefik`](https://traefik.io/) as a reverse proxy 
 - [`Firebase`](https://firebase.com/) for managing authentication
 - [`Docker`](https://www.docker.com/) with [`Docker Compose`](https://docs.docker.com/compose/) for containerization and orchestration
 
