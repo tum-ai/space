@@ -25,6 +25,7 @@ Make sure to have the following installed before running ```make```:
 - Python 3.10, consider using [pyenv](https://github.com/pyenv/pyenv), see [here](https://github.com/pyenv/pyenv#automatic-installer) for installation
 - Brew, see [here](https://brew.sh) for installation
 - Docker with the Compose plugin, see [here](https://docs.docker.com/get-docker/) for installation
+- **Signing your commits with GPG** is highly encouraged. It is not enforced though!
 
 Also make sure to have [pre-commit](https://pre-commit.com) installed by running ```pre-commit install``` once.
 
