@@ -28,6 +28,16 @@ from database.profiles_connector import (
     update_db_profile,
     update_db_roleholderships,
 )
+from profiles.api_models import (
+    DepartmentOut,
+    ProfileInUpdate,
+    ProfileMemberInvitation,
+    ProfileOut,
+    ProfileOutPublic,
+    RoleHoldershipInOut,
+    RoleHoldershipUpdateInOut,
+    RoleInOut,
+)
 from security.decorators import (
     ensure_authenticated,
     ensure_authorization,
@@ -41,17 +51,6 @@ from utils.paging import (
 from utils.response import (
     BaseResponse,
     ErrorResponse,
-)
-
-from .api_models import (
-    DepartmentOut,
-    ProfileInUpdate,
-    ProfileMemberInvitation,
-    ProfileOut,
-    ProfileOutPublic,
-    RoleHoldershipInOut,
-    RoleHoldershipUpdateInOut,
-    RoleInOut,
 )
 
 router = APIRouter()

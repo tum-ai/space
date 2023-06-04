@@ -18,16 +18,15 @@ from sqlalchemy.orm.session import (
     Session,
 )
 
+from database.db_models import (
+    Role,
+    SaBaseModel,
+)
 from profiles.db_views import (
     init_views,
 )
 from utils.log import (
     log,
-)
-
-from .db_models import (
-    Role,
-    SaBaseModel,
 )
 
 DBSession = scoped_session(sessionmaker())
@@ -65,6 +64,9 @@ async def setup_db_client(running_app: FastAPI) -> None:
     init_views(running_app.state.sql_engine, SaBaseModel)
 
     SaBaseModel.metadata.create_all(running_app.state.sql_engine, checkfirst=True)
+
+    # add pre-existing roles
+    upset_roles(running_app.state.sql_engine)
 
     # add pre-existing roles
     upset_roles(running_app.state.sql_engine)
