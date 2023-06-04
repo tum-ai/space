@@ -1,5 +1,6 @@
 from typing import (
     Annotated,
+    Any,
     List,
     Union,
 )
@@ -10,9 +11,13 @@ from fastapi import (
     Request,
 )
 
+from database.db_models import (
+    PositionType,
+)
 from database.profiles_connector import (
     delete_db_profile,
     delete_db_profiles,
+    invite_new_members,
     list_db_departments,
     list_db_profiles,
     retrieve_db_department,
@@ -22,6 +27,7 @@ from database.profiles_connector import (
 from profiles.api_models import (
     DepartmentOut,
     ProfileInUpdate,
+    ProfileMemberInvitation,
     ProfileOut,
     ProfileOutPublic,
 )
@@ -73,6 +79,14 @@ class ResponsePublicProfile(BaseResponse):
 
     class Config:
         schema_extra = BaseResponse.schema_wrapper(ProfileOutPublic.dummy())
+
+
+class ResponseInviteProfilesList(BaseResponse):
+    succeeded: List[ProfileOut]
+    failed: List[Any]
+
+    class Config:
+        schema_extra = BaseResponse.schema_wrapper([])  # TODO
 
 
 class ResponseProfileList(BaseResponse):
@@ -147,6 +161,36 @@ def get_department(request: Request, handle: str):
 
 # profile operations #####################################################################
 # TODO: department memberships to profile responses
+
+
+@router.get(
+    "/profiles/invite/members",
+    response_description="Create Profiles for new members and sendout invitation emails",
+    response_model=Union[ResponseInviteProfilesList, ErrorResponse],
+)
+@error_handlers
+@ensure_authorization(
+    any_of_positions=[(PositionType.TEAMLEAD, "community"), (None, "board")],
+    any_of_roles=["invite_members"],
+)
+def invite_members(
+    request: Request,
+    data: Annotated[List[ProfileMemberInvitation], Body(embed=True)],
+):
+    created_profiles, error_profiles = invite_new_members(
+        request.app.state.sql_engine, data
+    )
+    created_profiles_out = [ProfileOut.from_db_model(p) for p in created_profiles]
+    error_profiles_out = [
+        {"data": err_data, "error": err} for err_data, err in error_profiles
+    ]
+    return {
+        "status_code": 200,
+        "response_type": "success",
+        "description": "Members invited successfully",
+        "succeeded": created_profiles_out,
+        "failed": error_profiles_out,
+    }
 
 
 @router.get(

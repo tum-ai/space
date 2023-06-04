@@ -30,7 +30,11 @@ from database.setup import (
 from profiles.api_models import (
     ProfileInCreate,
     ProfileInUpdate,
+    ProfileMemberInvitation,
     SocialNetworkIn,
+)
+from security.firebase_auth import (
+    create_invite_email_user,
 )
 
 # department operations ##################################################################
@@ -53,7 +57,63 @@ def retrieve_db_department(sql_engine: Engine, handle: str) -> Department:
 # profile operations #####################################################################
 
 
-def create_db_profile_form_fb_user(
+def invite_new_members(
+    sql_engine: Engine,
+    new_profiles: List[ProfileMemberInvitation],
+) -> Tuple[List[Profile], List[Tuple[ProfileMemberInvitation, str]]]:
+    """
+    Returns:
+        List[Profile]: successfully created profiles
+        List[Tuple[ProfileMemberInvitation, str]]: failed profiles with error message
+    """
+    created_profiles = []
+    error_profiles = []
+
+    for new_profile in new_profiles:
+        display_name = f"{new_profile.first_name} {new_profile.last_name}"
+        if len(new_profile.email) < 2 or len(display_name) < 3:
+            error_profiles.append((new_profile, "Email or display name too short!"))
+            continue
+
+        created_fb_user_or_error = create_invite_email_user(
+            display_name=display_name, email=new_profile.email
+        )
+        if isinstance(created_fb_user_or_error, str):
+            error_profiles.append(
+                (
+                    new_profile,
+                    "User with this email already exists!"
+                    if created_fb_user_or_error == "UserAlreadyExists"
+                    else "Unknown error while creating user!",
+                )
+            )
+            continue
+
+        else:
+            created_fb_user = created_fb_user_or_error
+            with Session(sql_engine) as db_session:
+                print(created_fb_user)
+
+                db_profile = Profile(
+                    firebase_uid=created_fb_user.uid,
+                    email=created_fb_user.email,
+                    first_name=new_profile.first_name,
+                    last_name=new_profile.last_name,
+                )
+                db_session.add(db_profile)
+                db_session.commit()
+
+                # asserts presence of id, triggers a db refresh
+                assert db_profile.id
+                for sn in db_profile.social_networks:
+                    assert sn.profile_id
+
+                created_profiles.append(db_profile)
+
+    return created_profiles, error_profiles
+
+
+def create_db_profile_from_fb_user(
     sql_engine: Engine,
     fb_user: Any,
 ) -> Profile:
@@ -73,17 +133,6 @@ def create_db_profile_form_fb_user(
             phone="",
             first_name=first_name,
             last_name=last_name,
-            # birthday=,
-            # nationality=new_profile.nationality,
-            # description=new_profile.description,
-            # activity_status=new_profile.activity_status,
-            # degree_level=new_profile.degree_level,
-            # degree_name=new_profile.degree_name,
-            # degree_semester=new_profile.degree_semester,
-            # degree_semester_last_change_date=datetime.datetime.now(),
-            # university=new_profile.university,
-            # job_history=job_history_encoded,
-            # time_joined=,
         )
         db_session.add(db_profile)
         db_session.commit()
@@ -107,7 +156,7 @@ def retrieve_or_create_db_profile_by_firebase_uid(
             .one_or_none()
         )
         if db_model is None:
-            return create_db_profile_form_fb_user(sql_engine, fb_user)
+            return create_db_profile_from_fb_user(sql_engine, fb_user)
         else:
             if not db_model:
                 raise KeyError
@@ -404,7 +453,14 @@ def profile_has_one_of_positions(
     with Session(sql_engine) as db_session:
         found = (
             db_session.query(DepartmentMembership)
-            .filter(and_(DepartmentMembership.profile_id == profile_id, or_statement))
+            .filter(
+                and_(
+                    DepartmentMembership.profile_id == profile_id,
+                    or_statement,
+                    (DepartmentMembership.time_from < datetime.datetime.now()),
+                    (DepartmentMembership.time_to > datetime.datetime.now()),
+                )
+            )
             .count()
         )
         return found >= 1
