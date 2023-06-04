@@ -5,22 +5,23 @@ from typing import (
     Union,
 )
 
-import firebase_admin
-from firebase_admin import (
+import firebase_admin  # type: ignore
+from firebase_admin import (  # type: ignore
+    App,
     auth,
     credentials,
 )
-from firebase_admin.auth import (
+from firebase_admin.auth import (  # type: ignore
     UserRecord,
 )
-from firebase_admin.exceptions import (
+from firebase_admin.exceptions import (  # type: ignore
     AlreadyExistsError,
 )
 
 ROOT = Path(__file__)
 
 
-def init_firebase_auth():
+def init_firebase_auth() -> App:
     cred = credentials.Certificate(
         ROOT.parent.parent / ".secrets" / "tumai-space-firebase-adminsdk.json"
     )
@@ -28,7 +29,7 @@ def init_firebase_auth():
     return app
 
 
-def verify_id_token(jwt):
+def verify_id_token(jwt: str) -> UserRecord | None:
     try:
         user = auth.verify_id_token(jwt)
         return user

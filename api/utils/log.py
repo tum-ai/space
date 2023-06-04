@@ -7,7 +7,7 @@ from pydantic import (
     BaseModel,
 )
 
-from utils.config import (
+from .config import (
     CONFIG,
 )
 

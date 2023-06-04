@@ -2,6 +2,7 @@ from typing import (
     Annotated,
     Any,
     List,
+    Optional,
     Union,
 )
 
@@ -20,9 +21,12 @@ from database.profiles_connector import (
     invite_new_members,
     list_db_departments,
     list_db_profiles,
+    list_db_roleholderships,
+    list_db_roles,
     retrieve_db_department,
     retrieve_db_profile,
     update_db_profile,
+    update_db_roleholderships,
 )
 from profiles.api_models import (
     DepartmentOut,
@@ -30,6 +34,9 @@ from profiles.api_models import (
     ProfileMemberInvitation,
     ProfileOut,
     ProfileOutPublic,
+    RoleHoldershipInOut,
+    RoleHoldershipUpdateInOut,
+    RoleInOut,
 )
 from security.decorators import (
     ensure_authenticated,
@@ -65,6 +72,32 @@ class ResponseDepartment(BaseResponse):
 
     class Config:
         schema_extra = BaseResponse.schema_wrapper(DepartmentOut.dummy())
+
+
+class ResponseRoleList(BaseResponse):
+    data: List[RoleInOut]
+
+    class Config:
+        schema_extra = BaseResponse.schema_wrapper(
+            [RoleInOut.dummy(), RoleInOut.dummy()]
+        )
+
+
+class ResponseRoleHoldershipList(BaseResponse):
+    data: List[RoleHoldershipInOut]
+
+    class Config:
+        schema_extra = BaseResponse.schema_wrapper(
+            [RoleHoldershipInOut.dummy(), RoleHoldershipInOut.dummy()]
+        )
+
+
+class ResponseRoleHoldershipUpdateList(BaseResponse):
+    succeeded: List[RoleHoldershipUpdateInOut]
+    failed: List[Any]
+
+    class Config:
+        schema_extra = BaseResponse.schema_wrapper([])  # TODO
 
 
 class ResponseProfile(BaseResponse):
@@ -128,7 +161,7 @@ class ResponseDeletedProfileList(BaseResponse):
     response_model=Union[ResponseDepartmentList, ErrorResponse],
 )
 @error_handlers
-def list_departments(request: Request):
+def list_departments(request: Request) -> dict:
     db_departments = list_db_departments(request.app.state.sql_engine)
     out_departments: List[DepartmentOut] = [
         DepartmentOut.from_db_model(dep) for dep in db_departments
@@ -147,7 +180,7 @@ def list_departments(request: Request):
     response_model=Union[ResponseDepartment, ErrorResponse],
 )
 @error_handlers
-def get_department(request: Request, handle: str):
+def get_department(request: Request, handle: str) -> dict:
     db_model = retrieve_db_department(request.app.state.sql_engine, handle)
     return {
         "status_code": 200,
@@ -176,7 +209,7 @@ def get_department(request: Request, handle: str):
 def invite_members(
     request: Request,
     data: Annotated[List[ProfileMemberInvitation], Body(embed=True)],
-):
+) -> dict:
     created_profiles, error_profiles = invite_new_members(
         request.app.state.sql_engine, data
     )
@@ -194,6 +227,80 @@ def invite_members(
 
 
 @router.get(
+    "/roles",
+    response_description="List all roles availlable in TUM.ai Space",
+    response_model=Union[ResponseRoleList, ErrorResponse],
+)
+@error_handlers
+@ensure_authenticated
+def list_roles(request: Request) -> dict:
+    db_roles = list_db_roles(request.app.state.sql_engine)
+    out_roles: List[RoleInOut] = [RoleInOut.from_db_model(r) for r in db_roles]
+    return {
+        "status_code": 200,
+        "response_type": "success",
+        "description": "Members invited successfully",
+        "data": out_roles,
+    }
+
+
+@router.get(
+    "/role/holderships",
+    response_description="List all role assignments in TUM.ai Space",
+    response_model=Union[ResponseRoleHoldershipList, ErrorResponse],
+)
+@error_handlers
+@ensure_authorization(
+    any_of_positions=[(PositionType.TEAMLEAD, None), (None, "board")],
+    any_of_roles=["role_assignment"],
+)
+def list_role_holderships(
+    request: Request,
+    profile_id: Optional[int] = None,
+    role_handle: Optional[str] = None,
+) -> dict:
+    db_role_holderships = list_db_roleholderships(
+        request.app.state.sql_engine, profile_id, role_handle
+    )
+    out_roles = [RoleHoldershipInOut.from_db_model(rh) for rh in db_role_holderships]
+    return {
+        "status_code": 200,
+        "response_type": "success",
+        "description": "Role holderships successfully retrieved",
+        "data": out_roles,
+    }
+
+
+@router.patch(
+    "/role/holderships",
+    response_description="Update role assignments in TUM.ai Space",
+    response_model=Union[ResponseRoleHoldershipUpdateList, ErrorResponse],
+)
+@error_handlers
+@ensure_authorization(
+    any_of_positions=[(PositionType.TEAMLEAD, None), (None, "board")],
+    any_of_roles=["role_assignment"],
+)
+def update_role_holderships(
+    request: Request,
+    data: Annotated[List[RoleHoldershipUpdateInOut], Body(embed=True)],
+) -> dict:
+    out_holdersips, failed_holderships = update_db_roleholderships(
+        request.app.state.sql_engine, data
+    )
+    failed_holderships_out = [
+        {"data": err_data, "error": err} for err_data, err in failed_holderships
+    ]
+    return {
+        "status_code": 200,
+        "response_type": "success",
+        "description": "Updated role holderships successfully",
+        "succeeded": out_holdersips,
+        "failed": failed_holderships_out,
+    }
+
+
+@router.get(
     "/profiles/admin",
     response_description="List all profiles, paging support",
     response_model=Union[ResponseProfileList, ErrorResponse],
@@ -201,7 +308,7 @@ def invite_members(
 @enable_paging(max_page_size=100)
 @error_handlers
 @ensure_authorization(any_of_positions=[(None, "board")])
-def list_profiles(request: Request, page: int = 1, page_size: int = 100):
+def list_profiles(request: Request, page: int = 1, page_size: int = 100) -> dict:
     db_profiles = list_db_profiles(request.app.state.sql_engine, page, page_size)
     out_profiles: List[ProfileOut] = [ProfileOut.from_db_model(p) for p in db_profiles]
     return {
@@ -221,7 +328,7 @@ def list_profiles(request: Request, page: int = 1, page_size: int = 100):
 )
 @enable_paging(max_page_size=100)
 @error_handlers
-def list_public_profiles(request: Request, page: int = 1, page_size: int = 100):
+def list_public_profiles(request: Request, page: int = 1, page_size: int = 100) -> dict:
     db_profiles = list_db_profiles(request.app.state.sql_engine, page, page_size)
     out_public_profiles: List[ProfileOutPublic] = [
         ProfileOutPublic.from_db_model(p) for p in db_profiles
@@ -243,7 +350,7 @@ def list_public_profiles(request: Request, page: int = 1, page_size: int = 100):
 )
 @error_handlers
 @ensure_authorization(any_of_positions=[(None, "board")])
-def get_profile(request: Request, profile_id: int):
+def get_profile(request: Request, profile_id: int) -> dict:
     db_model = retrieve_db_profile(request.app.state.sql_engine, profile_id)
     return {
         "status_code": 200,
@@ -259,7 +366,7 @@ def get_profile(request: Request, profile_id: int):
     response_model=Union[ResponsePublicProfile, ErrorResponse],
 )
 @error_handlers
-def get_public_profile(request: Request, profile_id: int):
+def get_public_profile(request: Request, profile_id: int) -> dict:
     db_model = retrieve_db_profile(request.app.state.sql_engine, profile_id)
     return {
         "status_code": 200,
@@ -276,7 +383,7 @@ def get_public_profile(request: Request, profile_id: int):
     response_model=Union[ResponseProfile, ErrorResponse],
 )
 @ensure_authenticated
-def show_current_profile(request: Request):
+def show_current_profile(request: Request) -> dict:
     profile: ProfileOut = ProfileOut.from_db_model(request.state.profile)
     return {
         "status_code": 200,
@@ -293,7 +400,7 @@ def show_current_profile(request: Request):
 )
 @error_handlers
 @ensure_authorization(any_of_positions=[(None, "board")])
-def delete_profiles(request: Request, profile_ids: List[int]):
+def delete_profiles(request: Request, profile_ids: List[int]) -> dict:
     deleted_profiles = delete_db_profiles(request.app.state.sql_engine, profile_ids)
     return {
         "status_code": 200,
@@ -310,7 +417,7 @@ def delete_profiles(request: Request, profile_ids: List[int]):
 )
 @error_handlers
 @ensure_authorization(any_of_positions=[(None, "board")])
-def delete_profile(request: Request, profile_id: int):
+def delete_profile(request: Request, profile_id: int) -> dict:
     if not delete_db_profile(request.app.state.sql_engine, profile_id):
         return {
             "status_code": 400,
@@ -331,7 +438,7 @@ def delete_profile(request: Request, profile_id: int):
 )
 @error_handlers
 @ensure_authenticated
-def delete_own_profile(request: Request):
+def delete_own_profile(request: Request) -> dict:
     if not delete_db_profile(request.app.state.sql_engine, request.state.profile.id):
         return {
             "status_code": 400,
@@ -356,7 +463,7 @@ def update_profile(
     request: Request,
     profile_id: int,
     data: Annotated[ProfileInUpdate, Body(embed=True)],
-):
+) -> dict:
     updated_db_profile = update_db_profile(
         request.app.state.sql_engine, profile_id, data
     )
@@ -380,7 +487,7 @@ def update_profile(
 def update_current_profile(
     request: Request,
     data: Annotated[ProfileInUpdate, Body(embed=True)],
-):
+) -> dict:
     updated_db_profile = update_db_profile(
         request.app.state.sql_engine, request.state.profile.id, data
     )

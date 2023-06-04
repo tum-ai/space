@@ -2,6 +2,7 @@ from functools import (
     wraps,
 )
 from typing import (
+    Any,
     Callable,
     List,
     Optional,
@@ -20,7 +21,8 @@ from database.profiles_connector import (
     profile_has_one_of_roles,
     retrieve_or_create_db_profile_by_firebase_uid,
 )
-from security.firebase_auth import (
+
+from .firebase_auth import (
     verify_id_token,
 )
 
@@ -41,7 +43,7 @@ RESPONSE_UNAUTHORIZED = {
 }
 
 
-def __ensure_auth(func: Callable, request: Request, *args, **kwargs):
+def __ensure_auth(func: Callable, request: Request, *args: Any, **kwargs: Any) -> Any:
     headers = request.headers
     jwt = headers.get("authorization")
     if jwt is None:
@@ -85,7 +87,7 @@ def __ensure_auth(func: Callable, request: Request, *args, **kwargs):
 
 def ensure_authenticated(func: Callable) -> Callable:
     @wraps(func)
-    def wrapper(request: Request, *args, **kwargs):
+    def wrapper(request: Request, *args: Any, **kwargs: Any):
         return __ensure_auth(func, request, *args, **kwargs)
 
     return wrapper
@@ -111,7 +113,7 @@ def ensure_authorization(
 
     def outer_wrapper(func: Callable) -> Callable:
         @wraps(func)
-        def wrapper(request: Request, *args, **kwargs):
+        def wrapper(request: Request, *args: Any, **kwargs: Any) -> Any:
             kwargs["any_of_positions"] = any_of_positions
             kwargs["any_of_roles"] = any_of_roles
             return __ensure_auth(func, request, *args, **kwargs)
