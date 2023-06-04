@@ -1,11 +1,28 @@
 
 'use client'
 import React, { useState } from "react";
+import axios from "axios";
 import { useRouter } from 'next/navigation'
+import { useAuth } from "../../providers/AuthContextProvider";
 import Banner from "../../components/Banner";
 import Page from '../../components/Page';
 
+
+// ========================================
+// SIGN UP FORM
+// - Form for user to fill in their profile information
+// - send information to backend endpoint ./localhost:8000/profile/{user_id}
+// - can be accessed via localhost:8000/signup-form
+// ========================================
+
+// TODO: 
+// - input validation (e.g. email, phone, birthday, etc.) when required
+// - additional feedback (e.g.) highlighting missing fields
+// - add better description for each field
+
 function SignUpForm() {
+    // authentication information used for updating the user profile in the database
+    const {user} = useAuth();
     const router = useRouter();
     const [error, setError] = useState(false);
     const [userID, setUserID] = useState("");
@@ -13,7 +30,7 @@ function SignUpForm() {
     
     // form data, as required by backend endpoint
     const [formData, setFormData] = useState({
-        email: "",
+        email: user.email,
         phone: "",
         first_name: "",
         last_name: "",
@@ -42,7 +59,7 @@ function SignUpForm() {
             }
         ]
     });
-
+    
     // handle change of form data, update state and corresponding form data values
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -91,8 +108,6 @@ function SignUpForm() {
 
     const removeArrayField = (key) => () => {
       // remove last entry of the array located at formData[] if there is more than one left
-      console.log(formData)
-      console.log(formData[key].length)
       if (formData[key].length > 1) {
         setFormData((prevState) => ({
             ...prevState,
@@ -105,7 +120,7 @@ function SignUpForm() {
         event.preventDefault();
 
         // Check required fields
-        const requiredFields = ["email", "first_name", "last_name", "birthday", "job_history", "social_networks"];
+        const requiredFields = ["first_name", "last_name", "birthday"];
         const missingFields = requiredFields.filter((field) => {
             if (Array.isArray(formData[field])) {
                 return formData[field].some((item) => Object.values(item).some((value) => !value));
@@ -119,39 +134,33 @@ function SignUpForm() {
             return;
         }
 
-        // Create the payload for the PATCH request
+         // Create the payload for the PATCH request
         const payload = {
             ...formData,
             job_history: formData.job_history.map((item) => ({ ...item })),
             social_networks: formData.social_networks.map((item) => ({ ...item }))
         };
-
-        fetch('http://localhost:8000/profile/' + userID, {
-          method: 'PATCH',
-          headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(payload)
-         })
-        .then((response) => {
-            if (response.ok) {
-                console.log("Profile updated successfully");
-                // Redirect to main page
-                router.push("/");
-            } else {
-                throw new Error("Failed to update profile");
-            }
-        })
-        .catch((error) => {
-            console.error("Error updating profile:", error);
-        });
         
-    };
+        // Send the PATCH request to the backend
+        axios.patch('/profile/' + user.uid, payload, {
+          headers: {
+                  'Accept': 'application/json',
+                  'Content-Type': 'application/json'
+              }
+          })
+          .then((response) => {
+              console.log("Profile updated successfully");
+              // Redirect to main page
+              router.push("/");
+          })
+          .catch((error) => {
+              console.error("Error updating profile:", error);
+              console.log(payload)
+          });
+           console.log("Submitted form data:", payload);
+        };
 
-    // TODO extract common component OR directly display necessary singup fields in the signup part
-    
-return (
+    return (
     <div className="py-8 px-4">
         {error && (
             <Banner
@@ -181,7 +190,6 @@ return (
                                                 value={subValue || ""}
                                                 onChange={handleArrayFieldChange(key, index, subKey)}
                                                 placeholder={subKey.charAt(0).toUpperCase() + subKey.slice(1)}
-                                                required
                                             />
                                         ))}
                                     </div>
@@ -206,10 +214,11 @@ return (
                                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-500"
                                 type={key === "birthday" ? "date" : key === "timeJoined" ? "datetime-local" : "text"}
                                 name={key}
-                                value={value || ""}
+                                // if key is email, dont allow typing, use the email from the user object
+                                value = {key === "email" ? user.email : value || ""}
                                 onChange={handleChange}
                                 placeholder={key.charAt(0).toUpperCase() + key.slice(1)}
-                                required={key === "id" || key === "firebaseUid" || key === "email" || key === "firstName" || key === "lastName" || key === "job_history" || key === "social_networks"}
+                                required={key === "id" || key === "firebaseUid" || key === "firstName" || key === "lastName"} 
                             />
                         )}
                     </div>
