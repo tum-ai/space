@@ -50,17 +50,38 @@ Also make sure to have [pre-commit](https://pre-commit.com) installed by running
 
 ### Running it
 **Backend**
-```make run docker```
-or 
-```make run api```
-or 
-```uvicorn main:app --host 0.0.0.0 --reload --port 8000```
-**Frontend**
-```npm run dev``` in ```app/```
+
+```bash
+make run  # in root dir (launch api in docker container)
+```
+
+or (recommended):
+
+```bash
+uvicorn main:app --host 0.0.0.0 --reload --port 8000
+```
+
+**Frontend** in ```app/```
+```bash
+npm run dev
+``` 
 
 **Using the precommit hook**
-```pre-commit run --all``` to trigger this manually
-```pre-commit install``` to trigger this on every commit
+
+to trigger this manually:
+```bash
+pre-commit run --all
+```
+
+trigger this on every commit:
+```bash
+pre-commit install
+```
+
+**Deploying to Firebase (hosting) manually / using Firebase local emulators:**
+
+Consider checking out the commands listed in /app/Makefile.
+> Please only use them if you know what you are doing!
 
 ### Working on a Linear ticket
 Working with Linear tickets is very similar to working with GitHub issues.
