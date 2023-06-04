@@ -4,6 +4,7 @@ from datetime import (
 )
 from typing import (
     List,
+    Literal,
     Optional,
 )
 
@@ -15,6 +16,8 @@ from database.db_models import (
     Department,
     JobHistoryElement,
     Profile,
+    Role,
+    RoleHoldership,
     SocialNetwork,
     SocialNetworkType,
 )
@@ -62,6 +65,27 @@ class DepartmentOut(BaseModel):
 
 
 # profile operations #####################################################################
+
+
+class RoleInOut(BaseModel):
+    handle: str
+    description: str
+
+    @classmethod
+    def from_db_model(cls, role: Role) -> "RoleInOut":
+        return RoleInOut(handle=role.handle, description=role.description)
+
+    @classmethod
+    def dummy(cls) -> "RoleInOut":
+        return RoleInOut.parse_obj(cls.Config.schema_extra["example"])
+
+    class Config:
+        schema_extra = {
+            "example": {
+                "handle": "admin",
+                "description": "Administrator",
+            }
+        }
 
 
 class ProfileMemberInvitation(BaseModel):
@@ -350,3 +374,56 @@ class ProfileOutPublic(BaseModel):
 class UpdateProfile(BaseModel):
     class Settings:
         template = "profiles"
+
+
+class RoleHoldershipInOut(BaseModel):
+    profile: ProfileOutPublic
+    role: RoleInOut
+
+    @classmethod
+    def from_db_model(cls, role_holdership: RoleHoldership) -> "RoleHoldershipInOut":
+        return RoleHoldershipInOut(
+            profile=ProfileOutPublic.from_db_model(role_holdership.profile),
+            role=RoleInOut.from_db_model(role_holdership.role),
+        )
+
+    @classmethod
+    def dummy(cls) -> "RoleHoldershipInOut":
+        return RoleHoldershipInOut.parse_obj(cls.Config.schema_extra["example"])
+
+    class Config:
+        schema_extra = {
+            "example": {
+                "profile": ProfileOutPublic.dummy(),
+                "role": RoleInOut.dummy(),
+            }
+        }
+
+
+class RoleHoldershipUpdateInOut(BaseModel):
+    profile_id: int
+    role_handle: str
+    method: Literal["create", "delete"]
+
+    @classmethod
+    def from_db_model(
+        cls, role_holdership: RoleHoldership, method: Literal["create", "delete"]
+    ) -> "RoleHoldershipUpdateInOut":
+        return RoleHoldershipUpdateInOut(
+            profile_id=role_holdership.profile_id,
+            role_handle=role_holdership.role_handle,
+            method=method,
+        )
+
+    @classmethod
+    def dummy(cls) -> "RoleHoldershipUpdateInOut":
+        return RoleHoldershipUpdateInOut.parse_obj(cls.Config.schema_extra["example"])
+
+    class Config:
+        schema_extra = {
+            "example": {
+                "profile_id": 42,
+                "role_handle": "invite_members",
+                "method": "create",
+            }
+        }

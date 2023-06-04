@@ -38,7 +38,7 @@ from sqlalchemy.orm import (
 )
 
 # don't touch this base class!
-Base = declarative_base()
+SaBaseModel = declarative_base()
 
 
 class MixinAsDict:
@@ -54,7 +54,7 @@ class PositionType(enum.Enum):
     APPLICANT = "Applicant"
 
 
-class Department(MixinAsDict, Base):
+class Department(MixinAsDict, SaBaseModel):
     """database model"""
 
     __tablename__ = "department"
@@ -84,12 +84,7 @@ class JobHistoryElement(BaseModel):
 
     @classmethod
     def dummy(cls) -> "JobHistoryElement":
-        return JobHistoryElement(
-            employer="Google",
-            position="SWE Intern",
-            date_from="15.01.2023",
-            date_to="31.03.2023",
-        )
+        return JobHistoryElement.parse_obj(cls.Config.schema_extra["example"])
 
     class Config:
         schema_extra = {
@@ -102,7 +97,7 @@ class JobHistoryElement(BaseModel):
         }
 
 
-class Profile(MixinAsDict, Base):
+class Profile(MixinAsDict, SaBaseModel):
     """database model"""
 
     __tablename__ = "profile"
@@ -162,17 +157,17 @@ class Profile(MixinAsDict, Base):
     time_updated = Column(DateTime(timezone=True), onupdate=func.now())
 
     @hybrid_property
-    def tum_ai_semester(self):
+    def tum_ai_semester(self) -> relativedelta:
         """automatically computed by python from db model"""
         return relativedelta(datetime.now(), self.date_joined).years * 2
 
     @hybrid_property
-    def full_name(self):
+    def full_name(self) -> str:
         """automatically computed by python from db model"""
         return f"{self.first_name} {self.last_name}"
 
     @hybrid_property
-    def decoded_job_history(self):
+    def decoded_job_history(self) -> List[JobHistoryElement]:
         job_history = []
         if job_history and len(job_history) > 0:
             for entry in f"{job_history}".split(","):
@@ -192,18 +187,17 @@ class Profile(MixinAsDict, Base):
     def __repr__(self) -> str:
         return f"Profile(id={self.id}, fullname={self.full_name})"
 
-    #
     @classmethod
     def encode_job_history(cls, job_history: JobHistoryElement) -> Optional[str]:
         # encode job_history in csv of <employer:position:from:to>
-        encoded_history = ""
+        encoded_history: str | None = ""
         for hist in job_history:
             # TODO abstraction
             encoded_history = (
                 f"{encoded_history}{hist.employer}:{hist.position}:"
                 + f"{hist.date_from}:{hist.date_to},"
             )
-        if len(encoded_history) > 0:
+        if len(encoded_history or "") > 0:
             encoded_history = encoded_history[:-1]  # strip trailing comma
         else:
             encoded_history = None
@@ -222,7 +216,7 @@ class SocialNetworkType(enum.Enum):
     OTHER = "Other"
 
 
-class SocialNetwork(MixinAsDict, Base):
+class SocialNetwork(MixinAsDict, SaBaseModel):
     """database model"""
 
     __tablename__ = "social_network"
@@ -253,7 +247,7 @@ class SocialNetwork(MixinAsDict, Base):
         )
 
 
-class DepartmentMembership(MixinAsDict, Base):
+class DepartmentMembership(MixinAsDict, SaBaseModel):
     """database relation"""
 
     __tablename__ = "department_membership"
@@ -288,7 +282,7 @@ class DepartmentMembership(MixinAsDict, Base):
         )
 
 
-class Role(MixinAsDict, Base):
+class Role(MixinAsDict, SaBaseModel):
     """database relation"""
 
     __tablename__ = "role"
@@ -307,7 +301,7 @@ class Role(MixinAsDict, Base):
         return f"Role(handle={self.handle!r}, description={self.description})"
 
 
-class RoleHoldership(MixinAsDict, Base):
+class RoleHoldership(MixinAsDict, SaBaseModel):
     """database relation"""
 
     __tablename__ = "role_holdership"
