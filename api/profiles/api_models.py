@@ -1,7 +1,8 @@
 from datetime import date, datetime
 from typing import List, Literal, Optional
 
-from database.db_models import (Department, JobHistoryElement, Profile, Role,
+from database.db_models import (Department, DepartmentMembership,
+                                JobHistoryElement, PositionType, Profile, Role,
                                 RoleHoldership, SocialNetwork,
                                 SocialNetworkType)
 from pydantic import BaseModel
@@ -139,6 +140,32 @@ class SocialNetworkOut(BaseModel):
                 "link": "",
             }
         }
+        
+class DepartmentMembershipOut(BaseModel):
+    profile_id: int
+    position: PositionType
+    department_handle: str
+    time_from: Optional[datetime]
+    time_to: Optional[datetime]
+
+    @classmethod
+    def from_db_model(cls, s: DepartmentMembership) -> "DepartmentMembershipOut":
+        return DepartmentMembershipOut(
+            profile_id=s.profile_id, position=s.position, department_handle=s.department_handle, time_from=s.time_from, time_to=s.time_to
+        )
+
+    @classmethod
+    def dummy(cls) -> "DepartmentMembershipOut":
+        return DepartmentMembershipOut.parse_obj(cls.Config.schema_extra["example"])
+
+    class Config:
+        schema_extra = {
+            "example": {
+                "profile_id": 32,
+                "position": PositionType.TEAMLEAD,
+                "department_handle": "DEV"
+            }
+        }
 
 
 class ProfileInCreateUpdateBase(BaseModel):
@@ -228,6 +255,7 @@ class ProfileOut(BaseModel):
     time_joined: Optional[datetime]
 
     social_networks: List["SocialNetworkOut"]
+    department_memberships: List["DepartmentMembershipOut"]
 
     @classmethod
     def from_db_model(cls, profile: Profile) -> "ProfileOut":
@@ -250,6 +278,9 @@ class ProfileOut(BaseModel):
             time_joined=profile.time_joined,
             social_networks=[
                 SocialNetworkOut.from_db_model(s) for s in profile.social_networks
+            ],
+            department_memberships=[
+                DepartmentMembershipOut.from_db_model(s) for s in profile.department_memberships
             ],
         )
 
@@ -282,6 +313,10 @@ class ProfileOut(BaseModel):
                 "social_networks": [
                     SocialNetworkOut.dummy(),
                     SocialNetworkOut.dummy(),
+                ],
+                "department_memberships": [
+                    DepartmentMembershipOut.dummy(),
+                    DepartmentMembershipOut.dummy(),
                 ],
             }
         }

@@ -481,6 +481,10 @@ def list_db_profiles(sql_engine: Engine, page: int, page_size: int) -> List[Prof
                 if not sn.profile_id:
                     raise KeyError
 
+            for sn in db_profile.department_memberships:
+                if not sn.profile_id:
+                    raise KeyError
+
         return db_profiles
 
 
