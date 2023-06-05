@@ -1,26 +1,10 @@
-from datetime import (
-    date,
-    datetime,
-)
-from typing import (
-    List,
-    Literal,
-    Optional,
-)
+from datetime import date, datetime
+from typing import List, Literal, Optional
 
-from pydantic import (
-    BaseModel,
-)
-
-from database.db_models import (
-    Department,
-    JobHistoryElement,
-    Profile,
-    Role,
-    RoleHoldership,
-    SocialNetwork,
-    SocialNetworkType,
-)
+from database.db_models import (Department, JobHistoryElement, Profile, Role,
+                                RoleHoldership, SocialNetwork,
+                                SocialNetworkType)
+from pydantic import BaseModel
 
 # department operations ##################################################################
 
@@ -105,8 +89,8 @@ class ProfileMemberInvitation(BaseModel):
                 "email": "test@mymail.com",
                 "first_name": "Max",
                 "last_name": "Mustermann",
-                "department_handle": "dev",
-                "department_position": "Member",
+                "department_handle": "DEV",
+                "department_position": "MEMBER",
             }
         }
 

@@ -1,46 +1,18 @@
 import datetime
 import traceback
-from typing import (
-    Any,
-    List,
-    Optional,
-    Tuple,
-)
+from typing import Any, List, Optional, Tuple
 
-from sqlalchemy import (
-    Engine,
-    and_,
-    delete,
-    or_,
-)
-from sqlalchemy.orm import (
-    Session,
-)
+from profiles.api_models import (ProfileInCreate, ProfileInUpdate,
+                                 ProfileMemberInvitation, RoleHoldershipInOut,
+                                 RoleHoldershipUpdateInOut, SocialNetworkIn)
+from security.firebase_auth import create_invite_email_user
+from sqlalchemy import Engine, and_, delete, or_
+from sqlalchemy.orm import Session
 
-from profiles.api_models import (
-    ProfileInCreate,
-    ProfileInUpdate,
-    ProfileMemberInvitation,
-    RoleHoldershipInOut,
-    RoleHoldershipUpdateInOut,
-    SocialNetworkIn,
-)
-from security.firebase_auth import (
-    create_invite_email_user,
-)
-
-from .db_models import (  # PublicProfile
-    Department,
-    DepartmentMembership,
-    PositionType,
-    Profile,
-    Role,
-    RoleHoldership,
-    SocialNetwork,
-)
-from .setup import (
-    setup_db_client_appless,
-)
+from .db_models import (Department, DepartmentMembership,  # PublicProfile
+                        PositionType, Profile, Role, RoleHoldership,
+                        SocialNetwork)
+from .setup import setup_db_client_appless
 
 # department operations ##################################################################
 
@@ -216,6 +188,16 @@ def invite_new_members(
                     last_name=new_profile.last_name,
                 )
                 db_session.add(db_profile)
+                db_session.commit()
+                
+                db_department_membership = DepartmentMembership(
+                    department_handle=new_profile.department_handle,
+                    position=PositionType[new_profile.department_position],
+                    time_from=datetime.datetime.now(),
+                    time_to=None,
+                    profile_id=db_profile.id
+                )
+                db_session.add(db_department_membership)
                 db_session.commit()
 
                 # asserts presence of id, triggers a db refresh

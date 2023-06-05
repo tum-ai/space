@@ -1,41 +1,16 @@
-from __future__ import (
-    annotations,
-)
+from __future__ import annotations
 
 import enum
-from datetime import (
-    datetime,
-)
-from typing import (
-    List,
-    Optional,
-)
+from datetime import datetime
+from typing import List, Optional
 
-from dateutil.relativedelta import (
-    relativedelta,
-)
-from pydantic import (
-    BaseModel,
-)
-from sqlalchemy import (
-    CheckConstraint,
-    Column,
-    DateTime,
-    Enum,
-    ForeignKey,
-    Integer,
-    String,
-    func,
-)
-from sqlalchemy.ext.hybrid import (
-    hybrid_property,
-)
-from sqlalchemy.orm import (
-    Mapped,
-    declarative_base,
-    mapped_column,
-    relationship,
-)
+from dateutil.relativedelta import relativedelta
+from pydantic import BaseModel
+from sqlalchemy import (CheckConstraint, Column, DateTime, Enum, ForeignKey,
+                        Integer, String, func)
+from sqlalchemy.ext.hybrid import hybrid_property
+from sqlalchemy.orm import (Mapped, declarative_base, mapped_column,
+                            relationship)
 
 # don't touch this base class!
 SaBaseModel = declarative_base()
@@ -278,7 +253,7 @@ class DepartmentMembership(MixinAsDict, SaBaseModel):
     def __repr__(self) -> str:
         return (
             f"DepartmentMembership(id={self.profile_id!r} "
-            + f"({self.profile.full_name}), department_handle={self.department_handle!r})"
+            + f"({self.profile.first_name} {self.profile.last_name}), department_handle={self.department_handle!r})"
         )
 
 
