@@ -191,11 +191,11 @@ def invite_new_members(
                 db_session.commit()
                 
                 db_department_membership = DepartmentMembership(
+                    profile_id=db_profile.id,
                     department_handle=new_profile.department_handle,
                     position=PositionType[new_profile.department_position],
                     time_from=datetime.datetime.now(),
-                    time_to=None,
-                    profile_id=db_profile.id
+                    time_to=None
                 )
                 db_session.add(db_department_membership)
                 db_session.commit()
