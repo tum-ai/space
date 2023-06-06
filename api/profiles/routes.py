@@ -1,23 +1,57 @@
-from typing import Annotated, Any, List, Optional, Union
+from typing import (
+    Annotated,
+    Any,
+    List,
+    Optional,
+    Union,
+)
 
-from database.db_models import PositionType
-from database.profiles_connector import (delete_db_profile, delete_db_profiles,
-                                         invite_new_members,
-                                         list_db_departments, list_db_profiles,
-                                         list_db_roleholderships,
-                                         list_db_roles, retrieve_db_department,
-                                         retrieve_db_profile,
-                                         update_db_profile,
-                                         update_db_roleholderships)
-from fastapi import APIRouter, Body, Request
-from profiles.api_models import (DepartmentOut, ProfileInUpdate,
-                                 ProfileMemberInvitation, ProfileOut,
-                                 ProfileOutPublic, RoleHoldershipInOut,
-                                 RoleHoldershipUpdateInOut, RoleInOut)
-from security.decorators import ensure_authenticated, ensure_authorization
-from utils.error_handlers import error_handlers
-from utils.paging import enable_paging
-from utils.response import BaseResponse, ErrorResponse
+from fastapi import (
+    APIRouter,
+    Body,
+    Request,
+)
+
+from database.db_models import (
+    PositionType,
+)
+from database.profiles_connector import (
+    delete_db_profile,
+    delete_db_profiles,
+    invite_new_members,
+    list_db_departments,
+    list_db_profiles,
+    list_db_roleholderships,
+    list_db_roles,
+    retrieve_db_department,
+    retrieve_db_profile,
+    update_db_profile,
+    update_db_roleholderships,
+)
+from profiles.api_models import (
+    DepartmentOut,
+    ProfileInUpdate,
+    ProfileMemberInvitation,
+    ProfileOut,
+    ProfileOutPublic,
+    RoleHoldershipInOut,
+    RoleHoldershipUpdateInOut,
+    RoleInOut,
+)
+from security.decorators import (
+    ensure_authenticated,
+    ensure_authorization,
+)
+from utils.error_handlers import (
+    error_handlers,
+)
+from utils.paging import (
+    enable_paging,
+)
+from utils.response import (
+    BaseResponse,
+    ErrorResponse,
+)
 
 router = APIRouter()
 

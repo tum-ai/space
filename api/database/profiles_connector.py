@@ -1,46 +1,47 @@
 import datetime
 import traceback
 from typing import (
-     Any,
-     List,
-     Optional,
-     Tuple,
- )
+    Any,
+    List,
+    Optional,
+    Tuple,
+)
 
 from sqlalchemy import (
-     Engine,
-     and_,
-     delete,
-     or_,
- )
+    Engine,
+    and_,
+    delete,
+    or_,
+)
 from sqlalchemy.orm import (
-     Session,
- )
+    Session,
+)
 
 from profiles.api_models import (
-     ProfileInCreate,
-     ProfileInUpdate,
-     ProfileMemberInvitation,
-     RoleHoldershipInOut,
-     RoleHoldershipUpdateInOut,
-     SocialNetworkIn,
- )
+    ProfileInCreate,
+    ProfileInUpdate,
+    ProfileMemberInvitation,
+    RoleHoldershipInOut,
+    RoleHoldershipUpdateInOut,
+    SocialNetworkIn,
+)
 from security.firebase_auth import (
-     create_invite_email_user,
- )
+    create_invite_email_user,
+)
 
 from .db_models import (  # PublicProfile
-     Department,
-     DepartmentMembership,
-     PositionType,
-     Profile,
-     Role,
-     RoleHoldership,
-     SocialNetwork,
- )
+    Department,
+    DepartmentMembership,
+    PositionType,
+    Profile,
+    Role,
+    RoleHoldership,
+    SocialNetwork,
+)
 from .setup import (
-     setup_db_client_appless,
- )
+    setup_db_client_appless,
+)
+
 # department operations ##################################################################
 
 
@@ -216,13 +217,13 @@ def invite_new_members(
                 )
                 db_session.add(db_profile)
                 db_session.commit()
-                
+
                 db_department_membership = DepartmentMembership(
                     profile_id=db_profile.id,
                     department_handle=new_profile.department_handle,
                     position=PositionType[new_profile.department_position],
                     time_from=datetime.datetime.now(),
-                    time_to=None
+                    time_to=None,
                 )
                 db_session.add(db_department_membership)
                 db_session.commit()
