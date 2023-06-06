@@ -274,7 +274,8 @@ class DepartmentMembership(MixinAsDict, SaBaseModel):
     def __repr__(self) -> str:
         return (
             f"DepartmentMembership(id={self.profile_id!r} "
-            + f"({self.profile.first_name} {self.profile.last_name}), department_handle={self.department_handle!r})"
+            + f"({self.profile.first_name} {self.profile.last_name})"
+            + ", department_handle={self.department_handle!r})"
         )
 
 
