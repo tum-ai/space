@@ -231,6 +231,8 @@ def invite_new_members(
                 assert db_profile.id
                 for sn in db_profile.social_networks:
                     assert sn.profile_id
+                for sn in db_profile.department_memberships:
+                    assert sn.profile_id
 
                 created_profiles.append(db_profile)
 
