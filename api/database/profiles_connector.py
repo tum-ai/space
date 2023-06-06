@@ -1,19 +1,46 @@
 import datetime
 import traceback
-from typing import Any, List, Optional, Tuple
+from typing import (
+     Any,
+     List,
+     Optional,
+     Tuple,
+ )
 
-from profiles.api_models import (ProfileInCreate, ProfileInUpdate,
-                                 ProfileMemberInvitation, RoleHoldershipInOut,
-                                 RoleHoldershipUpdateInOut, SocialNetworkIn)
-from security.firebase_auth import create_invite_email_user
-from sqlalchemy import Engine, and_, delete, or_
-from sqlalchemy.orm import Session
+from sqlalchemy import (
+     Engine,
+     and_,
+     delete,
+     or_,
+ )
+from sqlalchemy.orm import (
+     Session,
+ )
 
-from .db_models import (Department, DepartmentMembership,  # PublicProfile
-                        PositionType, Profile, Role, RoleHoldership,
-                        SocialNetwork)
-from .setup import setup_db_client_appless
+from profiles.api_models import (
+     ProfileInCreate,
+     ProfileInUpdate,
+     ProfileMemberInvitation,
+     RoleHoldershipInOut,
+     RoleHoldershipUpdateInOut,
+     SocialNetworkIn,
+ )
+from security.firebase_auth import (
+     create_invite_email_user,
+ )
 
+from .db_models import (  # PublicProfile
+     Department,
+     DepartmentMembership,
+     PositionType,
+     Profile,
+     Role,
+     RoleHoldership,
+     SocialNetwork,
+ )
+from .setup import (
+     setup_db_client_appless,
+ )
 # department operations ##################################################################
 
 
