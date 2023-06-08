@@ -10,7 +10,7 @@ from fastapi import (
     Body,
     Request,
 )
-from api.profiles.response_models import (
+from profiles.response_models import (
     ResponseDepartmentList,
     ResponseDepartment,
     ResponseRoleList,
