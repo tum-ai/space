@@ -1,9 +1,12 @@
+import axios from 'axios';
 import { makeAutoObservable } from 'mobx';
 
 export class ProfileModel {
 	root;
 	profile = {};
 	editorProfile = {};
+	loading = true;
+	error = false;
 	editorActive = false;
 
 	constructor(root) {
@@ -11,55 +14,55 @@ export class ProfileModel {
 		makeAutoObservable(this);
 	}
 
-	getProfile() {
-		return this.profile;
-	}
-
 	// STATE FUNCTIONS
-
-	saveProfile() {
-		// TODO: do attribute validations
-		this.profile = { ...this.profile, ...this.editorProfile };
-		// TODO: call api to edit profile
-	}
-
-	updateEditorProfile(newEditorProfile) {
-		this.editorProfile = { ...this.editorProfile, ...newEditorProfile };
+	updateEditorProfile(changes) {
+		this.editorProfile = { ...this.editorProfile, ...changes };
 	}
 
 	toggleEditor() {
-		this.editorActive = !this.editorActive;
 		if (this.editorActive) {
+			this.editorActive = false;
+			this.editorProfile = {};
+		} else {
+			this.editorActive = true;
 			this.editorProfile = { ...this.profile };
 		}
 	}
 
 	// API FUNCTIONS
-	async #fetchProfile() {
-		this.profile = mockData;
-		// try {
-		// 	const response = await axios('/profile');
-		// 	this.setMembers(response.data);
-		// } catch (error) {
-		// 	alert(error.response?.data?.message);
-		// }
+	async fetchProfile(id) {
+		try {
+			const profile = await axios(id == 'me' ? 'me' : '/profile/' + id);
+			this.profile = profile?.data?.data;
+			this.loading = false;
+			this.error = false;
+		} catch (error) {
+			console.log(error?.response?.data?.message);
+			this.loading = false;
+			this.error =
+				error?.response?.data?.message ||
+				'An error occured. Could not fetch profile.';
+		}
 	}
 
-	// ONLOAD
-	async loadProfile() {
-		await this.#fetchProfile();
+	async editProfile() {
+		try {
+			const changes = Object.keys(this.editorProfile)
+				.filter((key) => this.profile[key] != this.editorProfile[key])
+				.reduce((obj, key) => {
+					obj[key] = this.editorProfile[key];
+					return obj;
+				}, {});
+			const editResult = await axios('/me', {
+				data: this.editorProfile,
+				method: 'PATCH',
+			});
+			this.profile = { ...this.profile, ...editResult.data.data };
+			this.toggleEditor();
+		} catch (error) {
+			console.log(error);
+			console.log('Could not edit profile');
+			alert('Could not edit profile');
+		}
 	}
 }
-
-var mockData = {
-	profileID: '1',
-	name: 'Max Mustermann',
-	picture: 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg',
-	department: 'Industry',
-	role: 'member',
-	description: 'Hollywood star',
-	degreeName: 'Information Systems',
-	degreeLevel: 'M.Sc.',
-	degreeSemester: '4',
-	university: 'TUM',
-};

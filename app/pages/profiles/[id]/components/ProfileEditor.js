@@ -6,11 +6,11 @@ import { useRootModel } from '/providers/RootStoreProvider';
 
 const ProfileEditor = observer(() => {
 	const rootModel = useRootModel();
-	const profileEditorModel = rootModel.memberModel;
-	const editorProfile = profileEditorModel.editorMember;
+	const profileEditorModel = rootModel.profileModel;
+	const editorProfile = profileEditorModel.editorProfile;
 
 	function handleChange(e) {
-		profileEditorModel.updateEditorMember({
+		profileEditorModel.updateEditorProfile({
 			[e.target.name]: e.target.value,
 		});
 	}

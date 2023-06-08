@@ -22,29 +22,29 @@ export default function Members() {
 
 const MembersList = observer(() => {
 	const rootModel = useRootModel();
-	const membersModel = rootModel.membersModel;
+	const profilesModel = rootModel.profilesModel;
 
 	return (
 		<div className='flex flex-col space-y-2'>
 			<div className='flex flex-col space-y-10 justify-end'>
 				<div className='font-light text-gray-500 mt-2'>
-					Total {membersModel.filteredMembers.length} members
+					Total {profilesModel.filteredProfiles.length} members
 				</div>
 				<div className='w-full flex'>
 					<div className='m-auto bg-white dark:bg-gray-700 rounded w-full lg:w-1/2 p-2 flex space-x-4'>
 						<Icon name={'FaSearch'} className='p-2 rounded' />
 						<input
-							value={membersModel.search}
+							value={profilesModel.search}
 							onChange={(e) => {
-								membersModel.setSearch(e.target.value);
+								profilesModel.setSearch(e.target.value);
 							}}
 							placeholder='search..'
 							className='w-full bg-transparent outline-none'
 						></input>
-						{membersModel.search && (
+						{profilesModel.search && (
 							<button
 								onClick={(e) => {
-									membersModel.setSearch('');
+									profilesModel.setSearch('');
 								}}
 							>
 								clear
@@ -55,8 +55,10 @@ const MembersList = observer(() => {
 				<div className='flex flex-col space-y-2 lg:flex-row lg:space-x-4 items-start lg:items-end'>
 					<div className='space-x-2'>
 						<span className='font-thin'>filters: </span>
-						{Object.keys(membersModel.filter).length > 0 && (
-							<button onClick={() => membersModel.resetFilters()}>
+						{Object.keys(profilesModel.filter).length > 0 && (
+							<button
+								onClick={() => profilesModel.resetFilters()}
+							>
 								reset
 							</button>
 						)}
@@ -66,7 +68,7 @@ const MembersList = observer(() => {
 						placeholder={'Department'}
 						data={[
 							{ key: 'all', value: null },
-							...membersModel
+							...profilesModel
 								.getDepartments()
 								.map((department) => ({
 									key: department,
@@ -74,11 +76,11 @@ const MembersList = observer(() => {
 								})),
 						]}
 						selectedItem={{
-							key: membersModel.filter.department,
-							value: membersModel.filter.department,
+							key: profilesModel.filter.department,
+							value: profilesModel.filter.department,
 						}}
 						setSelectedItem={(item) => {
-							membersModel.setFilter(
+							profilesModel.setFilter(
 								'department',
 								item ? item.value : ''
 							);
@@ -89,17 +91,17 @@ const MembersList = observer(() => {
 						placeholder={'Role'}
 						data={[
 							{ key: 'all', value: null },
-							...membersModel.getRoles().map((role) => ({
+							...profilesModel.getRoles().map((role) => ({
 								key: role,
 								value: role,
 							})),
 						]}
 						selectedItem={{
-							key: membersModel.filter.role,
-							value: membersModel.filter.role,
+							key: profilesModel.filter.role,
+							value: profilesModel.filter.role,
 						}}
 						setSelectedItem={(item) => {
-							membersModel.setFilter(
+							profilesModel.setFilter(
 								'role',
 								item ? item.value : ''
 							);
@@ -114,16 +116,16 @@ const MembersList = observer(() => {
 							{ key: 'department', value: 'department' },
 						]}
 						selectedItem={{
-							key: membersModel.sortBy,
-							value: membersModel.sortBy,
+							key: profilesModel.sortBy,
+							value: profilesModel.sortBy,
 						}}
 						setSelectedItem={(item) => {
-							membersModel.setSortBy(item?.value || '');
+							profilesModel.setSortBy(item?.value || '');
 						}}
 					/>
 				</div>
 			</div>
-			{membersModel.filteredMembers.map((profile, i) => (
+			{profilesModel.filteredProfiles.map((profile, i) => (
 				<ProfileRow key={i} profile={profile} />
 			))}
 		</div>

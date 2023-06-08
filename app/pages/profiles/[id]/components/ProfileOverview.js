@@ -11,26 +11,26 @@ const ProfileOverview = observer(() => {
 	const router = useRouter();
 	const { user } = useAuth();
 	const { id } = router.query;
-	const memberModel = rootModel.memberModel;
+	const profileModel = rootModel.profileModel;
 	useEffect(() => {
 		if (id) {
-			memberModel.fetchMember(id);
+			profileModel.fetchProfile(id);
 		}
-	}, [memberModel, id]);
-	const profile = memberModel.member;
+	}, [profileModel, id]);
+	const profile = profileModel.profile;
 
-	if (memberModel.loading) {
+	if (profileModel.loading) {
 		return <div>Loading...</div>;
 	}
 
-	if (memberModel.error) {
-		return <div>{memberModel.error}</div>;
+	if (profileModel.error) {
+		return <div>{profileModel.error}</div>;
 	}
 
 	if (!profile) {
 		return <div>Profile not found.</div>;
 	}
-	const isSelf = user.uid == memberModel.member.firebase_uid;
+	const isSelf = user.uid == profileModel.profile.firebase_uid;
 
 	return (
 		<div className='m-auto max-w-3xl bg-white dark:bg-gray-700'>
@@ -39,7 +39,7 @@ const ProfileOverview = observer(() => {
 					<button
 						className='right-0 p-2'
 						onClick={() => {
-							memberModel.toggleEditor();
+							profileModel.toggleEditor();
 						}}
 					>
 						<Icon
