@@ -10,10 +10,9 @@ function User() {
 			{user ? (
 				<>
 					<Link
-						href='/members/me'
+						href='/profiles/me'
 						className={
-							' hover:text-black dark:hover:text-white hover:underline bg-gray-200 dark:bg-gray-700 p-2 rounded-lg ' +
-							(router.asPath === '/members/me' && 'font-bold')
+							' hover:text-black dark:hover:text-white hover:underline bg-gray-200 dark:bg-gray-700 p-2 rounded-lg'
 						}
 					>
 						{user.email}

@@ -15,11 +15,11 @@ function Links() {
 				Home
 			</Link>
 			<Link
-				href={'/members'}
+				href={'/profiles'}
 				className={
 					'text-gray-500 hover:text-black dark:hover:text-white hover:underline ' +
-					(router.asPath?.includes('/members') &&
-						!router.asPath?.includes('/members/me') &&
+					(router.asPath?.includes('/profiles') &&
+						!router.asPath?.includes('/profiles/me') &&
 						'font-bold')
 				}
 			>
