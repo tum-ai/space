@@ -364,6 +364,7 @@ class ProfileOutPublic(BaseModel):
     time_joined: Optional[datetime]
 
     social_networks: List["SocialNetworkOut"]
+    department_memberships: List["DepartmentMembershipOut"]
 
     @classmethod
     def from_db_model(cls, profile: Profile) -> "ProfileOutPublic":
@@ -381,6 +382,10 @@ class ProfileOutPublic(BaseModel):
             time_joined=profile.time_joined,
             social_networks=[
                 SocialNetworkOut.from_db_model(s) for s in profile.social_networks
+            ],
+            department_memberships=[
+                DepartmentMembershipOut.from_db_model(s)
+                for s in profile.department_memberships
             ],
         )
 
@@ -408,6 +413,10 @@ class ProfileOutPublic(BaseModel):
                 "social_networks": [
                     SocialNetworkOut.dummy(),
                     SocialNetworkOut.dummy(),
+                ],
+                "department_memberships": [
+                    DepartmentMembershipOut.dummy(),
+                    DepartmentMembershipOut.dummy(),
                 ],
             }
         }

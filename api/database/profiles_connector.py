@@ -7,12 +7,7 @@ from typing import (
     Tuple,
 )
 
-from sqlalchemy import (
-    Engine,
-    and_,
-    delete,
-    or_,
-)
+import sqlalchemy as sa
 from sqlalchemy.orm import (
     Session,
 )
@@ -45,13 +40,13 @@ from .setup import (
 # department operations ##################################################################
 
 
-def list_db_departments(sql_engine) -> List[Department]:
+def list_db_departments(sql_engine: sa.Engine) -> List[Department]:
     with Session(sql_engine) as db_session:
         db_departments: List[Department] = db_session.query(Department).limit(100).all()
         return db_departments
 
 
-def retrieve_db_department(sql_engine: Engine, handle: str) -> Department:
+def retrieve_db_department(sql_engine: sa.Engine, handle: str) -> Department:
     with Session(sql_engine) as db_session:
         db_model = db_session.query(Department).get(handle)
         if not db_model:
@@ -62,7 +57,7 @@ def retrieve_db_department(sql_engine: Engine, handle: str) -> Department:
 # profile operations #####################################################################
 
 
-def list_db_roles(sql_engine: Engine) -> List[Role]:
+def list_db_roles(sql_engine: sa.Engine) -> List[Role]:
     with Session(sql_engine) as db_session:
         db_roles: List[Role] = db_session.query(Role).all()
 
@@ -75,16 +70,16 @@ def list_db_roles(sql_engine: Engine) -> List[Role]:
 
 
 def list_db_roleholderships(
-    sql_engine: Engine,
+    sql_engine: sa.Engine,
     profile_id: Optional[int] = None,
     role_handle: Optional[str] = None,
 ) -> List[RoleHoldership]:
     with Session(sql_engine) as db_session:
-        filter = True
+        filter = sa.and_(sa.true(), sa.true())
         if profile_id is not None:
-            filter = and_(filter, RoleHoldership.profile_id == profile_id)
+            filter = sa.and_(filter, RoleHoldership.profile_id == profile_id)
         if role_handle is not None:
-            filter = and_(filter, RoleHoldership.role_handle == role_handle)
+            filter = sa.and_(filter, RoleHoldership.role_handle == role_handle)
         db_role_holderships: List[RoleHoldership] = (
             db_session.query(RoleHoldership).filter(filter).all()
         )
@@ -109,7 +104,7 @@ def list_db_roleholderships(
 
 
 def update_db_roleholderships(
-    sql_engine: Engine, new_role_holderships: List[RoleHoldershipUpdateInOut]
+    sql_engine: sa.Engine, new_role_holderships: List[RoleHoldershipUpdateInOut]
 ) -> Tuple[List[RoleHoldershipUpdateInOut], List[Tuple[RoleHoldershipInOut, str]]]:
     """
     Returns:
@@ -139,7 +134,7 @@ def update_db_roleholderships(
 
                 elif new_role_holdership.method == "delete":
                     db_session.query(RoleHoldership).filter(
-                        and_(
+                        sa.and_(
                             RoleHoldership.profile_id == new_role_holdership.profile_id,
                             RoleHoldership.role_handle
                             == new_role_holdership.role_handle,
@@ -173,7 +168,7 @@ def update_db_roleholderships(
 
 
 def invite_new_members(
-    sql_engine: Engine,
+    sql_engine: sa.Engine,
     new_profiles: List[ProfileMemberInvitation],
 ) -> Tuple[List[Profile], List[Tuple[ProfileMemberInvitation, str]]]:
     """
@@ -241,7 +236,7 @@ def invite_new_members(
 
 
 def create_db_profile_from_fb_user(
-    sql_engine: Engine,
+    sql_engine: sa.Engine,
     fb_user: Any,
 ) -> Profile:
     with Session(sql_engine) as db_session:
@@ -273,11 +268,11 @@ def create_db_profile_from_fb_user(
 
 
 def retrieve_or_create_db_profile_by_firebase_uid(
-    sql_engine: Engine,
+    sql_engine: sa.Engine,
     fb_user: Any,
 ) -> Profile:
     with Session(sql_engine) as db_session:
-        db_model = (
+        db_model: Profile | None = (
             db_session.query(Profile)
             .filter(Profile.firebase_uid == fb_user["uid"])
             .one_or_none()
@@ -288,15 +283,12 @@ def retrieve_or_create_db_profile_by_firebase_uid(
             if not db_model:
                 raise KeyError
 
-            for sn in db_model.social_networks:
-                if not sn.profile_id:
-                    raise KeyError
-
+            db_model.force_load()
             return db_model
 
 
 def retrieve_db_profile_by_firebase_uid(
-    sql_engine: Engine,
+    sql_engine: sa.Engine,
     firebase_uid: str,
 ) -> Profile:
     with Session(sql_engine) as db_session:
@@ -308,15 +300,12 @@ def retrieve_db_profile_by_firebase_uid(
         if not db_model:
             raise KeyError
 
-        for sn in db_model.social_networks:
-            if not sn.profile_id:
-                raise KeyError
-
+        db_model.force_load()
         return db_model
 
 
 def create_db_profiles(
-    sql_engine: Engine,
+    sql_engine: sa.Engine,
     new_profiles: List[ProfileInCreate],
 ) -> List[Profile]:
     created_db_profiles = []
@@ -359,20 +348,15 @@ def create_db_profiles(
 
         # asserts presence of id, triggers a db refresh
         for db_profile in created_db_profiles:
-            if not db_profile.id:
-                raise KeyError
-
-            for sn in db_profile.social_networks:
-                if not sn.profile_id:
-                    raise KeyError
+            db_profile.force_load()
 
     return created_db_profiles
 
 
 def create_db_profile(
-    sql_engine: Engine,
+    sql_engine: sa.Engine,
     new_profile: ProfileInCreate,
-):
+) -> Profile:
     new_db_profile = create_db_profiles(sql_engine, [new_profile])
     if len(new_db_profile) >= 1:
         return new_db_profile[0]
@@ -403,14 +387,12 @@ def create_empty_db_profile(firebase_uid: str, email: str) -> Profile:
         db_session.add(db_profile)
         db_session.commit()
 
-        if not db_profile.id:
-            raise KeyError
-
+        db_profile.force_load()
         return db_profile
 
 
 def update_db_profile(
-    sql_engine: Engine,
+    sql_engine: sa.Engine,
     profile_id: int,
     profile_to_update: ProfileInUpdate,
 ) -> Profile:
@@ -482,18 +464,12 @@ def update_db_profile(
         db_session.add(db_profile)
         db_session.commit()
 
-        # asserts presence of id, triggers a db refresh
-        if not db_profile.id:
-            raise KeyError
-
-        for sn in db_profile.social_networks:
-            if not sn.profile_id:
-                raise KeyError
+        db_profile.force_load()
 
     return db_profile
 
 
-def list_db_profiles(sql_engine: Engine, page: int, page_size: int) -> List[Profile]:
+def list_db_profiles(sql_engine: sa.Engine, page: int, page_size: int) -> List[Profile]:
     with Session(sql_engine) as db_session:
         db_profiles: List[Profile] = (
             db_session.query(Profile)
@@ -502,80 +478,62 @@ def list_db_profiles(sql_engine: Engine, page: int, page_size: int) -> List[Prof
             .all()
         )
 
-        # asserts presence of id, triggers a db refresh
         for db_profile in db_profiles:
-            if not db_profile.id:
-                raise KeyError
-
-            for sn in db_profile.social_networks:
-                if not sn.profile_id:
-                    raise KeyError
-
-            for sn in db_profile.department_memberships:
-                if not sn.profile_id:
-                    raise KeyError
+            db_profile.force_load()
 
         return db_profiles
 
 
-def retrieve_db_profile(sql_engine: Engine, profile_id: int) -> Profile:
+def retrieve_db_profile(sql_engine: sa.Engine, profile_id: int) -> Profile:
     with Session(sql_engine) as db_session:
         db_model = db_session.query(Profile).get(profile_id)
-
-        # asserts presence values
-        if not db_model:
-            raise KeyError
-
-        for sn in db_model.social_networks:
-            if not sn.profile_id:
-                raise KeyError
-
+        db_model.force_load()
         return db_model
 
 
-def delete_db_profiles(sql_engine: Engine, profile_ids: List[int]) -> List[int]:
+def delete_db_profiles(sql_engine: sa.Engine, profile_ids: List[int]) -> List[int]:
     with Session(sql_engine) as db_session:
-        stmt = delete(Profile).where(Profile.id.in_(profile_ids))
+        stmt = sa.delete(Profile).where(Profile.id.in_(profile_ids))
         db_session.execute(stmt)
         db_session.commit()
         return profile_ids
 
 
-def delete_db_profile(sql_engine: Engine, profile_id: int) -> bool:
+def delete_db_profile(sql_engine: sa.Engine, profile_id: int) -> bool:
     print(f"deleting {profile_id}!")
     with Session(sql_engine) as db_session:
-        stmt = delete(Profile).where(Profile.id == profile_id)
+        stmt = sa.delete(Profile).where(Profile.id == profile_id)
         db_session.execute(stmt)
         db_session.commit()
         return True
 
 
 def profile_has_one_of_positions(
-    sql_engine: Engine,
+    sql_engine: sa.Engine,
     profile_id: int,
     any_of: List[Tuple[Optional[PositionType], Optional[str]]],
 ) -> bool:
-    or_statement = False
+    or_statement = sa.and_(sa.false(), sa.false())
     for position, department_handle in any_of:
         if (position is None) and (department_handle is None):
-            or_statement = True
+            or_statement = sa.true()
             break
 
         if position is None:
-            or_statement = or_(
+            or_statement = sa.or_(
                 or_statement,
                 (DepartmentMembership.department_handle == department_handle),
             )
 
         elif department_handle is None:
-            or_statement = or_(
+            or_statement = sa.or_(
                 or_statement, (DepartmentMembership.position == position)
             )
 
         else:
-            or_statement = or_(
+            or_statement = sa.or_(
                 or_statement,
-                and_(
+                sa.and_(
                     (DepartmentMembership.department_handle == department_handle),
                     (DepartmentMembership.position == position),
                 ),
@@ -585,7 +543,7 @@ def profile_has_one_of_positions(
         found = (
             db_session.query(DepartmentMembership)
             .filter(
-                and_(
+                sa.and_(
                     DepartmentMembership.profile_id == profile_id,
                     or_statement,
                     (DepartmentMembership.time_from < datetime.datetime.now()),
@@ -598,20 +556,20 @@ def profile_has_one_of_positions(
 
 
 def profile_has_one_of_roles(
-    sql_engine: Engine,
+    sql_engine: sa.Engine,
     profile_id: int,
     any_of: List[str],
 ) -> bool:
-    or_statement = False
+    or_statement = sa.and_(sa.false(), sa.false())
     for role_handle in any_of:
         if role_handle is None:
             continue
-        or_statement = or_(RoleHoldership.role_handle == role_handle, or_statement)
+        or_statement = sa.or_(RoleHoldership.role_handle == role_handle, or_statement)
 
     with Session(sql_engine) as db_session:
         found = (
             db_session.query(RoleHoldership)
-            .where(and_(RoleHoldership.profile_id == profile_id, or_statement))
+            .where(sa.and_(RoleHoldership.profile_id == profile_id, or_statement))
             .count()
         )
         return found >= 1
