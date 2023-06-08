@@ -385,6 +385,8 @@ def get_public_profile(request: Request, profile_id: int) -> dict:
 @ensure_authenticated
 def show_current_profile(request: Request) -> dict:
     profile: ProfileOut = ProfileOut.from_db_model(request.state.profile)
+    print("hello")
+    print(profile)
     return {
         "status_code": 200,
         "response_type": "success",
