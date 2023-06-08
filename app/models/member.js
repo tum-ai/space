@@ -53,7 +53,7 @@ export class MemberModel {
 					obj[key] = this.editorMember[key];
 					return obj;
 				}, {});
-			const editResult = await axios('/profile/', {
+			const editResult = await axios('/me', {
 				data: this.editorMember,
 				method: 'PATCH',
 			});

@@ -1,13 +1,14 @@
 import { observer } from 'mobx-react';
+import { Image } from 'next/image';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import Input from '../../components/Input';
 import Textarea from '../../components/Textarea';
+import { useAuth } from '../../providers/AuthContextProvider';
 import Icon from '/components/Icon';
 import Modal from '/components/Modal';
 import Page from '/components/Page';
 import { useRootModel } from '/providers/RootStoreProvider';
-import { Image } from 'next/image'
 
 const DEPARTMENTTOCOLOR = {
 	marketing: '',
@@ -27,6 +28,7 @@ export default function Member() {
 const Profile = observer(() => {
 	const rootModel = useRootModel();
 	const router = useRouter();
+	const { user } = useAuth();
 	const { id } = router.query;
 	const memberModel = rootModel.memberModel;
 	useEffect(() => {
@@ -49,10 +51,12 @@ const Profile = observer(() => {
 		return <div>Profile not found.</div>;
 	}
 
+	const isSelf = user.uid == memberModel.member.firebase_uid;
+
 	return (
 		<div className='m-auto max-w-3xl bg-white dark:bg-gray-700'>
 			<div className='w-full flex justify-end'>
-				{router.asPath == '/members/me' && (
+				{isSelf && (
 					<button
 						className='right-0 p-2'
 						onClick={() => {
