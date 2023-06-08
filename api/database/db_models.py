@@ -1,7 +1,3 @@
-from __future__ import (
-    annotations,
-)
-
 import enum
 from datetime import (
     datetime,
@@ -204,6 +200,16 @@ class Profile(MixinAsDict, SaBaseModel):
 
         return encoded_history
 
+    def force_load(self) -> None:
+        for sn in self.social_networks:
+            if not sn.profile_id:
+                raise KeyError
+
+        for dm in self.department_memberships:
+            assert isinstance(dm, DepartmentMembership)
+            if not dm.profile_id or not dm.department_handle:
+                raise KeyError
+
 
 class SocialNetworkType(enum.Enum):
     SLACK = "Slack"
@@ -278,7 +284,8 @@ class DepartmentMembership(MixinAsDict, SaBaseModel):
     def __repr__(self) -> str:
         return (
             f"DepartmentMembership(id={self.profile_id!r} "
-            + f"({self.profile.full_name}), department_handle={self.department_handle!r})"
+            + f"({self.profile.first_name} {self.profile.last_name})"
+            + ", department_handle={self.department_handle!r})"
         )
 
 

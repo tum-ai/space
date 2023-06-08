@@ -196,7 +196,7 @@ def get_department(request: Request, handle: str) -> dict:
 # TODO: department memberships to profile responses
 
 
-@router.get(
+@router.post(
     "/profiles/invite/members",
     response_description="Create Profiles for new members and sendout invitation emails",
     response_model=Union[ResponseInviteProfilesList, ErrorResponse],
