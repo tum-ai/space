@@ -51,12 +51,6 @@ export class ProfileModel {
 
 	async editProfile() {
 		try {
-			const changes = Object.keys(this.editorProfile)
-				.filter((key) => this.profile[key] != this.editorProfile[key])
-				.reduce((obj, key) => {
-					obj[key] = this.editorProfile[key];
-					return obj;
-				}, {});
 			const editResult = await axios('/me', {
 				data: this.editorProfile,
 				method: 'PATCH',

@@ -34,6 +34,15 @@ function Links() {
 			>
 				Feedback
 			</Link>
+			<Link
+				href={'/invite'}
+				className={
+					'text-gray-500 hover:text-black dark:hover:text-white hover:underline ' +
+					(router.asPath?.includes('/invite') && 'font-bold')
+				}
+			>
+				Invite Members
+			</Link>
 		</>
 	);
 }
