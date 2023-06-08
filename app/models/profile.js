@@ -30,19 +30,23 @@ export class ProfileModel {
 	}
 
 	// API FUNCTIONS
-	async fetchProfile(id) {
+	async getProfile(id) {
 		try {
-			const profile = await axios(id == 'me' ? 'me' : '/profile/' + id);
-			this.profile = profile?.data?.data;
+			const profile = await ProfileModel.fetchProfile(id);
+			this.profile = profile;
 			this.loading = false;
 			this.error = false;
 		} catch (error) {
-			console.log(error?.response?.data?.message);
 			this.loading = false;
 			this.error =
 				error?.response?.data?.message ||
 				'An error occured. Could not fetch profile.';
 		}
+	}
+
+	static async fetchProfile(id) {
+		const profile = await axios(id == 'me' ? '/me' : '/profile/' + id);
+		return profile?.data?.data;
 	}
 
 	async editProfile() {

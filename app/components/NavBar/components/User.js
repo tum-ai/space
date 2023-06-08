@@ -15,7 +15,7 @@ function User() {
 							' hover:text-black dark:hover:text-white hover:underline bg-gray-200 dark:bg-gray-700 p-2 rounded-lg'
 						}
 					>
-						{user.email}
+						{user.profile.first_name}
 					</Link>
 					<button onClick={logout}>Logout</button>
 				</>

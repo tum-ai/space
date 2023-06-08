@@ -7,6 +7,7 @@ import {
 } from 'firebase/auth';
 import { createContext, useContext, useEffect, useState } from 'react';
 import { auth } from '../config/firebase';
+import { ProfileModel } from '../models/profile';
 
 const AuthContext = createContext();
 
@@ -15,18 +16,19 @@ export const useAuth = () => useContext(AuthContext);
 export const AuthContextProvider = ({ children }) => {
 	const [user, setUser] = useState(null);
 	const [loading, setLoading] = useState(true);
-	console.log(user);
 
 	useEffect(() => {
-		const unsubscribe = onAuthStateChanged(auth, (user) => {
+		const unsubscribe = onAuthStateChanged(auth, async (user) => {
 			if (user) {
 				axios.defaults.headers = {
 					authorization: `bearer ${user.accessToken}`,
 				};
+				const profile = await ProfileModel.fetchProfile('me');
 				setUser({
 					uid: user.uid,
 					email: user.email,
 					displayName: user.displayName,
+					profile: { ...profile },
 				});
 			} else {
 				setUser(null);
@@ -36,6 +38,7 @@ export const AuthContextProvider = ({ children }) => {
 
 		return () => unsubscribe();
 	}, []);
+	console.log(user);
 
 	const signup = (email, password) => {
 		return createUserWithEmailAndPassword(auth, email, password);

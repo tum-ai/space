@@ -14,7 +14,7 @@ const ProfileOverview = observer(() => {
 	const profileModel = rootModel.profileModel;
 	useEffect(() => {
 		if (id) {
-			profileModel.fetchProfile(id);
+			profileModel.getProfile(id);
 		}
 	}, [profileModel, id]);
 	const profile = profileModel.profile;
