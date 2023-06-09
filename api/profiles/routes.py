@@ -203,9 +203,9 @@ def get_department(request: Request, handle: str) -> dict:
 )
 @error_handlers
 @ensure_authorization(
-    any_of_positions=[(PositionType.TEAMLEAD, "community"), (None, "board")],
     any_of_roles=["invite_members"],
 )
+@ensure_authenticated
 def invite_members(
     request: Request,
     data: Annotated[List[ProfileMemberInvitation], Body(embed=True)],
