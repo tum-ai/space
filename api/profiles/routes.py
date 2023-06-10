@@ -1,3 +1,5 @@
+import datetime
+
 from typing import (
     Annotated,
     List,
@@ -435,4 +437,42 @@ def update_role_holderships(
 #                       DepartmemtMembership management endpoints                      #
 # ------------------------------------------------------------------------------------ #
 
-# TODO
+@router.get(
+    "/role/holderships",
+    response_description="List all role assignments in TUM.ai Space",
+    response_model=Union[ResponseRoleHoldershipList, ErrorResponse],
+)
+@error_handlers
+@ensure_authorization(
+    any_of_positions=[(PositionType.TEAMLEAD, None), (None, "board")],
+    any_of_roles=["role_assignment"],
+)
+def list_department_memberships(
+    request: Request,
+    profile_id: Optional[int] = None,
+    department_handle: Optional[str] = None,
+    position: Optional[str] = None,
+    started_before: Optional[datetime.datetime] = None,
+    started_after: Optional[datetime.datetime] = None,
+    ended_before: Optional[datetime.datetime] = None,
+    ended_after: Optional[datetime.datetime] = None,
+) -> dict:
+    # db_role_holderships = list_db_roleholderships(
+    #     request.app.state.sql_engine, profile_id, role_handle
+    # )
+    # out_roles = [RoleHoldershipInOut.from_db_model(rh) for rh in db_role_holderships]
+    return {
+        "status_code": 200,
+        "response_type": "success",
+        "description": "Role holderships successfully retrieved",
+        "data": [],
+    }
+
+
+# TODO: get departmentmembership by id
+
+# TODO: create departmentmemberships
+
+# TODO: update departmentmemberships
+
+# TODO: delete departmentmemberships
