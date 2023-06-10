@@ -10,7 +10,6 @@ python = "3.10"
 [tool.isort]
 profile = "black"
 skip = ["venv", "__pycache__"]
-line_length = 90
 force_grid_wrap = 1
 
 [tool.mypy]

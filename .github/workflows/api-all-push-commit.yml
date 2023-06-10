@@ -25,10 +25,9 @@ jobs:
       - name: Install dependencies
         run: pip install -r api/requirements.txt
 
-      - name: Lint with 
-        run: cd ./api && black --check . && isort --check-only . && flake8 .
+      - name: Lint with Ruff
+        run: cd ./api && python -m ruff check .
         # TODO: integrate mypy
-        # && PYTHONPATH=/home/runner/work/space/space/api mypy api
 
       - name: write secret file
         run: |

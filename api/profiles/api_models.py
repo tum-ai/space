@@ -8,10 +8,6 @@ from typing import (
     Optional,
 )
 
-from pydantic import (
-    BaseModel,
-)
-
 from database.db_models import (
     Department,
     DepartmentMembership,
@@ -21,17 +17,13 @@ from database.db_models import (
     Role,
     RoleHoldership,
     SocialNetwork,
-    SocialNetworkType,
+    SocialNetworkType
 )
+from pydantic import BaseModel
 
-# department operations ##################################################################
-
-# class DepartmentCreate(BaseModel):
-# creation only via postgres directly!
-
-
-# class DepartmentUpdate(BaseModel):
-# update only via postgres directly!
+# ------------------------------------------------------------------------------------ #
+#                                 department operations                                #
+# ------------------------------------------------------------------------------------ #
 
 
 class DepartmentOut(BaseModel):
@@ -52,9 +44,6 @@ class DepartmentOut(BaseModel):
     def dummy(cls) -> "DepartmentOut":
         return DepartmentOut.parse_obj(cls.Config.schema_extra["example"])
 
-    # TODO evaluate if member this here (or first 10 members) or in separate endpoint
-    # TODO most recent projects? or in extra endpoint
-
     class Config:
         schema_extra = {
             "example": {
@@ -66,7 +55,9 @@ class DepartmentOut(BaseModel):
         }
 
 
-# profile operations #####################################################################
+# ------------------------------------------------------------------------------------ #
+#                                  profile operations                                  #
+# ------------------------------------------------------------------------------------ #
 
 
 class RoleInOut(BaseModel):
@@ -427,6 +418,12 @@ class UpdateProfile(BaseModel):
         template = "profiles"
 
 
+ # ----------------------------------------------------------------------------------- #
+ #                         Authorization Management operations                         #
+ # ----------------------------------------------------------------------------------- #
+
+
+
 class RoleHoldershipInOut(BaseModel):
     profile: ProfileOutPublic
     role: RoleInOut
@@ -478,3 +475,10 @@ class RoleHoldershipUpdateInOut(BaseModel):
                 "method": "create",
             }
         }
+
+
+# ------------------------------------------------------------------------------------ #
+#                      DepartmemtMembership management operations                      #
+# ------------------------------------------------------------------------------------ #
+
+# TODO
