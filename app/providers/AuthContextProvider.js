@@ -58,8 +58,11 @@ export const AuthContextProvider = ({ children }) => {
 	};
 
 	const hasRoles = (user, roles) => {
-		if (!roles || !user) {
+		if (roles?.length == 0 || !user) {
 			return false;
+		}
+		if (!roles) {
+			return true;
 		}
 		const user_roles = user.profile.role_holderships.map(
 			(obj) => obj.role_handle
