@@ -42,12 +42,20 @@ server.get('/', (req: Request, res: Response) => {
 server.post('/create-certificate/:template', async (req: Request, res: Response) => {
     const json_body = req.body;
 
+    console.log("json")
+    console.log(json_body)
+
     var fields: { [key: string]: string } = {};
     for (const key in json_body) {
         fields[key] = json_body[key]
     }
 
+    console.log("fields")
+    console.log(fields)
+
     const template = req.params.template ?? "";
+    console.log("template")
+    console.log(template)
     if (!TEMPLATES.includes(template)) {
         return errorResponse(res, 400, 'invalid template!')
     }
@@ -58,17 +66,23 @@ server.post('/create-certificate/:template', async (req: Request, res: Response)
     for (const key in TEMPLATE_DICTS[template]) {
         template_dict["#{" + key + "}"] = TEMPLATE_DICTS[template][key];
         if (TEMPLATE_DICTS[template][key].length > 0) continue;
-        template_dict["#{" + key + "}"] = fields[key.toLowerCase()] ?? ''
+        template_dict["#{" + key + "}"] = fields[key] ?? ''
 
     }
 
+    console.log("template_dict")
+    console.log(template_dict)
+
     for (const key in template_dict) {
+        console.log(key)
+        console.log(template_dict[key])
         if(("" + template_dict[key]).length <= 0) {
             return errorResponse(res, 400, key + ' is missing in template replacers!')
         }
     }
 
     const templateFilePath: string = TEMPLATE_FILES[template]
+    console.log("await")
     const resultPdfBuffer = await instantiate_template(templateFilePath, template_dict);
 
     // [build response] ===============
