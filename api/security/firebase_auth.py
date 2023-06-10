@@ -48,8 +48,9 @@ def create_invite_email_user(display_name: str, email: str) -> Union[UserRecord,
         new_user: UserRecord = auth.create_user(
             display_name=display_name, email=email, email_verified=False
         )
-        return new_user
+        pw_reset_link = auth.generate_password_reset_link(email)
+        return new_user, pw_reset_link
     except AlreadyExistsError:
-        return "UserAlreadyExists"
+        return "UserAlreadyExists", ""
     except Exception:
-        return "FirebaseError"
+        return "FirebaseError", ""

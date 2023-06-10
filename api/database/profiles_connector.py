@@ -39,6 +39,9 @@ from .setup import (
     setup_db_client_appless,
 )
 
+from const.email_templates import generate_password_reset_body
+from mail.send import send_email
+
 
 # ------------------------------------------------------------------------------------ #
 #                                 department operations                                #
@@ -427,10 +430,10 @@ def invite_new_members(
             error_profiles.append((new_profile, "Email or display name too short!"))
             continue
 
-        created_fb_user_or_error = create_invite_email_user(
+        created_fb_user_or_error, pw_reset_link = create_invite_email_user(
             display_name=display_name, email=new_profile.email
         )
-        if isinstance(created_fb_user_or_error, str):
+        if isinstance(created_fb_user_or_error, str) or len(pw_reset_link or "") < 1:
             error_profiles.append(
                 (
                     new_profile,
@@ -464,6 +467,25 @@ def invite_new_members(
                 )
                 db_session.add(db_department_membership)
                 db_session.commit()
+
+                try:
+                    send_email(
+                        new_profile.email,
+                        "Welcome to TUM.ai Space! Please reset your password!",
+                        generate_password_reset_body(
+                            member_name=db_profile.full_name, 
+                            password_reset_link=pw_reset_link
+                        )
+                    )
+                except Exception:
+                    error_profiles.append(
+                        (
+                            new_profile,
+                            "Unknown error while sending email! \
+                                Profile created though!",
+                        )
+                    )
+                    continue
 
                 # asserts presence of id, triggers a db refresh
                 assert db_profile.id
