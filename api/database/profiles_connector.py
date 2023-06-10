@@ -19,6 +19,8 @@ from profiles.api_models import (
     RoleHoldershipInOut,
     RoleHoldershipUpdateInOut,
     SocialNetworkIn,
+    DepartmentMembershipInCreate,
+    DepartmentMembershipInUpdate,
 )
 from security.firebase_auth import (
     create_invite_email_user,
@@ -507,21 +509,8 @@ def list_db_roleholderships(
             db_session.query(RoleHoldership).filter(filter).all()
         )
 
-        # asserts presence of id, triggers a db refresh
         for db_rh in db_role_holderships:
-            if not db_rh.profile_id:
-                raise KeyError
-            if not db_rh.role_handle:
-                raise KeyError
-
-            if not db_rh.profile.id:
-                raise KeyError
-            for sn in db_rh.profile.social_networks:
-                if not sn.profile_id:
-                    raise KeyError
-
-            if not db_rh.role.handle:
-                raise KeyError
+            db_rh.force_load()
 
         return db_role_holderships
 
@@ -594,4 +583,162 @@ def update_db_roleholderships(
 #                      DepartmemtMembership management operations                      #
 # ------------------------------------------------------------------------------------ #
 
-# TODO
+def list_db_department_memberships(
+    sql_engine: sa.Engine,
+    page: int = 1,
+    page_size: int = 100,
+    profile_id: Optional[int] = None,
+    department_handle: Optional[str] = None,
+    position: Optional[str] = None,
+    started_before: Optional[datetime.datetime] = None,
+    started_after: Optional[datetime.datetime] = None,
+    ended_before: Optional[datetime.datetime] = None,
+    ended_after: Optional[datetime.datetime] = None,
+) -> List[DepartmentMembership]:
+    with Session(sql_engine) as db_session:
+        
+        # build filter
+        filter = sa.and_(sa.true(), sa.true())
+        if profile_id is not None:
+            filter = sa.and_(
+                filter, DepartmentMembership.profile_id == profile_id)
+        if department_handle is not None:
+            filter = sa.and_(
+                filter, DepartmentMembership.department_handle == department_handle)
+        if position is not None:
+            filter = sa.and_(filter, DepartmentMembership.position == position)
+        if started_before is not None:
+            filter = sa.and_(
+                filter, DepartmentMembership.time_from < started_before)
+        if started_after is not None:
+            filter = sa.and_(
+                filter, DepartmentMembership.time_from > started_after)
+        if ended_before is not None:
+            filter = sa.and_(
+                filter, DepartmentMembership.time_to < ended_before)
+        if ended_after is not None:
+            filter = sa.and_(
+                filter, DepartmentMembership.time_to > ended_after)
+
+        db_department_memberships: List[DepartmentMembership] = (
+            db_session.query(DepartmentMembership)
+            .filter(filter)
+            .offset(page_size * (page - 1))
+            .limit(page_size)
+            .all()
+        )
+
+        for dm in db_department_memberships:
+            dm.force_load()
+
+        return db_department_memberships
+
+
+def get_db_department_memberships(
+    sql_engine: sa.Engine,
+    department_membership_id: int
+) -> DepartmentMembership:
+    with Session(sql_engine) as db_session:
+        
+        db_model = db_session.query(DepartmentMembership).get(department_membership_id)
+        if not db_model:
+            raise KeyError
+        db_model.force_load()
+        return db_model
+
+
+def create_db_department_memberships(
+    sql_engine: sa.Engine,
+    new_department_memberships: List[DepartmentMembershipInCreate],
+) -> Tuple[List[DepartmentMembership], List[Tuple[DepartmentMembershipInCreate, str]]]:
+    """
+    Returns:
+        List[DepartmentMembership]: successfully created memberships
+        List[Tuple[DepartmentMembershipInCreate, str]]: 
+            failed memberships with error message
+    """
+    created_memberships = []
+    error_memberships = []
+
+    for new_membership in new_department_memberships:
+        try:
+            with Session(sql_engine) as db_session:
+                created_membership = DepartmentMembership(
+                    profile_id=new_membership.profile_id,
+                    department_handle=new_membership.department_handle,
+                    position=new_membership.position,
+                    time_from=new_membership.time_from,
+                    time_to=new_membership.time_to,
+                )
+                db_session.add(created_membership)
+                db_session.commit()
+                created_membership.force_load()
+                created_memberships.append(created_membership)
+
+        except Exception as ex:
+            error_memberships.append(
+                (
+                    new_membership,
+                    str(ex) or "Unknown error while creating department membership!",
+                )
+            )
+
+    return created_memberships, error_memberships
+
+
+def update_db_department_memberships(
+    sql_engine: sa.Engine,
+    department_memberships: List[DepartmentMembershipInUpdate],
+) -> Tuple[List[DepartmentMembership], List[Tuple[DepartmentMembershipInUpdate, str]]]:
+    """
+    Returns:
+        List[DepartmentMembership]: successfully updated department_memberships
+        List[Tuple[DepartmentMembershipInUpdate, str]]: failed department_memberships
+            with error message
+    """
+    updated_memberships = []
+    error_memberships = []
+
+    for membership in department_memberships:
+        try:
+            with Session(sql_engine) as db_session:
+                db_membership = db_session\
+                    .query(DepartmentMembership)\
+                    .get(membership.id)
+                
+                if not db_membership:
+                    raise ValueError(
+                        f"Membership with id {membership.id} does not exist!"
+                    )
+                
+                db_membership.position = membership.position
+                db_membership.time_from = membership.time_from
+                db_membership.time_to = membership.time_to
+
+                db_session.add(db_membership)
+                db_session.commit()
+                db_membership.force_load()
+                updated_memberships.append(db_membership)
+
+        except Exception as ex:
+            error_memberships.append(
+                (
+                    membership,
+                    str(ex) or "Unknown error while updating department membership!",
+                )
+            )
+
+    return updated_memberships, error_memberships
+
+
+def delete_db_department_memberships(
+    sql_engine: sa.Engine,
+    department_membership_ids: List[int],
+) -> List[int]:
+    with Session(sql_engine) as db_session:
+        stmt = sa.delete(DepartmentMembership).where(
+            DepartmentMembership.id.in_(department_membership_ids)
+        )
+        db_session.execute(stmt)
+        db_session.commit()
+        return department_membership_ids
