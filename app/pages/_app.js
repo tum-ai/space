@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { useEffect } from 'react';
+import GlobalModal from '../components/globalModal';
 import { AuthContextProvider } from '../providers/AuthContextProvider';
 import { RootStoreProvider } from '../providers/RootStoreProvider';
 import '../styles/globals.css';
@@ -19,6 +20,7 @@ function App({ Component, pageProps }) {
 			<RootStoreProvider hydrationData={pageProps.hydrationData}>
 				<NavBar />
 				<Component {...pageProps} />
+				<GlobalModal />
 			</RootStoreProvider>
 		</AuthContextProvider>
 	);

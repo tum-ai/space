@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import ProtectedLink from './ProtectedLink';
 
 function Links() {
 	const router = useRouter();
@@ -34,15 +35,17 @@ function Links() {
 			>
 				Feedback
 			</Link>
-			<Link
-				href={'/invite'}
-				className={
-					'text-gray-500 hover:text-black dark:hover:text-white hover:underline ' +
-					(router.asPath?.includes('/invite') && 'font-bold')
-				}
-			>
-				Invite Members
-			</Link>
+			<ProtectedLink roles={['invite_members']}>
+				<Link
+					href={'/invite'}
+					className={
+						'text-gray-500 hover:text-black dark:hover:text-white hover:underline ' +
+						(router.asPath?.includes('/invite') && 'font-bold')
+					}
+				>
+					Invite Members
+				</Link>
+			</ProtectedLink>
 		</>
 	);
 }

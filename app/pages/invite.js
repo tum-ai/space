@@ -11,7 +11,7 @@ const Invite = observer(() => {
 		inviteModel.text = e.target.value;
 	}
 	return (
-		<Page protectedPage protectedProps={{}}>
+		<Page protectedPage protectedProps={{ roles: ['invite_members'] }}>
 			<div className='font-thin text-6xl'>Invite Members</div>
 			<br />
 			<form

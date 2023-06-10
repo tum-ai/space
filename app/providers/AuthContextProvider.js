@@ -57,8 +57,23 @@ export const AuthContextProvider = ({ children }) => {
 		await signOut(auth);
 	};
 
+	const hasRoles = (user, roles) => {
+		if (!roles || !user) {
+			return false;
+		}
+		const user_roles = user.profile.role_holderships.map(
+			(obj) => obj.role_handle
+		);
+		const intersection = user_roles.filter((value) =>
+			roles.includes(value)
+		);
+		return intersection.length > 0;
+	};
+
 	return (
-		<AuthContext.Provider value={{ user, loading, login, signup, logout }}>
+		<AuthContext.Provider
+			value={{ user, loading, login, signup, logout, hasRoles }}
+		>
 			{loading ? null : children}
 		</AuthContext.Provider>
 	);

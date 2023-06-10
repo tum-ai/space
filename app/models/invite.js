@@ -33,7 +33,33 @@ export class InviteModel {
 	async invite() {
 		// TODO
 		const formatedText = this.formatText();
-		await InviteModel.inviteMembers(formatedText);
+		const data = await InviteModel.inviteMembers(formatedText);
+		if (data.failed?.length > 0) {
+			this.root.globalModalModel.updateBody(
+				<div className='flex flex-col space-y-2'>
+					<div className=''>
+						Failed to invite the following accounts:
+					</div>
+					{data.failed.map((obj) => (
+						<div key={obj.data.email}>
+							<span className='font-bold'>{obj.data.email}</span>
+							{': '}
+							{obj.error}
+						</div>
+					))}
+				</div>
+			);
+			this.root.globalModalModel.toggleModal();
+		} else {
+			this.root.globalModalModel.updateBody(
+				<div className='flex flex-col space-y-2'>
+					Users invited successfully. They will receive an email
+					shortly with a link to reset their password.
+				</div>
+			);
+			this.root.globalModalModel.toggleModal();
+			this.text = '';
+		}
 	}
 
 	// API FUNCTIONS
@@ -42,27 +68,7 @@ export class InviteModel {
 			method: 'POST',
 			data: formatedText,
 		});
-		return invites.data;
-	}
-
-	async editProfile() {
-		try {
-			const changes = Object.keys(this.editorProfile)
-				.filter((key) => this.profile[key] != this.editorProfile[key])
-				.reduce((obj, key) => {
-					obj[key] = this.editorProfile[key];
-					return obj;
-				}, {});
-			const editResult = await axios('/me', {
-				data: this.editorProfile,
-				method: 'PATCH',
-			});
-			this.profile = { ...this.profile, ...editResult.data.data };
-			this.toggleEditor();
-		} catch (error) {
-			console.log(error);
-			console.log('Could not edit profile');
-			alert('Could not edit profile');
-		}
+		const data = invites.data;
+		return data;
 	}
 }
