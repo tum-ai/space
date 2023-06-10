@@ -24,11 +24,12 @@ from utils.config import (
     CONFIG,
 )
 from utils.error_handlers import (
-    error_handlers,
+    error_handlers
 )
 from utils.log import (
     log,
 )
+from mail.send import send_email
 
 app = FastAPI()
 db_client = None
@@ -94,6 +95,22 @@ def authorization_position_test(request: Request) -> dict:
 @ensure_authorization(any_of_roles=["test-role"])
 def authorization_role_test(request: Request) -> dict:
     return {"msg": "Role test: success"}
+
+
+@app.post("/mail-test", tags=["mail-test"])
+@error_handlers
+@ensure_authorization(any_of_roles=["test-role"])
+def email_test(
+    request: Request, 
+    subject: str, 
+    body: str,
+) -> dict:
+    send_email(
+        receipient="admin+tumaispacedev@tum-ai.com",
+        subject=subject,
+        body=body
+    )
+    return {"msg": "Send success!"}
 
 
 # Prefix defined in router

@@ -42,6 +42,18 @@ Note: this setup guide currently only works on Linux systems as-is.
     DB_NAME=space-db
     DB_USER=space-db
     DB_PASSWORD=space-db
+
+    MAIL_USERNAME="space-dev@tum-ai.com"
+    MAIL_PASSWORD="<Notion PWs: MAIL APP PW>"
+    MAIL_FROM="space-dev@tum-ai.com"
+    MAIL_PORT=587
+    MAIL_SERVER="smtp.gmail.com"
+    MAIL_FROM_NAME="TUM.ai Space Team (DEV)"
+    ```
+
+    On MacOS:
+    ```
+    open /Applications/Python\ <YOUR PYTHON VERSION>/Install\ Certificate.command
     ```
 
   - Add Firebase Admin SDK Certificate (for staging env): Dev environment will use authentication of Staging Firebase project [Secrets file on Notion](https://www.notion.so/tum-ai/c893a21fc7034d3aa44f40d28fd71373?v=65bb26a99f124632ac28a8eabe3bf066)
