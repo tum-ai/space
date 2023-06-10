@@ -26,15 +26,17 @@ function Links() {
 			>
 				Team
 			</Link>
-			<Link
-				href={'/feedback'}
-				className={
-					'text-gray-500 hover:text-black dark:hover:text-white hover:underline ' +
-					(router.asPath?.includes('/feedback') && 'font-bold')
-				}
-			>
-				Feedback
-			</Link>
+			<ProtectedLink>
+				<Link
+					href={'/feedback'}
+					className={
+						'text-gray-500 hover:text-black dark:hover:text-white hover:underline ' +
+						(router.asPath?.includes('/feedback') && 'font-bold')
+					}
+				>
+					Feedback
+				</Link>
+			</ProtectedLink>
 			<ProtectedLink roles={['invite_members']}>
 				<Link
 					href={'/invite'}
