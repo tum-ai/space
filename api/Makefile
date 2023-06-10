@@ -3,14 +3,11 @@
 PYTHONPATH=$(CURDIR)
 
 lint:
-	PYTHONPATH=${PYTHONPATH} black --check .
-	PYTHONPATH=${PYTHONPATH} isort --check-only .
-	PYTHONPATH=${PYTHONPATH} flake8 .
+	python -m ruff check .
 	# MYPYPATH=${PYTHONPATH} PYTHONPATH=${PYTHONPATH} mypy --namespace-packages --explicit-package-bases .
 
 lint-fix:
-	PYTHONPATH=${PYTHONPATH} black .
-	PYTHONPATH=${PYTHONPATH} isort .
+	python -m ruff check . --fix
 
 test:
 	PYTHONPATH=${PYTHONPATH} pytest
