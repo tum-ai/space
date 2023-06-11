@@ -5,7 +5,7 @@ TUM.ai space is a system that tackles and solves three main issues:
   3. Combine existing systems like application systems into a more managable and extensible format
 
 ## Organization
-Project planning is done over [Linear](https://linear.app/tum-ai/project/tumai-space-5b8716e29acb). All relevant issues and tasks are placed there, the GitHub issues in this repository are outdated and will slowly be removed.
+Project planning is done over [Linear](https://linear.app/tum-ai/project/tumai-space-5b8716e29acb). All relevant issues and tasks are placed there, the GitHub issues in this repository are not relevant and will not be pursued.
 
 See [here](#working-on-a-linear-ticket) for how to work and develop on a Linear ticket.
 
@@ -120,6 +120,9 @@ To view an ERD of the system, paste ```api/docs/erDiagram``` file into a mermaid
 Alternatively, checkout the [/api/README.md](https://github.com/tum-ai/space/tree/main/api) on GitHub.
 
 Documentation on the [frontend](https://www.notion.so/tum-ai/Frontend-Development-Guide-Documentation-259fdf1c5c1446d29fee4f16a39d4c0c?pvs=4) and [backend](https://www.notion.so/tum-ai/Backend-Development-Guide-Documentation-4c408603fb65439d94293c5189435770?pvs=4) as well as instructions on how to add services, pages etc. can be seen on the linked Notion pages.
+
+### FAQ
+A FAQ section with common errors and how to solve them can be found on [this](https://www.notion.so/tum-ai/Space-10953cc88e334d61a1fb37744bc72291?pvs=4) Notion page, documenting the project.
 
 **DevOps**:
 - Deployed on Azure
