@@ -65,6 +65,7 @@ from utils.response import (
     ErrorResponse,
 )
 
+
 router = APIRouter()
 
 
@@ -106,9 +107,6 @@ def get_department(request: Request, handle: str) -> dict:
         "description": "Retrieved Department successfully",
         "data": DepartmentOut.from_db_model(db_model),
     }
-
-
-# UPDATE and DELETE via direct db access
 
 
 # ------------------------------------------------------------------------------------ #

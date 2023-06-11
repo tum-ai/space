@@ -98,8 +98,8 @@ class ProfileMemberInvitation(BaseModel):
                 "email": "test@mymail.com",
                 "first_name": "Max",
                 "last_name": "Mustermann",
-                "department_handle": "DEV",
-                "department_position": "MEMBER",
+                "department_handle": "dev",
+                "department_position": "Member",
             }
         }
 
