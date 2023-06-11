@@ -100,5 +100,3 @@ def authorization_role_test(request: Request) -> dict:
 # Prefix defined in router
 app.include_router(ProfilesRouter, tags=["Profile"])
 app.include_router(CertificationRouter, tags=["Certification"])
-
-# app.include_router(CertificationRouter, prefix="/certification", tags=["Certification"])

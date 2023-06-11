@@ -8,28 +8,22 @@ from typing import (
     Optional,
 )
 
-from pydantic import (
-    BaseModel,
-)
-
 from database.db_models import (
     Department,
+    DepartmentMembership,
     JobHistoryElement,
+    PositionType,
     Profile,
     Role,
     RoleHoldership,
     SocialNetwork,
-    SocialNetworkType,
+    SocialNetworkType
 )
+from pydantic import BaseModel
 
-# department operations ##################################################################
-
-# class DepartmentCreate(BaseModel):
-# creation only via postgres directly!
-
-
-# class DepartmentUpdate(BaseModel):
-# update only via postgres directly!
+# ------------------------------------------------------------------------------------ #
+#                                 department operations                                #
+# ------------------------------------------------------------------------------------ #
 
 
 class DepartmentOut(BaseModel):
@@ -50,9 +44,6 @@ class DepartmentOut(BaseModel):
     def dummy(cls) -> "DepartmentOut":
         return DepartmentOut.parse_obj(cls.Config.schema_extra["example"])
 
-    # TODO evaluate if member this here (or first 10 members) or in separate endpoint
-    # TODO most recent projects? or in extra endpoint
-
     class Config:
         schema_extra = {
             "example": {
@@ -64,7 +55,9 @@ class DepartmentOut(BaseModel):
         }
 
 
-# profile operations #####################################################################
+# ------------------------------------------------------------------------------------ #
+#                                  profile operations                                  #
+# ------------------------------------------------------------------------------------ #
 
 
 class RoleInOut(BaseModel):
@@ -157,6 +150,37 @@ class SocialNetworkOut(BaseModel):
         }
 
 
+class DepartmentMembershipOut(BaseModel):
+    profile_id: int
+    position: PositionType
+    department_handle: str
+    time_from: Optional[datetime]
+    time_to: Optional[datetime]
+
+    @classmethod
+    def from_db_model(cls, s: DepartmentMembership) -> "DepartmentMembershipOut":
+        return DepartmentMembershipOut(
+            profile_id=s.profile_id,
+            position=s.position,
+            department_handle=s.department_handle,
+            time_from=s.time_from,
+            time_to=s.time_to,
+        )
+
+    @classmethod
+    def dummy(cls) -> "DepartmentMembershipOut":
+        return DepartmentMembershipOut.parse_obj(cls.Config.schema_extra["example"])
+
+    class Config:
+        schema_extra = {
+            "example": {
+                "profile_id": 32,
+                "position": PositionType.TEAMLEAD,
+                "department_handle": "DEV",
+            }
+        }
+
+
 class ProfileInCreateUpdateBase(BaseModel):
     email: str
     phone: Optional[str]
@@ -244,6 +268,7 @@ class ProfileOut(BaseModel):
     time_joined: Optional[datetime]
 
     social_networks: List["SocialNetworkOut"]
+    department_memberships: List["DepartmentMembershipOut"]
 
     @classmethod
     def from_db_model(cls, profile: Profile) -> "ProfileOut":
@@ -266,6 +291,10 @@ class ProfileOut(BaseModel):
             time_joined=profile.time_joined,
             social_networks=[
                 SocialNetworkOut.from_db_model(s) for s in profile.social_networks
+            ],
+            department_memberships=[
+                DepartmentMembershipOut.from_db_model(s)
+                for s in profile.department_memberships
             ],
         )
 
@@ -299,6 +328,10 @@ class ProfileOut(BaseModel):
                     SocialNetworkOut.dummy(),
                     SocialNetworkOut.dummy(),
                 ],
+                "department_memberships": [
+                    DepartmentMembershipOut.dummy(),
+                    DepartmentMembershipOut.dummy(),
+                ],
             }
         }
 
@@ -322,6 +355,7 @@ class ProfileOutPublic(BaseModel):
     time_joined: Optional[datetime]
 
     social_networks: List["SocialNetworkOut"]
+    department_memberships: List["DepartmentMembershipOut"]
 
     @classmethod
     def from_db_model(cls, profile: Profile) -> "ProfileOutPublic":
@@ -339,6 +373,10 @@ class ProfileOutPublic(BaseModel):
             time_joined=profile.time_joined,
             social_networks=[
                 SocialNetworkOut.from_db_model(s) for s in profile.social_networks
+            ],
+            department_memberships=[
+                DepartmentMembershipOut.from_db_model(s)
+                for s in profile.department_memberships
             ],
         )
 
@@ -367,6 +405,10 @@ class ProfileOutPublic(BaseModel):
                     SocialNetworkOut.dummy(),
                     SocialNetworkOut.dummy(),
                 ],
+                "department_memberships": [
+                    DepartmentMembershipOut.dummy(),
+                    DepartmentMembershipOut.dummy(),
+                ],
             }
         }
 
@@ -374,6 +416,12 @@ class ProfileOutPublic(BaseModel):
 class UpdateProfile(BaseModel):
     class Settings:
         template = "profiles"
+
+
+ # ----------------------------------------------------------------------------------- #
+ #                         Authorization Management operations                         #
+ # ----------------------------------------------------------------------------------- #
+
 
 
 class RoleHoldershipInOut(BaseModel):
@@ -427,3 +475,10 @@ class RoleHoldershipUpdateInOut(BaseModel):
                 "method": "create",
             }
         }
+
+
+# ------------------------------------------------------------------------------------ #
+#                      DepartmemtMembership management operations                      #
+# ------------------------------------------------------------------------------------ #
+
+# TODO

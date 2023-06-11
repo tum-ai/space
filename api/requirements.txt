@@ -2,11 +2,11 @@
 # python 3.10
 
 # linting
-black
-isort
-flake8
+ruff
 mypy
 typing_extensions
+types-python-dateutil
+types-pyyaml
 
 # testing
 httpx
