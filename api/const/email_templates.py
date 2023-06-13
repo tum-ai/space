@@ -1,6 +1,3 @@
-
-
-
 EMAIL_TEMPLATE_PASSWORD_RESET = """
 Hello ${MAME},
 
@@ -34,8 +31,15 @@ Best regards,
 
 TUM.ai Space TEAM
 """
+"""
+This is a template for the password reset email. 
+
+It is used to generate the body of the email. We will alse send out these password 
+reset emails when new members are invited into TUM.ai Space.
+"""
+
 
 def generate_password_reset_body(member_name: str, password_reset_link: str) -> str:
-    return EMAIL_TEMPLATE_PASSWORD_RESET\
-        .replace("${MAME}", member_name)\
-        .replace("${PASSWORD_RESET_LINK}", password_reset_link)
+    return EMAIL_TEMPLATE_PASSWORD_RESET.replace("${MAME}", member_name).replace(
+        "${PASSWORD_RESET_LINK}", password_reset_link
+    )
