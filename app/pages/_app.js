@@ -2,7 +2,7 @@ import axios from 'axios';
 import { useEffect } from 'react';
 import GlobalModal from '../components/globalModal';
 import { AuthContextProvider } from '../providers/AuthContextProvider';
-import { RootStoreProvider } from '../providers/RootStoreProvider';
+import { StoreProvider } from '../providers/StoreProvider';
 import '../styles/globals.css';
 import NavBar from '/components/NavBar/index';
 
@@ -17,11 +17,11 @@ function App({ Component, pageProps }) {
 	}, []);
 	return (
 		<AuthContextProvider>
-			<RootStoreProvider hydrationData={pageProps.hydrationData}>
+			<StoreProvider hydrationData={pageProps.hydrationData}>
 				<NavBar />
 				<Component {...pageProps} />
 				<GlobalModal />
-			</RootStoreProvider>
+			</StoreProvider>
 		</AuthContextProvider>
 	);
 }

@@ -22,26 +22,47 @@ function initializeStore(initialData) {
 }
 
 // This is used to give the whole application a context which includes the root model
-export function RootStoreProvider({ children, hydrationData }) {
+export function StoreProvider({ children, hydrationData }) {
 	const store = initializeStore(hydrationData);
-
 	return (
 		<StoreContext.Provider value={store}>{children}</StoreContext.Provider>
 	);
 }
 
 // use this function inside a component to access the root model
-export function useRootModel() {
+export function useStores() {
 	const context = useContext(StoreContext);
 	if (context === undefined) {
-		throw new Error('useRootModel must be used within RootStoreProvider');
+		throw new Error('useStores must be used within StoreProvider');
 	}
-
 	return context;
 }
+// //////////////////////
 
-// this is for the future if we want to have specific useModel() functions for specific models only
-// export function useCounterStore() {
-// 	const { counterStore } = useRootStore();
-// 	return counterStore;
+// let clientSideStores;
+
+// export function getStores(initialData = { postStoreInitialData: {} }) {
+// 	const isServer = typeof window === 'undefined';
+// 	if (isServer) {
+// 		return new RootModel();
+// 	}
+// 	if (!clientSideStores) {
+// 		clientSideStores = new RootModel();
+// 	}
+
+// 	return clientSideStores;
+// }
+
+// const StoreContext = createContext();
+
+// export function StoreProvider(props) {
+// 	return (
+// 		<StoreContext.Provider value={props.value}>
+// 			{props.children}
+// 		</StoreContext.Provider>
+// 	);
+// }
+
+// export function useStores() {
+// 	return useContext(StoreContext);
 // }

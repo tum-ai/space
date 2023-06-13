@@ -1,10 +1,9 @@
 import { observer } from 'mobx-react';
 import Modal from '/components/Modal';
-import { useRootModel } from '/providers/RootStoreProvider';
+import { useStores } from '/providers/StoreProvider';
 
-const GlobalModal = observer(() => {
-	const rootModel = useRootModel();
-	const globalModalModel = rootModel.globalModalModel;
+function GlobalModal() {
+	const { globalModalModel } = useStores();
 
 	return (
 		<Modal
@@ -26,5 +25,5 @@ const GlobalModal = observer(() => {
 			</div>
 		</Modal>
 	);
-});
-export default GlobalModal;
+}
+export default observer(GlobalModal);

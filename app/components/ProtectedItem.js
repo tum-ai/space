@@ -2,13 +2,13 @@ import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
 import { useAuth } from '../providers/AuthContextProvider';
 
-const ProtectedRoute = ({ roles, children }) => {
+function ProtectedItem({ roles, redirectToAuth, showNotFound, children }) {
 	const { user, loading, hasRoles } = useAuth();
 	const router = useRouter();
 
 	useEffect(() => {
-		if (!user) {
-			router.push('/auth');
+		if (!user && redirectToAuth && !showNotFound) {
+			router.push('/notfound');
 		}
 	}, [user]);
 
@@ -20,7 +20,11 @@ const ProtectedRoute = ({ roles, children }) => {
 		return <>{children}</>;
 	}
 
-	return <div>404 ...</div>;
-};
+	if (showNotFound) {
+		return <div>not found</div>;
+	}
 
-export default ProtectedRoute;
+	return null;
+}
+
+export default ProtectedItem;

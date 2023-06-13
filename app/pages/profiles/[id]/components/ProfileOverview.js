@@ -4,10 +4,10 @@ import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import Icon from '/components/Icon';
 import { useAuth } from '/providers/AuthContextProvider';
-import { useRootModel } from '/providers/RootStoreProvider';
+import { useStores } from '/providers/StoreProvider';
 
 const ProfileOverview = observer(() => {
-	const rootModel = useRootModel();
+	const rootModel = useStores();
 	const router = useRouter();
 	const { user } = useAuth();
 	const { id } = router.query;

@@ -2,10 +2,10 @@ import { observer } from 'mobx-react';
 import Input from '/components/Input';
 import Modal from '/components/Modal';
 import Textarea from '/components/Textarea';
-import { useRootModel } from '/providers/RootStoreProvider';
+import { useStores } from '/providers/StoreProvider';
 
 const ProfileEditor = observer(() => {
-	const rootModel = useRootModel();
+	const rootModel = useStores();
 	const profileEditorModel = rootModel.profileModel;
 	const editorProfile = profileEditorModel.editorProfile;
 

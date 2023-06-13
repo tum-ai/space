@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import ProtectedLink from './ProtectedLink';
+import ProtectedItem from '../../ProtectedItem';
 
 function Links() {
 	const router = useRouter();
@@ -26,7 +26,7 @@ function Links() {
 			>
 				Team
 			</Link>
-			<ProtectedLink>
+			<ProtectedItem>
 				<Link
 					href={'/feedback'}
 					className={
@@ -36,8 +36,8 @@ function Links() {
 				>
 					Feedback
 				</Link>
-			</ProtectedLink>
-			<ProtectedLink roles={['invite_members']}>
+			</ProtectedItem>
+			<ProtectedItem roles={['invite_members']}>
 				<Link
 					href={'/invite'}
 					className={
@@ -47,7 +47,7 @@ function Links() {
 				>
 					Invite Members
 				</Link>
-			</ProtectedLink>
+			</ProtectedItem>
 		</>
 	);
 }
