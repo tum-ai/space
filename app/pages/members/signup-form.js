@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-import { useAuth } from "../../providers/AuthContextProvider";
+import { useAuth, getUserAuthToken } from "../../providers/AuthContextProvider";
 import Banner from "../../components/Banner";
 import Page from "../../components/Page";
 
@@ -38,24 +38,10 @@ function SignUpForm() {
     activity_status: "",
     degree_level: "",
     degree_name: "",
-    degree_semester: "",
+    degree_semester: "5",
     university: "",
-    job_history: [
-      {
-        employer: "",
-        position: "",
-        date_from: "",
-        date_to: "",
-      },
-    ],
-    time_joined: "",
-    social_networks: [
-      {
-        type: "",
-        handle: "",
-        link: "",
-      },
-    ],
+    job_history: [],
+    social_networks: [],
   });
 
   // handle change of form data, update state and corresponding form data values
@@ -67,6 +53,7 @@ function SignUpForm() {
     }));
   };
 
+  // handle change of array fields, update state and corresponding form data values
   const handleArrayFieldChange = (key, index, subKey) => (e) => {
     const { name, value } = e.target;
     setFormData((prevState) => ({
@@ -83,6 +70,7 @@ function SignUpForm() {
     }));
   };
 
+  // add a new array field to form data (either job history or social network)
   const addArrayField = (key) => () => {
     setFormData((prevState) => ({
       ...prevState,
@@ -109,19 +97,23 @@ function SignUpForm() {
 
   const removeArrayField = (key) => () => {
     // remove last entry of the array located at formData[] if there is more than one left
-    if (formData[key].length > 1) {
-      setFormData((prevState) => ({
-        ...prevState,
-        [key]: prevState[key].slice(0, -1),
-      }));
-    }
+    setFormData((prevState) => ({
+      ...prevState,
+      [key]: prevState[key].slice(0, -1),
+    }));
   };
 
-  const handleSubmit = (event) => {
+  async function handleSubmit(event) {
     event.preventDefault();
 
     // Check required fields
-    const requiredFields = ["first_name", "last_name", "birthday"];
+    const requiredFields = [
+      "first_name",
+      "last_name",
+      "birthday",
+      "degree_name",
+      "degree_semester",
+    ];
     const missingFields = requiredFields.filter((field) => {
       if (Array.isArray(formData[field])) {
         return formData[field].some((item) =>
@@ -142,29 +134,39 @@ function SignUpForm() {
     // Create the payload for the PATCH request
     const payload = {
       ...formData,
-      job_history: formData.job_history.map((item) => ({ ...item })),
-      social_networks: formData.social_networks.map((item) => ({ ...item })),
+      job_history: formData.job_history
+        .map((item) => ({ ...item }))
+        .filter((item) => Object.values(item).some((value) => !!value)),
+      social_networks: formData.social_networks
+        .map((item) => ({ ...item }))
+        .filter((item) => Object.values(item).some((value) => !!value)),
+      time_joined: new Date().toISOString(),
     };
 
+    console.log(JSON.stringify(payload));
+
+    const authToken = await getUserAuthToken();
+
     // Send the PATCH request to the backend
-    axios
-      .patch("/me", payload, {
+    await axios
+      .patch("http://localhost:8000/me", payload, {
         headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
+          Authorization: authToken,
         },
       })
       .then((response) => {
         console.log("Profile updated successfully");
-        // Redirect to main page
+        console.log(payload);
+        // Redirect to main page after updating the profile
         router.push("/");
       })
       .catch((error) => {
         console.error("Error updating profile:", error);
         console.log(payload);
+        console.log(formData);
       });
     console.log("Submitted form data:", payload);
-  };
+  }
 
   return (
     <div className="py-8 px-4">
@@ -197,6 +199,7 @@ function SignUpForm() {
                           placeholder={
                             subKey.charAt(0).toUpperCase() + subKey.slice(1)
                           }
+                          required={subKey === "type"}
                         />
                       ))}
                     </div>
@@ -242,7 +245,7 @@ function SignUpForm() {
             </div>
           ))}
           <button
-            className="w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-500"
+            className="w-full py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-500"
             type="submit"
           >
             Submit Profile
