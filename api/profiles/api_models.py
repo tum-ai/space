@@ -190,6 +190,7 @@ class DepartmentMembershipOut(BaseModel):
         }
 
 
+# TODO: fix security logic; change attributes to whole Profile and Role
 class RoleHoldershipInOut(BaseModel):
     profile_id: int
     role_handle: str
