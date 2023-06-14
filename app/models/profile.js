@@ -7,7 +7,6 @@ export class ProfileModel {
 	editorProfile = {};
 	loading = true;
 	error = false;
-	editorActive = false;
 
 	constructor(root) {
 		this.root = root;
@@ -17,16 +16,6 @@ export class ProfileModel {
 	// STATE FUNCTIONS
 	updateEditorProfile(changes) {
 		this.editorProfile = { ...this.editorProfile, ...changes };
-	}
-
-	toggleEditor() {
-		if (this.editorActive) {
-			this.editorActive = false;
-			this.editorProfile = {};
-		} else {
-			this.editorActive = true;
-			this.editorProfile = { ...this.profile };
-		}
 	}
 
 	// API FUNCTIONS

@@ -91,7 +91,32 @@ function ProfileOverview() {
 					</div>
 				</div>
 				{/* department */}
-
+				<div className='flex flex-col'>
+					<div className='text-base text-gray-400 font-light'>
+						DEPARTMENT
+					</div>
+					<div className='font-light text-base'>
+						{profile.department || '-'}
+					</div>
+				</div>
+				{/* degree */}
+				<div className='flex flex-col'>
+					<div className='text-base text-gray-400 font-light'>
+						DEGREE
+					</div>
+					<div className='font-light text-base'>
+						{profile.degree_level + ' '} {profile.degree_name}
+					</div>
+				</div>
+				{/* semester */}
+				<div className='flex flex-col'>
+					<div className='text-base text-gray-400 font-light'>
+						SEMESTER
+					</div>
+					<div className='font-light text-base'>
+						{profile.degree_semester || '-'}
+					</div>
+				</div>
 				{/* university */}
 				<div className='flex flex-col'>
 					<div className='text-base text-gray-400 font-light'>
