@@ -466,6 +466,9 @@ def update_db_profile(
         db_session.commit()
 
         db_profile.force_load()
+            
+        for sn in db_profile.role_holderships:
+            assert sn.profile_id
 
     return db_profile
 

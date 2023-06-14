@@ -2,16 +2,16 @@ import { observer } from 'mobx-react';
 import { Image } from 'next/image';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
+import ProfileEditor from './ProfileEditor';
 import Icon from '/components/Icon';
 import { useAuth } from '/providers/AuthContextProvider';
 import { useStores } from '/providers/StoreProvider';
 
-const ProfileOverview = observer(() => {
-	const rootModel = useStores();
+function ProfileOverview() {
+	const { profileModel, uiModel } = useStores();
 	const router = useRouter();
 	const { user } = useAuth();
 	const { id } = router.query;
-	const profileModel = rootModel.profileModel;
 	useEffect(() => {
 		if (id) {
 			profileModel.getProfile(id);
@@ -39,7 +39,9 @@ const ProfileOverview = observer(() => {
 					<button
 						className='right-0 p-2'
 						onClick={() => {
-							profileModel.toggleEditor();
+							uiModel.updateModalContent(<ProfileEditor />);
+							uiModel.toggleModal();
+							profileModel.editorProfile = { ...profile };
 						}}
 					>
 						<Icon
@@ -89,32 +91,7 @@ const ProfileOverview = observer(() => {
 					</div>
 				</div>
 				{/* department */}
-				<div className='flex flex-col'>
-					<div className='text-base text-gray-400 font-light'>
-						DEPARTMENT
-					</div>
-					<div className='font-light text-base'>
-						{profile.department || '-'}
-					</div>
-				</div>
-				{/* degree */}
-				<div className='flex flex-col'>
-					<div className='text-base text-gray-400 font-light'>
-						DEGREE
-					</div>
-					<div className='font-light text-base'>
-						{profile.degree_level + ' '} {profile.degree_name}
-					</div>
-				</div>
-				{/* semester */}
-				<div className='flex flex-col'>
-					<div className='text-base text-gray-400 font-light'>
-						SEMESTER
-					</div>
-					<div className='font-light text-base'>
-						{profile.degree_semester || '-'}
-					</div>
-				</div>
+
 				{/* university */}
 				<div className='flex flex-col'>
 					<div className='text-base text-gray-400 font-light'>
@@ -165,6 +142,6 @@ const ProfileOverview = observer(() => {
 			</div>
 		</div>
 	);
-});
+}
 
-export default ProfileOverview;
+export default observer(ProfileOverview);

@@ -1,33 +1,33 @@
 import { observer } from 'mobx-react';
 import Input from '/components/Input';
-import Modal from '/components/Modal';
 import Textarea from '/components/Textarea';
 import { useStores } from '/providers/StoreProvider';
 
-const ProfileEditor = observer(() => {
-	const rootModel = useStores();
-	const profileEditorModel = rootModel.profileModel;
-	const editorProfile = profileEditorModel.editorProfile;
+function ProfileEditor() {
+	const { profileModel, uiModel } = useStores();
+	const editorProfile = profileModel.editorProfile;
 
 	function handleChange(e) {
-		profileEditorModel.updateEditorProfile({
+		profileModel.updateEditorProfile({
 			[e.target.name]: e.target.value,
 		});
 	}
 
 	return (
-		<Modal
-			state={profileEditorModel.editorActive}
-			setState={() => {
-				profileEditorModel.toggleEditor();
-			}}
+		<
+			// Modal
+			// state={profileModel.editorActive}
+			// setState={() => {
+			// 	profileModel.toggleEditor();
+			// }}
 		>
 			<div className='flex flex-col space-y-6 rounded-lg p-6 bg-white dark:bg-gray-700 w-full'>
 				<div className='text-2xl font-light'>Edit profile</div>
 				<form
 					onSubmit={async (e) => {
 						e.preventDefault();
-						await profileEditorModel.editProfile();
+						await profileModel.editProfile();
+						uiModel.toggleModal();
 					}}
 					className='flex flex-col gap-4 lg:grid lg:grid-cols-2 lg:space-y-0 lg:gap-8'
 				>
@@ -122,7 +122,7 @@ const ProfileEditor = observer(() => {
 						</button>
 						<button
 							onClick={() => {
-								profileEditorModel.toggleEditor();
+								uiModel.toggleModal();
 							}}
 							className='p-4 px-8 py-1 rounded-lg w-1/2 border-2'
 						>
@@ -131,7 +131,8 @@ const ProfileEditor = observer(() => {
 					</div>
 				</form>
 			</div>
-		</Modal>
+		</>
 	);
-});
-export default ProfileEditor;
+}
+
+export default observer(ProfileEditor);

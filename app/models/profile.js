@@ -56,7 +56,6 @@ export class ProfileModel {
 				method: 'PATCH',
 			});
 			this.profile = { ...this.profile, ...editResult.data.data };
-			this.toggleEditor();
 		} catch (error) {
 			console.log(error);
 			console.log('Could not edit profile');

@@ -1,8 +1,8 @@
 import { makeAutoObservable } from 'mobx';
 
-export class GlobalModalModel {
+export class UiModel {
 	modalActive = false;
-	body;
+	modalContent;
 
 	constructor(root) {
 		this.root = root;
@@ -10,14 +10,14 @@ export class GlobalModalModel {
 	}
 
 	// STATE FUNCTIONS
-	updateBody(body) {
-		this.body = body;
+	updateModalContent(modalContent) {
+		this.modalContent = modalContent;
 	}
 
 	toggleModal() {
 		this.modalActive = !this.modalActive;
 		if (!this.modalActive) {
-			this.body = undefined;
+			this.modalContent = undefined;
 		}
 	}
 }

@@ -35,7 +35,7 @@ export class InviteModel {
 		const formatedText = this.formatText();
 		const data = await InviteModel.inviteMembers(formatedText);
 		if (data.failed?.length > 0) {
-			this.root.globalModalModel.updateBody(
+			this.root.uiModel.updateModalContent(
 				<div className='flex flex-col space-y-2'>
 					<div className=''>
 						Failed to invite the following accounts:
@@ -49,15 +49,15 @@ export class InviteModel {
 					))}
 				</div>
 			);
-			this.root.globalModalModel.toggleModal();
+			this.root.uiModel.toggleModal();
 		} else {
-			this.root.globalModalModel.updateBody(
+			this.root.uiModel.updateModalContent(
 				<div className='flex flex-col space-y-2'>
 					Users invited successfully. They will receive an email
 					shortly with a link to reset their password.
 				</div>
 			);
-			this.root.globalModalModel.toggleModal();
+			this.root.uiModel.toggleModal();
 			this.text = '';
 		}
 	}
