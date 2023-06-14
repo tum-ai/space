@@ -1,7 +1,3 @@
-from __future__ import (
-    annotations,
-)
-
 import enum
 from datetime import (
     datetime,
@@ -38,7 +34,7 @@ from sqlalchemy.orm import (
 )
 
 # don't touch this base class!
-Base = declarative_base()
+SaBaseModel = declarative_base()
 
 
 class MixinAsDict:
@@ -54,19 +50,19 @@ class PositionType(enum.Enum):
     APPLICANT = "Applicant"
 
 
-class Department(MixinAsDict, Base):
+class Department(MixinAsDict, SaBaseModel):
     """database model"""
 
     __tablename__ = "department"
 
-    # [MANAGED FIELDS] ###################################################################
+    # -------------------------------- MANAGED FIELDS -------------------------------- #
     handle: Mapped[str] = mapped_column(String(20), primary_key=True)
 
-    # [USER CHANGEABLE FIELDS] ###########################################################
+    # ---------------------------- USER CHANGEABLE FIELDS ---------------------------- #
     name: Mapped[str] = mapped_column(String(80), unique=True, nullable=False)
     description: Mapped[Optional[str]] = mapped_column(String(2048), nullable=True)
 
-    # [RELATIONAL FK FIELDS] #############################################################
+    # ----------------------------- RELATIONAL FK FIELDS ----------------------------- #
     # back reference from DepartmentMembership
     memberships: Mapped[List["DepartmentMembership"]] = relationship(
         "DepartmentMembership", back_populates="department"
@@ -84,12 +80,7 @@ class JobHistoryElement(BaseModel):
 
     @classmethod
     def dummy(cls) -> "JobHistoryElement":
-        return JobHistoryElement(
-            employer="Google",
-            position="SWE Intern",
-            date_from="15.01.2023",
-            date_to="31.03.2023",
-        )
+        return JobHistoryElement.parse_obj(cls.Config.schema_extra["example"])
 
     class Config:
         schema_extra = {
@@ -102,18 +93,18 @@ class JobHistoryElement(BaseModel):
         }
 
 
-class Profile(MixinAsDict, Base):
+class Profile(MixinAsDict, SaBaseModel):
     """database model"""
 
     __tablename__ = "profile"
 
-    # [MANAGED FIELDS] ###################################################################
+    # -------------------------------- MANAGED FIELDS -------------------------------- #
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     firebase_uid: Mapped[str] = mapped_column(
         String, unique=True, index=True, nullable=False
     )
 
-    # [USER CHANGEABLE FIELDS] ###########################################################
+    # ---------------------------- USER CHANGEABLE FIELDS ---------------------------- #
     email: Mapped[str] = mapped_column(String(200), index=True, nullable=False)
     phone: Mapped[Optional[str]] = mapped_column(String(50), index=True, nullable=True)
 
@@ -138,10 +129,10 @@ class Profile(MixinAsDict, Base):
     # format: csv list of <employer:position:from:to>,
     job_history: Mapped[Optional[str]] = mapped_column(String, nullable=True)
 
-    # [SUPERVISOR CHANGEABLE FIELDS] #####################################################
+    # ------------------------- SUPERVISOR CHANGEABLE FIELDS ------------------------- #
     time_joined = Column(DateTime, nullable=True)
 
-    # [RELATIONAL FK FIELDS] #############################################################
+    # ----------------------------- RELATIONAL FK FIELDS ----------------------------- #
     # back reference from SocialNetwork
     social_networks: Mapped[List["SocialNetwork"]] = relationship(
         "SocialNetwork", back_populates="profile"
@@ -157,22 +148,22 @@ class Profile(MixinAsDict, Base):
         "RoleHoldership", back_populates="profile"
     )
 
-    # [AUTOMATIC/COMPUTED FIELDS] ########################################################
+    # --------------------------- AUTOMATIC/COMPUTED FIELDS -------------------------- #
     time_created = Column(DateTime(timezone=True), server_default=func.now())
     time_updated = Column(DateTime(timezone=True), onupdate=func.now())
 
     @hybrid_property
-    def tum_ai_semester(self):
+    def tum_ai_semester(self) -> relativedelta:
         """automatically computed by python from db model"""
         return relativedelta(datetime.now(), self.date_joined).years * 2
 
     @hybrid_property
-    def full_name(self):
+    def full_name(self) -> str:
         """automatically computed by python from db model"""
         return f"{self.first_name} {self.last_name}"
 
     @hybrid_property
-    def decoded_job_history(self):
+    def decoded_job_history(self) -> List[JobHistoryElement]:
         job_history = []
         if job_history and len(job_history) > 0:
             for entry in f"{job_history}".split(","):
@@ -192,23 +183,32 @@ class Profile(MixinAsDict, Base):
     def __repr__(self) -> str:
         return f"Profile(id={self.id}, fullname={self.full_name})"
 
-    #
     @classmethod
     def encode_job_history(cls, job_history: JobHistoryElement) -> Optional[str]:
         # encode job_history in csv of <employer:position:from:to>
-        encoded_history = ""
+        encoded_history: str | None = ""
         for hist in job_history:
             # TODO abstraction
             encoded_history = (
                 f"{encoded_history}{hist.employer}:{hist.position}:"
                 + f"{hist.date_from}:{hist.date_to},"
             )
-        if len(encoded_history) > 0:
+        if len(encoded_history or "") > 0:
             encoded_history = encoded_history[:-1]  # strip trailing comma
         else:
             encoded_history = None
 
         return encoded_history
+
+    def force_load(self) -> None:
+        for sn in self.social_networks:
+            if not sn.profile_id:
+                raise KeyError
+
+        for dm in self.department_memberships:
+            assert isinstance(dm, DepartmentMembership)
+            if not dm.profile_id or not dm.department_handle:
+                raise KeyError
 
 
 class SocialNetworkType(enum.Enum):
@@ -222,22 +222,22 @@ class SocialNetworkType(enum.Enum):
     OTHER = "Other"
 
 
-class SocialNetwork(MixinAsDict, Base):
+class SocialNetwork(MixinAsDict, SaBaseModel):
     """database model"""
 
     __tablename__ = "social_network"
 
-    # [MANAGED FIELDS] ###################################################################
+    # -------------------------------- MANAGED FIELDS -------------------------------- #
     profile_id: Mapped[int] = mapped_column(
         ForeignKey(Profile.id, ondelete="CASCADE"), primary_key=True
     )
     type = Column(Enum(SocialNetworkType), primary_key=True)
 
-    # [USER CHANGEABLE FIELDS] ###########################################################
+    # ---------------------------- USER CHANGEABLE FIELDS ---------------------------- #
     handle: Mapped[Optional[str]] = mapped_column(String(40), nullable=True)
     link: Mapped[Optional[str]] = mapped_column(String(1024), nullable=True)
 
-    # [RELATIONAL FK FIELDS] #############################################################
+    # ----------------------------- RELATIONAL FK FIELDS ----------------------------- #
     profile: Mapped["Profile"] = relationship(
         "Profile", back_populates="social_networks", cascade="all,delete"
     )
@@ -253,20 +253,20 @@ class SocialNetwork(MixinAsDict, Base):
         )
 
 
-class DepartmentMembership(MixinAsDict, Base):
+class DepartmentMembership(MixinAsDict, SaBaseModel):
     """database relation"""
 
     __tablename__ = "department_membership"
 
-    # [MANAGED FIELDS] ###################################################################
+    # -------------------------------- MANAGED FIELDS -------------------------------- #
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
 
-    # [SUPERVISOR CHANGEABLE FIELDS] #####################################################
+    # ------------------------- SUPERVISOR CHANGEABLE FIELDS ------------------------- #
     position = Column(Enum(PositionType), nullable=False)
     time_from = Column(DateTime, nullable=True)
     time_to = Column(DateTime, nullable=True)
 
-    # [RELATIONAL FK FIELDS] #############################################################
+    # ----------------------------- RELATIONAL FK FIELDS ----------------------------- #
     profile_id: Mapped[int] = mapped_column(
         ForeignKey(Profile.id, ondelete="CASCADE"), nullable=False
     )
@@ -284,11 +284,12 @@ class DepartmentMembership(MixinAsDict, Base):
     def __repr__(self) -> str:
         return (
             f"DepartmentMembership(id={self.profile_id!r} "
-            + f"({self.profile.full_name}), department_handle={self.department_handle!r})"
+            + f"({self.profile.first_name} {self.profile.last_name})"
+            + ", department_handle={self.department_handle!r})"
         )
 
 
-class Role(MixinAsDict, Base):
+class Role(MixinAsDict, SaBaseModel):
     """database relation"""
 
     __tablename__ = "role"
@@ -296,7 +297,7 @@ class Role(MixinAsDict, Base):
     handle: Mapped[str] = mapped_column(primary_key=True)
     description: Mapped[Optional[str]] = mapped_column(nullable=True)
 
-    # [RELATIONAL FK FIELDS] #############################################################
+    # ----------------------------- RELATIONAL FK FIELDS ----------------------------- #
 
     # back reference from RoleHoldership
     holderships: Mapped[List["RoleHoldership"]] = relationship(
@@ -307,12 +308,12 @@ class Role(MixinAsDict, Base):
         return f"Role(handle={self.handle!r}, description={self.description})"
 
 
-class RoleHoldership(MixinAsDict, Base):
+class RoleHoldership(MixinAsDict, SaBaseModel):
     """database relation"""
 
     __tablename__ = "role_holdership"
 
-    # [RELATIONAL FK FIELDS] #############################################################
+    # ----------------------------- RELATIONAL FK FIELDS ----------------------------- #
     profile_id: Mapped[int] = mapped_column(
         ForeignKey(Profile.id, ondelete="CASCADE"), primary_key=True, nullable=False
     )

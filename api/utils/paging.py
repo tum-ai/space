@@ -2,6 +2,7 @@ from functools import (
     wraps,
 )
 from typing import (
+    Any,
     Callable,
 )
 
@@ -16,10 +17,10 @@ from fastapi import (
 """
 
 
-def enable_paging(max_page_size: int = 1000):
-    def outer_wrapper(func: Callable):
+def enable_paging(max_page_size: int = 1000) -> Callable:
+    def outer_wrapper(func: Callable) -> Any:
         @wraps(func)
-        async def wrapper(request: Request, *args, **kwargs):
+        async def wrapper(request: Request, *args, **kwargs) -> Any:
             if "page_size" in kwargs and kwargs.get("page_size"):
                 kwargs.update(
                     {

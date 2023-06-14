@@ -2,6 +2,9 @@
 run-db:  # for running api locally outside of docker
 	sudo docker-compose up --build --remove-orphans -d space-db
 
+run-files:  # for running api locally outside of docker
+	sudo docker-compose up --build --remove-orphans -d space.files
+
 run:
 	sudo docker-compose up --build --remove-orphans -d
 

@@ -42,8 +42,12 @@ export const AuthContextProvider = ({ children }) => {
   };
 
   const login = (email, password) => {
-    return signInWithEmailAndPassword(auth, email, password);
-  };
+    return signInWithEmailAndPassword(auth, email, password)
+  }
+  
+  const getUserAuthToken = async  () => {
+    return await auth.currentUser?.getIdToken();
+  }
 
   const logout = async () => {
     setUser(null);
@@ -56,3 +60,4 @@ export const AuthContextProvider = ({ children }) => {
     </AuthContext.Provider>
   );
 };
+

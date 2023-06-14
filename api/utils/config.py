@@ -16,7 +16,7 @@ class Config:
     """
 
     # Creates config field for each configuration in config.yaml
-    def __init__(self):
+    def __init__(self) -> None:
         ROOT_PATH = Path(__file__)
         self.yaml_config_path = ROOT_PATH.parent.parent / "config.yaml"
         self.config_dict = yaml.safe_load(open(self.yaml_config_path))
@@ -25,7 +25,7 @@ class Config:
             for sub_config, value in self.config_dict[config].items():
                 setattr(self, sub_config, value)
 
-    def get(self, config_field: str):
+    def get(self, config_field: str) -> str:
         """
         This function returns the value of the config field.
         If the config field is not found, it will throw an error.

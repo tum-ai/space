@@ -20,12 +20,13 @@ class BaseResponse(BaseModel):
     # page_has_next: Optional[bool] = Field(None)
 
     @classmethod
-    def schema_wrapper(cls, data):
+    def schema_wrapper(cls, data) -> dict:
         return {
             "example": {
                 "status_code": 200,
                 "response_type": "success",
                 "description": "Operation successful",
+                "data": data,
             }
         }
 
