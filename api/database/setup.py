@@ -93,6 +93,7 @@ def upset_roles(engine: Engine) -> None:
         Role(handle="invite_members", description="Member Invitations"),
         Role(handle="role_assignment", description="Role Assignments"),
         Role(handle="create_certificate", description="Access Certification Rendering"),
+        Role(handle="submit_reviews", description="Submit Reviews Access"),
     ]
 
     with Session(engine) as session:
