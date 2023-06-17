@@ -181,31 +181,6 @@ class DepartmentMembershipOut(BaseModel):
         }
 
 
-# TODO: fix security logic; change attributes to whole Profile and Role
-class RoleHoldershipInOut(BaseModel):
-    profile_id: int
-    role_handle: str
-
-    @classmethod
-    def from_db_model(cls, role_holdership: RoleHoldership) -> "RoleHoldershipInOut":
-        return RoleHoldershipInOut(
-            profile_id=role_holdership.profile_id,
-            role_handle=role_holdership.role_handle,
-        )
-
-    @classmethod
-    def dummy(cls) -> "RoleHoldershipInOut":
-        return RoleHoldershipInOut.parse_obj(cls.Config.schema_extra["example"])
-
-    class Config:
-        schema_extra = {
-            "example": {
-                "profile_id": 42,
-                "role_handle": "admin",
-            }
-        }
-
-
 class ProfileInCreateUpdateBase(BaseModel):
     email: str
     phone: Optional[str]
@@ -294,7 +269,6 @@ class ProfileOut(BaseModel):
 
     social_networks: List["SocialNetworkOut"]
     department_memberships: List["DepartmentMembershipOut"]
-    role_holderships: List["RoleHoldershipInOut"]
 
     @classmethod
     def from_db_model(cls, profile: Profile) -> "ProfileOut":
@@ -321,9 +295,6 @@ class ProfileOut(BaseModel):
             department_memberships=[
                 DepartmentMembershipOut.from_db_model(s)
                 for s in profile.department_memberships
-            ],
-            role_holderships=[
-                RoleHoldershipInOut.from_db_model(s) for s in profile.role_holderships
             ],
         )
 
@@ -361,13 +332,32 @@ class ProfileOut(BaseModel):
                     DepartmentMembershipOut.dummy(),
                     DepartmentMembershipOut.dummy(),
                 ],
-                "role_holderships": [
-                    RoleHoldershipInOut.dummy(),
-                    RoleHoldershipInOut.dummy(),
-                ],
             }
         }
 
+# TODO: fix security logic; change attributes to whole Profile and Role
+class RoleHoldershipInOut(BaseModel):
+    profile: ProfileOut
+    role: RoleInOut
+
+    @classmethod
+    def from_db_model(cls, role_holdership: RoleHoldership) -> "RoleHoldershipInOut":
+        return RoleHoldershipInOut(
+            profile=ProfileOutPublic.from_db_model(role_holdership.profile),
+            role=RoleInOut.from_db_model(role_holdership.role),
+        )
+
+    @classmethod
+    def dummy(cls) -> "RoleHoldershipInOut":
+        return RoleHoldershipInOut.parse_obj(cls.Config.schema_extra["example"])
+
+    class Config:
+        schema_extra = {
+            "example": {
+                "profile": ProfileOut.dummy(),
+                "role": RoleInOut.dummy(),
+            }
+        }
 
 class ProfileOutPublic(BaseModel):
     id: int

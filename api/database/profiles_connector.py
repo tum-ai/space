@@ -109,8 +109,6 @@ def retrieve_or_create_db_profile_by_firebase_uid(
         else:
             if not db_model:
                 raise KeyError
-            for sn in db_model.role_holderships:
-                assert sn.profile_id
             db_model.force_load()
             return db_model
 
@@ -293,9 +291,6 @@ def update_db_profile(
         db_session.commit()
 
         db_profile.force_load()
-            
-        for sn in db_profile.role_holderships:
-            assert sn.profile_id
 
     return db_profile
 

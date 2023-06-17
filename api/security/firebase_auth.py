@@ -35,7 +35,6 @@ def verify_id_token(jwt: str) -> UserRecord | None:
         return user
     except Exception as e:
         print(e)
-        print("lol")
         return None
 
 
