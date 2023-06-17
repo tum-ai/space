@@ -49,7 +49,12 @@ function ProfileRow({ profile }) {
 							className='bg-white dark:bg-gray-700'
 							placeholder={'Roles'}
 							data={rolesModel.roles?.map((role) => ({
-								key: role.handle,
+								key: (
+									<div>
+										<b>{role.handle}: </b>
+										{role.description}
+									</div>
+								),
 								value: role.handle,
 							}))}
 							selectedItems={roleHolderships.map((role) => ({
@@ -57,7 +62,7 @@ function ProfileRow({ profile }) {
 								value: role,
 							}))}
 							setSelectedItems={async (items) => {
-								items = items.map((item) => item['key']);
+								items = items.map((item) => item['value']);
 								const newRoles = items.filter(
 									(item) => !roleHolderships.includes(item)
 								);
