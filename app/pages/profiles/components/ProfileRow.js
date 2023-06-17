@@ -42,25 +42,6 @@ function ProfileRow({ profile }) {
 					<div className='font-bold'>
 						{profile.first_name + ' ' + profile.last_name}
 					</div>
-					<div className={' font-light'}>
-						{profile.department || '-'}
-					</div>
-				</div>
-				{/* role */}
-				<div className='flex flex-col items-start col-span-2'>
-					<div className='text-xs text-gray-400 font-light'>ROLE</div>
-					<div className='font-light text-sm'>
-						{profile.role || '-'}
-					</div>
-				</div>
-				{/* description  */}
-				<div className='flex flex-col items-start col-span-2'>
-					<div className='text-xs text-gray-400 font-light'>
-						DESCRIPTION
-					</div>
-					<div className='font-light text-sm'>
-						{profile.description || '-'}
-					</div>
 				</div>
 				<ProtectedItem roles={['admin']}>
 					<div className='col-span-2'>

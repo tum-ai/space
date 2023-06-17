@@ -27,12 +27,6 @@ export class ProfilesModel {
 		this.profiles = profiles;
 	}
 
-	getDepartments() {
-		const departmentsSet = new Set(
-			this.profiles.map((profile) => profile.department)
-		);
-		return Array.from(departmentsSet);
-	}
 	getRoles() {
 		const rolesSet = new Set(this.profiles.map((profile) => profile.role));
 		return Array.from(rolesSet);
@@ -55,7 +49,18 @@ export class ProfilesModel {
 	filterProfiles() {
 		this.filteredProfiles = this.profiles.filter((profile) => {
 			for (const key in this.filter) {
-				if (this.filter[key] && profile[key] != this.filter[key]) {
+				if (key == 'role') {
+					if (
+						!this.root.rolesModel.roleHolderships[
+							profile.id
+						]?.includes(this.filter[key])
+					) {
+						return false;
+					}
+				} else if (
+					this.filter[key] &&
+					profile[key] != this.filter[key]
+				) {
 					return false;
 				}
 			}

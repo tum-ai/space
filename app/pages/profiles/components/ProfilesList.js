@@ -1,11 +1,12 @@
 import { observer } from 'mobx-react';
+import ProtectedItem from '../../../components/ProtectedItem';
 import ProfileRow from './ProfileRow';
 import Icon from '/components/Icon';
 import Select from '/components/Select';
 import { useStores } from '/providers/StoreProvider';
 
 function ProfilesList() {
-	const { profilesModel } = useStores();
+	const { profilesModel, rolesModel } = useStores();
 
 	return (
 		<div className='flex flex-col space-y-4'>
@@ -46,57 +47,35 @@ function ProfilesList() {
 							</button>
 						)}
 					</div>
-					<Select
-						className='bg-white dark:bg-gray-700'
-						placeholder={'Department'}
-						data={[
-							{ key: 'all', value: null },
-							...profilesModel
-								.getDepartments()
-								.map((department) => ({
-									key: department,
-									value: department,
-								})),
-						]}
-						selectedItem={{
-							key: profilesModel.filter.department,
-							value: profilesModel.filter.department,
-						}}
-						setSelectedItem={(item) => {
-							profilesModel.setFilter(
-								'department',
-								item ? item.value : ''
-							);
-						}}
-					/>
-					<Select
-						className='bg-white dark:bg-gray-700'
-						placeholder={'Role'}
-						data={[
-							{ key: 'all', value: null },
-							...profilesModel.getRoles().map((role) => ({
-								key: role,
-								value: role,
-							})),
-						]}
-						selectedItem={{
-							key: profilesModel.filter.role,
-							value: profilesModel.filter.role,
-						}}
-						setSelectedItem={(item) => {
-							profilesModel.setFilter(
-								'role',
-								item ? item.value : ''
-							);
-						}}
-					/>
+					<ProtectedItem roles={['admin']}>
+						<Select
+							className='bg-white dark:bg-gray-700'
+							placeholder={'Role'}
+							data={[
+								{ key: 'all', value: null },
+								...(rolesModel.roles?.map((role) => ({
+									key: role['handle'],
+									value: role['handle'],
+								})) || []),
+							]}
+							selectedItem={{
+								key: profilesModel.filter.role,
+								value: profilesModel.filter.role,
+							}}
+							setSelectedItem={(item) => {
+								profilesModel.setFilter(
+									'role',
+									item ? item.value : ''
+								);
+							}}
+						/>
+					</ProtectedItem>
 					<Select
 						className='bg-white dark:bg-gray-700'
 						placeholder={'Sort by'}
 						data={[
 							{ key: 'none', value: null },
 							{ key: 'name', value: 'first_name' },
-							{ key: 'department', value: 'department' },
 						]}
 						selectedItem={{
 							key: profilesModel.sortBy,
