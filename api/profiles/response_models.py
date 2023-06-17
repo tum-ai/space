@@ -7,8 +7,14 @@ from profiles.api_models import (
     RoleHoldershipInOut,
     RoleHoldershipUpdateInOut,
     RoleInOut,
+    DepartmentMembershipWithShortProfileOut,
 )
 from utils.response import BaseResponse
+
+
+# ------------------------------------------------------------------------------------ #
+#                              Department Response Models                              #
+# ------------------------------------------------------------------------------------ #
 
 
 class ResponseDepartmentList(BaseResponse):
@@ -25,6 +31,73 @@ class ResponseDepartment(BaseResponse):
 
     class Config:
         schema_extra = BaseResponse.schema_wrapper(DepartmentOut.dummy())
+
+
+# ------------------------------------------------------------------------------------ #
+#                                Profile Response Models                               #
+# ------------------------------------------------------------------------------------ #
+
+
+class ResponseProfile(BaseResponse):
+    data: ProfileOut
+
+    class Config:
+        schema_extra = BaseResponse.schema_wrapper(ProfileOut.dummy())
+
+
+class ResponsePublicProfile(BaseResponse):
+    data: ProfileOutPublic
+
+    class Config:
+        schema_extra = BaseResponse.schema_wrapper(ProfileOutPublic.dummy())
+
+
+class ResponseProfileList(BaseResponse):
+    data: List[ProfileOut]
+
+    class Config:
+        schema_extra = BaseResponse.schema_wrapper(
+            [ProfileOut.dummy(), ProfileOut.dummy()]
+        )
+
+
+class ResponsePublicProfileList(BaseResponse):
+    data: List[ProfileOutPublic]
+
+    class Config:
+        schema_extra = BaseResponse.schema_wrapper(
+            [
+                ProfileOutPublic.dummy(),
+                ProfileOutPublic.dummy(),
+            ]
+        )
+
+
+class ResponseDeletedIntPKList(BaseResponse):
+    """data contains ids of deleted profiles"""
+
+    data: List[int]
+
+    class Config:
+        schema_extra = BaseResponse.schema_wrapper([43, 32])
+
+
+# ------------------------------------------------------------------------------------ #
+#                           Member Management Response Models                          #
+# ------------------------------------------------------------------------------------ #
+
+
+class ResponseInviteProfilesList(BaseResponse):
+    succeeded: List[ProfileOut]
+    failed: List[Any]
+
+    class Config:
+        schema_extra = BaseResponse.schema_wrapper([])  # TODO
+
+
+# ------------------------------------------------------------------------------------ #
+#                       Authorization Management Response Models                       #
+# ------------------------------------------------------------------------------------ #
 
 
 class ResponseRoleList(BaseResponse):
@@ -53,54 +126,33 @@ class ResponseRoleHoldershipUpdateList(BaseResponse):
         schema_extra = BaseResponse.schema_wrapper([])  # TODO
 
 
-class ResponseProfile(BaseResponse):
-    data: ProfileOut
+# ------------------------------------------------------------------------------------ #
+#                         DepartmemtMembership Response Models                         #
+# ------------------------------------------------------------------------------------ #
+
+
+class ResponseDepartmentMembershipWithProfileList(BaseResponse):
+    data: List[DepartmentMembershipWithShortProfileOut]
 
     class Config:
-        schema_extra = BaseResponse.schema_wrapper(ProfileOut.dummy())
+        schema_extra = BaseResponse.schema_wrapper([
+            DepartmentMembershipWithShortProfileOut.dummy(),
+        ])
 
 
-class ResponsePublicProfile(BaseResponse):
-    data: ProfileOutPublic
+class ResponseDepartmentMembershipWithProfile(BaseResponse):
+    data: DepartmentMembershipWithShortProfileOut
 
     class Config:
-        schema_extra = BaseResponse.schema_wrapper(ProfileOutPublic.dummy())
+        schema_extra = BaseResponse.schema_wrapper(
+            DepartmentMembershipWithShortProfileOut.dummy(),
+        )
 
 
-class ResponseInviteProfilesList(BaseResponse):
-    succeeded: List[ProfileOut]
+class ResponseDepartmentMembershipCreateUpdateList(BaseResponse):
+    succeeded: List[DepartmentMembershipWithShortProfileOut]
     failed: List[Any]
 
     class Config:
-        schema_extra = BaseResponse.schema_wrapper([])  # TODO
-
-
-class ResponseProfileList(BaseResponse):
-    data: List[ProfileOut]
-
-    class Config:
-        schema_extra = BaseResponse.schema_wrapper(
-            [ProfileOut.dummy(), ProfileOut.dummy()]
-        )
-
-
-class ResponsePublicProfileList(BaseResponse):
-    data: List[ProfileOutPublic]
-
-    class Config:
-        schema_extra = BaseResponse.schema_wrapper(
-            [
-                ProfileOutPublic.dummy(),
-                ProfileOutPublic.dummy(),
-            ]
-        )
-
-
-class ResponseDeletedProfileList(BaseResponse):
-    """data contains ids of deleted profiles"""
-
-    data: List[int]
-
-    class Config:
-        schema_extra = BaseResponse.schema_wrapper([43, 32])
+        schema_extra = BaseResponse.schema_wrapper([])
 

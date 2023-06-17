@@ -288,6 +288,14 @@ class DepartmentMembership(MixinAsDict, SaBaseModel):
             + ", department_handle={self.department_handle!r})"
         )
 
+    def force_load(self) -> None:
+        if not self.profile_id or not self.profile.id:
+            raise KeyError
+        
+        if not self.department or not self.department.handle:
+            raise KeyError
+
+
 
 class Role(MixinAsDict, SaBaseModel):
     """database relation"""
