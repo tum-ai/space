@@ -4,7 +4,6 @@ export class RolesModel {
 	root;
 	roleHolderships = [];
 	roles = [];
-	loading = true;
 
 	constructor(root) {
 		this.root = root;
@@ -32,13 +31,11 @@ export class RolesModel {
 			);
 		}
 		this.roleHolderships = rolesObject;
-		this.loading = false;
 	}
 
 	async getRoles() {
 		const roles = await this.root.GET('/roles');
 		this.roles = roles;
-		this.loading = false;
 	}
 
 	async updateRoles(roles) {
