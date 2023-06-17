@@ -3,7 +3,6 @@ import { makeAutoObservable } from 'mobx';
 export class MeModel {
 	root;
 	editorProfile = {};
-	loading = true;
 
 	constructor(root) {
 		this.root = root;
