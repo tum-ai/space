@@ -14,6 +14,10 @@ export class RolesModel {
 		this.getRoles();
 	}
 
+	setProfileRoles(profileId, roles) {
+		this.roleHolderships[profileId] = roles;
+	}
+
 	async getRoleHolderships() {
 		const roleHolderships = await this.root.GET('/role/holderships');
 		if (!roleHolderships) return;

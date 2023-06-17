@@ -95,7 +95,7 @@ function ProfileRow({ profile }) {
 									method: method,
 								}));
 								await rolesModel.updateRoles(data);
-								rolesModel.roleHolderships[profile.id] = items;
+								rolesModel.setProfileRoles(profile.id, items);
 							}}
 						></SelectMultiple>
 					</div>

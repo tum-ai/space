@@ -33,6 +33,7 @@ function Links() {
 			{links.map((link) => {
 				const component = (
 					<Link
+						key={link['path']}
 						onClick={() => {
 							uiModel.setNavBarActive(false);
 						}}
@@ -47,7 +48,7 @@ function Links() {
 				);
 				if (link.protected) {
 					return (
-						<ProtectedItem roles={link.roles}>
+						<ProtectedItem key={link['path']} roles={link.roles}>
 							{component}
 						</ProtectedItem>
 					);

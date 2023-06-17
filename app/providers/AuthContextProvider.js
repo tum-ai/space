@@ -39,7 +39,6 @@ export const AuthContextProvider = ({ children }) => {
 
 		return () => unsubscribe();
 	}, []);
-	console.log(user);
 
 	const signup = (email, password) => {
 		return createUserWithEmailAndPassword(auth, email, password);

@@ -8,7 +8,7 @@ function ProfilesList() {
 	const { profilesModel } = useStores();
 
 	return (
-		<div className='flex flex-col space-y-2'>
+		<div className='flex flex-col space-y-4'>
 			<div className='flex flex-col space-y-10 justify-end'>
 				<div className='font-light text-gray-500 mt-2'>
 					Total {profilesModel.filteredProfiles.length} members
