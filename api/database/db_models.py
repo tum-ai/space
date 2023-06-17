@@ -55,14 +55,14 @@ class Department(MixinAsDict, SaBaseModel):
 
     __tablename__ = "department"
 
-    # [MANAGED FIELDS] ###################################################################
+    # -------------------------------- MANAGED FIELDS -------------------------------- #
     handle: Mapped[str] = mapped_column(String(20), primary_key=True)
 
-    # [USER CHANGEABLE FIELDS] ###########################################################
+    # ---------------------------- USER CHANGEABLE FIELDS ---------------------------- #
     name: Mapped[str] = mapped_column(String(80), unique=True, nullable=False)
     description: Mapped[Optional[str]] = mapped_column(String(2048), nullable=True)
 
-    # [RELATIONAL FK FIELDS] #############################################################
+    # ----------------------------- RELATIONAL FK FIELDS ----------------------------- #
     # back reference from DepartmentMembership
     memberships: Mapped[List["DepartmentMembership"]] = relationship(
         "DepartmentMembership", back_populates="department"
@@ -98,13 +98,13 @@ class Profile(MixinAsDict, SaBaseModel):
 
     __tablename__ = "profile"
 
-    # [MANAGED FIELDS] ###################################################################
+    # -------------------------------- MANAGED FIELDS -------------------------------- #
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     firebase_uid: Mapped[str] = mapped_column(
         String, unique=True, index=True, nullable=False
     )
 
-    # [USER CHANGEABLE FIELDS] ###########################################################
+    # ---------------------------- USER CHANGEABLE FIELDS ---------------------------- #
     email: Mapped[str] = mapped_column(String(200), index=True, nullable=False)
     phone: Mapped[Optional[str]] = mapped_column(String(50), index=True, nullable=True)
 
@@ -129,10 +129,10 @@ class Profile(MixinAsDict, SaBaseModel):
     # format: csv list of <employer:position:from:to>,
     job_history: Mapped[Optional[str]] = mapped_column(String, nullable=True)
 
-    # [SUPERVISOR CHANGEABLE FIELDS] #####################################################
+    # ------------------------- SUPERVISOR CHANGEABLE FIELDS ------------------------- #
     time_joined = Column(DateTime, nullable=True)
 
-    # [RELATIONAL FK FIELDS] #############################################################
+    # ----------------------------- RELATIONAL FK FIELDS ----------------------------- #
     # back reference from SocialNetwork
     social_networks: Mapped[List["SocialNetwork"]] = relationship(
         "SocialNetwork", back_populates="profile"
@@ -148,7 +148,7 @@ class Profile(MixinAsDict, SaBaseModel):
         "RoleHoldership", back_populates="profile"
     )
 
-    # [AUTOMATIC/COMPUTED FIELDS] ########################################################
+    # --------------------------- AUTOMATIC/COMPUTED FIELDS -------------------------- #
     time_created = Column(DateTime(timezone=True), server_default=func.now())
     time_updated = Column(DateTime(timezone=True), onupdate=func.now())
 
@@ -227,17 +227,17 @@ class SocialNetwork(MixinAsDict, SaBaseModel):
 
     __tablename__ = "social_network"
 
-    # [MANAGED FIELDS] ###################################################################
+    # -------------------------------- MANAGED FIELDS -------------------------------- #
     profile_id: Mapped[int] = mapped_column(
         ForeignKey(Profile.id, ondelete="CASCADE"), primary_key=True
     )
     type = Column(Enum(SocialNetworkType), primary_key=True)
 
-    # [USER CHANGEABLE FIELDS] ###########################################################
+    # ---------------------------- USER CHANGEABLE FIELDS ---------------------------- #
     handle: Mapped[Optional[str]] = mapped_column(String(40), nullable=True)
     link: Mapped[Optional[str]] = mapped_column(String(1024), nullable=True)
 
-    # [RELATIONAL FK FIELDS] #############################################################
+    # ----------------------------- RELATIONAL FK FIELDS ----------------------------- #
     profile: Mapped["Profile"] = relationship(
         "Profile", back_populates="social_networks", cascade="all,delete"
     )
@@ -258,15 +258,15 @@ class DepartmentMembership(MixinAsDict, SaBaseModel):
 
     __tablename__ = "department_membership"
 
-    # [MANAGED FIELDS] ###################################################################
+    # -------------------------------- MANAGED FIELDS -------------------------------- #
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
 
-    # [SUPERVISOR CHANGEABLE FIELDS] #####################################################
+    # ------------------------- SUPERVISOR CHANGEABLE FIELDS ------------------------- #
     position = Column(Enum(PositionType), nullable=False)
     time_from = Column(DateTime, nullable=True)
     time_to = Column(DateTime, nullable=True)
 
-    # [RELATIONAL FK FIELDS] #############################################################
+    # ----------------------------- RELATIONAL FK FIELDS ----------------------------- #
     profile_id: Mapped[int] = mapped_column(
         ForeignKey(Profile.id, ondelete="CASCADE"), nullable=False
     )
@@ -297,7 +297,7 @@ class Role(MixinAsDict, SaBaseModel):
     handle: Mapped[str] = mapped_column(primary_key=True)
     description: Mapped[Optional[str]] = mapped_column(nullable=True)
 
-    # [RELATIONAL FK FIELDS] #############################################################
+    # ----------------------------- RELATIONAL FK FIELDS ----------------------------- #
 
     # back reference from RoleHoldership
     holderships: Mapped[List["RoleHoldership"]] = relationship(
@@ -313,7 +313,7 @@ class RoleHoldership(MixinAsDict, SaBaseModel):
 
     __tablename__ = "role_holdership"
 
-    # [RELATIONAL FK FIELDS] #############################################################
+    # ----------------------------- RELATIONAL FK FIELDS ----------------------------- #
     profile_id: Mapped[int] = mapped_column(
         ForeignKey(Profile.id, ondelete="CASCADE"), primary_key=True, nullable=False
     )

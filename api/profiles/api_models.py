@@ -8,10 +8,6 @@ from typing import (
     Optional,
 )
 
-from pydantic import (
-    BaseModel,
-)
-
 from database.db_models import (
     Department,
     DepartmentMembership,
@@ -21,17 +17,13 @@ from database.db_models import (
     Role,
     RoleHoldership,
     SocialNetwork,
-    SocialNetworkType,
+    SocialNetworkType
 )
+from pydantic import BaseModel
 
-# department operations ##################################################################
-
-# class DepartmentCreate(BaseModel):
-# creation only via postgres directly!
-
-
-# class DepartmentUpdate(BaseModel):
-# update only via postgres directly!
+# ------------------------------------------------------------------------------------ #
+#                                 department operations                                #
+# ------------------------------------------------------------------------------------ #
 
 
 class DepartmentOut(BaseModel):
@@ -52,9 +44,6 @@ class DepartmentOut(BaseModel):
     def dummy(cls) -> "DepartmentOut":
         return DepartmentOut.parse_obj(cls.Config.schema_extra["example"])
 
-    # TODO evaluate if member this here (or first 10 members) or in separate endpoint
-    # TODO most recent projects? or in extra endpoint
-
     class Config:
         schema_extra = {
             "example": {
@@ -66,7 +55,9 @@ class DepartmentOut(BaseModel):
         }
 
 
-# profile operations #####################################################################
+# ------------------------------------------------------------------------------------ #
+#                                  profile operations                                  #
+# ------------------------------------------------------------------------------------ #
 
 
 class RoleInOut(BaseModel):
@@ -107,8 +98,8 @@ class ProfileMemberInvitation(BaseModel):
                 "email": "test@mymail.com",
                 "first_name": "Max",
                 "last_name": "Mustermann",
-                "department_handle": "DEV",
-                "department_position": "MEMBER",
+                "department_handle": "dev",
+                "department_position": "Member",
             }
         }
 
@@ -460,6 +451,36 @@ class UpdateProfile(BaseModel):
         template = "profiles"
 
 
+ # ----------------------------------------------------------------------------------- #
+ #                         Authorization Management operations                         #
+ # ----------------------------------------------------------------------------------- #
+
+
+
+class RoleHoldershipInOut(BaseModel):
+    profile: ProfileOutPublic
+    role: RoleInOut
+
+    @classmethod
+    def from_db_model(cls, role_holdership: RoleHoldership) -> "RoleHoldershipInOut":
+        return RoleHoldershipInOut(
+            profile=ProfileOutPublic.from_db_model(role_holdership.profile),
+            role=RoleInOut.from_db_model(role_holdership.role),
+        )
+
+    @classmethod
+    def dummy(cls) -> "RoleHoldershipInOut":
+        return RoleHoldershipInOut.parse_obj(cls.Config.schema_extra["example"])
+
+    class Config:
+        schema_extra = {
+            "example": {
+                "profile": ProfileOutPublic.dummy(),
+                "role": RoleInOut.dummy(),
+            }
+        }
+
+
 class RoleHoldershipUpdateInOut(BaseModel):
     profile_id: int
     role_handle: str
@@ -487,3 +508,10 @@ class RoleHoldershipUpdateInOut(BaseModel):
                 "method": "create",
             }
         }
+
+
+# ------------------------------------------------------------------------------------ #
+#                      DepartmemtMembership management operations                      #
+# ------------------------------------------------------------------------------------ #
+
+# TODO

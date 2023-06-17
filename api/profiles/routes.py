@@ -1,6 +1,5 @@
 from typing import (
     Annotated,
-    Any,
     List,
     Optional,
     Union,
@@ -10,6 +9,19 @@ from fastapi import (
     APIRouter,
     Body,
     Request,
+)
+from profiles.response_models import (
+    ResponseDepartmentList,
+    ResponseDepartment,
+    ResponseRoleList,
+    ResponseRoleHoldershipList,
+    ResponseRoleHoldershipUpdateList,
+    ResponseProfile,
+    ResponsePublicProfile,
+    ResponseInviteProfilesList,
+    ResponseProfileList,
+    ResponsePublicProfileList,
+    ResponseDeletedProfileList,
 )
 
 from database.db_models import (
@@ -53,106 +65,13 @@ from utils.response import (
     ErrorResponse,
 )
 
+
 router = APIRouter()
 
-# response types #########################################################################
 
-
-class ResponseDepartmentList(BaseResponse):
-    data: List[DepartmentOut]
-
-    class Config:
-        schema_extra = BaseResponse.schema_wrapper(
-            [DepartmentOut.dummy(), DepartmentOut.dummy()]
-        )
-
-
-class ResponseDepartment(BaseResponse):
-    data: DepartmentOut
-
-    class Config:
-        schema_extra = BaseResponse.schema_wrapper(DepartmentOut.dummy())
-
-
-class ResponseRoleList(BaseResponse):
-    data: List[RoleInOut]
-
-    class Config:
-        schema_extra = BaseResponse.schema_wrapper(
-            [RoleInOut.dummy(), RoleInOut.dummy()]
-        )
-
-
-class ResponseRoleHoldershipList(BaseResponse):
-    data: List[RoleHoldershipInOut]
-
-    class Config:
-        schema_extra = BaseResponse.schema_wrapper(
-            [RoleHoldershipInOut.dummy(), RoleHoldershipInOut.dummy()]
-        )
-
-
-class ResponseRoleHoldershipUpdateList(BaseResponse):
-    succeeded: List[RoleHoldershipUpdateInOut]
-    failed: List[Any]
-
-    class Config:
-        schema_extra = BaseResponse.schema_wrapper([])  # TODO
-
-
-class ResponseProfile(BaseResponse):
-    data: ProfileOut
-
-    class Config:
-        schema_extra = BaseResponse.schema_wrapper(ProfileOut.dummy())
-
-
-class ResponsePublicProfile(BaseResponse):
-    data: ProfileOutPublic
-
-    class Config:
-        schema_extra = BaseResponse.schema_wrapper(ProfileOutPublic.dummy())
-
-
-class ResponseInviteProfilesList(BaseResponse):
-    succeeded: List[ProfileOut]
-    failed: List[Any]
-
-    class Config:
-        schema_extra = BaseResponse.schema_wrapper([])  # TODO
-
-
-class ResponseProfileList(BaseResponse):
-    data: List[ProfileOut]
-
-    class Config:
-        schema_extra = BaseResponse.schema_wrapper(
-            [ProfileOut.dummy(), ProfileOut.dummy()]
-        )
-
-
-class ResponsePublicProfileList(BaseResponse):
-    data: List[ProfileOutPublic]
-
-    class Config:
-        schema_extra = BaseResponse.schema_wrapper(
-            [
-                ProfileOutPublic.dummy(),
-                ProfileOutPublic.dummy(),
-            ]
-        )
-
-
-class ResponseDeletedProfileList(BaseResponse):
-    """data contains ids of deleted profiles"""
-
-    data: List[int]
-
-    class Config:
-        schema_extra = BaseResponse.schema_wrapper([43, 32])
-
-
-# department operations ##################################################################
+# ------------------------------------------------------------------------------------ #
+#                                 Department Endpoints                                 #
+# ------------------------------------------------------------------------------------ #
 
 
 @router.get(
@@ -499,4 +418,123 @@ def update_current_profile(
     }
 
 
-# TODO department membership maintainance
+# ------------------------------------------------------------------------------------ #
+#                              Member Management endpoints                             #
+# ------------------------------------------------------------------------------------ #
+
+
+@router.post(
+    "/profiles/invite/members",
+    response_description="Create Profiles for new members and sendout \
+        invitation emails",
+    response_model=Union[ResponseInviteProfilesList, ErrorResponse],
+)
+@error_handlers
+@ensure_authorization(
+    any_of_positions=[(PositionType.TEAMLEAD, "community"), (None, "board")],
+    any_of_roles=["invite_members"],
+)
+def invite_members(
+    request: Request,
+    data: Annotated[List[ProfileMemberInvitation], Body(embed=True)],
+) -> dict:
+    created_profiles, error_profiles = invite_new_members(
+        request.app.state.sql_engine, data
+    )
+    created_profiles_out = [ProfileOut.from_db_model(p) for p in created_profiles]
+    error_profiles_out = [
+        {"data": err_data, "error": err} for err_data, err in error_profiles
+    ]
+    return {
+        "status_code": 200,
+        "response_type": "success",
+        "description": "Members invited successfully",
+        "succeeded": created_profiles_out,
+        "failed": error_profiles_out,
+    }
+
+
+# ------------------------------------------------------------------------------------ #
+#                          Authorization Management Endpoints                          #
+# ------------------------------------------------------------------------------------ #
+
+
+@router.get(
+    "/roles",
+    response_description="List all roles availlable in TUM.ai Space",
+    response_model=Union[ResponseRoleList, ErrorResponse],
+)
+@error_handlers
+@ensure_authenticated
+def list_roles(request: Request) -> dict:
+    db_roles = list_db_roles(request.app.state.sql_engine)
+    out_roles: List[RoleInOut] = [RoleInOut.from_db_model(r) for r in db_roles]
+    return {
+        "status_code": 200,
+        "response_type": "success",
+        "description": "Members invited successfully",
+        "data": out_roles,
+    }
+
+
+@router.get(
+    "/role/holderships",
+    response_description="List all role assignments in TUM.ai Space",
+    response_model=Union[ResponseRoleHoldershipList, ErrorResponse],
+)
+@error_handlers
+@ensure_authorization(
+    any_of_positions=[(PositionType.TEAMLEAD, None), (None, "board")],
+    any_of_roles=["role_assignment"],
+)
+def list_role_holderships(
+    request: Request,
+    profile_id: Optional[int] = None,
+    role_handle: Optional[str] = None,
+) -> dict:
+    db_role_holderships = list_db_roleholderships(
+        request.app.state.sql_engine, profile_id, role_handle
+    )
+    out_roles = [RoleHoldershipInOut.from_db_model(rh) for rh in db_role_holderships]
+    return {
+        "status_code": 200,
+        "response_type": "success",
+        "description": "Role holderships successfully retrieved",
+        "data": out_roles,
+    }
+
+
+@router.patch(
+    "/role/holderships",
+    response_description="Update role assignments in TUM.ai Space",
+    response_model=Union[ResponseRoleHoldershipUpdateList, ErrorResponse],
+)
+@error_handlers
+@ensure_authorization(
+    any_of_positions=[(PositionType.TEAMLEAD, None), (None, "board")],
+    any_of_roles=["role_assignment"],
+)
+def update_role_holderships(
+    request: Request,
+    data: Annotated[List[RoleHoldershipUpdateInOut], Body(embed=True)],
+) -> dict:
+    out_holdersips, failed_holderships = update_db_roleholderships(
+        request.app.state.sql_engine, data
+    )
+    failed_holderships_out = [
+        {"data": err_data, "error": err} for err_data, err in failed_holderships
+    ]
+    return {
+        "status_code": 200,
+        "response_type": "success",
+        "description": "Updated role holderships successfully",
+        "succeeded": out_holdersips,
+        "failed": failed_holderships_out,
+    }
+
+
+# ------------------------------------------------------------------------------------ #
+#                       DepartmemtMembership management endpoints                      #
+# ------------------------------------------------------------------------------------ #
+
+# TODO

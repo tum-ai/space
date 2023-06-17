@@ -1,6 +1,8 @@
 version: '3.9'
 services:
-    # [BACKEND DB] ########################################################
+    # -------------------------------------------------------------------------------- #
+    #                                    BACKEND DB                                    #
+    # -------------------------------------------------------------------------------- #
     space-db:
         image: postgres:14-alpine
         restart: unless-stopped
@@ -17,7 +19,9 @@ services:
         networks:
             - backend-net
 
-    # [BACKEND API] #######################################################
+    # -------------------------------------------------------------------------------- #
+    #                                    BACKEND API                                   #
+    # -------------------------------------------------------------------------------- #
     tum-ai-space-api:
         image: tum-ai-space-api
         build: ./api
@@ -40,6 +44,18 @@ services:
             - DB_NAME=space-db
             - DB_USER=space-db
             - DB_PASSWORD=space-db
+
+    # [CERTIFICATION API] #################################################
+    space.files:
+        image: httpd:latest
+        container_name: space.files
+        hostname: space.files
+        ports:
+            - '9990:80'
+        volumes:
+            - ./.fileserver:/usr/local/apache2/htdocs
+        networks:
+            - backend-net
 
 networks:
     backend-net:

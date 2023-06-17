@@ -5,7 +5,7 @@ TUM.ai space is a system that tackles and solves three main issues:
   3. Combine existing systems like application systems into a more managable and extensible format
 
 ## Organization
-Project planning is done over [Linear](https://linear.app/tum-ai/project/tumai-space-5b8716e29acb). All relevant issues and tasks are placed there, the GitHub issues in this repository are outdated and will slowly be removed.
+Project planning is done over [Linear](https://linear.app/tum-ai/project/tumai-space-5b8716e29acb). All relevant issues and tasks are placed there, the GitHub issues in this repository are not relevant and will not be pursued.
 
 See [here](#working-on-a-linear-ticket) for how to work and develop on a Linear ticket.
 
@@ -25,15 +25,12 @@ Make sure to have the following installed before running ```make```:
 - Python 3.10, consider using [pyenv](https://github.com/pyenv/pyenv), see [here](https://github.com/pyenv/pyenv#automatic-installer) for installation
 - Brew, see [here](https://brew.sh) for installation
 - Docker with the Compose plugin, see [here](https://docs.docker.com/get-docker/) for installation
+- **Signing your commits with GPG** is highly encouraged. It is not enforced though!
 
 Also make sure to have [pre-commit](https://pre-commit.com) installed by running ```pre-commit install``` once.
 
 ### Running the project
-Note: this setup guide currently only works on Linux systems as-is. 
-
-# TODO: rewrite acc. to /Makefile /api/Makefile /app/Makefile (try out first)
-
-1. Initial setup
+**Initial setup**
   - Create `/api/.env`
     ```
     environment=development
@@ -43,54 +40,49 @@ Note: this setup guide currently only works on Linux systems as-is.
     DB_USER=space-db
     DB_PASSWORD=space-db
     ```
-
+  - Create `/app/.env`
+    ```
+    environment=development
+    ```
   - Add Firebase Admin SDK Certificate (for staging env): Dev environment will use authentication of Staging Firebase project [Secrets file on Notion](https://www.notion.so/tum-ai/c893a21fc7034d3aa44f40d28fd71373?v=65bb26a99f124632ac28a8eabe3bf066)
     ```bash
     # store as /api/.secrets/tumai-space-firebase-adminsdk.json
     ```
 
-2. Start backend
-  Run the following from the root of the project
-    ```bash
-    make run
-
-    # outside of docker:
-    uvicorn main:app --host 0.0.0.0 --reload --port 8000
-
-    # with production wdgi server
-    cd api/ && ./startup.sh
-    ```
-3. Start frontend
-  Run the following from the root of the project
-    ```bash
-    # ensure your backend / db is running
-    cd app && npm run start
-    ```
-4. To start the auth web app (you might need to install next.js first):
-    ```bash
-    # optional (advanced) ----------------------------------------------------
-    # running node outside of docker:
-    cd auth-web-app
-    # maybe necessary: npm i next
-    npm run dev
-    # ------------------------------------------------------------------------
-    ```
-  
-To verify the installation and setup try out the following: 
-- Visit http://auth.tum-ai-dev.com:15950/, you should be redirected to the login page.
-- Visit http://api.tum-ai-dev.com:15950/auth/dashboard to see all the registered users.
-- Visit http://api.tum-ai-dev.com:15950/docs to see the dashboard of the available routes.
 ### Running it
 **Backend**
-```make run docker```
-or 
-```make run api```
-**Frontend**
-```npm run dev``` in ```app/```
+
+```bash
+make run  # in root dir (launch api in docker container)
+```
+
+or (recommended):
+
+```bash
+uvicorn main:app --host 0.0.0.0 --reload --port 8000
+```
+
+**Frontend** in ```app/```
+```bash
+npm run dev
+``` 
 
 **Using the precommit hook**
-```pre-commit run --all``` to trigger this manually
-```pre-commit install``` to trigger this on every commit
+
+to trigger this manually:
+```bash
+pre-commit run --all
+```
+
+trigger this on every commit:
+```bash
+pre-commit install
+```
+
+**Deploying to Firebase (hosting) manually / using Firebase local emulators:**
+
+Consider checking out the commands listed in /app/Makefile.
+> Please only use them if you know what you are doing!
 
 ### Working on a Linear ticket
 Working with Linear tickets is very similar to working with GitHub issues.
@@ -129,9 +121,11 @@ Alternatively, checkout the [/api/README.md](https://github.com/tum-ai/space/tre
 
 Documentation on the [frontend](https://www.notion.so/tum-ai/Frontend-Development-Guide-Documentation-259fdf1c5c1446d29fee4f16a39d4c0c?pvs=4) and [backend](https://www.notion.so/tum-ai/Backend-Development-Guide-Documentation-4c408603fb65439d94293c5189435770?pvs=4) as well as instructions on how to add services, pages etc. can be seen on the linked Notion pages.
 
+### FAQ
+A FAQ section with common errors and how to solve them can be found on [this](https://www.notion.so/tum-ai/Space-10953cc88e334d61a1fb37744bc72291?pvs=4) Notion page, documenting the project.
+
 **DevOps**:
 - Deployed on Azure
-- (currently, will be replaced by Azure service) [`Traefik`](https://traefik.io/) as a reverse proxy 
 - [`Firebase`](https://firebase.com/) for managing authentication
 - [`Docker`](https://www.docker.com/) with [`Docker Compose`](https://docs.docker.com/compose/) for containerization and orchestration
 
