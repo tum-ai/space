@@ -1,10 +1,11 @@
+import { observer } from 'mobx-react';
 import Link from 'next/link';
-import { useAuth } from '../../../providers/AuthContextProvider';
 import { useStores } from '/providers/StoreProvider';
 
 function User() {
-	const { user, logout } = useAuth();
-	const { uiModel } = useStores();
+	const { uiModel, meModel } = useStores();
+	const user = meModel.user;
+
 	return (
 		<div
 			onClick={() => {
@@ -22,7 +23,13 @@ function User() {
 					>
 						{user.profile.first_name}
 					</Link>
-					<button onClick={logout}>Logout</button>
+					<button
+						onClick={() => {
+							meModel.logout();
+						}}
+					>
+						Logout
+					</button>
 				</>
 			) : (
 				<>
@@ -38,4 +45,4 @@ function User() {
 	);
 }
 
-export default User;
+export default observer(User);

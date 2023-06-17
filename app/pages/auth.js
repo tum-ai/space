@@ -2,10 +2,10 @@
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 import Banner from '../components/Banner';
-import { useAuth } from '../providers/AuthContextProvider';
+import { useStores } from '../providers/StoreProvider';
 
 function Auth() {
-	const { login, signup } = useAuth();
+	const { meModel } = useStores();
 	const [data, setData] = useState({
 		email: '',
 		password: '',
@@ -19,7 +19,7 @@ function Auth() {
 		console.log(e);
 		console.log(data);
 		try {
-			await login(data.email, data.password);
+			await meModel.login(data.email, data.password);
 			router.push('/');
 		} catch (err) {
 			setError(true);
@@ -33,7 +33,7 @@ function Auth() {
 		console.log(e);
 		console.log(data);
 		try {
-			await signup(data.email, data.password);
+			await meModel.signup(data.email, data.password);
 			router.push('/');
 		} catch (err) {
 			setError(true);

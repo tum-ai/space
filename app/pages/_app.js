@@ -1,7 +1,6 @@
 import axios from 'axios';
 import { useEffect } from 'react';
 import GlobalModal from '../components/globalModal';
-import { AuthContextProvider } from '../providers/AuthContextProvider';
 import { StoreProvider } from '../providers/StoreProvider';
 import '../styles/globals.css';
 import NavBar from '/components/NavBar/index';
@@ -16,13 +15,11 @@ function App({ Component, pageProps }) {
 		);
 	}, []);
 	return (
-		<AuthContextProvider>
-			<StoreProvider hydrationData={pageProps.hydrationData}>
-				<NavBar />
-				<Component {...pageProps} />
-				<GlobalModal />
-			</StoreProvider>
-		</AuthContextProvider>
+		<StoreProvider hydrationData={pageProps.hydrationData}>
+			<NavBar />
+			<Component {...pageProps} />
+			<GlobalModal />
+		</StoreProvider>
 	);
 }
 

@@ -8,9 +8,6 @@ export class RolesModel {
 	constructor(root) {
 		this.root = root;
 		makeAutoObservable(this);
-
-		this.getRoleHolderships();
-		this.getRoles();
 	}
 
 	setProfileRoles(profileId, roles) {

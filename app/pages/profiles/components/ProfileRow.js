@@ -48,15 +48,17 @@ function ProfileRow({ profile }) {
 						<SelectMultiple
 							className='bg-white dark:bg-gray-700'
 							placeholder={'Roles'}
-							data={rolesModel.roles?.map((role) => ({
-								key: (
-									<div>
-										<b>{role.handle}: </b>
-										{role.description}
-									</div>
-								),
-								value: role.handle,
-							}))}
+							data={
+								rolesModel.roles?.map((role) => ({
+									key: (
+										<div>
+											<b>{role.handle}: </b>
+											{role.description}
+										</div>
+									),
+									value: role.handle,
+								})) || []
+							}
 							selectedItems={roleHolderships.map((role) => ({
 								key: role,
 								value: role,

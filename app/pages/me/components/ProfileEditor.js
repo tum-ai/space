@@ -1,5 +1,4 @@
 import { observer } from 'mobx-react';
-import { useAuth } from '../../../providers/AuthContextProvider';
 import Input from '/components/Input';
 import Textarea from '/components/Textarea';
 import { useStores } from '/providers/StoreProvider';
@@ -7,7 +6,6 @@ import { useStores } from '/providers/StoreProvider';
 function ProfileEditor() {
 	const { uiModel, meModel } = useStores();
 	const editorProfile = meModel.editorProfile;
-	const { getProfile } = useAuth();
 
 	function handleChange(e) {
 		meModel.updateEditorProfile({
@@ -22,7 +20,7 @@ function ProfileEditor() {
 				onSubmit={async (e) => {
 					e.preventDefault();
 					await meModel.editProfile();
-					getProfile();
+					meModel.getProfile();
 					uiModel.toggleModal();
 				}}
 				className='flex flex-col gap-4 lg:grid lg:grid-cols-2 lg:space-y-0 lg:gap-8'

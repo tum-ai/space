@@ -2,21 +2,12 @@ import { observer } from 'mobx-react';
 import { Image } from 'next/image';
 import ProfileEditor from './ProfileEditor';
 import Icon from '/components/Icon';
-import { useAuth } from '/providers/AuthContextProvider';
 import { useStores } from '/providers/StoreProvider';
 
 function ProfileOverview() {
 	const { meModel, uiModel } = useStores();
-	const { user, loading, error } = useAuth();
+	const user = meModel.user;
 	const profile = user?.profile;
-
-	if (loading) {
-		return <div>Loading...</div>;
-	}
-
-	if (error) {
-		return <div>{user.error}</div>;
-	}
 
 	if (!profile) {
 		return <div>Profile not found.</div>;

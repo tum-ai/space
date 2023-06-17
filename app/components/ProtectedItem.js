@@ -1,9 +1,12 @@
+import { observer } from 'mobx-react';
 import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
-import { useAuth } from '../providers/AuthContextProvider';
+import { useStores } from '/providers/StoreProvider';
 
 function ProtectedItem({ roles, redirectToAuth, showNotFound, children }) {
-	const { user, loading, hasRoles } = useAuth();
+	const { meModel } = useStores();
+	const user = meModel.user;
+	const loading = meModel.loading;
 	const router = useRouter();
 
 	useEffect(() => {
@@ -16,7 +19,7 @@ function ProtectedItem({ roles, redirectToAuth, showNotFound, children }) {
 		return <div>loading ...</div>;
 	}
 
-	if (hasRoles(user, roles)) {
+	if (meModel.hasRoles(user, roles)) {
 		return <>{children}</>;
 	}
 
@@ -27,4 +30,4 @@ function ProtectedItem({ roles, redirectToAuth, showNotFound, children }) {
 	return null;
 }
 
-export default ProtectedItem;
+export default observer(ProtectedItem);
