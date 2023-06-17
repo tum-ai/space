@@ -521,6 +521,8 @@ def list_db_roleholderships(
 
             if not db_rh.role.handle:
                 raise KeyError
+        
+            db_rh.force_load()
 
         return db_role_holderships
 

@@ -333,3 +333,7 @@ class RoleHoldership(MixinAsDict, SaBaseModel):
             f"RoleHoldership(profile_id={self.profile_id!r}, "
             f"role_handle={self.role_handle!r})"
         )
+
+
+    def force_load(self) -> None:
+        self.profile.force_load()
