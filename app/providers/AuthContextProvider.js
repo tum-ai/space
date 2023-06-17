@@ -7,7 +7,6 @@ import {
 } from 'firebase/auth';
 import { createContext, useContext, useEffect, useState } from 'react';
 import { auth } from '../config/firebase';
-import { ProfileModel } from '../models/profile';
 
 const AuthContext = createContext();
 
@@ -49,7 +48,7 @@ export const AuthContextProvider = ({ children }) => {
 	};
 
 	const getProfile = async () => {
-		const profile = await ProfileModel.fetchProfile('me');
+		const profile = (await axios('/me')).data.data;
 		setUser({
 			uid: user.uid,
 			email: user.email,

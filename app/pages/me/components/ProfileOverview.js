@@ -8,7 +8,7 @@ import { useStores } from '/providers/StoreProvider';
 function ProfileOverview() {
 	const { meModel, uiModel } = useStores();
 	const { user, loading, error } = useAuth();
-	const profile = user.profile;
+	const profile = user?.profile;
 
 	if (loading) {
 		return <div>Loading...</div>;
