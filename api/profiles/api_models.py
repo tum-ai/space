@@ -335,30 +335,6 @@ class ProfileOut(BaseModel):
             }
         }
 
-# TODO: fix security logic; change attributes to whole Profile and Role
-class RoleHoldershipInOut(BaseModel):
-    profile: ProfileOut
-    role: RoleInOut
-
-    @classmethod
-    def from_db_model(cls, role_holdership: RoleHoldership) -> "RoleHoldershipInOut":
-        return RoleHoldershipInOut(
-            profile=ProfileOutPublic.from_db_model(role_holdership.profile),
-            role=RoleInOut.from_db_model(role_holdership.role),
-        )
-
-    @classmethod
-    def dummy(cls) -> "RoleHoldershipInOut":
-        return RoleHoldershipInOut.parse_obj(cls.Config.schema_extra["example"])
-
-    class Config:
-        schema_extra = {
-            "example": {
-                "profile": ProfileOut.dummy(),
-                "role": RoleInOut.dummy(),
-            }
-        }
-
 class ProfileOutPublic(BaseModel):
     id: int
 
@@ -448,13 +424,13 @@ class UpdateProfile(BaseModel):
 
 
 class RoleHoldershipInOut(BaseModel):
-    profile: ProfileOutPublic
+    profile: ProfileOut
     role: RoleInOut
 
     @classmethod
     def from_db_model(cls, role_holdership: RoleHoldership) -> "RoleHoldershipInOut":
         return RoleHoldershipInOut(
-            profile=ProfileOutPublic.from_db_model(role_holdership.profile),
+            profile=ProfileOut.from_db_model(role_holdership.profile),
             role=RoleInOut.from_db_model(role_holdership.role),
         )
 
@@ -465,7 +441,7 @@ class RoleHoldershipInOut(BaseModel):
     class Config:
         schema_extra = {
             "example": {
-                "profile": ProfileOutPublic.dummy(),
+                "profile": ProfileOut.dummy(),
                 "role": RoleInOut.dummy(),
             }
         }

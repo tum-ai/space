@@ -111,55 +111,7 @@ def get_department(request: Request, handle: str) -> dict:
 
 # UPDATE and DELETE via direct db access
 
-# profile operations #####################################################################
-
-
-@router.post(
-    "/profiles/invite/members",
-    response_description="Create Profiles for new members and sendout invitation emails",
-    response_model=Union[ResponseInviteProfilesList, ErrorResponse],
-)
-@error_handlers
-@ensure_authorization(
-    any_of_roles=["invite_members"],
-)
-@ensure_authenticated
-def invite_members(
-    request: Request,
-    data: Annotated[List[ProfileMemberInvitation], Body(embed=True)],
-) -> dict:
-    created_profiles, error_profiles = invite_new_members(
-        request.app.state.sql_engine, data
-    )
-    created_profiles_out = [ProfileOut.from_db_model(p) for p in created_profiles]
-    error_profiles_out = [
-        {"data": err_data, "error": err} for err_data, err in error_profiles
-    ]
-    return {
-        "status_code": 200,
-        "response_type": "success",
-        "description": "Members invited successfully",
-        "succeeded": created_profiles_out,
-        "failed": error_profiles_out,
-    }
-
-
-@router.get(
-    "/roles",
-    response_description="List all roles availlable in TUM.ai Space",
-    response_model=Union[ResponseRoleList, ErrorResponse],
-)
-@error_handlers
-@ensure_authenticated
-def list_roles(request: Request) -> dict:
-    db_roles = list_db_roles(request.app.state.sql_engine)
-    out_roles: List[RoleInOut] = [RoleInOut.from_db_model(r) for r in db_roles]
-    return {
-        "status_code": 200,
-        "response_type": "success",
-        "description": "Members invited successfully",
-        "data": out_roles,
-    }
+# profile operations ############################################################
 
 
 @router.get(
@@ -192,7 +144,7 @@ def list_role_holderships(
     response_model=Union[ResponseRoleHoldershipList, ErrorResponse],
 )
 @ensure_authenticated
-def list_role_holderships(
+def list_user_role_holderships(
     request: Request,
 ) -> dict:
     db_role_holderships = list_db_roleholderships(
@@ -490,62 +442,6 @@ def list_roles(request: Request) -> dict:
         "response_type": "success",
         "description": "Members invited successfully",
         "data": out_roles,
-    }
-
-
-@router.get(
-    "/role/holderships",
-    response_description="List all role assignments in TUM.ai Space",
-    response_model=Union[ResponseRoleHoldershipList, ErrorResponse],
-)
-@error_handlers
-@ensure_authorization(
-    any_of_positions=[(PositionType.TEAMLEAD, None), (None, "board")],
-    any_of_roles=["role_assignment"],
-)
-def list_role_holderships(
-    request: Request,
-    profile_id: Optional[int] = None,
-    role_handle: Optional[str] = None,
-) -> dict:
-    db_role_holderships = list_db_roleholderships(
-        request.app.state.sql_engine, profile_id, role_handle
-    )
-    out_roles = [RoleHoldershipInOut.from_db_model(rh) for rh in db_role_holderships]
-    return {
-        "status_code": 200,
-        "response_type": "success",
-        "description": "Role holderships successfully retrieved",
-        "data": out_roles,
-    }
-
-
-@router.patch(
-    "/role/holderships",
-    response_description="Update role assignments in TUM.ai Space",
-    response_model=Union[ResponseRoleHoldershipUpdateList, ErrorResponse],
-)
-@error_handlers
-@ensure_authorization(
-    any_of_positions=[(PositionType.TEAMLEAD, None), (None, "board")],
-    any_of_roles=["role_assignment"],
-)
-def update_role_holderships(
-    request: Request,
-    data: Annotated[List[RoleHoldershipUpdateInOut], Body(embed=True)],
-) -> dict:
-    out_holdersips, failed_holderships = update_db_roleholderships(
-        request.app.state.sql_engine, data
-    )
-    failed_holderships_out = [
-        {"data": err_data, "error": err} for err_data, err in failed_holderships
-    ]
-    return {
-        "status_code": 200,
-        "response_type": "success",
-        "description": "Updated role holderships successfully",
-        "succeeded": out_holdersips,
-        "failed": failed_holderships_out,
     }
 
 
