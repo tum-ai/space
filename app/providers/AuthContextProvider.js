@@ -50,6 +50,8 @@ export const AuthContextProvider = ({ children }) => {
 
 	const getProfile = async () => {
 		const profile = (await axios('/me')).data.data;
+		const roles = (await axios('/me/role/holderships')).data.data;
+		profile['role_holderships'] = roles.map((obj) => obj['role']);
 		setUser({
 			uid: user.uid,
 			email: user.email,
