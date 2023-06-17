@@ -108,9 +108,11 @@ function ProfilesList() {
 					/>
 				</div>
 			</div>
-			{profilesModel.filteredProfiles.map((profile, i) => (
-				<ProfileRow key={i} profile={profile} />
-			))}
+			<div className='grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4'>
+				{profilesModel.filteredProfiles.map((profile, i) => (
+					<ProfileRow key={i} profile={profile} />
+				))}
+			</div>
 		</div>
 	);
 }

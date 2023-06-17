@@ -169,16 +169,14 @@ def list_roles(request: Request) -> dict:
 )
 @error_handlers
 @ensure_authorization(
-    any_of_positions=[(PositionType.TEAMLEAD, None), (None, "board")],
-    any_of_roles=["role_assignment"],
+    any_of_roles=["admin"],
 )
 def list_role_holderships(
     request: Request,
     profile_id: Optional[int] = None,
-    role_handle: Optional[str] = None,
 ) -> dict:
     db_role_holderships = list_db_roleholderships(
-        request.app.state.sql_engine, profile_id, role_handle
+        request.app.state.sql_engine, profile_id
     )
     out_roles = [RoleHoldershipInOut.from_db_model(rh) for rh in db_role_holderships]
     return {
@@ -215,8 +213,7 @@ def list_role_holderships(
 )
 @error_handlers
 @ensure_authorization(
-    any_of_positions=[(PositionType.TEAMLEAD, None), (None, "board")],
-    any_of_roles=["role_assignment"],
+    any_of_roles=["admin"],
 )
 def update_role_holderships(
     request: Request,
