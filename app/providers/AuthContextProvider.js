@@ -23,6 +23,8 @@ export const AuthContextProvider = ({ children }) => {
 					authorization: `bearer ${user.accessToken}`,
 				};
 				const profile = (await axios('/me')).data.data;
+				const roles = (await axios('/me/role/holderships')).data.data;
+				profile['role_holderships'] = roles.map((obj) => obj['role']);
 				setUser({
 					uid: user.uid,
 					email: user.email,
@@ -70,7 +72,7 @@ export const AuthContextProvider = ({ children }) => {
 			return true;
 		}
 		const user_roles = user.profile.role_holderships.map(
-			(obj) => obj.role_handle
+			(obj) => obj.handle
 		);
 		const intersection = user_roles.filter((value) =>
 			roles.includes(value)

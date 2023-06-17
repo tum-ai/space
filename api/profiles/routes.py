@@ -188,6 +188,25 @@ def list_role_holderships(
         "data": out_roles,
     }
 
+@router.get(
+    "/me/role/holderships",
+    response_description="List all role assignments to user",
+    response_model=Union[ResponseRoleHoldershipList, ErrorResponse],
+)
+@ensure_authenticated
+def list_role_holderships(
+    request: Request,
+) -> dict:
+    db_role_holderships = list_db_roleholderships(
+        request.app.state.sql_engine, request.state.profile.id
+    )
+    out_roles = [RoleHoldershipInOut.from_db_model(rh) for rh in db_role_holderships]
+    return {
+        "status_code": 200,
+        "response_type": "success",
+        "description": "Role holderships successfully retrieved",
+        "data": out_roles,
+    }
 
 @router.patch(
     "/role/holderships",
