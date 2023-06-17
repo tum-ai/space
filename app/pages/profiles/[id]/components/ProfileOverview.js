@@ -30,7 +30,7 @@ function ProfileOverview() {
 	if (!profile) {
 		return <div>Profile not found.</div>;
 	}
-	const isSelf = user.uid == profileModel.profile.firebase_uid;
+	const isSelf = user?.uid == profileModel.profile?.firebase_uid;
 
 	return (
 		<div className='m-auto max-w-3xl bg-white dark:bg-gray-700'>
