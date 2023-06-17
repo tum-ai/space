@@ -67,7 +67,7 @@ function ProfileRow({ profile }) {
 						<SelectMultiple
 							className='bg-white dark:bg-gray-700'
 							placeholder={'Roles'}
-							data={rolesModel.roles.map((role) => ({
+							data={rolesModel.roles?.map((role) => ({
 								key: role.handle,
 								value: role.handle,
 							}))}
