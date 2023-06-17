@@ -4,7 +4,6 @@ export class ProfileModel {
 	root;
 	profile = {};
 	loading = true;
-	error = false;
 
 	constructor(root) {
 		this.root = root;

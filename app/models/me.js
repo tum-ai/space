@@ -4,7 +4,6 @@ export class MeModel {
 	root;
 	editorProfile = {};
 	loading = true;
-	error = false;
 
 	constructor(root) {
 		this.root = root;
