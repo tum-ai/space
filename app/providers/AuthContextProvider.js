@@ -23,7 +23,7 @@ export const AuthContextProvider = ({ children }) => {
 				axios.defaults.headers = {
 					authorization: `bearer ${user.accessToken}`,
 				};
-				const profile = await ProfileModel.fetchProfile('me');
+				const profile = (await axios('/me')).data.data;
 				setUser({
 					uid: user.uid,
 					email: user.email,

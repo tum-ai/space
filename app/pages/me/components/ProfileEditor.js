@@ -5,12 +5,12 @@ import Textarea from '/components/Textarea';
 import { useStores } from '/providers/StoreProvider';
 
 function ProfileEditor() {
-	const { profileModel, uiModel } = useStores();
-	const editorProfile = profileModel.editorProfile;
+	const { uiModel, meModel } = useStores();
+	const editorProfile = meModel.editorProfile;
 	const { getProfile } = useAuth();
 
 	function handleChange(e) {
-		profileModel.updateEditorProfile({
+		meModel.updateEditorProfile({
 			[e.target.name]: e.target.value,
 		});
 	}
@@ -21,7 +21,7 @@ function ProfileEditor() {
 			<form
 				onSubmit={async (e) => {
 					e.preventDefault();
-					await profileModel.editProfile();
+					await meModel.editProfile();
 					getProfile();
 					uiModel.toggleModal();
 				}}

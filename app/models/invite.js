@@ -1,4 +1,3 @@
-import axios from 'axios';
 import { makeAutoObservable } from 'mobx';
 
 export class InviteModel {
@@ -10,7 +9,6 @@ export class InviteModel {
 		makeAutoObservable(this);
 	}
 
-	// STATE FUNCTIONS
 	updateText(changes) {
 		this.editorProfile = { ...this.editorProfile, ...changes };
 	}
@@ -31,9 +29,12 @@ export class InviteModel {
 	}
 
 	async invite() {
-		// TODO
 		const formatedText = this.formatText();
-		const data = await InviteModel.inviteMembers(formatedText);
+		const data = await this.root.POST(
+			'/profiles/invite/members',
+			formatedText
+		);
+		if (!data) return;
 		if (data.failed?.length > 0) {
 			this.root.uiModel.updateModalContent(
 				<div className='flex flex-col space-y-2'>
@@ -60,15 +61,5 @@ export class InviteModel {
 			this.root.uiModel.toggleModal();
 			this.text = '';
 		}
-	}
-
-	// API FUNCTIONS
-	static async inviteMembers(formatedText) {
-		const invites = await axios('/profiles/invite/members', {
-			method: 'POST',
-			data: formatedText,
-		});
-		const data = invites.data;
-		return data;
 	}
 }

@@ -1,4 +1,3 @@
-import axios from 'axios';
 import { makeAutoObservable } from 'mobx';
 
 export class ProfilesModel {
@@ -12,9 +11,9 @@ export class ProfilesModel {
 	constructor(root) {
 		this.root = root;
 		makeAutoObservable(this);
-	}
 
-	// STATE FUNCTIONS
+		this.fetchProfiles();
+	}
 
 	getProfiles() {
 		return this.profiles;
@@ -90,20 +89,10 @@ export class ProfilesModel {
 		this.sortProfiles();
 	}
 
-	// API FUNCTIONS
 	async fetchProfiles() {
-		try {
-			const profiles = await axios('/profiles/');
-			this.profiles = profiles.data.data;
-			this.filteredProfiles = profiles.data.data;
-		} catch (error) {
-			console.log('Could not get profiles');
-		}
-	}
-
-	// ONLOAD
-	async loadProfiles() {
-		await this.fetchProfiles();
+		const profiles = await this.root.GET('/profiles/');
+		this.profiles = profiles;
+		this.filteredProfiles = profiles;
 	}
 }
 

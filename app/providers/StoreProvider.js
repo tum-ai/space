@@ -37,32 +37,3 @@ export function useStores() {
 	}
 	return context;
 }
-// //////////////////////
-
-// let clientSideStores;
-
-// export function getStores(initialData = { postStoreInitialData: {} }) {
-// 	const isServer = typeof window === 'undefined';
-// 	if (isServer) {
-// 		return new RootModel();
-// 	}
-// 	if (!clientSideStores) {
-// 		clientSideStores = new RootModel();
-// 	}
-
-// 	return clientSideStores;
-// }
-
-// const StoreContext = createContext();
-
-// export function StoreProvider(props) {
-// 	return (
-// 		<StoreContext.Provider value={props.value}>
-// 			{props.children}
-// 		</StoreContext.Provider>
-// 	);
-// }
-
-// export function useStores() {
-// 	return useContext(StoreContext);
-// }

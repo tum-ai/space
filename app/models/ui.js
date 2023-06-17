@@ -10,7 +10,6 @@ export class UiModel {
 		makeAutoObservable(this);
 	}
 
-	// STATE FUNCTIONS
 	updateModalContent(modalContent) {
 		this.modalContent = modalContent;
 	}

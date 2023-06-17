@@ -1,14 +1,12 @@
 import { observer } from 'mobx-react';
 import { Image } from 'next/image';
-import { useRouter } from 'next/router';
 import ProfileEditor from './ProfileEditor';
 import Icon from '/components/Icon';
 import { useAuth } from '/providers/AuthContextProvider';
 import { useStores } from '/providers/StoreProvider';
 
 function ProfileOverview() {
-	const { profileModel, uiModel } = useStores();
-	const router = useRouter();
+	const { meModel, uiModel } = useStores();
 	const { user, loading, error } = useAuth();
 	const profile = user.profile;
 
@@ -31,7 +29,7 @@ function ProfileOverview() {
 					onClick={() => {
 						uiModel.updateModalContent(<ProfileEditor />);
 						uiModel.toggleModal();
-						profileModel.editorProfile = { ...profile };
+						meModel.editorProfile = { ...profile };
 					}}
 				>
 					<Icon
