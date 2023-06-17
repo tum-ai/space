@@ -1,35 +1,45 @@
 import { observer } from 'mobx-react';
 import { Image } from 'next/image';
 import { useRouter } from 'next/router';
-import { useEffect } from 'react';
+import ProfileEditor from './ProfileEditor';
 import Icon from '/components/Icon';
+import { useAuth } from '/providers/AuthContextProvider';
 import { useStores } from '/providers/StoreProvider';
 
 function ProfileOverview() {
-	const { profileModel } = useStores();
+	const { profileModel, uiModel } = useStores();
 	const router = useRouter();
-	const { id } = router.query;
-	useEffect(() => {
-		if (id) {
-			profileModel.getProfile(id);
-		}
-	}, [profileModel, id]);
-	const profile = profileModel.profile;
+	const { user, loading, error } = useAuth();
+	const profile = user.profile;
 
-	if (profileModel.loading) {
+	if (loading) {
 		return <div>Loading...</div>;
 	}
 
-	if (profileModel.error) {
-		return <div>{profileModel.error}</div>;
+	if (error) {
+		return <div>{user.error}</div>;
 	}
 
 	if (!profile) {
 		return <div>Profile not found.</div>;
 	}
-
 	return (
 		<div className='m-auto max-w-3xl bg-white dark:bg-gray-700'>
+			<div className='w-full flex justify-end'>
+				<button
+					className='right-0 p-2'
+					onClick={() => {
+						uiModel.updateModalContent(<ProfileEditor />);
+						uiModel.toggleModal();
+						profileModel.editorProfile = { ...profile };
+					}}
+				>
+					<Icon
+						name={'FaEdit'}
+						className='p-2 rounded hover:scale-105 bg-gray-100 dark:bg-black'
+					/>
+				</button>
+			</div>
 			<div className='grid grid-cols-1 xl:grid-cols-2 gap-10 p-8 px-4 lg:px-10 rounded-xl'>
 				{/* name + image */}
 				<div className=' xl:col-span-2 flex flex-col items-start max-w-90 space-y-6'>

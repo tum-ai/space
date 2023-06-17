@@ -2,6 +2,7 @@ import { makeAutoObservable } from 'mobx';
 
 export class UiModel {
 	modalActive = false;
+	navBarActive = false;
 	modalContent;
 
 	constructor(root) {
@@ -12,6 +13,10 @@ export class UiModel {
 	// STATE FUNCTIONS
 	updateModalContent(modalContent) {
 		this.modalContent = modalContent;
+	}
+
+	setNavBarActive(state) {
+		this.navBarActive = state;
 	}
 
 	toggleModal() {

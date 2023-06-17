@@ -48,8 +48,14 @@ export const AuthContextProvider = ({ children }) => {
 		return signInWithEmailAndPassword(auth, email, password);
 	};
 
-	const getUserAuthToken = async () => {
-		return await auth.currentUser?.getIdToken();
+	const getProfile = async () => {
+		const profile = await ProfileModel.fetchProfile('me');
+		setUser({
+			uid: user.uid,
+			email: user.email,
+			displayName: user.displayName,
+			profile: { ...profile },
+		});
 	};
 
 	const logout = async () => {
@@ -75,7 +81,15 @@ export const AuthContextProvider = ({ children }) => {
 
 	return (
 		<AuthContext.Provider
-			value={{ user, loading, login, signup, logout, hasRoles }}
+			value={{
+				user,
+				loading,
+				login,
+				signup,
+				logout,
+				hasRoles,
+				getProfile,
+			}}
 		>
 			{loading ? null : children}
 		</AuthContext.Provider>
