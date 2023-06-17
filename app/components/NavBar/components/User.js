@@ -1,10 +1,17 @@
 import Link from 'next/link';
 import { useAuth } from '../../../providers/AuthContextProvider';
+import { useStores } from '/providers/StoreProvider';
 
 function User() {
 	const { user, logout } = useAuth();
+	const { uiModel } = useStores();
 	return (
-		<div className='flex space-x-4'>
+		<div
+			onClick={() => {
+				uiModel.setNavBarActive(false);
+			}}
+			className='flex space-x-4'
+		>
 			{user ? (
 				<>
 					<Link
