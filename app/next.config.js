@@ -1,8 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-	distDir: "build",
+	distDir: 'build',
 	trailingSlash: true,
-	output: "export",
+	output: 'export',
 	swcMinify: true,
 	reactStrictMode: true,
 	images: {
@@ -14,7 +14,7 @@ const nextConfig = {
 				pathname: '/photos/**',
 			},
 		],
-		unoptimized: true
+		unoptimized: true,
 	},
 };
 

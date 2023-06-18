@@ -111,7 +111,6 @@ def retrieve_or_create_db_profile_by_firebase_uid(
         else:
             if not db_model:
                 raise KeyError
-
             db_model.force_load()
             return db_model
 
