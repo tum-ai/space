@@ -39,6 +39,18 @@ Also make sure to have [pre-commit](https://pre-commit.com) installed by running
     DB_NAME=space-db
     DB_USER=space-db
     DB_PASSWORD=space-db
+
+    MAIL_USERNAME="space-dev@tum-ai.com"
+    MAIL_PASSWORD="<Notion PWs: MAIL APP PW>"
+    MAIL_FROM="space-dev@tum-ai.com"
+    MAIL_PORT=587
+    MAIL_SERVER="smtp.gmail.com"
+    MAIL_FROM_NAME="TUM.ai Space Team (DEV)"
+    ```
+
+    On MacOS:
+    ```
+    open /Applications/Python\ <YOUR PYTHON VERSION>/Install\ Certificate.command
     ```
   - Create `/app/.env`
     ```
