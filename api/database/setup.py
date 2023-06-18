@@ -22,12 +22,14 @@ from database.db_models import (
     Role,
     SaBaseModel,
 )
+
 from profiles.db_views import (
     init_views,
 )
 from utils.log import (
     log,
 )
+
 
 DBSession = scoped_session(sessionmaker())
 
@@ -91,9 +93,10 @@ def upset_roles(engine: Engine) -> None:
         Role(handle="invite_members", description="Member Invitations"),
         Role(handle="role_assignment", description="Role Assignments"),
         Role(
-            handle="departmemt_membership_management", 
-            description="View and update department memberships of members"
+            handle="departmemt_membership_management",
+            description="View and update department memberships of members",
         ),
+        Role(handle="create_certificate", description="Access Certification Rendering"),
     ]
 
     with Session(engine) as session:
