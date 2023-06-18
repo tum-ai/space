@@ -334,7 +334,6 @@ class ProfileOut(BaseModel):
             }
         }
 
-
 class ProfileOutPublic(BaseModel):
     id: int
 

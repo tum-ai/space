@@ -123,9 +123,81 @@ def get_department(request: Request, handle: str) -> dict:
     }
 
 
-# ------------------------------------------------------------------------------------ #
-#                                   Profile Endpoints                                  #
-# ------------------------------------------------------------------------------------ #
+# UPDATE and DELETE via direct db access
+
+# profile operations ############################################################
+
+
+@router.get(
+    "/role/holderships",
+    response_description="List all role assignments in TUM.ai Space",
+    response_model=Union[ResponseRoleHoldershipList, ErrorResponse],
+)
+@error_handlers
+@ensure_authorization(
+    any_of_roles=["admin"],
+)
+def list_role_holderships(
+    request: Request,
+    profile_id: Optional[int] = None,
+) -> dict:
+    db_role_holderships = list_db_roleholderships(
+        request.app.state.sql_engine, profile_id
+    )
+    out_roles = [RoleHoldershipInOut.from_db_model(rh) for rh in db_role_holderships]
+    return {
+        "status_code": 200,
+        "response_type": "success",
+        "description": "Role holderships successfully retrieved",
+        "data": out_roles,
+    }
+
+@router.get(
+    "/me/role/holderships",
+    response_description="List all role assignments to user",
+    response_model=Union[ResponseRoleHoldershipList, ErrorResponse],
+)
+@ensure_authenticated
+def list_user_role_holderships(
+    request: Request,
+) -> dict:
+    db_role_holderships = list_db_roleholderships(
+        request.app.state.sql_engine, request.state.profile.id
+    )
+    out_roles = [RoleHoldershipInOut.from_db_model(rh) for rh in db_role_holderships]
+    return {
+        "status_code": 200,
+        "response_type": "success",
+        "description": "Role holderships successfully retrieved",
+        "data": out_roles,
+    }
+
+@router.patch(
+    "/role/holderships",
+    response_description="Update role assignments in TUM.ai Space",
+    response_model=Union[ResponseRoleHoldershipUpdateList, ErrorResponse],
+)
+@error_handlers
+@ensure_authorization(
+    any_of_roles=["admin"],
+)
+def update_role_holderships(
+    request: Request,
+    data: Annotated[List[RoleHoldershipUpdateInOut], Body(embed=True)],
+) -> dict:
+    out_holdersips, failed_holderships = update_db_roleholderships(
+        request.app.state.sql_engine, data
+    )
+    failed_holderships_out = [
+        {"data": err_data, "error": err} for err_data, err in failed_holderships
+    ]
+    return {
+        "status_code": 200,
+        "response_type": "success",
+        "description": "Updated role holderships successfully",
+        "succeeded": out_holdersips,
+        "failed": failed_holderships_out,
+    }
 
 
 @router.get(
@@ -384,62 +456,6 @@ def list_roles(request: Request) -> dict:
         "response_type": "success",
         "description": "Members invited successfully",
         "data": out_roles,
-    }
-
-
-@router.get(
-    "/role/holderships",
-    response_description="List all role assignments in TUM.ai Space",
-    response_model=Union[ResponseRoleHoldershipList, ErrorResponse],
-)
-@error_handlers
-@ensure_authorization(
-    any_of_positions=[(PositionType.TEAMLEAD, None), (None, "board")],
-    any_of_roles=["role_assignment"],
-)
-def list_role_holderships(
-    request: Request,
-    profile_id: Optional[int] = None,
-    role_handle: Optional[str] = None,
-) -> dict:
-    db_role_holderships = list_db_roleholderships(
-        request.app.state.sql_engine, profile_id, role_handle
-    )
-    out_roles = [RoleHoldershipInOut.from_db_model(rh) for rh in db_role_holderships]
-    return {
-        "status_code": 200,
-        "response_type": "success",
-        "description": "Role holderships successfully retrieved",
-        "data": out_roles,
-    }
-
-
-@router.patch(
-    "/role/holderships",
-    response_description="Update role assignments in TUM.ai Space",
-    response_model=Union[ResponseRoleHoldershipUpdateList, ErrorResponse],
-)
-@error_handlers
-@ensure_authorization(
-    any_of_positions=[(PositionType.TEAMLEAD, None), (None, "board")],
-    any_of_roles=["role_assignment"],
-)
-def update_role_holderships(
-    request: Request,
-    data: Annotated[List[RoleHoldershipUpdateInOut], Body(embed=True)],
-) -> dict:
-    out_holdersips, failed_holderships = update_db_roleholderships(
-        request.app.state.sql_engine, data
-    )
-    failed_holderships_out = [
-        {"data": err_data, "error": err} for err_data, err in failed_holderships
-    ]
-    return {
-        "status_code": 200,
-        "response_type": "success",
-        "description": "Updated role holderships successfully",
-        "succeeded": out_holdersips,
-        "failed": failed_holderships_out,
     }
 
 

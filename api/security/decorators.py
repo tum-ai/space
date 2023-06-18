@@ -48,7 +48,7 @@ def __ensure_auth(func: Callable, request: Request, *args: Any, **kwargs: Any) -
     jwt = headers.get("authorization")
     if jwt is None:
         return RESPONSE_NO_AUTH_TOKEN
-
+    jwt = jwt.replace("bearer ", "")
     fb_user = verify_id_token(jwt)
     if fb_user is None:
         return RESPONSE_AUTH_FAILED
