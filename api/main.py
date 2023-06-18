@@ -8,6 +8,7 @@ from fastapi.middleware.cors import (
     CORSMiddleware,
 )
 
+from certification.routes import router as CertificationRouter
 from database.setup import (
     close_db_client,
     setup_db_client,
@@ -115,3 +116,4 @@ def email_test(
 
 # Prefix defined in router
 app.include_router(ProfilesRouter, tags=["Profile"])
+app.include_router(CertificationRouter, tags=["Certification"])
