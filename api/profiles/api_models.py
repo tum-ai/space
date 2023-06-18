@@ -457,13 +457,13 @@ class UpdateProfile(BaseModel):
 
 
 class RoleHoldershipInOut(BaseModel):
-    profile: ProfileOut
+    profile: ProfileOutPublic
     role: RoleInOut
 
     @classmethod
     def from_db_model(cls, role_holdership: RoleHoldership) -> "RoleHoldershipInOut":
         return RoleHoldershipInOut(
-            profile=ProfileOut.from_db_model(role_holdership.profile),
+            profile=ProfileOutPublic.from_db_model(role_holdership.profile),
             role=RoleInOut.from_db_model(role_holdership.role),
         )
 
@@ -474,7 +474,7 @@ class RoleHoldershipInOut(BaseModel):
     class Config:
         schema_extra = {
             "example": {
-                "profile": ProfileOut.dummy(),
+                "profile": ProfileOutPublic.dummy(),
                 "role": RoleInOut.dummy(),
             }
         }
