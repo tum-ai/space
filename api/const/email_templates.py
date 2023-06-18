@@ -1,5 +1,5 @@
 EMAIL_TEMPLATE_PASSWORD_RESET = """
-Hello ${MAME},
+Hello ${NAME},
 
 We have received a request to reset your password for your TUM.ai Space 
 account. To proceed with the password reset process, please follow 
@@ -40,6 +40,6 @@ reset emails when new members are invited into TUM.ai Space.
 
 
 def generate_password_reset_body(member_name: str, password_reset_link: str) -> str:
-    return EMAIL_TEMPLATE_PASSWORD_RESET.replace("${MAME}", member_name).replace(
+    return EMAIL_TEMPLATE_PASSWORD_RESET.replace("${NAME}", member_name).replace(
         "${PASSWORD_RESET_LINK}", password_reset_link
     )
