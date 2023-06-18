@@ -509,20 +509,6 @@ def list_db_roleholderships(
         )
 
         for db_rh in db_role_holderships:
-            if not db_rh.profile_id:
-                raise KeyError
-            if not db_rh.role_handle:
-                raise KeyError
-
-            if not db_rh.profile.id:
-                raise KeyError
-            for sn in db_rh.profile.social_networks:
-                if not sn.profile_id:
-                    raise KeyError
-
-            if not db_rh.role.handle:
-                raise KeyError
-        
             db_rh.force_load()
 
         return db_role_holderships

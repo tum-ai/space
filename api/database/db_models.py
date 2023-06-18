@@ -344,4 +344,8 @@ class RoleHoldership(MixinAsDict, SaBaseModel):
 
 
     def force_load(self) -> None:
+        if not self.profile_id or not self.profile.id:
+            raise KeyError
+        if not self.role_handle or not self.role.handle:
+            raise KeyError
         self.profile.force_load()
