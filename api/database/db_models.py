@@ -440,7 +440,7 @@ class MembershipApplicationReview(MixinAsDict, SaBaseModel):
     __tablename__ = "membership_application_review"
 
     # -------------------------------- MANAGED FIELDS -------------------------------- #
-    review_id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
 
     # --------------------------- AUTOMATIC/COMPUTED FIELDS -------------------------- #
     created_at = Column(DateTime(timezone=True), server_default=func.now())
@@ -476,6 +476,11 @@ class MembershipApplicationReview(MixinAsDict, SaBaseModel):
     def __repr__(self) -> str:
         return f"MembershipApplicationReview(review_id={self.review_id}, reviewer_id={self.reviewer_id}, reviewee_id={self.reviewee_id})"
 
+    def force_load(self) -> None:
+        if not self.reviewer:
+            raise KeyError
+        
+        self.profile.force_load()
 
 class MembershipApplicationReferral(MixinAsDict, SaBaseModel):
     __tablename__ = "membership_application_referral"

@@ -13,12 +13,13 @@ from sqlalchemy.orm import (
 )
 from .db_models import MembershipApplicationReview
 
-from review_tool.api_models import MembershipApplicationReviewData
+from review_tool.api_models import MembershipApplicationReviewIn
 
 
 def create_db_membership_application_review(
     sql_engine: sa.Engine,
-    new_membership_application_review: MembershipApplicationReviewData,
+    reviewer: int,
+    new_membership_application_review: MembershipApplicationReviewIn,
 ) -> MembershipApplicationReview:
     with Session(sql_engine) as db_session:
         db_membership_application_review = MembershipApplicationReview(
@@ -35,7 +36,7 @@ def create_db_membership_application_review(
             furthercomments=new_membership_application_review.furthercomments,
             referral=new_membership_application_review.referral,
             finalscore=new_membership_application_review.finalscore,
-            reviewer=new_membership_application_review.reviewer,
+            reviewer=reviewer,
             reviewee=new_membership_application_review.reviewee
         )
         db_session.add(db_membership_application_review)
@@ -43,6 +44,6 @@ def create_db_membership_application_review(
         db_session.commit()
 
         # asserts presence of id, triggers a db refresh
-        # db_membership_application_review.force_load()
+        db_membership_application_review.force_load()
 
     return db_membership_application_review
