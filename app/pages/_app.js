@@ -1,7 +1,11 @@
+import axios from 'axios';
 import { useEffect } from 'react';
-import { RootStoreProvider } from '../providers/RootStoreProvider';
-import { AuthContextProvider } from '../providers/AuthContextProvider';
+import GlobalModal from '../components/globalModal';
+import { StoreProvider } from '../providers/StoreProvider';
 import '../styles/globals.css';
+import NavBar from '/components/NavBar/index';
+
+axios.defaults.baseURL = process.env.NEXT_PUBLIC_API_URL;
 
 function App({ Component, pageProps }) {
 	useEffect(() => {
@@ -11,13 +15,11 @@ function App({ Component, pageProps }) {
 		);
 	}, []);
 	return (
-		<AuthContextProvider>
-			<RootStoreProvider hydrationData={pageProps.hydrationData}>
-
-				<Component {...pageProps} />
-
-			</RootStoreProvider>
-		</AuthContextProvider>
+		<StoreProvider hydrationData={pageProps.hydrationData}>
+			<NavBar />
+			<Component {...pageProps} />
+			<GlobalModal />
+		</StoreProvider>
 	);
 }
 

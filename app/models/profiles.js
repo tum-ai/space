@@ -1,10 +1,9 @@
-import axios from 'axios';
 import { makeAutoObservable } from 'mobx';
 
-export class MembersModel {
+export class ProfilesModel {
 	root;
-	members = [];
-	filteredMembers = [];
+	profiles = [];
+	filteredProfiles = [];
 	filter = {};
 	search = '';
 	sortBy = '';
@@ -12,30 +11,24 @@ export class MembersModel {
 	constructor(root) {
 		this.root = root;
 		makeAutoObservable(this);
+
+		this.fetchProfiles();
 	}
 
-	// STATE FUNCTIONS
-
-	getMembers() {
-		return this.members;
+	getProfiles() {
+		return this.profiles;
 	}
 
-	findMember(id) {
-		return this.members.find((member) => member.id === id);
+	findProfile(id) {
+		return this.profiles.find((profile) => profile.id === id);
 	}
 
-	setMembers(members) {
-		this.members = members;
+	setProfiles(profiles) {
+		this.profiles = profiles;
 	}
 
-	getDepartments() {
-		const departmentsSet = new Set(
-			this.members.map((member) => member.department)
-		);
-		return Array.from(departmentsSet);
-	}
 	getRoles() {
-		const rolesSet = new Set(this.members.map((member) => member.role));
+		const rolesSet = new Set(this.profiles.map((profile) => profile.role));
 		return Array.from(rolesSet);
 	}
 
@@ -45,36 +38,47 @@ export class MembersModel {
 		} else {
 			this.filter[key] = value;
 		}
-		this.filterMembers();
+		this.filterProfiles();
 	}
 
 	resetFilters() {
 		this.filter = {};
-		this.filterMembers();
+		this.filterProfiles();
 	}
 
-	filterMembers() {
-		this.filteredMembers = this.members.filter((member) => {
+	filterProfiles() {
+		this.filteredProfiles = this.profiles.filter((profile) => {
 			for (const key in this.filter) {
-				if (this.filter[key] && member[key] != this.filter[key]) {
+				if (key == 'role') {
+					if (
+						!this.root.rolesModel.roleHolderships[
+							profile.id
+						]?.includes(this.filter[key])
+					) {
+						return false;
+					}
+				} else if (
+					this.filter[key] &&
+					profile[key] != this.filter[key]
+				) {
 					return false;
 				}
 			}
 			return (
 				!this.search ||
-				JSON.stringify({ ...member, _id: '' })
+				JSON.stringify({ ...profile, _id: '' })
 					.toLocaleLowerCase()
 					.includes(this.search.toLocaleLowerCase())
 			);
 		});
-		this.sortMembers();
+		this.sortProfiles();
 	}
 
-	sortMembers() {
+	sortProfiles() {
 		if (this.sortBy) {
-			this.filteredMembers = this.filteredMembers.sort(
-				(memberA, memberB) => {
-					return memberA[this.sortBy] > memberB[this.sortBy];
+			this.filteredProfiles = this.filteredProfiles.sort(
+				(profileA, profileB) => {
+					return profileA[this.sortBy] > profileB[this.sortBy];
 				}
 			);
 		}
@@ -82,28 +86,18 @@ export class MembersModel {
 
 	setSearch(value) {
 		this.search = value;
-		this.filterMembers();
+		this.filterProfiles();
 	}
 
 	setSortBy(value) {
 		this.sortBy = value;
-		this.sortMembers();
+		this.sortProfiles();
 	}
 
-	// API FUNCTIONS
-	async fetchMembers() {
-		try {
-			const profiles = await axios('/profiles/');
-			this.members = profiles.data.data;
-			this.filteredMembers = profiles.data.data;
-		} catch (error) {
-			console.log('Could not get profiles');
-		}
-	}
-
-	// ONLOAD
-	async loadMembers() {
-		await this.fetchMembers();
+	async fetchProfiles() {
+		const profiles = await this.root.GET('/profiles/');
+		this.profiles = profiles;
+		this.filteredProfiles = profiles;
 	}
 }
 
@@ -114,7 +108,7 @@ export class MembersModel {
 // 		  "picture":
 // 			  "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg",
 // 		  "department": "Industry",
-// 		  "role": "Member",
+// 		  "role": "Profile",
 // 		  "description": "",
 // 		  "degreeName": "Information Systems",
 // 		  "degreeLevel": "M.Sc.",
@@ -131,7 +125,7 @@ export class MembersModel {
 // 		  "name": "John Smith",
 // 		  "picture": "",
 // 		  "department": "Marketing",
-// 		  "role": "Member",
+// 		  "role": "Profile",
 // 		  "description": "",
 // 		  "degreeName": "Computer Science",
 // 		  "degreeLevel": "B.Sc.",
@@ -148,7 +142,7 @@ export class MembersModel {
 // 		  "name": "Thomas Schmidt",
 // 		  "picture": "",
 // 		  "department": "Software Development",
-// 		  "role": "Member",
+// 		  "role": "Profile",
 // 		  "description": "",
 // 		  "degreeName": "Information Systems",
 // 		  "degreeLevel": "M.Sc.",
@@ -182,7 +176,7 @@ export class MembersModel {
 // 		  "name": "Jakob",
 // 		  "picture": "",
 // 		  "department": "Marketing",
-// 		  "role": "Member",
+// 		  "role": "Profile",
 // 		  "description": "",
 // 		  "degreeName": "Data Engineering and Analytics",
 // 		  "degreeLevel": "M.Sc.",
@@ -216,7 +210,7 @@ export class MembersModel {
 // 		  "name": "Lukas Zimmermann",
 // 		  "picture": "",
 // 		  "department": "Software Development",
-// 		  "role": "Member",
+// 		  "role": "Profile",
 // 		  "description": "",
 // 		  "degreeName": "Information Systems",
 // 		  "degreeLevel": "M.Sc.",
@@ -233,7 +227,7 @@ export class MembersModel {
 // 		  "name": "Mo Salah",
 // 		  "picture": "",
 // 		  "department": "Software Development",
-// 		  "role": "Member",
+// 		  "role": "Profile",
 // 		  "description": "",
 // 		  "degreeName": "Information Systems",
 // 		  "degreeLevel": "M.Sc.",
