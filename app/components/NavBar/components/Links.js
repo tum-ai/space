@@ -26,6 +26,13 @@ function Links() {
 			protected: true,
 			roles: ['invite_members'],
 		},
+		{
+			path: '/create-certificate',
+			text: 'Certificate',
+			// TODO uncomment
+			// protected: true,
+			// roles: ['create_certificate'],
+		},
 	];
 
 	return (

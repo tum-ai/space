@@ -56,6 +56,19 @@ services:
             - ./.fileserver:/usr/local/apache2/htdocs
         networks:
             - backend-net
+    
+    space-tools-certification-api:
+        image: tum-ai-space-tools-certification-server
+        build: ./tools/certification-api
+        restart: unless-stopped
+        container_name: space-tools-certification-api
+        command: npm run dev
+        volumes:
+            - ./tools/certification/:/code
+        ports:
+            - 3009:80
+        networks:
+            - backend-net
 
 networks:
     backend-net:

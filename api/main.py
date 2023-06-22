@@ -43,7 +43,7 @@ log.debug(CONFIG.get("AUTH_ALLOWED_ORIGINS"))
 allow_all = ["*"]
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=CONFIG.get("AUTH_ALLOWED_ORIGINS"),
+    allow_origins=allow_all,
     allow_credentials=True,
     allow_methods=allow_all,
     allow_headers=allow_all,
