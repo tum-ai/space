@@ -7,8 +7,6 @@ import { useStores } from '/providers/StoreProvider';
 import Input from '/components/Input';
 
 const Certificate = observer(() => {
-	const { inviteModel } = useStores();
-
 	const certificate = {}
 
 	function handleChange(e) {
@@ -27,7 +25,10 @@ const Certificate = observer(() => {
 				onSubmit={async (e) => {
 					e.preventDefault();
 					console.log(certificate)
-					const response = await axios.post('/certificate/membership', certificate)
+					const response = await axios('/certificate/membership/', {
+						data: certificate,
+						method: 'POST',
+					});
 					console.log(response)
 				}}
 				className='flex flex-col gap-4 lg:grid lg:grid-cols-2 lg:space-y-0 lg:gap-8'

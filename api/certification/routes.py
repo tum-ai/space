@@ -56,24 +56,18 @@ def list_role_holderships(
     request: Request,
     data: Annotated[Dict[str, str], Body(embed=True)],
 ) -> dict:
-    return {
-            "status_code": 200,
-            "response_type": "error",
-            "description": "",
-        }
     try:
         response = requests.post(
             "http://localhost:3009/create-certificate/membership",
             headers={"content_type": "application/json"},
             data=data,
-            timeout=15000,
+            timeout=150,
         )
     except Exception as e:
         return {
             "status_code": 500,
             "response_type": "error",
             "description": str(e),
-            "more": requests.get("http://localhost:3009/").content
         }
 
     if 200 <= response.status_code < 300:
