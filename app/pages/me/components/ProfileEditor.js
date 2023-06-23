@@ -4,6 +4,19 @@ import Textarea from "/components/Textarea";
 import { useStores } from "/providers/StoreProvider";
 import { useRouter } from "next/router";
 
+const newJobExperience = {
+  employer: "",
+  position: "",
+  date_from: "",
+  date_to: "",
+};
+
+const newSocialNetwork = {
+  type: "",
+  handle: "",
+  link: "",
+};
+
 function ProfileEditor({ isSignUpForm = false }) {
   const { uiModel, meModel } = useStores();
   const editorProfile = meModel.editorProfile;
@@ -17,57 +30,36 @@ function ProfileEditor({ isSignUpForm = false }) {
 
   function handleListItemChange(e, index, type) {
     const { name, value } = e.target;
-    if (type === "job_history") {
-      meModel.updateEditorProfile({
-        job_history: editorProfile.job_history.map((item, i) => {
-          if (i === index) {
-            return {
-              ...item,
-              [name]: value,
-            };
-          }
-          return item;
-        }),
-      });
-    } else if (type === "social_networks") {
-      meModel.updateEditorProfile({
-        social_networks: editorProfile.social_networks.map((item, i) => {
-          if (i === index) {
-            return {
-              ...item,
-              [name]: value,
-            };
-          }
-          return item;
-        }),
-      });
-    }
-  }
-
-  function handleAddExperience() {
-    const newExperience = {
-      employer: "",
-      position: "",
-      date_from: "",
-      date_to: "",
-    };
-    if (!editorProfile.job_history) {
-      meModel.updateEditorProfile({
-        job_history: [newExperience],
-      });
-      return;
-    }
-    // if job history exists, add new experience to the end of the array
     meModel.updateEditorProfile({
-      job_history: [...editorProfile.job_history, newExperience],
+      [type]: editorProfile[type].map((item, i) => {
+        if (i === index) {
+          return {
+            ...item,
+            [name]: value,
+          };
+        }
+        return item;
+      }),
     });
   }
 
-  function handleRemoveExperience(index) {
-    const updatedExperience = [...editorProfile.job_history];
+  function handleAddExperience(type, newExperience) {
+    if (!editorProfile[type]) {
+      meModel.updateEditorProfile({
+        [type]: [newExperience],
+      });
+      return;
+    }
+
+    meModel.updateEditorProfile({
+      [type]: [...editorProfile[type], newExperience],
+    });
+  }
+  function handleRemoveExperience(index, type) {
+    const updatedExperience = [...editorProfile[type]];
     updatedExperience.splice(index, 1);
     meModel.updateEditorProfile({
-      job_history: updatedExperience,
+      [type]: updatedExperience,
     });
   }
 
@@ -77,6 +69,11 @@ function ProfileEditor({ isSignUpForm = false }) {
       <form
         onSubmit={async (e) => {
           e.preventDefault();
+          // TODO: REMOVE THIS LINE TO ENABLE SOCIAL NETWORKS BEING ADDED
+          // TODO: still a bug, where api rejects social networks
+          meModel.updateEditorProfile({
+            social_networks: [],
+          });
           await meModel.editProfile();
           meModel.getProfile();
           isSignUpForm ? router.push("/") : uiModel.toggleModal();
@@ -165,6 +162,7 @@ function ProfileEditor({ isSignUpForm = false }) {
             required={false}
           />
         </div>
+        {/* Job Experience Editor */}
         <div className="col-span-2 text-xl font-light">Job history</div>
         <div className="col-span-2 text-black font-light">
           You can update your job history and add your previous work experience
@@ -178,7 +176,7 @@ function ProfileEditor({ isSignUpForm = false }) {
                   label="Employer"
                   type="text"
                   name="employer"
-                  value={experience.Employer}
+                  value={experience.employer}
                   required={true}
                   onChange={(e) =>
                     handleListItemChange(e, index, "job_history")
@@ -189,7 +187,7 @@ function ProfileEditor({ isSignUpForm = false }) {
                   type="text"
                   name="position"
                   required={true}
-                  value={experience.Position}
+                  value={experience.position}
                   onChange={(e) =>
                     handleListItemChange(e, index, "job_history")
                   }
@@ -199,7 +197,7 @@ function ProfileEditor({ isSignUpForm = false }) {
                   type="date"
                   name="date_from"
                   required={true}
-                  value={experience.Startdate}
+                  value={experience.date_from}
                   onChange={(e) =>
                     handleListItemChange(e, index, "job_history")
                   }
@@ -209,17 +207,79 @@ function ProfileEditor({ isSignUpForm = false }) {
                   type="date"
                   name="date_to"
                   required={true}
-                  value={experience.Enddate}
+                  value={experience.date_to}
                   onChange={(e) =>
                     handleListItemChange(e, index, "job_history")
                   }
                 />
-                <button onClick={() => handleRemoveExperience(index)}>
+                <button
+                  onClick={() => handleRemoveExperience(index, "job_history")}
+                >
                   Remove
                 </button>
               </div>
             ))}
-        <button onClick={handleAddExperience}>Add Work Experience</button>
+        <button
+          onClick={() => handleAddExperience("job_history", newJobExperience)}
+        >
+          Add Work Experience
+        </button>
+        {/* Social Networks Editor */}
+        <div className="col-span-2 text-xl font-light">Social Networks</div>
+        <div className="col-span-2 text-black font-light">
+          Feel free to add any relevant social media networks (e.g. LinkedIn,
+          GitHub, etc.) here.
+        </div>
+        {!editorProfile.social_networks
+          ? null
+          : editorProfile.social_networks.map((experience, index) => (
+              <div key={index} className="grid grid-cols-2 gap-4">
+                <Input
+                  label="Type"
+                  type="text"
+                  name="type"
+                  value={experience.type}
+                  required={true}
+                  onChange={(e) =>
+                    handleListItemChange(e, index, "social_networks")
+                  }
+                />
+                <Input
+                  label="Handle"
+                  type="text"
+                  name="handle"
+                  required={true}
+                  value={experience.handle}
+                  onChange={(e) =>
+                    handleListItemChange(e, index, "social_networks")
+                  }
+                />
+                <Input
+                  label="Link"
+                  type="text"
+                  name="link"
+                  required={true}
+                  value={experience.link}
+                  onChange={(e) =>
+                    handleListItemChange(e, index, "social_networks")
+                  }
+                />
+                <button
+                  onClick={() =>
+                    handleRemoveExperience(index, "social_networks")
+                  }
+                >
+                  Remove
+                </button>
+              </div>
+            ))}
+        <button
+          onClick={() =>
+            handleAddExperience("social_networks", newSocialNetwork)
+          }
+        >
+          Add Social Network
+        </button>
         <div className="col-span-2 flex space-x-2">
           <button
             type="submit"
