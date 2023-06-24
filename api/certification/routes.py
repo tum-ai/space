@@ -46,18 +46,17 @@ class ResponseCertificate(BaseResponse):
 class FormData(BaseModel):
     fields: Any
 
-"""
-@ensure_authorization(
-    any_of_positions=[(PositionType.TEAMLEAD, None), (None, "board")],
-    any_of_roles=["create_certificate"],
-)
-"""
+
 @router.post(
     "/certificate/membership",
     response_description="Renders a certificate for a given profile",
 )
 @error_handlers
-def list_role_holderships(
+@ensure_authorization(
+    any_of_positions=[(PositionType.TEAMLEAD, None), (None, "board")],
+    any_of_roles=["create_certificate"],
+)
+def generate_certificate(
     request: Request,
     data: Annotated[Dict[str, str], Body(embed=True)],
 ) -> dict | StreamingResponse:
@@ -74,10 +73,10 @@ def list_role_holderships(
             return StreamingResponse(
                 BytesIO(response.content), media_type="application/pdf"
             )
-    except Exception as e:
+    except Exception as _:
         pass
     return {
         "status_code": 500,
         "response_type": "error",
-        "description": "",
+        "description": "Error generating certificate",
     }

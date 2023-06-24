@@ -1,9 +1,5 @@
 import axios from 'axios';
 import { observer } from 'mobx-react';
-import ProtectedItem from '../components/ProtectedItem';
-import Page from '/components/Page';
-import Textarea from '/components/Textarea';
-import { useStores } from '/providers/StoreProvider';
 import Input from '/components/Input';
 import download from 'downloadjs';
 
@@ -11,7 +7,6 @@ const Certificate = observer(() => {
 	const certificate = {}
 
 	function handleChange(e) {
-		// console.log(e)
 		certificate[e.target.name] = e.target.value
 	}
 
@@ -30,9 +25,10 @@ const Certificate = observer(() => {
 						method: 'POST',
 						responseType: 'blob'
 					});
-					console.log(response)
-					let fileName = `tumai-certificate-${certificate["NAME"]}-${certificate["LASTNAME"]}.pdf`;
-					download(response.data, fileName, response.headers['content-type']);
+					if (response.status >= 200 && response.status < 300) {
+						let fileName = `tumai-certificate-${certificate["NAME"]}-${certificate["LASTNAME"]}.pdf`;
+						download(response.data, fileName, response.headers['content-type']);
+					}
 				}}
 				className='flex flex-col gap-4 lg:grid lg:grid-cols-2 lg:space-y-0 lg:gap-8'
 			>
