@@ -46,7 +46,12 @@ class ResponseCertificate(BaseResponse):
 class FormData(BaseModel):
     fields: Any
 
-
+"""
+@ensure_authorization(
+    any_of_positions=[(PositionType.TEAMLEAD, None), (None, "board")],
+    any_of_roles=["create_certificate"],
+)
+"""
 @router.post(
     "/certificate/membership",
     response_description="Renders a certificate for a given profile",
@@ -55,30 +60,24 @@ class FormData(BaseModel):
 def list_role_holderships(
     request: Request,
     data: Annotated[Dict[str, str], Body(embed=True)],
-) -> dict:
+) -> dict | StreamingResponse:
     try:
         response = requests.post(
-            "http://localhost:3009/create-certificate/membership",
+            # Using Docker name resolution
+            "http://cert/create-certificate/membership",
             headers={"content_type": "application/json"},
             data=data,
             timeout=150,
         )
+
+        if 200 <= response.status_code < 300:
+            return StreamingResponse(
+                BytesIO(response.content), media_type="application/pdf"
+            )
     except Exception as e:
-        return {
-            "status_code": 500,
-            "response_type": "error",
-            "description": str(e),
-        }
-
-    if 200 <= response.status_code < 300:
-        return StreamingResponse(
-            BytesIO(response.content), media_type="application/pdf"
-        )
-
-    else:
-        print(response.content)
-        return {
-            "status_code": 500,
-            "response_type": "error",
-            "description": "",
-        }
+        pass
+    return {
+        "status_code": 500,
+        "response_type": "error",
+        "description": "",
+    }

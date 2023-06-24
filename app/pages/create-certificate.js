@@ -25,15 +25,13 @@ const Certificate = observer(() => {
 			<form
 				onSubmit={async (e) => {
 					e.preventDefault();
-					console.log(certificate)
 					const response = await axios('/certificate/membership/', {
 						data: certificate,
 						method: 'POST',
 						responseType: 'blob'
 					});
-					console.log(response);
-					const contentDisposition = response.headers['content-disposition'];
-					let fileName = 'download.pdf';
+					console.log(response)
+					let fileName = `tumai-certificate-${certificate["NAME"]}-${certificate["LASTNAME"]}.pdf`;
 					download(response.data, fileName, response.headers['content-type']);
 				}}
 				className='flex flex-col gap-4 lg:grid lg:grid-cols-2 lg:space-y-0 lg:gap-8'
