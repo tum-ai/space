@@ -29,9 +29,8 @@ function Links() {
 		{
 			path: '/create-certificate',
 			text: 'Certificate',
-			// TODO uncomment
-			// protected: true,
-			// roles: ['create_certificate'],
+			protected: true,
+			roles: ['create_certificate'],
 		},
 	];
 
