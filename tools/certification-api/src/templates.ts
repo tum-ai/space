@@ -2,7 +2,7 @@ import dotenv from "dotenv";
 
 
 dotenv.config()
-const cdn_url = "http://localhost:9990/certification"
+const cdn_url = "http://space.files/certification"
 
 export const TEMPLATES : any = [
     "test",

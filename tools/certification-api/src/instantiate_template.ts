@@ -2,6 +2,7 @@ import html_to_pdf from "html-pdf-node";
 import * as fs from "fs";
 
 async function instantiate_template(templateFilePath: string, variable_replacers: { [name: string]: string } ) {
+    console.log(templateFilePath)
     const html_template = fs.readFileSync(templateFilePath,'utf8');
 
     let options = {
