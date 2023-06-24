@@ -35,4 +35,4 @@ jobs:
           echo "${{ secrets.FIREBASE_ADMINSDK_CERTIFICATE_STAGING }}" > /home/runner/work/space/space/api/.secrets/tumai-space-firebase-adminsdk.json
 
       - name: Run pytest
-        run: python -m pytest ./api/tests
+        run: PYTHONPATH=/home/runner/work/space/space/api pytest ./api/tests
