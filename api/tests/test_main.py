@@ -2,7 +2,7 @@ from fastapi.testclient import (
     TestClient,
 )
 
-from main import (
+from space_api.main import (
     app,
 )
 

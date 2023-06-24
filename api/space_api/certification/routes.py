@@ -4,7 +4,6 @@ from io import (
 from typing import (
     Annotated,
     Any,
-    Dict,
 )
 
 import requests
@@ -20,16 +19,16 @@ from pydantic import (
     BaseModel,
 )
 
-from database.db_models import (
+from space_api.database.db_models import (
     PositionType,
 )
-from security.decorators import (
+from space_api.security.decorators import (
     ensure_authorization,
 )
-from utils.error_handlers import (
+from space_api.utils.error_handlers import (
     error_handlers,
 )
-from utils.response import (
+from space_api.utils.response import (
     BaseResponse,
 )
 
@@ -58,7 +57,7 @@ class FormData(BaseModel):
 )
 def list_role_holderships(
     request: Request,
-    data: Annotated[Dict[str, str], Body(embed=True)],
+    data: Annotated[dict[str, str], Body(embed=True)],
 ) -> dict:
     response = requests.post(
         "http://localhost:3009/create-certificate/membership",

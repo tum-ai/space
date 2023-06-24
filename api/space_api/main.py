@@ -8,29 +8,27 @@ from fastapi.middleware.cors import (
     CORSMiddleware,
 )
 
-from certification.routes import router as CertificationRouter
-from database.setup import (
+from .certification.routes import router as certification_router
+from .database.setup import (
     close_db_client,
     setup_db_client,
 )
-from profiles.routes import router as ProfilesRouter
-from security.decorators import (
+from .mail.send import send_email
+from .profiles.routes import router as profiles_router
+from .security.decorators import (
     ensure_authenticated,
     ensure_authorization,
 )
-from security.firebase_auth import (
+from .security.firebase_auth import (
     init_firebase_auth,
 )
-from utils.config import (
+from .utils.config import (
     CONFIG,
 )
-from utils.error_handlers import (
-    error_handlers
-)
-from utils.log import (
+from .utils.error_handlers import error_handlers
+from .utils.log import (
     log,
 )
-from mail.send import send_email
 
 app = FastAPI()
 db_client = None
@@ -102,18 +100,14 @@ def authorization_role_test(request: Request) -> dict:
 @error_handlers
 @ensure_authorization(any_of_roles=["test-role"])
 def email_test(
-    request: Request, 
-    subject: str, 
+    request: Request,
+    subject: str,
     body: str,
 ) -> dict:
-    send_email(
-        receipient="admin+tumaispacedev@tum-ai.com",
-        subject=subject,
-        body=body
-    )
+    send_email(receipient="admin+tumaispacedev@tum-ai.com", subject=subject, body=body)
     return {"msg": "Send success!"}
 
 
 # Prefix defined in router
-app.include_router(ProfilesRouter, tags=["Profile"])
-app.include_router(CertificationRouter, tags=["Certification"])
+app.include_router(profiles_router, tags=["Profile"])
+app.include_router(certification_router, tags=["Certification"])

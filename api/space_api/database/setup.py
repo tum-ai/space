@@ -18,32 +18,30 @@ from sqlalchemy.orm.session import (
     Session,
 )
 
-from database.db_models import (
+from space_api.database.db_models import (
     Role,
     SaBaseModel,
 )
-
-from profiles.db_views import (
+from space_api.profiles.db_views import (
     init_views,
 )
-from utils.log import (
+from space_api.utils.log import (
     log,
 )
-
 
 DBSession = scoped_session(sessionmaker())
 
 
 def create_sqla_engine() -> Engine:
-    DB_HOST = os.getenv("DB_HOST")
-    DB_PORT = int(os.getenv("DB_PORT"))
-    DB_NAME = os.getenv("DB_NAME")
-    DB_USER = os.getenv("DB_USER")
-    DB_PASSWORD = os.getenv("DB_PASSWORD")
-    assert DB_HOST is not None, "DB_HOST must not be empty!"
+    db_host = os.getenv("DB_HOST")
+    db_port = int(os.getenv("DB_PORT", "-1"))
+    db_name = os.getenv("DB_NAME")
+    db_user = os.getenv("DB_USER")
+    db_password = os.getenv("DB_PASSWORD") or "<missing_password>"
+    assert db_host is not None, "DB_HOST must not be empty!"
 
-    conn_str = f"postgresql://{DB_USER}:%s@{DB_HOST}:{DB_PORT}/{DB_NAME}" % quote_plus(
-        DB_PASSWORD
+    conn_str = f"postgresql://{db_user}:%s@{db_host}:{db_port}/{db_name}" % quote_plus(
+        db_password
     )
     engine: Engine = create_engine(
         conn_str,

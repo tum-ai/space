@@ -2,10 +2,6 @@ import enum
 from datetime import (
     datetime,
 )
-from typing import (
-    List,
-    Optional,
-)
 
 from dateutil.relativedelta import (
     relativedelta,
@@ -60,11 +56,11 @@ class Department(MixinAsDict, SaBaseModel):
 
     # ---------------------------- USER CHANGEABLE FIELDS ---------------------------- #
     name: Mapped[str] = mapped_column(String(80), unique=True, nullable=False)
-    description: Mapped[Optional[str]] = mapped_column(String(2048), nullable=True)
+    description: Mapped[str | None] = mapped_column(String(2048), nullable=True)
 
     # ----------------------------- RELATIONAL FK FIELDS ----------------------------- #
     # back reference from DepartmentMembership
-    memberships: Mapped[List["DepartmentMembership"]] = relationship(
+    memberships: Mapped[list["DepartmentMembership"]] = relationship(
         "DepartmentMembership", back_populates="department"
     )
 
@@ -106,45 +102,45 @@ class Profile(MixinAsDict, SaBaseModel):
 
     # ---------------------------- USER CHANGEABLE FIELDS ---------------------------- #
     email: Mapped[str] = mapped_column(String(200), index=True, nullable=False)
-    phone: Mapped[Optional[str]] = mapped_column(String(50), index=True, nullable=True)
+    phone: Mapped[str | None] = mapped_column(String(50), index=True, nullable=True)
 
     first_name: Mapped[str] = mapped_column(String(50), nullable=False)
     last_name: Mapped[str] = mapped_column(String(50), nullable=False)
 
     birthday = Column(DateTime, nullable=True)
-    nationality: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
-    description: Mapped[Optional[str]] = mapped_column(String(200), nullable=True)
+    nationality: Mapped[str | None] = mapped_column(String(100), nullable=True)
+    description: Mapped[str | None] = mapped_column(String(200), nullable=True)
 
     # TODO: see https://sqlalchemy-imageattach.readthedocs.io/en/0.8.0/api/entity.html
     # profile_picture
 
-    activity_status: Mapped[Optional[str]] = mapped_column(String(50), nullable=True)
+    activity_status: Mapped[str | None] = mapped_column(String(50), nullable=True)
 
-    degree_level: Mapped[Optional[str]] = mapped_column(String(20), nullable=True)
-    degree_name: Mapped[Optional[str]] = mapped_column(String(80), nullable=True)
-    degree_semester: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
+    degree_level: Mapped[str | None] = mapped_column(String(20), nullable=True)
+    degree_name: Mapped[str | None] = mapped_column(String(80), nullable=True)
+    degree_semester: Mapped[int | None] = mapped_column(Integer, nullable=True)
     degree_semester_last_change_date = Column(DateTime, nullable=True)
-    university: Mapped[Optional[str]] = mapped_column(String(160), nullable=True)
+    university: Mapped[str | None] = mapped_column(String(160), nullable=True)
 
     # format: csv list of <employer:position:from:to>,
-    job_history: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    job_history: Mapped[str | None] = mapped_column(String, nullable=True)
 
     # ------------------------- SUPERVISOR CHANGEABLE FIELDS ------------------------- #
     time_joined = Column(DateTime, nullable=True)
 
     # ----------------------------- RELATIONAL FK FIELDS ----------------------------- #
     # back reference from SocialNetwork
-    social_networks: Mapped[List["SocialNetwork"]] = relationship(
+    social_networks: Mapped[list["SocialNetwork"]] = relationship(
         "SocialNetwork", back_populates="profile"
     )
 
     # back reference from DepartmentMembership
-    department_memberships: Mapped[List["DepartmentMembership"]] = relationship(
+    department_memberships: Mapped[list["DepartmentMembership"]] = relationship(
         "DepartmentMembership", back_populates="profile"
     )
 
     # back reference from RoleHoldership
-    role_holderships: Mapped[List["RoleHoldership"]] = relationship(
+    role_holderships: Mapped[list["RoleHoldership"]] = relationship(
         "RoleHoldership", back_populates="profile"
     )
 
@@ -163,7 +159,7 @@ class Profile(MixinAsDict, SaBaseModel):
         return f"{self.first_name} {self.last_name}"
 
     @hybrid_property
-    def decoded_job_history(self) -> List[JobHistoryElement]:
+    def decoded_job_history(self) -> list[JobHistoryElement]:
         job_history = []
         if job_history and len(job_history) > 0:
             for entry in f"{job_history}".split(","):
@@ -184,7 +180,7 @@ class Profile(MixinAsDict, SaBaseModel):
         return f"Profile(id={self.id}, fullname={self.full_name})"
 
     @classmethod
-    def encode_job_history(cls, job_history: JobHistoryElement) -> Optional[str]:
+    def encode_job_history(cls, job_history: list[JobHistoryElement]) -> str | None:
         # encode job_history in csv of <employer:position:from:to>
         encoded_history: str | None = ""
         for hist in job_history:
@@ -234,8 +230,8 @@ class SocialNetwork(MixinAsDict, SaBaseModel):
     type = Column(Enum(SocialNetworkType), primary_key=True)
 
     # ---------------------------- USER CHANGEABLE FIELDS ---------------------------- #
-    handle: Mapped[Optional[str]] = mapped_column(String(40), nullable=True)
-    link: Mapped[Optional[str]] = mapped_column(String(1024), nullable=True)
+    handle: Mapped[str | None] = mapped_column(String(40), nullable=True)
+    link: Mapped[str | None] = mapped_column(String(1024), nullable=True)
 
     # ----------------------------- RELATIONAL FK FIELDS ----------------------------- #
     profile: Mapped["Profile"] = relationship(
@@ -291,10 +287,9 @@ class DepartmentMembership(MixinAsDict, SaBaseModel):
     def force_load(self) -> None:
         if not self.profile_id or not self.profile.id:
             raise KeyError
-        
+
         if not self.department or not self.department.handle:
             raise KeyError
-
 
 
 class Role(MixinAsDict, SaBaseModel):
@@ -303,12 +298,12 @@ class Role(MixinAsDict, SaBaseModel):
     __tablename__ = "role"
 
     handle: Mapped[str] = mapped_column(primary_key=True)
-    description: Mapped[Optional[str]] = mapped_column(nullable=True)
+    description: Mapped[str | None] = mapped_column(nullable=True)
 
     # ----------------------------- RELATIONAL FK FIELDS ----------------------------- #
 
     # back reference from RoleHoldership
-    holderships: Mapped[List["RoleHoldership"]] = relationship(
+    holderships: Mapped[list["RoleHoldership"]] = relationship(
         "RoleHoldership", back_populates="role"
     )
 
@@ -341,7 +336,6 @@ class RoleHoldership(MixinAsDict, SaBaseModel):
             f"RoleHoldership(profile_id={self.profile_id!r}, "
             f"role_handle={self.role_handle!r})"
         )
-
 
     def force_load(self) -> None:
         if not self.profile_id or not self.profile.id:

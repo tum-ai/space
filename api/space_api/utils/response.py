@@ -1,7 +1,3 @@
-from typing import (
-    Optional,
-)
-
 from pydantic import (
     BaseModel,
     Extra,
@@ -13,11 +9,11 @@ class BaseResponse(BaseModel):
     status_code: int
     response_type: str
     description: str
-    page: Optional[int] = Field(None)
-    page_size: Optional[int] = Field(None)
+    page: int | None = Field(None)
+    page_size: int | None = Field(None)
 
     # TODO:
-    # page_has_next: Optional[bool] = Field(None)
+    # page_has_next: bool | None = Field(None)
 
     @classmethod
     def schema_wrapper(cls, data) -> dict:

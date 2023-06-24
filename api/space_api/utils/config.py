@@ -10,6 +10,9 @@ from dotenv import (
 load_dotenv()
 
 
+ROOT_PATH = Path(__file__).parent.parent.parent.parent
+
+
 class Config:
     """
     This class maps config.yaml to python.
@@ -17,8 +20,7 @@ class Config:
 
     # Creates config field for each configuration in config.yaml
     def __init__(self) -> None:
-        ROOT_PATH = Path(__file__)
-        self.yaml_config_path = ROOT_PATH.parent.parent / "config.yaml"
+        self.yaml_config_path = ROOT_PATH / "api" / "config.yaml"
         self.config_dict = yaml.safe_load(open(self.yaml_config_path))
 
         for config in self.config_dict:

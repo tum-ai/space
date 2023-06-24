@@ -3,12 +3,12 @@ from datetime import (
     datetime,
 )
 from typing import (
-    List,
     Literal,
-    Optional,
 )
 
-from database.db_models import (
+from pydantic import BaseModel
+
+from space_api.database.db_models import (
     Department,
     DepartmentMembership,
     JobHistoryElement,
@@ -17,9 +17,8 @@ from database.db_models import (
     Role,
     RoleHoldership,
     SocialNetwork,
-    SocialNetworkType
+    SocialNetworkType,
 )
-from pydantic import BaseModel
 
 # ------------------------------------------------------------------------------------ #
 #                                 department operations                                #
@@ -106,8 +105,8 @@ class ProfileMemberInvitation(BaseModel):
 
 class SocialNetworkIn(BaseModel):
     type: SocialNetworkType
-    handle: Optional[str]
-    link: Optional[str]
+    handle: str | None
+    link: str | None
 
     @classmethod
     def dummy(cls) -> "SocialNetworkIn":
@@ -126,8 +125,8 @@ class SocialNetworkIn(BaseModel):
 class SocialNetworkOut(BaseModel):
     profile_id: int
     type: SocialNetworkType
-    handle: Optional[str]
-    link: Optional[str]
+    handle: str | None
+    link: str | None
 
     @classmethod
     def from_db_model(cls, s: SocialNetwork) -> "SocialNetworkOut":
@@ -154,8 +153,8 @@ class DepartmentMembershipOut(BaseModel):
     profile_id: int
     position: PositionType
     department_handle: str
-    time_from: Optional[datetime]
-    time_to: Optional[datetime]
+    time_from: datetime | None
+    time_to: datetime | None
 
     @classmethod
     def from_db_model(cls, s: DepartmentMembership) -> "DepartmentMembershipOut":
@@ -180,27 +179,28 @@ class DepartmentMembershipOut(BaseModel):
             }
         }
 
+
 class ProfileInCreateUpdateBase(BaseModel):
     email: str
-    phone: Optional[str]
+    phone: str | None
     first_name: str
     last_name: str
-    birthday: Optional[date]
-    nationality: Optional[str]
-    description: Optional[str]
+    birthday: date | None
+    nationality: str | None
+    description: str | None
 
     # profile_picture  # TODO
 
-    activity_status: Optional[str]
+    activity_status: str | None
 
-    degree_level: Optional[str]
-    degree_name: Optional[str]
-    degree_semester: Optional[int]
-    university: Optional[str]
-    job_history: List[JobHistoryElement]
-    time_joined: Optional[datetime]
+    degree_level: str | None
+    degree_name: str | None
+    degree_semester: int | None
+    university: str | None
+    job_history: list[JobHistoryElement]
+    time_joined: datetime | None
 
-    social_networks: List["SocialNetworkIn"]
+    social_networks: list["SocialNetworkIn"]
 
     @classmethod
     def dummy(cls) -> "ProfileInCreateUpdateBase":
@@ -248,26 +248,26 @@ class ProfileOut(BaseModel):
     firebase_uid: str
 
     email: str
-    phone: Optional[str]
+    phone: str | None
     first_name: str
     last_name: str
-    birthday: Optional[date]
-    nationality: Optional[str]
-    description: Optional[str]
+    birthday: date | None
+    nationality: str | None
+    description: str | None
 
     # profile_picture  # TODO
 
-    activity_status: Optional[str]
+    activity_status: str | None
 
-    degree_level: Optional[str]
-    degree_name: Optional[str]
-    degree_semester: Optional[int]
-    university: Optional[str]
-    job_history: List[JobHistoryElement]
-    time_joined: Optional[datetime]
+    degree_level: str | None
+    degree_name: str | None
+    degree_semester: int | None
+    university: str | None
+    job_history: list[JobHistoryElement]
+    time_joined: datetime | None
 
-    social_networks: List["SocialNetworkOut"]
-    department_memberships: List["DepartmentMembershipOut"]
+    social_networks: list["SocialNetworkOut"]
+    department_memberships: list["DepartmentMembershipOut"]
 
     @classmethod
     def from_db_model(cls, profile: Profile) -> "ProfileOut":
@@ -334,26 +334,27 @@ class ProfileOut(BaseModel):
             }
         }
 
+
 class ProfileOutPublic(BaseModel):
     id: int
 
     first_name: str
     last_name: str
-    description: Optional[str]
+    description: str | None
 
     # profile_picture  # TODO
 
-    activity_status: Optional[str]
+    activity_status: str | None
 
-    degree_level: Optional[str]
-    degree_name: Optional[str]
-    degree_semester: Optional[int]
-    university: Optional[str]
-    job_history: List[JobHistoryElement]
-    time_joined: Optional[datetime]
+    degree_level: str | None
+    degree_name: str | None
+    degree_semester: int | None
+    university: str | None
+    job_history: list[JobHistoryElement]
+    time_joined: datetime | None
 
-    social_networks: List["SocialNetworkOut"]
-    department_memberships: List["DepartmentMembershipOut"]
+    social_networks: list["SocialNetworkOut"]
+    department_memberships: list["DepartmentMembershipOut"]
 
     @classmethod
     def from_db_model(cls, profile: Profile) -> "ProfileOutPublic":
@@ -411,13 +412,12 @@ class ProfileOutPublic(BaseModel):
         }
 
 
-
 class ProfileOutPublicReduced(BaseModel):
     id: int
 
     first_name: str
     last_name: str
-    description: Optional[str]
+    description: str | None
 
     @classmethod
     def from_db_model(cls, profile: Profile) -> "ProfileOutPublicReduced":
@@ -425,7 +425,7 @@ class ProfileOutPublicReduced(BaseModel):
             id=profile.id,
             first_name=profile.first_name,
             last_name=profile.last_name,
-            description=profile.description
+            description=profile.description,
         )
 
     @classmethod
@@ -438,11 +438,9 @@ class ProfileOutPublicReduced(BaseModel):
                 "id": 42,
                 "first_name": "Max",
                 "last_name": "Mustermann",
-                "description": "Hi and welcome!"
+                "description": "Hi and welcome!",
             }
         }
-
-
 
 
 class UpdateProfile(BaseModel):
@@ -450,10 +448,9 @@ class UpdateProfile(BaseModel):
         template = "profiles"
 
 
- # ----------------------------------------------------------------------------------- #
- #                         Authorization Management operations                         #
- # ----------------------------------------------------------------------------------- #
-
+# ----------------------------------------------------------------------------------- #
+#                         Authorization Management operations                         #
+# ----------------------------------------------------------------------------------- #
 
 
 class RoleHoldershipInOut(BaseModel):
@@ -514,35 +511,36 @@ class RoleHoldershipUpdateInOut(BaseModel):
 # ------------------------------------------------------------------------------------ #
 
 
-
 class DepartmentMembershipWithShortProfileOut(BaseModel):
     id: int
     profile: ProfileOutPublicReduced
     department: DepartmentOut
     position: str
-    time_from: Optional[datetime]
-    time_to: Optional[datetime]
+    time_from: datetime | None
+    time_to: datetime | None
 
     @classmethod
-    def from_db_model(cls, dm: DepartmentMembership) \
-        -> "DepartmentMembershipWithShortProfileOut":
+    def from_db_model(
+        cls, dm: DepartmentMembership
+    ) -> "DepartmentMembershipWithShortProfileOut":
         return DepartmentMembershipWithShortProfileOut(
             id=dm.id,
             profile=ProfileOutPublicReduced.from_db_model(dm.profile),
             department=DepartmentOut.from_db_model(dm.department),
             position=str(dm.position),
-            time_from=\
-                datetime.combine(dm.time_from.date(), dm.time_from.time())
-                if dm.time_from is not None else None,
-            time_to=\
-                datetime.combine(dm.time_to.date(), dm.time_to.time())
-                if dm.time_to is not None else None,
+            time_from=datetime.combine(dm.time_from.date(), dm.time_from.time())
+            if dm.time_from is not None
+            else None,
+            time_to=datetime.combine(dm.time_to.date(), dm.time_to.time())
+            if dm.time_to is not None
+            else None,
         )
 
     @classmethod
     def dummy(cls) -> "DepartmentMembershipWithShortProfileOut":
         return DepartmentMembershipWithShortProfileOut.parse_obj(
-            cls.Config.schema_extra["example"])
+            cls.Config.schema_extra["example"]
+        )
 
     class Config:
         schema_extra = {
@@ -557,35 +555,36 @@ class DepartmentMembershipWithShortProfileOut(BaseModel):
         }
 
 
-
 class DepartmentMembership(BaseModel):
     id: int
     profile: ProfileOutPublicReduced
     department: DepartmentOut
     position: str
-    time_from: Optional[datetime]
-    time_to: Optional[datetime]
+    time_from: datetime | None
+    time_to: datetime | None
 
     @classmethod
-    def from_db_model(cls, dm: DepartmentMembership) \
-        -> "DepartmentMembershipWithShortProfileOut":
+    def from_db_model(
+        cls, dm: DepartmentMembership
+    ) -> "DepartmentMembershipWithShortProfileOut":
         return DepartmentMembershipWithShortProfileOut(
             id=dm.id,
             profile=ProfileOutPublicReduced.from_db_model(dm.profile),
             department=DepartmentOut.from_db_model(dm.department),
             position=str(dm.position),
-            time_from=\
-                datetime.combine(dm.time_from.date(), dm.time_from.time())
-                if dm.time_from is not None else None,
-            time_to=\
-                datetime.combine(dm.time_to.date(), dm.time_to.time())
-                if dm.time_to is not None else None,
+            time_from=datetime.combine(dm.time_from.date(), dm.time_from.time())
+            if dm.time_from is not None
+            else None,
+            time_to=datetime.combine(dm.time_to.date(), dm.time_to.time())
+            if dm.time_to is not None
+            else None,
         )
 
     @classmethod
     def dummy(cls) -> "DepartmentMembershipWithShortProfileOut":
         return DepartmentMembershipWithShortProfileOut.parse_obj(
-            cls.Config.schema_extra["example"])
+            cls.Config.schema_extra["example"]
+        )
 
     class Config:
         schema_extra = {
@@ -604,13 +603,14 @@ class DepartmentMembershipInCreate(BaseModel):
     profile_id: int
     department_handle: str
     position: str
-    time_from: Optional[datetime]
-    time_to: Optional[datetime]
+    time_from: datetime | None
+    time_to: datetime | None
 
     @classmethod
     def dummy(cls) -> "DepartmentMembershipInCreate":
         return DepartmentMembershipInCreate.parse_obj(
-            cls.Config.schema_extra["example"])
+            cls.Config.schema_extra["example"]
+        )
 
     class Config:
         schema_extra = {
@@ -627,13 +627,14 @@ class DepartmentMembershipInCreate(BaseModel):
 class DepartmentMembershipInUpdate(BaseModel):
     id: int
     position: str
-    time_from: Optional[datetime]
-    time_to: Optional[datetime]
+    time_from: datetime | None
+    time_to: datetime | None
 
     @classmethod
     def dummy(cls) -> "DepartmentMembershipInUpdate":
         return DepartmentMembershipInUpdate.parse_obj(
-            cls.Config.schema_extra["example"])
+            cls.Config.schema_extra["example"]
+        )
 
     class Config:
         schema_extra = {

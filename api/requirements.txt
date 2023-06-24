@@ -1,6 +1,10 @@
 # Requirements for the FastAPI server and services
 # python 3.11
 
+# build
+setuptools
+setuptools-scm
+
 # linting
 ruff
 mypy
@@ -12,6 +16,7 @@ pyupgrade
 # testing
 httpx
 pytest
+pytest-cov
 
 # run
 fastapi~=0.88.0
@@ -33,3 +38,4 @@ sqlalchemy-utils
 firebase-admin
 types-python-dateutil
 types-pyyaml
+python-dotenv

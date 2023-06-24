@@ -1,10 +1,6 @@
 import datetime
-
 from typing import (
     Annotated,
-    List,
-    Optional,
-    Union,
 )
 
 from fastapi import (
@@ -12,45 +8,32 @@ from fastapi import (
     Body,
     Request,
 )
-from profiles.response_models import (
-    ResponseDepartmentList,
-    ResponseDepartment,
-    ResponseRoleList,
-    ResponseRoleHoldershipList,
-    ResponseRoleHoldershipUpdateList,
-    ResponseProfile,
-    ResponsePublicProfile,
-    ResponseInviteProfilesList,
-    ResponseProfileList,
-    ResponsePublicProfileList,
-    ResponseDeletedIntPKList,
-    ResponseDepartmentMembershipWithProfileList,
-    ResponseDepartmentMembershipWithProfile,
-    ResponseDepartmentMembershipCreateUpdateList,
-)
 
-from database.db_models import (
+from space_api.database.db_models import (
     PositionType,
 )
-from database.profiles_connector import (
+from space_api.database.profiles_connector import (
+    create_db_department_memberships,
+    delete_db_department_memberships,
     delete_db_profile,
     delete_db_profiles,
+    get_db_department_memberships,
     invite_new_members,
+    list_db_department_memberships,
     list_db_departments,
     list_db_profiles,
     list_db_roleholderships,
     list_db_roles,
     retrieve_db_department,
     retrieve_db_profile,
+    update_db_department_memberships,
     update_db_profile,
     update_db_roleholderships,
-    list_db_department_memberships,
-    get_db_department_memberships,
-    create_db_department_memberships,
-    update_db_department_memberships,
-    delete_db_department_memberships,
 )
-from profiles.api_models import (
+from space_api.profiles.api_models import (
+    DepartmentMembershipInCreate,
+    DepartmentMembershipInUpdate,
+    DepartmentMembershipWithShortProfileOut,
     DepartmentOut,
     ProfileInUpdate,
     ProfileMemberInvitation,
@@ -59,25 +42,37 @@ from profiles.api_models import (
     RoleHoldershipInOut,
     RoleHoldershipUpdateInOut,
     RoleInOut,
-    DepartmentMembershipWithShortProfileOut,
-    DepartmentMembershipInCreate,
-    DepartmentMembershipInUpdate,
 )
-from security.decorators import (
+from space_api.profiles.response_models import (
+    ResponseDeletedIntPKList,
+    ResponseDepartment,
+    ResponseDepartmentList,
+    ResponseDepartmentMembershipCreateUpdateList,
+    ResponseDepartmentMembershipWithProfile,
+    ResponseDepartmentMembershipWithProfileList,
+    ResponseInviteProfilesList,
+    ResponseProfile,
+    ResponseProfileList,
+    ResponsePublicProfile,
+    ResponsePublicProfileList,
+    ResponseRoleHoldershipList,
+    ResponseRoleHoldershipUpdateList,
+    ResponseRoleList,
+)
+from space_api.security.decorators import (
     ensure_authenticated,
     ensure_authorization,
 )
-from utils.error_handlers import (
+from space_api.utils.error_handlers import (
     error_handlers,
 )
-from utils.paging import (
+from space_api.utils.paging import (
     enable_paging,
 )
-from utils.response import (
+from space_api.utils.response import (
     BaseResponse,
     ErrorResponse,
 )
-
 
 router = APIRouter()
 
@@ -90,12 +85,12 @@ router = APIRouter()
 @router.get(
     "/departments/",
     response_description="List all departments, no paging support",
-    response_model=Union[ResponseDepartmentList, ErrorResponse],
+    response_model=ResponseDepartmentList | ErrorResponse,
 )
 @error_handlers
 def list_departments(request: Request) -> dict:
     db_departments = list_db_departments(request.app.state.sql_engine)
-    out_departments: List[DepartmentOut] = [
+    out_departments: list[DepartmentOut] = [
         DepartmentOut.from_db_model(dep) for dep in db_departments
     ]
     return {
@@ -109,7 +104,7 @@ def list_departments(request: Request) -> dict:
 @router.get(
     "/department/{handle}",
     response_description="Get a department by its handle",
-    response_model=Union[ResponseDepartment, ErrorResponse],
+    response_model=ResponseDepartment | ErrorResponse,
 )
 @error_handlers
 def get_department(request: Request, handle: str) -> dict:
@@ -130,7 +125,7 @@ def get_department(request: Request, handle: str) -> dict:
 @router.get(
     "/role/holderships",
     response_description="List all role assignments in TUM.ai Space",
-    response_model=Union[ResponseRoleHoldershipList, ErrorResponse],
+    response_model=ResponseRoleHoldershipList | ErrorResponse,
 )
 @error_handlers
 @ensure_authorization(
@@ -138,7 +133,7 @@ def get_department(request: Request, handle: str) -> dict:
 )
 def list_role_holderships(
     request: Request,
-    profile_id: Optional[int] = None,
+    profile_id: int | None = None,
 ) -> dict:
     db_role_holderships = list_db_roleholderships(
         request.app.state.sql_engine, profile_id
@@ -151,10 +146,11 @@ def list_role_holderships(
         "data": out_roles,
     }
 
+
 @router.get(
     "/me/role/holderships",
     response_description="List all role assignments to user",
-    response_model=Union[ResponseRoleHoldershipList, ErrorResponse],
+    response_model=ResponseRoleHoldershipList | ErrorResponse,
 )
 @ensure_authenticated
 def list_user_role_holderships(
@@ -171,10 +167,11 @@ def list_user_role_holderships(
         "data": out_roles,
     }
 
+
 @router.patch(
     "/role/holderships",
     response_description="Update role assignments in TUM.ai Space",
-    response_model=Union[ResponseRoleHoldershipUpdateList, ErrorResponse],
+    response_model=ResponseRoleHoldershipUpdateList | ErrorResponse,
 )
 @error_handlers
 @ensure_authorization(
@@ -182,7 +179,7 @@ def list_user_role_holderships(
 )
 def update_role_holderships(
     request: Request,
-    data: Annotated[List[RoleHoldershipUpdateInOut], Body(embed=True)],
+    data: Annotated[list[RoleHoldershipUpdateInOut], Body(embed=True)],
 ) -> dict:
     out_holdersips, failed_holderships = update_db_roleholderships(
         request.app.state.sql_engine, data
@@ -202,14 +199,14 @@ def update_role_holderships(
 @router.get(
     "/profiles/admin",
     response_description="List all profiles, paging support",
-    response_model=Union[ResponseProfileList, ErrorResponse],
+    response_model=ResponseProfileList | ErrorResponse,
 )
 @enable_paging(max_page_size=100)
 @error_handlers
 @ensure_authorization(any_of_positions=[(None, "board")])
 def list_profiles(request: Request, page: int = 1, page_size: int = 100) -> dict:
     db_profiles = list_db_profiles(request.app.state.sql_engine, page, page_size)
-    out_profiles: List[ProfileOut] = [ProfileOut.from_db_model(p) for p in db_profiles]
+    out_profiles: list[ProfileOut] = [ProfileOut.from_db_model(p) for p in db_profiles]
     return {
         "status_code": 200,
         "response_type": "success",
@@ -223,13 +220,13 @@ def list_profiles(request: Request, page: int = 1, page_size: int = 100) -> dict
 @router.get(
     "/profiles/",
     response_description="List all profiles, paging support",
-    response_model=Union[ResponsePublicProfileList, ErrorResponse],
+    response_model=ResponsePublicProfileList | ErrorResponse,
 )
 @enable_paging(max_page_size=100)
 @error_handlers
 def list_public_profiles(request: Request, page: int = 1, page_size: int = 100) -> dict:
     db_profiles = list_db_profiles(request.app.state.sql_engine, page, page_size)
-    out_public_profiles: List[ProfileOutPublic] = [
+    out_public_profiles: list[ProfileOutPublic] = [
         ProfileOutPublic.from_db_model(p) for p in db_profiles
     ]
     return {
@@ -245,7 +242,7 @@ def list_public_profiles(request: Request, page: int = 1, page_size: int = 100) 
 @router.get(
     "/profile/{profile_id}/admin",
     response_description="Get a profile by its profile_id",
-    response_model=Union[ResponseProfile, ErrorResponse],
+    response_model=ResponseProfile | ErrorResponse,
 )
 @error_handlers
 @ensure_authorization(any_of_positions=[(None, "board")])
@@ -262,7 +259,7 @@ def get_profile(request: Request, profile_id: int) -> dict:
 @router.get(
     "/profile/{profile_id}",
     response_description="Get a public profile by its profile_id",
-    response_model=Union[ResponsePublicProfile, ErrorResponse],
+    response_model=ResponsePublicProfile | ErrorResponse,
 )
 @error_handlers
 def get_public_profile(request: Request, profile_id: int) -> dict:
@@ -279,7 +276,7 @@ def get_public_profile(request: Request, profile_id: int) -> dict:
     "/me",
     response_description="Retrieve the complete profile of the user currently \
     logged in with FireBase",
-    response_model=Union[ResponseProfile, ErrorResponse],
+    response_model=ResponseProfile | ErrorResponse,
 )
 @ensure_authenticated
 def show_current_profile(request: Request) -> dict:
@@ -295,11 +292,11 @@ def show_current_profile(request: Request) -> dict:
 @router.delete(
     "/profiles/",
     response_description="delete all profiles",
-    response_model=Union[ResponseDeletedIntPKList, ErrorResponse],
+    response_model=ResponseDeletedIntPKList | ErrorResponse,
 )
 @error_handlers
 @ensure_authorization(any_of_positions=[(None, "board")])
-def delete_profiles(request: Request, profile_ids: List[int]) -> dict:
+def delete_profiles(request: Request, profile_ids: list[int]) -> dict:
     deleted_profiles = delete_db_profiles(request.app.state.sql_engine, profile_ids)
     return {
         "status_code": 200,
@@ -312,7 +309,7 @@ def delete_profiles(request: Request, profile_ids: List[int]) -> dict:
 @router.delete(
     "/profile/{profile_id}",
     response_description="delete a profile",
-    response_model=Union[BaseResponse, ErrorResponse],
+    response_model=BaseResponse | ErrorResponse,
 )
 @error_handlers
 @ensure_authorization(any_of_positions=[(None, "board")])
@@ -333,7 +330,7 @@ def delete_profile(request: Request, profile_id: int) -> dict:
 @router.delete(
     "/me",
     response_description="delete my own profile",
-    response_model=Union[BaseResponse, ErrorResponse],
+    response_model=BaseResponse | ErrorResponse,
 )
 @error_handlers
 @ensure_authenticated
@@ -354,7 +351,7 @@ def delete_own_profile(request: Request) -> dict:
 @router.patch(
     "/profile/{profile_id}",
     response_description="Update profile",
-    response_model=Union[ResponseProfile, ErrorResponse],
+    response_model=ResponseProfile | ErrorResponse,
 )
 @error_handlers
 @ensure_authorization(any_of_positions=[(None, "board")])
@@ -379,7 +376,7 @@ def update_profile(
 @router.patch(
     "/me",
     response_description="Update logged in users profile",
-    response_model=Union[ResponseProfile, ErrorResponse],
+    response_model=ResponseProfile | ErrorResponse,
 )
 @error_handlers
 @ensure_authenticated
@@ -408,7 +405,7 @@ def update_current_profile(
     "/profiles/invite/members",
     response_description="Create Profiles for new members and sendout \
         invitation emails",
-    response_model=Union[ResponseInviteProfilesList, ErrorResponse],
+    response_model=ResponseInviteProfilesList | ErrorResponse,
 )
 @error_handlers
 @ensure_authorization(
@@ -417,7 +414,7 @@ def update_current_profile(
 )
 def invite_members(
     request: Request,
-    data: Annotated[List[ProfileMemberInvitation], Body(embed=True)],
+    data: Annotated[list[ProfileMemberInvitation], Body(embed=True)],
 ) -> dict:
     created_profiles, error_profiles = invite_new_members(
         request.app.state.sql_engine, data
@@ -443,13 +440,13 @@ def invite_members(
 @router.get(
     "/roles",
     response_description="List all roles availlable in TUM.ai Space",
-    response_model=Union[ResponseRoleList, ErrorResponse],
+    response_model=ResponseRoleList | ErrorResponse,
 )
 @error_handlers
 @ensure_authenticated
 def list_roles(request: Request) -> dict:
     db_roles = list_db_roles(request.app.state.sql_engine)
-    out_roles: List[RoleInOut] = [RoleInOut.from_db_model(r) for r in db_roles]
+    out_roles: list[RoleInOut] = [RoleInOut.from_db_model(r) for r in db_roles]
     return {
         "status_code": 200,
         "response_type": "success",
@@ -462,10 +459,11 @@ def list_roles(request: Request) -> dict:
 #                       DepartmemtMembership management endpoints                      #
 # ------------------------------------------------------------------------------------ #
 
+
 @router.get(
     "/department-memberships",
     response_description="List department memberships that meet the filter criteria",
-    response_model=Union[ResponseDepartmentMembershipWithProfileList, ErrorResponse],
+    response_model=ResponseDepartmentMembershipWithProfileList | ErrorResponse,
 )
 @enable_paging(max_page_size=200)
 @error_handlers
@@ -477,16 +475,16 @@ def list_department_memberships(
     request: Request,
     page: int = 1,
     page_size: int = 100,
-    profile_id: Optional[int] = None,
-    department_handle: Optional[str] = None,
-    position: Optional[str] = None,
-    started_before: Optional[datetime.datetime] = None,
-    started_after: Optional[datetime.datetime] = None,
-    ended_before: Optional[datetime.datetime] = None,
-    ended_after: Optional[datetime.datetime] = None,
+    profile_id: int | None = None,
+    department_handle: str | None = None,
+    position: str | None = None,
+    started_before: datetime.datetime | None = None,
+    started_after: datetime.datetime | None = None,
+    ended_before: datetime.datetime | None = None,
+    ended_after: datetime.datetime | None = None,
 ) -> dict:
     db_department_memberships = list_db_department_memberships(
-        request.app.state.sql_engine, 
+        request.app.state.sql_engine,
         page,
         page_size,
         profile_id,
@@ -498,7 +496,7 @@ def list_department_memberships(
         ended_after,
     )
     out_department_memberships = [
-        DepartmentMembershipWithShortProfileOut.from_db_model(rh) 
+        DepartmentMembershipWithShortProfileOut.from_db_model(rh)
         for rh in db_department_memberships
     ]
     return {
@@ -512,23 +510,20 @@ def list_department_memberships(
 @router.get(
     "/department-membership/{department_membership_id}",
     response_description="Retrieve a department membership by its id",
-    response_model=Union[ResponseDepartmentMembershipWithProfile, ErrorResponse],
+    response_model=ResponseDepartmentMembershipWithProfile | ErrorResponse,
 )
 @error_handlers
 @ensure_authorization(
     any_of_positions=[(PositionType.TEAMLEAD, None), (None, "board")],
     any_of_roles=["departmemt_membership_management"],
 )
-def get_department_membership(
-    request: Request,
-    department_membership_id: int
-) -> dict:
+def get_department_membership(request: Request, department_membership_id: int) -> dict:
     db_department_membership = get_db_department_memberships(
-        request.app.state.sql_engine, 
-        department_membership_id
+        request.app.state.sql_engine, department_membership_id
     )
-    out_department_membership = \
-        DepartmentMembershipWithShortProfileOut.from_db_model(db_department_membership)
+    out_department_membership = DepartmentMembershipWithShortProfileOut.from_db_model(
+        db_department_membership
+    )
     return {
         "status_code": 200,
         "response_type": "success",
@@ -540,7 +535,7 @@ def get_department_membership(
 @router.post(
     "/department-memberships",
     response_description="Create department memberships in TUM.ai Space",
-    response_model=Union[ResponseDepartmentMembershipCreateUpdateList, ErrorResponse],
+    response_model=ResponseDepartmentMembershipCreateUpdateList | ErrorResponse,
 )
 @error_handlers
 @ensure_authorization(
@@ -549,7 +544,7 @@ def get_department_membership(
 )
 def create_department_memberships(
     request: Request,
-    data: Annotated[List[DepartmentMembershipInCreate], Body(embed=True)],
+    data: Annotated[list[DepartmentMembershipInCreate], Body(embed=True)],
 ) -> dict:
     db_memberships, failed_memberships = create_db_department_memberships(
         request.app.state.sql_engine, data
@@ -573,7 +568,7 @@ def create_department_memberships(
 @router.patch(
     "/department-memberships",
     response_description="Update department memberships in TUM.ai Space",
-    response_model=Union[ResponseDepartmentMembershipCreateUpdateList, ErrorResponse],
+    response_model=ResponseDepartmentMembershipCreateUpdateList | ErrorResponse,
 )
 @error_handlers
 @ensure_authorization(
@@ -582,7 +577,7 @@ def create_department_memberships(
 )
 def update_department_memberships(
     request: Request,
-    data: Annotated[List[DepartmentMembershipInUpdate], Body(embed=True)],
+    data: Annotated[list[DepartmentMembershipInUpdate], Body(embed=True)],
 ) -> dict:
     db_memberships, failed_memberships = update_db_department_memberships(
         request.app.state.sql_engine, data
@@ -606,7 +601,7 @@ def update_department_memberships(
 @router.delete(
     "/department-memberships",
     response_description="Delete department memberships by their ids",
-    response_model=Union[ResponseDeletedIntPKList, ErrorResponse],
+    response_model=ResponseDeletedIntPKList | ErrorResponse,
 )
 @error_handlers
 @ensure_authorization(
@@ -614,12 +609,10 @@ def update_department_memberships(
     any_of_roles=["departmemt_membership_management"],
 )
 def delete_department_membership(
-    request: Request,
-    department_membership_ids: List[int]
+    request: Request, department_membership_ids: list[int]
 ) -> dict:
     deleted_ids = delete_db_department_memberships(
-        request.app.state.sql_engine, 
-        department_membership_ids
+        request.app.state.sql_engine, department_membership_ids
     )
     return {
         "status_code": 200,

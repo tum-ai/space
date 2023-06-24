@@ -2,9 +2,6 @@ import datetime
 import traceback
 from typing import (
     Any,
-    List,
-    Optional,
-    Tuple,
 )
 
 import sqlalchemy as sa
@@ -12,17 +9,17 @@ from sqlalchemy.orm import (
     Session,
 )
 
-from profiles.api_models import (
+from space_api.profiles.api_models import (
+    DepartmentMembershipInCreate,
+    DepartmentMembershipInUpdate,
     ProfileInCreate,
     ProfileInUpdate,
     ProfileMemberInvitation,
     RoleHoldershipInOut,
     RoleHoldershipUpdateInOut,
     SocialNetworkIn,
-    DepartmentMembershipInCreate,
-    DepartmentMembershipInUpdate,
 )
-from security.firebase_auth import (
+from space_api.security.firebase_auth import (
     create_invite_email_user,
 )
 
@@ -39,15 +36,14 @@ from .setup import (
     setup_db_client_appless,
 )
 
-
 # ------------------------------------------------------------------------------------ #
 #                                 department operations                                #
 # ------------------------------------------------------------------------------------ #
 
 
-def list_db_departments(sql_engine: sa.Engine) -> List[Department]:
+def list_db_departments(sql_engine: sa.Engine) -> list[Department]:
     with Session(sql_engine) as db_session:
-        db_departments: List[Department] = db_session.query(Department).limit(100).all()
+        db_departments: list[Department] = db_session.query(Department).limit(100).all()
         return db_departments
 
 
@@ -134,8 +130,8 @@ def retrieve_db_profile_by_firebase_uid(
 
 def create_db_profiles(
     sql_engine: sa.Engine,
-    new_profiles: List[ProfileInCreate],
-) -> List[Profile]:
+    new_profiles: list[ProfileInCreate],
+) -> list[Profile]:
     created_db_profiles = []
     with Session(sql_engine) as db_session:
         for new_profile in new_profiles:
@@ -297,9 +293,9 @@ def update_db_profile(
     return db_profile
 
 
-def list_db_profiles(sql_engine: sa.Engine, page: int, page_size: int) -> List[Profile]:
+def list_db_profiles(sql_engine: sa.Engine, page: int, page_size: int) -> list[Profile]:
     with Session(sql_engine) as db_session:
-        db_profiles: List[Profile] = (
+        db_profiles: list[Profile] = (
             db_session.query(Profile)
             .offset(page_size * (page - 1))
             .limit(page_size)
@@ -319,7 +315,7 @@ def retrieve_db_profile(sql_engine: sa.Engine, profile_id: int) -> Profile:
         return db_model
 
 
-def delete_db_profiles(sql_engine: sa.Engine, profile_ids: List[int]) -> List[int]:
+def delete_db_profiles(sql_engine: sa.Engine, profile_ids: list[int]) -> list[int]:
     with Session(sql_engine) as db_session:
         stmt = sa.delete(Profile).where(Profile.id.in_(profile_ids))
         db_session.execute(stmt)
@@ -339,7 +335,7 @@ def delete_db_profile(sql_engine: sa.Engine, profile_id: int) -> bool:
 def profile_has_one_of_positions(
     sql_engine: sa.Engine,
     profile_id: int,
-    any_of: List[Tuple[Optional[PositionType], Optional[str]]],
+    any_of: list[tuple[PositionType | None, str | None]],
 ) -> bool:
     or_statement = sa.and_(sa.false(), sa.false())
     for position, department_handle in any_of:
@@ -386,7 +382,7 @@ def profile_has_one_of_positions(
 def profile_has_one_of_roles(
     sql_engine: sa.Engine,
     profile_id: int,
-    any_of: List[str],
+    any_of: list[str],
 ) -> bool:
     or_statement = sa.and_(sa.false(), sa.false())
     for role_handle in any_of:
@@ -410,8 +406,8 @@ def profile_has_one_of_roles(
 
 def invite_new_members(
     sql_engine: sa.Engine,
-    new_profiles: List[ProfileMemberInvitation],
-) -> Tuple[List[Profile], List[Tuple[ProfileMemberInvitation, str]]]:
+    new_profiles: list[ProfileMemberInvitation],
+) -> tuple[list[Profile], list[tuple[ProfileMemberInvitation, str]]]:
     """
     Returns:
         List[Profile]: successfully created profiles
@@ -476,14 +472,14 @@ def invite_new_members(
     return created_profiles, error_profiles
 
 
- # ----------------------------------------------------------------------------------- #
- #                         Authorization Management operations                         #
- # ----------------------------------------------------------------------------------- #
+# ----------------------------------------------------------------------------------- #
+#                         Authorization Management operations                         #
+# ----------------------------------------------------------------------------------- #
 
 
-def list_db_roles(sql_engine: sa.Engine) -> List[Role]:
+def list_db_roles(sql_engine: sa.Engine) -> list[Role]:
     with Session(sql_engine) as db_session:
-        db_roles: List[Role] = db_session.query(Role).all()
+        db_roles: list[Role] = db_session.query(Role).all()
 
         # asserts presence of id, triggers a db refresh
         for db_role in db_roles:
@@ -495,16 +491,16 @@ def list_db_roles(sql_engine: sa.Engine) -> List[Role]:
 
 def list_db_roleholderships(
     sql_engine: sa.Engine,
-    profile_id: Optional[int] = None,
-    role_handle: Optional[str] = None,
-) -> List[RoleHoldership]:
+    profile_id: int | None = None,
+    role_handle: str | None = None,
+) -> list[RoleHoldership]:
     with Session(sql_engine) as db_session:
         filter = sa.and_(sa.true(), sa.true())
         if profile_id is not None:
             filter = sa.and_(filter, RoleHoldership.profile_id == profile_id)
         if role_handle is not None:
             filter = sa.and_(filter, RoleHoldership.role_handle == role_handle)
-        db_role_holderships: List[RoleHoldership] = (
+        db_role_holderships: list[RoleHoldership] = (
             db_session.query(RoleHoldership).filter(filter).all()
         )
 
@@ -515,8 +511,8 @@ def list_db_roleholderships(
 
 
 def update_db_roleholderships(
-    sql_engine: sa.Engine, new_role_holderships: List[RoleHoldershipUpdateInOut]
-) -> Tuple[List[RoleHoldershipUpdateInOut], List[Tuple[RoleHoldershipInOut, str]]]:
+    sql_engine: sa.Engine, new_role_holderships: list[RoleHoldershipUpdateInOut]
+) -> tuple[list[RoleHoldershipUpdateInOut], list[tuple[RoleHoldershipInOut, str]]]:
     """
     Returns:
         List[Profile]: successfully created role holderships
@@ -582,44 +578,40 @@ def update_db_roleholderships(
 #                      DepartmemtMembership management operations                      #
 # ------------------------------------------------------------------------------------ #
 
+
 def list_db_department_memberships(
     sql_engine: sa.Engine,
     page: int = 1,
     page_size: int = 100,
-    profile_id: Optional[int] = None,
-    department_handle: Optional[str] = None,
-    position: Optional[str] = None,
-    started_before: Optional[datetime.datetime] = None,
-    started_after: Optional[datetime.datetime] = None,
-    ended_before: Optional[datetime.datetime] = None,
-    ended_after: Optional[datetime.datetime] = None,
-) -> List[DepartmentMembership]:
+    profile_id: int | None = None,
+    department_handle: str | None = None,
+    position: str | None = None,
+    started_before: datetime.datetime | None = None,
+    started_after: datetime.datetime | None = None,
+    ended_before: datetime.datetime | None = None,
+    ended_after: datetime.datetime | None = None,
+) -> list[DepartmentMembership]:
     with Session(sql_engine) as db_session:
-        
         # build filter
         filter = sa.and_(sa.true(), sa.true())
         if profile_id is not None:
-            filter = sa.and_(
-                filter, DepartmentMembership.profile_id == profile_id)
+            filter = sa.and_(filter, DepartmentMembership.profile_id == profile_id)
         if department_handle is not None:
             filter = sa.and_(
-                filter, DepartmentMembership.department_handle == department_handle)
+                filter, DepartmentMembership.department_handle == department_handle
+            )
         if position is not None:
             filter = sa.and_(filter, DepartmentMembership.position == position)
         if started_before is not None:
-            filter = sa.and_(
-                filter, DepartmentMembership.time_from < started_before)
+            filter = sa.and_(filter, DepartmentMembership.time_from < started_before)
         if started_after is not None:
-            filter = sa.and_(
-                filter, DepartmentMembership.time_from > started_after)
+            filter = sa.and_(filter, DepartmentMembership.time_from > started_after)
         if ended_before is not None:
-            filter = sa.and_(
-                filter, DepartmentMembership.time_to < ended_before)
+            filter = sa.and_(filter, DepartmentMembership.time_to < ended_before)
         if ended_after is not None:
-            filter = sa.and_(
-                filter, DepartmentMembership.time_to > ended_after)
+            filter = sa.and_(filter, DepartmentMembership.time_to > ended_after)
 
-        db_department_memberships: List[DepartmentMembership] = (
+        db_department_memberships: list[DepartmentMembership] = (
             db_session.query(DepartmentMembership)
             .filter(filter)
             .offset(page_size * (page - 1))
@@ -634,11 +626,9 @@ def list_db_department_memberships(
 
 
 def get_db_department_memberships(
-    sql_engine: sa.Engine,
-    department_membership_id: int
+    sql_engine: sa.Engine, department_membership_id: int
 ) -> DepartmentMembership:
     with Session(sql_engine) as db_session:
-        
         db_model = db_session.query(DepartmentMembership).get(department_membership_id)
         if not db_model:
             raise KeyError
@@ -648,12 +638,12 @@ def get_db_department_memberships(
 
 def create_db_department_memberships(
     sql_engine: sa.Engine,
-    new_department_memberships: List[DepartmentMembershipInCreate],
-) -> Tuple[List[DepartmentMembership], List[Tuple[DepartmentMembershipInCreate, str]]]:
+    new_department_memberships: list[DepartmentMembershipInCreate],
+) -> tuple[list[DepartmentMembership], list[tuple[DepartmentMembershipInCreate, str]]]:
     """
     Returns:
         List[DepartmentMembership]: successfully created memberships
-        List[Tuple[DepartmentMembershipInCreate, str]]: 
+        List[Tuple[DepartmentMembershipInCreate, str]]:
             failed memberships with error message
     """
     created_memberships = []
@@ -687,8 +677,8 @@ def create_db_department_memberships(
 
 def update_db_department_memberships(
     sql_engine: sa.Engine,
-    department_memberships: List[DepartmentMembershipInUpdate],
-) -> Tuple[List[DepartmentMembership], List[Tuple[DepartmentMembershipInUpdate, str]]]:
+    department_memberships: list[DepartmentMembershipInUpdate],
+) -> tuple[list[DepartmentMembership], list[tuple[DepartmentMembershipInUpdate, str]]]:
     """
     Returns:
         List[DepartmentMembership]: successfully updated department_memberships
@@ -701,15 +691,15 @@ def update_db_department_memberships(
     for membership in department_memberships:
         try:
             with Session(sql_engine) as db_session:
-                db_membership = db_session\
-                    .query(DepartmentMembership)\
-                    .get(membership.id)
-                
+                db_membership = db_session.query(DepartmentMembership).get(
+                    membership.id
+                )
+
                 if not db_membership:
                     raise ValueError(
                         f"Membership with id {membership.id} does not exist!"
                     )
-                
+
                 db_membership.position = membership.position
                 db_membership.time_from = membership.time_from
                 db_membership.time_to = membership.time_to
@@ -732,8 +722,8 @@ def update_db_department_memberships(
 
 def delete_db_department_memberships(
     sql_engine: sa.Engine,
-    department_membership_ids: List[int],
-) -> List[int]:
+    department_membership_ids: list[int],
+) -> list[int]:
     with Session(sql_engine) as db_session:
         stmt = sa.delete(DepartmentMembership).where(
             DepartmentMembership.id.in_(department_membership_ids)

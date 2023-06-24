@@ -1,9 +1,6 @@
 from pathlib import (
     Path,
 )
-from typing import (
-    Union,
-)
 
 import firebase_admin  # type: ignore
 from firebase_admin import (  # type: ignore
@@ -18,12 +15,12 @@ from firebase_admin.exceptions import (  # type: ignore
     AlreadyExistsError,
 )
 
-ROOT = Path(__file__)
+ROOT_PATH = Path(__file__).parent.parent.parent
 
 
 def init_firebase_auth() -> App:
     cred = credentials.Certificate(
-        ROOT.parent.parent / ".secrets" / "tumai-space-firebase-adminsdk.json"
+        ROOT_PATH / ".secrets" / "tumai-space-firebase-adminsdk.json"
     )
     app = firebase_admin.initialize_app(cred)
     return app
@@ -38,7 +35,7 @@ def verify_id_token(jwt: str) -> UserRecord | None:
         return None
 
 
-def create_invite_email_user(display_name: str, email: str) -> Union[UserRecord, str]:
+def create_invite_email_user(display_name: str, email: str) -> UserRecord | str:
     """
     Returns:
         UserRecord: if successful

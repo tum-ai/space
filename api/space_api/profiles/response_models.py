@@ -1,16 +1,15 @@
-from typing import Any, List
+from typing import Any
 
-from profiles.api_models import (
+from space_api.profiles.api_models import (
+    DepartmentMembershipWithShortProfileOut,
     DepartmentOut,
     ProfileOut,
     ProfileOutPublic,
     RoleHoldershipInOut,
     RoleHoldershipUpdateInOut,
     RoleInOut,
-    DepartmentMembershipWithShortProfileOut,
 )
-from utils.response import BaseResponse
-
+from space_api.utils.response import BaseResponse
 
 # ------------------------------------------------------------------------------------ #
 #                              Department Response Models                              #
@@ -18,7 +17,7 @@ from utils.response import BaseResponse
 
 
 class ResponseDepartmentList(BaseResponse):
-    data: List[DepartmentOut]
+    data: list[DepartmentOut]
 
     class Config:
         schema_extra = BaseResponse.schema_wrapper(
@@ -53,7 +52,7 @@ class ResponsePublicProfile(BaseResponse):
 
 
 class ResponseProfileList(BaseResponse):
-    data: List[ProfileOut]
+    data: list[ProfileOut]
 
     class Config:
         schema_extra = BaseResponse.schema_wrapper(
@@ -62,7 +61,7 @@ class ResponseProfileList(BaseResponse):
 
 
 class ResponsePublicProfileList(BaseResponse):
-    data: List[ProfileOutPublic]
+    data: list[ProfileOutPublic]
 
     class Config:
         schema_extra = BaseResponse.schema_wrapper(
@@ -76,7 +75,7 @@ class ResponsePublicProfileList(BaseResponse):
 class ResponseDeletedIntPKList(BaseResponse):
     """data contains ids of deleted profiles"""
 
-    data: List[int]
+    data: list[int]
 
     class Config:
         schema_extra = BaseResponse.schema_wrapper([43, 32])
@@ -88,8 +87,8 @@ class ResponseDeletedIntPKList(BaseResponse):
 
 
 class ResponseInviteProfilesList(BaseResponse):
-    succeeded: List[ProfileOut]
-    failed: List[Any]
+    succeeded: list[ProfileOut]
+    failed: list[Any]
 
     class Config:
         schema_extra = BaseResponse.schema_wrapper([])  # TODO
@@ -101,7 +100,7 @@ class ResponseInviteProfilesList(BaseResponse):
 
 
 class ResponseRoleList(BaseResponse):
-    data: List[RoleInOut]
+    data: list[RoleInOut]
 
     class Config:
         schema_extra = BaseResponse.schema_wrapper(
@@ -110,7 +109,7 @@ class ResponseRoleList(BaseResponse):
 
 
 class ResponseRoleHoldershipList(BaseResponse):
-    data: List[RoleHoldershipInOut]
+    data: list[RoleHoldershipInOut]
 
     class Config:
         schema_extra = BaseResponse.schema_wrapper(
@@ -119,8 +118,8 @@ class ResponseRoleHoldershipList(BaseResponse):
 
 
 class ResponseRoleHoldershipUpdateList(BaseResponse):
-    succeeded: List[RoleHoldershipUpdateInOut]
-    failed: List[Any]
+    succeeded: list[RoleHoldershipUpdateInOut]
+    failed: list[Any]
 
     class Config:
         schema_extra = BaseResponse.schema_wrapper([])  # TODO
@@ -132,12 +131,14 @@ class ResponseRoleHoldershipUpdateList(BaseResponse):
 
 
 class ResponseDepartmentMembershipWithProfileList(BaseResponse):
-    data: List[DepartmentMembershipWithShortProfileOut]
+    data: list[DepartmentMembershipWithShortProfileOut]
 
     class Config:
-        schema_extra = BaseResponse.schema_wrapper([
-            DepartmentMembershipWithShortProfileOut.dummy(),
-        ])
+        schema_extra = BaseResponse.schema_wrapper(
+            [
+                DepartmentMembershipWithShortProfileOut.dummy(),
+            ]
+        )
 
 
 class ResponseDepartmentMembershipWithProfile(BaseResponse):
@@ -150,9 +151,8 @@ class ResponseDepartmentMembershipWithProfile(BaseResponse):
 
 
 class ResponseDepartmentMembershipCreateUpdateList(BaseResponse):
-    succeeded: List[DepartmentMembershipWithShortProfileOut]
-    failed: List[Any]
+    succeeded: list[DepartmentMembershipWithShortProfileOut]
+    failed: list[Any]
 
     class Config:
         schema_extra = BaseResponse.schema_wrapper([])
-

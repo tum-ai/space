@@ -1,14 +1,12 @@
+from collections.abc import Callable
 from functools import (
     wraps,
 )
 from typing import (
     Any,
-    Callable,
 )
 
-from fastapi import (
-    Request,
-)
+from fastapi import Request
 
 """usage: place decorator before function:
 'def endpoint(request, page, page_size)'
@@ -25,7 +23,9 @@ def enable_paging(max_page_size: int = 1000) -> Callable:
                 kwargs.update(
                     {
                         # limit to [1;max_page_size]
-                        "page_size": min(max(kwargs.get("page_size"), 1), max_page_size)
+                        "page_size": min(
+                            max(int(kwargs.get("page_size", 10)), 1), max_page_size
+                        )
                     }
                 )
 

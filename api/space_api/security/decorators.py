@@ -1,22 +1,19 @@
+from collections.abc import Callable
 from functools import (
     wraps,
 )
 from typing import (
     Any,
-    Callable,
-    List,
-    Optional,
-    Tuple,
 )
 
 from fastapi import (
     Request,
 )
 
-from database.db_models import (
+from space_api.database.db_models import (
     PositionType,
 )
-from database.profiles_connector import (
+from space_api.database.profiles_connector import (
     profile_has_one_of_positions,
     profile_has_one_of_roles,
     retrieve_or_create_db_profile_by_firebase_uid,
@@ -62,10 +59,10 @@ def __ensure_auth(func: Callable, request: Request, *args: Any, **kwargs: Any) -
     request.state.fb_user = fb_user
     request.state.profile = profile
 
-    any_of_positions: Optional[
-        List[Tuple[Optional[PositionType], Optional[str]]]
-    ] = kwargs.pop("any_of_positions", None)
-    any_of_roles: Optional[List[str]] = kwargs.pop("any_of_roles", None)
+    any_of_positions: list[tuple[PositionType | None, str | None]] | None = kwargs.pop(
+        "any_of_positions", None
+    )
+    any_of_roles: list[str] | None = kwargs.pop("any_of_roles", None)
 
     succeeded = False
     if any_of_positions is None and any_of_roles is None:
@@ -94,8 +91,8 @@ def ensure_authenticated(func: Callable) -> Callable:
 
 
 def ensure_authorization(
-    any_of_positions: List[Tuple[Optional[PositionType], Optional[str]]] = [],
-    any_of_roles: List[str] = [],
+    any_of_positions: list[tuple[PositionType | None, str | None]] = [],
+    any_of_roles: list[str] = [],
 ) -> Callable:
     """
     If any in on of any_of_position or any_of_role is found for
