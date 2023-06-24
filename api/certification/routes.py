@@ -73,7 +73,7 @@ def generate_certificate(
             return StreamingResponse(
                 BytesIO(response.content), media_type="application/pdf"
             )
-    except Exception as _:
+    except Exception:
         pass
     return {
         "status_code": 500,

@@ -39,7 +39,8 @@ db_client = None
 # ------------------------------------------------------------------------------#
 init_firebase_auth()
 
-allowed_origins = CONFIG.get("AUTH_ALLOWED_ORIGINS") + CONFIG.get("CERTIFICATE_ALLOWED_ORIGINS")
+allowed_origins = CONFIG.get("AUTH_ALLOWED_ORIGINS")
+allowed_origins += CONFIG.get("CERTIFICATE_ALLOWED_ORIGINS")
 log.debug("Allowed origins:", allowed_origins)
 allow_all = ["*"]
 app.add_middleware(
