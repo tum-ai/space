@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { CertificateModel } from './certificate.js';
 import { InviteModel } from './invite.js';
 import { MeModel } from './me.js';
 import { ProfileModel } from './profile.js';
@@ -14,6 +15,7 @@ export class RootModel {
 		this.uiModel = new UiModel(this);
 		this.meModel = new MeModel(this);
 		this.rolesModel = new RolesModel(this);
+		this.certificateModel = new CertificateModel(this);
 	}
 
 	async GET(path) {
