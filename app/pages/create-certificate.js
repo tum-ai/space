@@ -99,24 +99,6 @@ function Certificate() {
 							value={certificate['LASTNAME']}
 						/>
 						<Input
-							label='Department'
-							type='text'
-							id='first_name'
-							name='DEPARTMENT'
-							onChange={handleChange}
-							required={true}
-							value={certificate['DEPARTMENT']}
-						/>
-						<Input
-							label='Title (TL/Member ...)'
-							type='text'
-							id='first_name'
-							name='TITLE'
-							onChange={handleChange}
-							required={true}
-							value={certificate['TITLE']}
-						/>
-						<Input
 							label='Date Now'
 							type='text'
 							id='first_name'
