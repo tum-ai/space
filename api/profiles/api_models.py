@@ -8,6 +8,10 @@ from typing import (
     Optional,
 )
 
+from pydantic import (
+    BaseModel,
+)
+
 from database.db_models import (
     Department,
     DepartmentMembership,
@@ -17,9 +21,8 @@ from database.db_models import (
     Role,
     RoleHoldership,
     SocialNetwork,
-    SocialNetworkType
+    SocialNetworkType,
 )
-from pydantic import BaseModel
 
 # ------------------------------------------------------------------------------------ #
 #                                 department operations                                #
@@ -180,6 +183,7 @@ class DepartmentMembershipOut(BaseModel):
             }
         }
 
+
 class ProfileInCreateUpdateBase(BaseModel):
     email: str
     phone: Optional[str]
@@ -334,6 +338,7 @@ class ProfileOut(BaseModel):
             }
         }
 
+
 class ProfileOutPublic(BaseModel):
     id: int
 
@@ -411,7 +416,6 @@ class ProfileOutPublic(BaseModel):
         }
 
 
-
 class ProfileOutPublicReduced(BaseModel):
     id: int
 
@@ -425,7 +429,7 @@ class ProfileOutPublicReduced(BaseModel):
             id=profile.id,
             first_name=profile.first_name,
             last_name=profile.last_name,
-            description=profile.description
+            description=profile.description,
         )
 
     @classmethod
@@ -438,11 +442,9 @@ class ProfileOutPublicReduced(BaseModel):
                 "id": 42,
                 "first_name": "Max",
                 "last_name": "Mustermann",
-                "description": "Hi and welcome!"
+                "description": "Hi and welcome!",
             }
         }
-
-
 
 
 class UpdateProfile(BaseModel):
@@ -450,10 +452,9 @@ class UpdateProfile(BaseModel):
         template = "profiles"
 
 
- # ----------------------------------------------------------------------------------- #
- #                         Authorization Management operations                         #
- # ----------------------------------------------------------------------------------- #
-
+# ----------------------------------------------------------------------------------- #
+#                         Authorization Management operations                         #
+# ----------------------------------------------------------------------------------- #
 
 
 class RoleHoldershipInOut(BaseModel):
@@ -514,7 +515,6 @@ class RoleHoldershipUpdateInOut(BaseModel):
 # ------------------------------------------------------------------------------------ #
 
 
-
 class DepartmentMembershipWithShortProfileOut(BaseModel):
     id: int
     profile: ProfileOutPublicReduced
@@ -524,25 +524,27 @@ class DepartmentMembershipWithShortProfileOut(BaseModel):
     time_to: Optional[datetime]
 
     @classmethod
-    def from_db_model(cls, dm: DepartmentMembership) \
-        -> "DepartmentMembershipWithShortProfileOut":
+    def from_db_model(
+        cls, dm: DepartmentMembership
+    ) -> "DepartmentMembershipWithShortProfileOut":
         return DepartmentMembershipWithShortProfileOut(
             id=dm.id,
             profile=ProfileOutPublicReduced.from_db_model(dm.profile),
             department=DepartmentOut.from_db_model(dm.department),
             position=str(dm.position),
-            time_from=\
-                datetime.combine(dm.time_from.date(), dm.time_from.time())
-                if dm.time_from is not None else None,
-            time_to=\
-                datetime.combine(dm.time_to.date(), dm.time_to.time())
-                if dm.time_to is not None else None,
+            time_from=datetime.combine(dm.time_from.date(), dm.time_from.time())
+            if dm.time_from is not None
+            else None,
+            time_to=datetime.combine(dm.time_to.date(), dm.time_to.time())
+            if dm.time_to is not None
+            else None,
         )
 
     @classmethod
     def dummy(cls) -> "DepartmentMembershipWithShortProfileOut":
         return DepartmentMembershipWithShortProfileOut.parse_obj(
-            cls.Config.schema_extra["example"])
+            cls.Config.schema_extra["example"]
+        )
 
     class Config:
         schema_extra = {
@@ -557,7 +559,6 @@ class DepartmentMembershipWithShortProfileOut(BaseModel):
         }
 
 
-
 class DepartmentMembership(BaseModel):
     id: int
     profile: ProfileOutPublicReduced
@@ -567,25 +568,27 @@ class DepartmentMembership(BaseModel):
     time_to: Optional[datetime]
 
     @classmethod
-    def from_db_model(cls, dm: DepartmentMembership) \
-        -> "DepartmentMembershipWithShortProfileOut":
+    def from_db_model(
+        cls, dm: DepartmentMembership
+    ) -> "DepartmentMembershipWithShortProfileOut":
         return DepartmentMembershipWithShortProfileOut(
             id=dm.id,
             profile=ProfileOutPublicReduced.from_db_model(dm.profile),
             department=DepartmentOut.from_db_model(dm.department),
             position=str(dm.position),
-            time_from=\
-                datetime.combine(dm.time_from.date(), dm.time_from.time())
-                if dm.time_from is not None else None,
-            time_to=\
-                datetime.combine(dm.time_to.date(), dm.time_to.time())
-                if dm.time_to is not None else None,
+            time_from=datetime.combine(dm.time_from.date(), dm.time_from.time())
+            if dm.time_from is not None
+            else None,
+            time_to=datetime.combine(dm.time_to.date(), dm.time_to.time())
+            if dm.time_to is not None
+            else None,
         )
 
     @classmethod
     def dummy(cls) -> "DepartmentMembershipWithShortProfileOut":
         return DepartmentMembershipWithShortProfileOut.parse_obj(
-            cls.Config.schema_extra["example"])
+            cls.Config.schema_extra["example"]
+        )
 
     class Config:
         schema_extra = {
@@ -610,7 +613,8 @@ class DepartmentMembershipInCreate(BaseModel):
     @classmethod
     def dummy(cls) -> "DepartmentMembershipInCreate":
         return DepartmentMembershipInCreate.parse_obj(
-            cls.Config.schema_extra["example"])
+            cls.Config.schema_extra["example"]
+        )
 
     class Config:
         schema_extra = {
@@ -633,7 +637,8 @@ class DepartmentMembershipInUpdate(BaseModel):
     @classmethod
     def dummy(cls) -> "DepartmentMembershipInUpdate":
         return DepartmentMembershipInUpdate.parse_obj(
-            cls.Config.schema_extra["example"])
+            cls.Config.schema_extra["example"]
+        )
 
     class Config:
         schema_extra = {

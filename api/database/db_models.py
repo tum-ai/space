@@ -291,10 +291,9 @@ class DepartmentMembership(MixinAsDict, SaBaseModel):
     def force_load(self) -> None:
         if not self.profile_id or not self.profile.id:
             raise KeyError
-        
+
         if not self.department or not self.department.handle:
             raise KeyError
-
 
 
 class Role(MixinAsDict, SaBaseModel):
@@ -341,7 +340,6 @@ class RoleHoldership(MixinAsDict, SaBaseModel):
             f"RoleHoldership(profile_id={self.profile_id!r}, "
             f"role_handle={self.role_handle!r})"
         )
-
 
     def force_load(self) -> None:
         if not self.profile_id or not self.profile.id:
