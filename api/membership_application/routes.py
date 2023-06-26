@@ -12,21 +12,18 @@ from fastapi import (
 )
 
 from membership_application.api_models import (
-    MembershipApplicationIn,
     MembershipApplicationOut,
     MembershipApplicationListOut,
     MembershipApplicationReferralIn
 )
 from database.membership_application_connector import (
-    create_db_membership_application,
     retrieve_db_membership_application,
     list_db_membership_application,
     create_db_membership_application_referral
 )
 from membership_application.response_models import (
-    ResponseSubmitMembershipApplication,
     ResponseMembershipApplication,
-    ResponseMembershipApplicationListOut,
+    ResponseMembershipApplicationList,
     ResponseSubmitMembershipApplicationReferral
 )
 
@@ -43,34 +40,34 @@ from utils.paging import (
 router = APIRouter()
 
 
-@router.post(
-    "/membership_application/submit/",
-    response_description="Submit a new application for a membership-application.",
-    response_model=ResponseSubmitMembershipApplication,
-)
-@error_handlers
-@ensure_authorization(
-    any_of_roles=["submit_reviews"],
-)
-def submit_membership_application(
-    request: Request,
-    data: Annotated[MembershipApplicationIn, Body(embed=True)],
-) -> dict:
-    create_db_membership_application(
-        request.app.state.sql_engine, data
-    )
+# @router.post(
+#     "/membership_application/submit/",
+#     response_description="Submit a new application for a membership-application.",
+#     response_model=ResponseSubmitMembershipApplication,
+# )
+# @error_handlers
+# @ensure_authorization(
+#     any_of_roles=["submit_reviews"],
+# )
+# def submit_membership_application(
+#     request: Request,
+#     data: Annotated[MembershipApplicationIn, Body(embed=True)],
+# ) -> dict:
+#     create_db_membership_application(
+#         request.app.state.sql_engine, data
+#     )
 
-    return {
-        "status_code": 200,
-        "response_type": "success",
-        "description": "Application submitted successfully",
-    }
+#     return {
+#         "status_code": 200,
+#         "response_type": "success",
+#         "description": "Application submitted successfully",
+#     }
 
 
 @router.get(
     "/membership_applications/",
     response_description="List all membership applications, pagging support",
-    response_model=Union[ResponseMembershipApplicationListOut, ErrorResponse],
+    response_model=Union[ResponseMembershipApplicationList, ErrorResponse],
 )
 @enable_paging(max_page_size=100)
 @error_handlers

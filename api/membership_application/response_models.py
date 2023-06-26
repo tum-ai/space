@@ -15,7 +15,7 @@ class ResponseMembershipApplication(BaseResponse):
         schema_extra = BaseResponse.schema_wrapper(MembershipApplicationOut.dummy())
 
 
-class ResponseMembershipApplicationListOut(BaseResponse):
+class ResponseMembershipApplicationList(BaseResponse):
     data: List[MembershipApplicationListOut]
 
     class Config:
@@ -27,10 +27,10 @@ class ResponseMembershipApplicationListOut(BaseResponse):
         )
 
 
-class ResponseSubmitMembershipApplication(BaseResponse):
+# class ResponseSubmitMembershipApplication(BaseResponse):
 
-    class Config:
-        schema_extra = BaseResponse.schema_wrapper([])
+#     class Config:
+#         schema_extra = BaseResponse.schema_wrapper([])
 
 
 class ResponseSubmitMembershipApplicationReferral(BaseResponse):
