@@ -1,6 +1,6 @@
-import useOutsideAlerter from '/hooks/useOutsideAlerter';
 import React, { useRef, useState } from 'react';
 import Icon from './Icon';
+import useOutsideAlerter from '/hooks/useOutsideAlerter';
 
 export default function Select({
 	setSelectedItem,
@@ -25,7 +25,7 @@ export default function Select({
 				'flex flex-col space-y-1 justify-between cursor-pointer rounded ' +
 				className
 			}
-			style={{ maxWidth: '500px' }}
+			style={{ maxWidth: '600px' }}
 		>
 			{label && <label className='font-light'>{label}</label>}
 			<div className='relative rounded'>
@@ -46,6 +46,7 @@ export default function Select({
 								e.preventDefault();
 								setActive(!active);
 							}}
+							type='button'
 						>
 							<div
 								className={

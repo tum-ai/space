@@ -2,7 +2,7 @@ import dotenv from "dotenv";
 
 
 dotenv.config()
-const cdn_url = "http://localhost:9990/certification"
+const cdn_url = "http://space.files/certification"
 
 export const TEMPLATES : any = [
     "test",
@@ -24,10 +24,10 @@ export const TEMPLATE_DICTS: any = {
         "CONTRIB_1": "",
         "CONTRIB_2": "",
         "CONTRIB_3": "",
-        "SIGNER_TITLE1": "",
-        "SIGNER_TITLE2": "",
-        "SIGNER_TITLE3": "",
-        "SIGNER_INFO": "",
+        "SIGNER_TITLE1": "Hamze Al-Zamkan",
+        "SIGNER_TITLE2": "David Podolskyi",
+        "SIGNER_TITLE3": "Mariia Bogatyreva",
+        "SIGNER_INFO": "TUM.ai President",
         "SIGNED_ON": "",
         "NAME": "",
         "LASTNAME": "",
