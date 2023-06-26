@@ -21,6 +21,8 @@ from sqlalchemy import (
     ForeignKey,
     Integer,
     String,
+    Boolean,
+    Float,
     func,
 )
 from sqlalchemy.ext.hybrid import (
@@ -146,6 +148,16 @@ class Profile(MixinAsDict, SaBaseModel):
     # back reference from RoleHoldership
     role_holderships: Mapped[List["RoleHoldership"]] = relationship(
         "RoleHoldership", back_populates="profile"
+    )
+
+    # back reference from MembershipApplicationReview
+    reviews: Mapped[List["MembershipApplicationReview"]] = relationship(
+        "MembershipApplicationReview", back_populates="profile"
+    )
+
+    # back reference from MembershipApplicationReferral
+    referrals: Mapped[List["MembershipApplicationReferral"]] = relationship(
+        "MembershipApplicationReferral", back_populates="profile"
     )
 
     # --------------------------- AUTOMATIC/COMPUTED FIELDS -------------------------- #
@@ -341,11 +353,176 @@ class RoleHoldership(MixinAsDict, SaBaseModel):
             f"RoleHoldership(profile_id={self.profile_id!r}, "
             f"role_handle={self.role_handle!r})"
         )
-
-
+        
     def force_load(self) -> None:
         if not self.profile_id or not self.profile.id:
             raise KeyError
         if not self.role_handle or not self.role.handle:
             raise KeyError
         self.profile.force_load()
+
+
+class Gender(enum.Enum):
+    MALE = "Male"
+    FEMALE = "Female"
+    NON_BINARY = "Non-Binary"
+    PREFER_NOT_TO_SAY = "Prefer not to say"
+
+
+class MembershipApplication(MixinAsDict, SaBaseModel):
+    """database model"""
+
+    __tablename__ = "membership_application"
+
+    # -------------------------------- MANAGED FIELDS -------------------------------- #
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+
+    # --------------------------- AUTOMATIC/COMPUTED FIELDS -------------------------- #
+    time_created = Column(DateTime(timezone=True), server_default=func.now())
+
+    # ---------------------------- USER CHANGEABLE FIELDS ---------------------------- #
+    # Personal info
+    first_name: Mapped[str] = mapped_column(String(50), nullable=False)
+    last_name: Mapped[str] = mapped_column(String(50), nullable=False)
+    email: Mapped[str] = mapped_column(String(200), index=True, nullable=False)
+    phone: Mapped[Optional[str]] = mapped_column(String(50), index=True, nullable=True)
+    gender: Mapped[Gender] = mapped_column(Enum(Gender), nullable=False)
+    nationality: Mapped[str] = mapped_column(String(100), nullable=False)
+    birthday = Column(DateTime, nullable=True)
+    place_of_residence: Mapped[Optional[str]] = mapped_column(
+        String(100), 
+        nullable=True
+    )
+
+    # Digital appearance
+    resume: Mapped[str] = mapped_column(String(1024), nullable=False)
+    linkedin: Mapped[str] = mapped_column(String(1024), nullable=False)
+    personal_website: Mapped[str] = mapped_column(String(1024), nullable=False)
+    github: Mapped[str] = mapped_column(String(1024), nullable=False)
+
+    # Professional info
+    occupation: Mapped[str] = mapped_column(
+        String(50), 
+        nullable=True, 
+        default="student"
+    )
+    degree_level: Mapped[str] = mapped_column(String(20), nullable=False)
+    degree_name: Mapped[str] = mapped_column(String(80), nullable=False)
+    degree_semester: Mapped[int] = mapped_column(Integer, nullable=False)
+    university: Mapped[str] = mapped_column(String(160), nullable=False)
+    areas_of_expertise: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    hours_per_week: Mapped[str] = mapped_column(String(10), nullable=False)
+
+    # Who are you
+    drive_passion: Mapped[str] = mapped_column(String, nullable=False)
+    what_sets_apart: Mapped[str] = mapped_column(String, nullable=False)
+    most_proud_achievement: Mapped[str] = mapped_column(String, nullable=False)
+    learning_from_project_failure: Mapped[str] = mapped_column(String, nullable=False)
+
+    # Fit to TUM.ai
+    expectations: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    what_want_to_do: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    upcoming_commitments: Mapped[str] = mapped_column(String, nullable=False)
+    topics_ai: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    skills: Mapped[str] = mapped_column(String, nullable=False)
+
+    # Department Fit: Top 3 Departments
+    num1_department_choice: Mapped[str] = mapped_column(String, nullable=False)
+    num2_department_choice: Mapped[str] = mapped_column(String, nullable=False)
+    num3_department_choice: Mapped[str] = mapped_column(String, nullable=False)
+    num1_department_reasoning: Mapped[Optional[str]
+                                      ] = mapped_column(String, nullable=True)
+    num2_department_reasoning: Mapped[Optional[str]
+                                      ] = mapped_column(String, nullable=True)
+    num3_department_reasoning: Mapped[Optional[str]
+                                      ] = mapped_column(String, nullable=True)
+    department_reasoning: Mapped[str] = mapped_column(String, nullable=False)
+
+    # RD questions
+    research_development_interest: Mapped[bool] = mapped_column(Boolean, nullable=True)
+    research_development_reasoning: Mapped[Optional[str]] = mapped_column(
+        String, nullable=True)
+
+    # General questions
+    tumai_awareness: Mapped[str] = mapped_column(String, nullable=False)
+    shirtSize: Mapped[str] = mapped_column(String(8), nullable=True)
+    becomeTeamlead: Mapped[bool] = mapped_column(Boolean, nullable=True)
+    teamlead_reasoning: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+
+    # ----------------------------- RELATIONAL FK FIELDS ----------------------------- #
+    # back reference from MembershipApplicationReview
+    reviews: Mapped[List["MembershipApplicationReview"]] = relationship(
+        "MembershipApplicationReview", back_populates="application")
+
+    def __repr__(self) -> str:
+        return f"MembershipApplication(id={self.id}, \
+            first_name={self.first_name}, last_name={self.last_name})"
+
+
+class MembershipApplicationReview(MixinAsDict, SaBaseModel):
+    __tablename__ = "membership_application_review"
+
+    # -------------------------------- MANAGED FIELDS -------------------------------- #
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+
+    # --------------------------- AUTOMATIC/COMPUTED FIELDS -------------------------- #
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    # ---------------------------- USER CHANGEABLE FIELDS ---------------------------- #
+    motivation: Mapped[int] = mapped_column(Integer, nullable=False, default=1)
+    skill: Mapped[int] = mapped_column(Integer, nullable=False, default=1)
+    fit: Mapped[int] = mapped_column(Integer, nullable=False, default=1)
+    in_tumai: Mapped[int] = mapped_column(Integer, nullable=False, default=1)
+
+    commentFitTUMai: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    timecommit: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+
+    dept1Score: Mapped[int] = mapped_column(Integer, nullable=False, default=1)
+    dept2Score: Mapped[int] = mapped_column(Integer, nullable=False, default=1)
+    dept3Score: Mapped[int] = mapped_column(Integer, nullable=False, default=1)
+
+    maybegoodfit: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    furthercomments: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+
+    referral: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    finalscore: Mapped[float] = mapped_column(Float, nullable=False, default=-1.0)
+
+    # ----------------------------- RELATIONAL FK FIELDS ----------------------------- #
+    reviewer: Mapped[int] = mapped_column(ForeignKey(Profile.id), nullable=False)
+    profile: Mapped["Profile"] = relationship("Profile", back_populates="reviews")
+
+    reviewee: Mapped[int] = mapped_column(ForeignKey(
+        MembershipApplication.id, ondelete="CASCADE"), nullable=False)
+    application: Mapped["MembershipApplication"] = relationship(
+        "MembershipApplication", back_populates="reviews")
+
+    def __repr__(self) -> str:
+        return f"MembershipApplicationReview(review_id={self.review_id}, \
+            reviewer_id={self.reviewer_id}, reviewee_id={self.reviewee_id})"
+
+    def force_load(self) -> None:
+        if not self.reviewer:
+            raise KeyError
+        
+        self.profile.force_load()
+
+class MembershipApplicationReferral(MixinAsDict, SaBaseModel):
+    __tablename__ = "membership_application_referral"
+
+    # -------------------------------- MANAGED FIELDS -------------------------------- #
+    user_id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+
+    # ---------------------------- USER CHANGEABLE FIELDS ---------------------------- #
+    applicant_first_name: Mapped[str] = mapped_column(String(50), nullable=False)
+    applicant_last_name: Mapped[str] = mapped_column(String(50), nullable=False)
+    points: Mapped[int] = mapped_column(Integer, nullable=False)
+    comment: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+
+    # ----------------------------- RELATIONAL FK FIELDS ----------------------------- #
+    referral_by: Mapped[int] = mapped_column(ForeignKey(Profile.id), nullable=False)
+    profile: Mapped["Profile"] = relationship("Profile", back_populates="referrals")
+
+    def __repr__(self) -> str:
+        return f"MembershipApplicationReferral(user_id={self.user_id}, \
+            applicant_first_name={self.applicant_first_name}, \
+                applicant_last_name={self.applicant_last_name})"
