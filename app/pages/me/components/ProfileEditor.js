@@ -11,16 +11,16 @@ const newJobExperience = {
   date_to: "",
 };
 
-const newSocialNetwork = {
-  type: "",
-  handle: "",
-  link: "",
-};
-
 function ProfileEditor({ isSignUpForm = false }) {
   const { uiModel, meModel } = useStores();
   const editorProfile = meModel.editorProfile;
   const router = useRouter();
+
+  const newSocialNetwork = {
+    type: "",
+    link: "",
+    profile_id: editorProfile.id,
+  };
 
   function handleChange(e) {
     meModel.updateEditorProfile({
@@ -32,6 +32,7 @@ function ProfileEditor({ isSignUpForm = false }) {
     const { name, value } = e.target;
     meModel.updateEditorProfile({
       [type]: editorProfile[type].map((item, i) => {
+        console.log(editorProfile[type]);
         if (i === index) {
           return {
             ...item,
@@ -69,11 +70,6 @@ function ProfileEditor({ isSignUpForm = false }) {
       <form
         onSubmit={async (e) => {
           e.preventDefault();
-          // TODO: REMOVE THIS LINE TO ENABLE SOCIAL NETWORKS BEING ADDED
-          // TODO: still a bug, where api rejects social networks
-          meModel.updateEditorProfile({
-            social_networks: [],
-          });
           await meModel.editProfile();
           meModel.getProfile();
           isSignUpForm ? router.push("/") : uiModel.toggleModal();
@@ -240,16 +236,6 @@ function ProfileEditor({ isSignUpForm = false }) {
                   name="type"
                   value={experience.type}
                   required={true}
-                  onChange={(e) =>
-                    handleListItemChange(e, index, "social_networks")
-                  }
-                />
-                <Input
-                  label="Handle"
-                  type="text"
-                  name="handle"
-                  required={true}
-                  value={experience.handle}
                   onChange={(e) =>
                     handleListItemChange(e, index, "social_networks")
                   }
