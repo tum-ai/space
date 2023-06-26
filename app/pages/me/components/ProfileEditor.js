@@ -1,5 +1,6 @@
 import { observer } from "mobx-react";
 import Input from "/components/Input";
+import Select from "/components/Select";
 import Textarea from "/components/Textarea";
 import { useStores } from "/providers/StoreProvider";
 import { useRouter } from "next/router";
@@ -10,6 +11,12 @@ const newJobExperience = {
   date_from: "",
   date_to: "",
 };
+
+const socialNetworksTypes = [
+  { key: "Option 1", value: "option1" },
+  { key: "Option 2", value: "option2" },
+  { key: "Option 3", value: "option3" },
+];
 
 function ProfileEditor({ isSignUpForm = false }) {
   const { uiModel, meModel } = useStores();
