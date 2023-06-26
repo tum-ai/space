@@ -1,15 +1,10 @@
 from typing import (
-    Annotated,
-    List,
-    Optional,
-    Union,
+    Annotated
 )
 from database.review_tool_connector import create_db_membership_application_review
-from review_tool.api_models import MembershipApplicationReviewIn, MembershipApplicationReviewOut
+from review_tool.api_models import MembershipApplicationReviewIn
 
 from review_tool.response_models import ResponseSubmitReview
-from database.db_models import PositionType
-from utils.response import ErrorResponse
 
 from fastapi import (
     APIRouter,

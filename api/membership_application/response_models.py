@@ -1,4 +1,4 @@
-from typing import Any, List
+from typing import List
 
 from utils.response import BaseResponse
 

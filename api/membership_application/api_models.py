@@ -3,7 +3,6 @@ from datetime import (
     date
 )
 from typing import (
-    List,
     Optional,
 )
 from database.db_models import Gender

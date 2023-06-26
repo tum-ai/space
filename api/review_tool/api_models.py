@@ -2,7 +2,6 @@ from pydantic import BaseModel
 from profiles.api_models import ProfileOutPublic
 
 from typing import (
-    List,
     Optional,
 )
 

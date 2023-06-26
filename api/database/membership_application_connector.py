@@ -1,10 +1,5 @@
-import datetime
-import traceback
 from typing import (
-    Any,
     List,
-    Optional,
-    Tuple,
 )
 
 import sqlalchemy as sa
@@ -14,7 +9,6 @@ from sqlalchemy.orm import (
 
 from membership_application.api_models import (
     MembershipApplicationIn,
-    MembershipApplicationOut,
     MembershipApplicationReferralIn,
 )
 from .db_models import (

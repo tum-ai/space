@@ -1,7 +1,6 @@
 from typing import (
     Annotated,
     List,
-    Optional,
     Union,
 )
 from utils.response import ErrorResponse
