@@ -389,7 +389,10 @@ class MembershipApplication(MixinAsDict, SaBaseModel):
     gender: Mapped[Gender] = mapped_column(Enum(Gender), nullable=False)
     nationality: Mapped[str] = mapped_column(String(100), nullable=False)
     birthday = Column(DateTime, nullable=True)
-    place_of_residence: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
+    place_of_residence: Mapped[Optional[str]] = mapped_column(
+        String(100), 
+        nullable=True
+    )
 
     # Digital appearance
     resume: Mapped[str] = mapped_column(String(1024), nullable=False)
@@ -398,7 +401,11 @@ class MembershipApplication(MixinAsDict, SaBaseModel):
     github: Mapped[str] = mapped_column(String(1024), nullable=False)
 
     # Professional info
-    occupation: Mapped[str] = mapped_column(String(50), nullable=True, default="student")
+    occupation: Mapped[str] = mapped_column(
+        String(50), 
+        nullable=True, 
+        default="student"
+    )
     degree_level: Mapped[str] = mapped_column(String(20), nullable=False)
     degree_name: Mapped[str] = mapped_column(String(80), nullable=False)
     degree_semester: Mapped[int] = mapped_column(Integer, nullable=False)
@@ -448,7 +455,8 @@ class MembershipApplication(MixinAsDict, SaBaseModel):
         "MembershipApplicationReview", back_populates="application")
 
     def __repr__(self) -> str:
-        return f"MembershipApplication(id={self.id}, first_name={self.first_name}, last_name={self.last_name})"
+        return f"MembershipApplication(id={self.id}, \
+            first_name={self.first_name}, last_name={self.last_name})"
 
 
 class MembershipApplicationReview(MixinAsDict, SaBaseModel):
@@ -489,7 +497,8 @@ class MembershipApplicationReview(MixinAsDict, SaBaseModel):
         "MembershipApplication", back_populates="reviews")
 
     def __repr__(self) -> str:
-        return f"MembershipApplicationReview(review_id={self.review_id}, reviewer_id={self.reviewer_id}, reviewee_id={self.reviewee_id})"
+        return f"MembershipApplicationReview(review_id={self.review_id}, \
+            reviewer_id={self.reviewer_id}, reviewee_id={self.reviewee_id})"
 
     def force_load(self) -> None:
         if not self.reviewer:
@@ -514,4 +523,6 @@ class MembershipApplicationReferral(MixinAsDict, SaBaseModel):
     profile: Mapped["Profile"] = relationship("Profile", back_populates="referrals")
 
     def __repr__(self) -> str:
-        return f"MembershipApplicationReferral(user_id={self.user_id}, applicant_first_name={self.applicant_first_name}, applicant_last_name={self.applicant_last_name})"
+        return f"MembershipApplicationReferral(user_id={self.user_id}, \
+            applicant_first_name={self.applicant_first_name}, \
+                applicant_last_name={self.applicant_last_name})"

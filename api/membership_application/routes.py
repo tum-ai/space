@@ -1,5 +1,4 @@
 from typing import (
-    Annotated,
     List,
     Union,
 )
@@ -7,24 +6,20 @@ from utils.response import ErrorResponse
 
 from fastapi import (
     APIRouter,
-    Body,
     Request,
 )
 
 from membership_application.api_models import (
     MembershipApplicationOut,
     MembershipApplicationListOut,
-    MembershipApplicationReferralIn
 )
 from database.membership_application_connector import (
     retrieve_db_membership_application,
     list_db_membership_application,
-    create_db_membership_application_referral
 )
 from membership_application.response_models import (
     ResponseMembershipApplication,
     ResponseMembershipApplicationList,
-    ResponseSubmitMembershipApplicationReferral
 )
 
 from security.decorators import (
@@ -40,30 +35,6 @@ from utils.paging import (
 router = APIRouter()
 
 
-# @router.post(
-#     "/membership_application/submit/",
-#     response_description="Submit a new application for a membership-application.",
-#     response_model=ResponseSubmitMembershipApplication,
-# )
-# @error_handlers
-# @ensure_authorization(
-#     any_of_roles=["submit_reviews"],
-# )
-# def submit_membership_application(
-#     request: Request,
-#     data: Annotated[MembershipApplicationIn, Body(embed=True)],
-# ) -> dict:
-#     create_db_membership_application(
-#         request.app.state.sql_engine, data
-#     )
-
-#     return {
-#         "status_code": 200,
-#         "response_type": "success",
-#         "description": "Application submitted successfully",
-#     }
-
-
 @router.get(
     "/membership_applications/",
     response_description="List all membership applications, pagging support",
@@ -75,7 +46,8 @@ def list_public_profiles(request: Request, page: int = 1, page_size: int = 100) 
     db_membership_applications = list_db_membership_application(
         request.app.state.sql_engine, page, page_size)
     out_membership_applications: List[MembershipApplicationListOut] = [
-        MembershipApplicationListOut.from_db_model(p) for p in db_membership_applications
+        MembershipApplicationListOut.from_db_model(p) 
+        for p in db_membership_applications
     ]
     return {
         "status_code": 200,
@@ -104,28 +76,4 @@ def get_membership_application(request: Request, application_id: int) -> dict:
         "response_type": "success",
         "description": "Retrieved application successfully",
         "data": MembershipApplicationOut.from_db_model(db_model),
-    }
-
-
-@router.post(
-    "/membership_application/submit/referral",
-    response_description="Refer a new member.",
-    response_model=ResponseSubmitMembershipApplicationReferral,
-)
-@error_handlers
-@ensure_authorization(
-    any_of_roles=["invite_members"],
-)
-def submit_membership_application_referral(
-    request: Request,
-    data: Annotated[MembershipApplicationReferralIn, Body(embed=True)],
-) -> dict:
-    create_db_membership_application_referral(
-        request.app.state.sql_engine, request.state.profile.id, data
-    )
-
-    return {
-        "status_code": 200,
-        "response_type": "success",
-        "description": "Referral submitted successfully",
     }

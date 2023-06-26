@@ -28,7 +28,10 @@ class MembershipApplicationReviewOut(BaseModel):
     reviewee: int
     
     @classmethod
-    def from_db_model(cls, review: MembershipApplicationReview) -> "MembershipApplicationReview":
+    def from_db_model(
+        cls, 
+        review: MembershipApplicationReview
+    ) -> "MembershipApplicationReview":
         return MembershipApplicationReviewOut(
             id=review.id,
             motivation=review.motivation,
@@ -50,7 +53,9 @@ class MembershipApplicationReviewOut(BaseModel):
 
     @classmethod
     def dummy(cls) -> "MembershipApplicationReviewOut":
-        return MembershipApplicationReviewOut.parse_obj(cls.Config.schema_extra["example"])
+        return MembershipApplicationReviewOut.parse_obj(
+            cls.Config.schema_extra["example"]
+        )
 
     class Config:
         schema_extra = {
@@ -93,7 +98,9 @@ class MembershipApplicationReviewIn(BaseModel):
 
     @classmethod
     def dummy(cls) -> "MembershipApplicationReviewIn":
-        return MembershipApplicationReviewIn.parse_obj(cls.Config.schema_extra["example"])
+        return MembershipApplicationReviewIn.parse_obj(
+            cls.Config.schema_extra["example"]
+        )
 
     class Config:
         schema_extra = {
