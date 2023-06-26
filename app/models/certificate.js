@@ -1,3 +1,4 @@
+import download from 'downloadjs';
 import { makeAutoObservable } from 'mobx';
 
 export class CertificateModel {
@@ -16,11 +17,11 @@ export class CertificateModel {
 	async generateCertificate() {
 		const response = await this.root.POST(
 			'/certificate/membership/',
-			this.editorCertificate
+			this.editorCertificate,
+			{ responseType: 'blob' },
+			true
 		);
-		if (response.status >= 200 && response.status < 300) {
-			let fileName = `tumai-certificate-${this.editorCertificate['NAME']}-${this.editorCertificate['LASTNAME']}.pdf`;
-			download(response.data, fileName, response.headers['content-type']);
-		}
+		let fileName = `tumai-certificate-${this.editorCertificate['NAME']}-${this.editorCertificate['LASTNAME']}.pdf`;
+		download(response.data, fileName, response.headers['content-type']);
 	}
 }

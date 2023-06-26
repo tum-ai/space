@@ -21,11 +21,11 @@ function Certificate() {
 		'Industry',
 		'Makeathon',
 		'Community',
-		'Partners & Sponsors (PnS)'
-		'Legal & Finance (LnF)'
+		'Partners & Sponsors (PnS)',
+		'Legal & Finance (LnF)',
 		'Venture',
 		'Education',
-		'Research & Development (RnD)'
+		'Research & Development (RnD)',
 	];
 
 	const positions = ['member', 'teamlead', 'advisor'];
@@ -43,7 +43,8 @@ function Certificate() {
 					<form
 						onSubmit={async (e) => {
 							e.preventDefault();
-							certificateModel.generateCertificate();
+							console.log('form');
+							await certificateModel.generateCertificate();
 						}}
 						className='gap-4 grid grid-cols-1 lg:grid-cols-2 lg:gap-8 items-end'
 					>
@@ -76,12 +77,12 @@ function Certificate() {
 								})),
 							]}
 							selectedItem={{
-								key: certificate['POSITION'],
-								value: certificate['POSITION'],
+								key: certificate['TITLE'],
+								value: certificate['TITLE'],
 							}}
 							setSelectedItem={(item) => {
 								certificateModel.updateEditorCertificate({
-									POSITION: item?.value,
+									TITLE: item?.value,
 								});
 							}}
 						/>

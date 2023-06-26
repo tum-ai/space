@@ -48,12 +48,16 @@ export class RootModel {
 		}
 	}
 
-	async POST(path, data) {
+	async POST(path, data, config, returnResponse) {
 		try {
 			const response = await axios(path, {
 				data: data,
 				method: 'POST',
+				...config,
 			});
+			if (returnResponse) {
+				return response;
+			}
 			return response.data;
 		} catch (error) {
 			console.log(error);
