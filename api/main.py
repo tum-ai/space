@@ -15,6 +15,9 @@ from database.setup import (
     close_db_client,
     setup_db_client,
 )
+from mail.send import (
+    send_email,
+)
 from profiles.routes import router as ProfilesRouter
 from security.decorators import (
     ensure_authenticated,
@@ -27,12 +30,11 @@ from utils.config import (
     CONFIG,
 )
 from utils.error_handlers import (
-    error_handlers
+    error_handlers,
 )
 from utils.log import (
     log,
 )
-from mail.send import send_email
 
 app = FastAPI()
 db_client = None
@@ -41,11 +43,13 @@ db_client = None
 # ------------------------------------------------------------------------------#
 init_firebase_auth()
 
-log.debug(CONFIG.get("AUTH_ALLOWED_ORIGINS"))
+allowed_origins = CONFIG.get("AUTH_ALLOWED_ORIGINS")
+allowed_origins += CONFIG.get("CERTIFICATE_ALLOWED_ORIGINS")
+log.debug("Allowed origins:", allowed_origins)
 allow_all = ["*"]
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=CONFIG.get("AUTH_ALLOWED_ORIGINS"),
+    allow_origins=allowed_origins,
     allow_credentials=True,
     allow_methods=allow_all,
     allow_headers=allow_all,
@@ -104,15 +108,11 @@ def authorization_role_test(request: Request) -> dict:
 @error_handlers
 @ensure_authorization(any_of_roles=["test-role"])
 def email_test(
-    request: Request, 
-    subject: str, 
+    request: Request,
+    subject: str,
     body: str,
 ) -> dict:
-    send_email(
-        receipient="admin+tumaispacedev@tum-ai.com",
-        subject=subject,
-        body=body
-    )
+    send_email(receipient="admin+tumaispacedev@tum-ai.com", subject=subject, body=body)
     return {"msg": "Send success!"}
 
 

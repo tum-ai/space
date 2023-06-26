@@ -4,13 +4,11 @@ import helmet from "helmet";
 import cors from "cors";
 import morgan from "morgan";
 import instantiate_template from "./instantiate_template";
-import {Buffer} from "buffer";
 import {TEMPLATE_DICTS, TEMPLATE_FILES, TEMPLATES} from "./templates";
 const bodyParser = require('body-parser');
-import * as fs from "fs";
 
 dotenv.config()
-const port = process.env.PORT ?? 80
+const port = process.env.PORT ?? 3009
 
 const server: Express = express()
 server.use(express.json())
@@ -31,6 +29,7 @@ server.use(bodyParser.json());
 server.use('/static', express.static('templates/certificates'))
 
 function errorResponse (res: Response, statusCode: number, message: string): Response {
+    console.log("error response", message)
     return res.status(400).json({ error: message })
 }
 
@@ -41,6 +40,8 @@ server.get('/', (req: Request, res: Response) => {
 
 server.post('/create-certificate/:template', async (req: Request, res: Response) => {
     const json_body = req.body;
+
+    console.log("Received request: ", json_body)
 
     var fields: { [key: string]: string } = {};
     for (const key in json_body) {

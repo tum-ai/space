@@ -32,7 +32,7 @@ services:
         volumes:
             - ./api/:/code
         ports:
-        - 8000:8000
+            - '8000:8000'
         depends_on:
             - space-db
         networks:
@@ -54,6 +54,18 @@ services:
             - '9990:80'
         volumes:
             - ./.fileserver:/usr/local/apache2/htdocs
+        networks:
+            - backend-net
+    
+    cert:
+        hostname: cert
+        image: tum-ai-space-tools-certification-server
+        build: ./tools/certification-api
+        restart: unless-stopped
+        container_name: cert
+        command: npm run dev
+        ports:
+            - '3009:80'
         networks:
             - backend-net
 

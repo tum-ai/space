@@ -22,14 +22,12 @@ from database.db_models import (
     Role,
     SaBaseModel,
 )
-
 from profiles.db_views import (
     init_views,
 )
 from utils.log import (
     log,
 )
-
 
 DBSession = scoped_session(sessionmaker())
 

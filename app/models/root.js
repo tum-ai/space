@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { CertificateModel } from './certificate.js';
 import { InviteModel } from './invite.js';
 import { MeModel } from './me.js';
 import { ProfileModel } from './profile.js';
@@ -14,6 +15,7 @@ export class RootModel {
 		this.uiModel = new UiModel(this);
 		this.meModel = new MeModel(this);
 		this.rolesModel = new RolesModel(this);
+		this.certificateModel = new CertificateModel(this);
 	}
 
 	async GET(path) {
@@ -46,12 +48,16 @@ export class RootModel {
 		}
 	}
 
-	async POST(path, data) {
+	async POST(path, data, config, returnResponse) {
 		try {
 			const response = await axios(path, {
 				data: data,
 				method: 'POST',
+				...config,
 			});
+			if (returnResponse) {
+				return response;
+			}
 			return response.data;
 		} catch (error) {
 			console.log(error);
