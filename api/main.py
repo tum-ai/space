@@ -9,6 +9,8 @@ from fastapi.middleware.cors import (
 )
 
 from certification.routes import router as CertificationRouter
+from review_tool.routes import router as ReviewToolRouter
+from membership_application.routes import router as MembershipApplicationRouter
 from database.setup import (
     close_db_client,
     setup_db_client,
@@ -117,3 +119,5 @@ def email_test(
 # Prefix defined in router
 app.include_router(ProfilesRouter, tags=["Profile"])
 app.include_router(CertificationRouter, tags=["Certification"])
+app.include_router(ReviewToolRouter, tags=["ReviewTool"])
+app.include_router(MembershipApplicationRouter, tags=["MembershipApplication"])
