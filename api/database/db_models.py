@@ -495,7 +495,7 @@ class MembershipApplicationReferral(MixinAsDict, SaBaseModel):
     comment: Mapped[Optional[str]] = mapped_column(String, nullable=True)
 
     # ----------------------------- RELATIONAL FK FIELDS ----------------------------- #
-    referral_by: Mapped[str] = mapped_column(ForeignKey(Profile.id), nullable=False)
+    referral_by: Mapped[int] = mapped_column(ForeignKey(Profile.id), nullable=False)
     profile: Mapped["Profile"] = relationship("Profile", back_populates="referrals")
 
     def __repr__(self) -> str:

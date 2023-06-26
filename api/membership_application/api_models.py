@@ -9,8 +9,10 @@ from typing import (
 from database.db_models import Gender
 
 from database.db_models import (
-    MembershipApplication
+    MembershipApplication,
+    MembershipApplicationReferral
 )
+
 
 class MembershipApplicationIn(BaseModel):
     first_name: str
@@ -65,54 +67,54 @@ class MembershipApplicationIn(BaseModel):
     @classmethod
     def from_db_model(cls, application: MembershipApplication) -> "MembershipApplicationIn":
         return MembershipApplicationIn(
-            first_name = application.first_name,
-            last_name = application.last_name,
-            email = application.email,
-            phone = application.phone,
-            gender = application.gender,
-            nationality = application.nationality,
-            birthday = application.birthday,
-            place_of_residence = application.place_of_residence,
+            first_name=application.first_name,
+            last_name=application.last_name,
+            email=application.email,
+            phone=application.phone,
+            gender=application.gender,
+            nationality=application.nationality,
+            birthday=application.birthday,
+            place_of_residence=application.place_of_residence,
 
-            resume = application.resume,
-            linkedin = application.linkedin,
-            personal_website = application.personal_website,
-            github = application.github,
+            resume=application.resume,
+            linkedin=application.linkedin,
+            personal_website=application.personal_website,
+            github=application.github,
 
-            occupation = application.occupation,
-            degree_level = application.degree_level,
-            degree_name = application.degree_name,
-            degree_semester = application.degree_semester,
-            university = application.university,
-            areas_of_expertise = application.areas_of_expertise,
-            hours_per_week = application.hours_per_week,
+            occupation=application.occupation,
+            degree_level=application.degree_level,
+            degree_name=application.degree_name,
+            degree_semester=application.degree_semester,
+            university=application.university,
+            areas_of_expertise=application.areas_of_expertise,
+            hours_per_week=application.hours_per_week,
 
-            drive_passion = application.drive_passion,
-            what_sets_apart = application.what_sets_apart,
-            most_proud_achievement = application.most_proud_achievement,
-            learning_from_project_failure = application.learning_from_project_failure,
+            drive_passion=application.drive_passion,
+            what_sets_apart=application.what_sets_apart,
+            most_proud_achievement=application.most_proud_achievement,
+            learning_from_project_failure=application.learning_from_project_failure,
 
-            expectations = application.expectations,
-            what_want_to_do = application.what_want_to_do,
-            upcoming_commitments = application.upcoming_commitments,
-            topics_ai = application.topics_ai,
-            skills = application.skills,
+            expectations=application.expectations,
+            what_want_to_do=application.what_want_to_do,
+            upcoming_commitments=application.upcoming_commitments,
+            topics_ai=application.topics_ai,
+            skills=application.skills,
 
-            num1_department_choice = application.num1_department_choice,
-            num2_department_choice = application.num2_department_choice,
-            num3_department_choice = application.num3_department_choice,
-            num1_department_reasoning = application.num1_department_reasoning,
-            num2_department_reasoning = application.num2_department_reasoning,
-            num3_department_reasoning = application.num3_department_reasoning,
-            department_reasoning = application.department_reasoning,
+            num1_department_choice=application.num1_department_choice,
+            num2_department_choice=application.num2_department_choice,
+            num3_department_choice=application.num3_department_choice,
+            num1_department_reasoning=application.num1_department_reasoning,
+            num2_department_reasoning=application.num2_department_reasoning,
+            num3_department_reasoning=application.num3_department_reasoning,
+            department_reasoning=application.department_reasoning,
 
-            research_development_interest = application.research_development_interest,
-            research_development_reasoning = application.research_development_reasoning,
+            research_development_interest=application.research_development_interest,
+            research_development_reasoning=application.research_development_reasoning,
 
-            tumai_awareness = application.tumai_awareness,
-            shirtSize = application.shirtSize,
-            becomeTeamlead = application.becomeTeamlead,
-            teamlead_reasoning = application.teamlead_reasoning,
+            tumai_awareness=application.tumai_awareness,
+            shirtSize=application.shirtSize,
+            becomeTeamlead=application.becomeTeamlead,
+            teamlead_reasoning=application.teamlead_reasoning,
         )
 
     @classmethod
@@ -193,20 +195,20 @@ class MembershipApplicationListOut(BaseModel):
     def from_db_model(cls, application: MembershipApplication) -> "MembershipApplicationListOut":
         return MembershipApplicationListOut(
             id=application.id,
-            first_name = application.first_name,
-            last_name = application.last_name,
-            email = application.email,
-            gender = application.gender,
-            nationality = application.nationality,
-            resume = application.resume,
-            occupation = application.occupation,
-            degree_level = application.degree_level,
-            degree_name = application.degree_name,
-            degree_semester = application.degree_semester,
-            university = application.university,
-            num1_department_choice = application.num1_department_choice,
-            num2_department_choice = application.num2_department_choice,
-            num3_department_choice = application.num3_department_choice,
+            first_name=application.first_name,
+            last_name=application.last_name,
+            email=application.email,
+            gender=application.gender,
+            nationality=application.nationality,
+            resume=application.resume,
+            occupation=application.occupation,
+            degree_level=application.degree_level,
+            degree_name=application.degree_name,
+            degree_semester=application.degree_semester,
+            university=application.university,
+            num1_department_choice=application.num1_department_choice,
+            num2_department_choice=application.num2_department_choice,
+            num3_department_choice=application.num3_department_choice,
         )
 
     @classmethod
@@ -216,7 +218,7 @@ class MembershipApplicationListOut(BaseModel):
     class Config:
         schema_extra = {
             "example": {
-                 "id": 1,
+                "id": 1,
                 "first_name": "John",
                 "last_name": "Doe",
                 "email": "johndoe@example.com",
@@ -290,54 +292,54 @@ class MembershipApplicationOut(BaseModel):
     def from_db_model(cls, application: MembershipApplication) -> "MembershipApplicationOut":
         return MembershipApplicationOut(
             id=application.id,
-            first_name = application.first_name,
-            last_name = application.last_name,
-            email = application.email,
-            phone = application.phone,
-            gender = application.gender,
-            nationality = application.nationality,
-            birthday = application.birthday,
-            place_of_residence = application.place_of_residence,
+            first_name=application.first_name,
+            last_name=application.last_name,
+            email=application.email,
+            phone=application.phone,
+            gender=application.gender,
+            nationality=application.nationality,
+            birthday=application.birthday,
+            place_of_residence=application.place_of_residence,
 
-            resume = application.resume,
-            linkedin = application.linkedin,
-            personal_website = application.personal_website,
-            github = application.github,
+            resume=application.resume,
+            linkedin=application.linkedin,
+            personal_website=application.personal_website,
+            github=application.github,
 
-            occupation = application.occupation,
-            degree_level = application.degree_level,
-            degree_name = application.degree_name,
-            degree_semester = application.degree_semester,
-            university = application.university,
-            areas_of_expertise = application.areas_of_expertise,
-            hours_per_week = application.hours_per_week,
+            occupation=application.occupation,
+            degree_level=application.degree_level,
+            degree_name=application.degree_name,
+            degree_semester=application.degree_semester,
+            university=application.university,
+            areas_of_expertise=application.areas_of_expertise,
+            hours_per_week=application.hours_per_week,
 
-            drive_passion = application.drive_passion,
-            what_sets_apart = application.what_sets_apart,
-            most_proud_achievement = application.most_proud_achievement,
-            learning_from_project_failure = application.learning_from_project_failure,
+            drive_passion=application.drive_passion,
+            what_sets_apart=application.what_sets_apart,
+            most_proud_achievement=application.most_proud_achievement,
+            learning_from_project_failure=application.learning_from_project_failure,
 
-            expectations = application.expectations,
-            what_want_to_do = application.what_want_to_do,
-            upcoming_commitments = application.upcoming_commitments,
-            topics_ai = application.topics_ai,
-            skills = application.skills,
+            expectations=application.expectations,
+            what_want_to_do=application.what_want_to_do,
+            upcoming_commitments=application.upcoming_commitments,
+            topics_ai=application.topics_ai,
+            skills=application.skills,
 
-            num1_department_choice = application.num1_department_choice,
-            num2_department_choice = application.num2_department_choice,
-            num3_department_choice = application.num3_department_choice,
-            num1_department_reasoning = application.num1_department_reasoning,
-            num2_department_reasoning = application.num2_department_reasoning,
-            num3_department_reasoning = application.num3_department_reasoning,
-            department_reasoning = application.department_reasoning,
+            num1_department_choice=application.num1_department_choice,
+            num2_department_choice=application.num2_department_choice,
+            num3_department_choice=application.num3_department_choice,
+            num1_department_reasoning=application.num1_department_reasoning,
+            num2_department_reasoning=application.num2_department_reasoning,
+            num3_department_reasoning=application.num3_department_reasoning,
+            department_reasoning=application.department_reasoning,
 
-            research_development_interest = application.research_development_interest,
-            research_development_reasoning = application.research_development_reasoning,
+            research_development_interest=application.research_development_interest,
+            research_development_reasoning=application.research_development_reasoning,
 
-            tumai_awareness = application.tumai_awareness,
-            shirtSize = application.shirtSize,
-            becomeTeamlead = application.becomeTeamlead,
-            teamlead_reasoning = application.teamlead_reasoning,
+            tumai_awareness=application.tumai_awareness,
+            shirtSize=application.shirtSize,
+            becomeTeamlead=application.becomeTeamlead,
+            teamlead_reasoning=application.teamlead_reasoning,
         )
 
     @classmethod
@@ -391,4 +393,38 @@ class MembershipApplicationOut(BaseModel):
                 "teamlead_reasoning": ""
             }
 
+        }
+
+
+class MembershipApplicationReferralIn(BaseModel):
+    applicant_first_name: str
+    applicant_last_name: str
+    points: int
+    comment: Optional[str]
+    referral_by: int
+
+    @classmethod
+    def from_db_model(cls, referral: MembershipApplicationReferral) -> "MembershipApplicationReferralIn":
+        return MembershipApplicationIn(
+            applicant_first_name=referral.applicant_first_name,
+            applicant_last_name=referral.applicant_last_name,
+            points=referral.points,
+            comment=referral.comment,
+            referral_by=referral.referral_by
+        )
+
+    @classmethod
+    def dummy(cls) -> "MembershipApplicationIn":
+        return MembershipApplicationIn.parse_obj(cls.Config.schema_extra["example"])
+
+    class Config:
+        schema_extra = {
+            "example": {
+                "applicant_first_name": "John",
+                "applicant_last_name": "Test",
+                "points": 10,
+                "comment": "He is my best friend.",
+                "referral_by": 1,
+
+            }
         }

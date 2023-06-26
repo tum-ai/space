@@ -10,7 +10,7 @@ from membership_application.api_models import (
 
 class ResponseMembershipApplication(BaseResponse):
     data: MembershipApplicationOut
-    
+
     class Config:
         schema_extra = BaseResponse.schema_wrapper(MembershipApplicationOut.dummy())
 
@@ -28,6 +28,12 @@ class ResponseMembershipApplicationListOut(BaseResponse):
 
 
 class ResponseSubmitMembershipApplication(BaseResponse):
-    
+
+    class Config:
+        schema_extra = BaseResponse.schema_wrapper([])
+
+
+class ResponseSubmitMembershipApplicationReferral(BaseResponse):
+
     class Config:
         schema_extra = BaseResponse.schema_wrapper([])
