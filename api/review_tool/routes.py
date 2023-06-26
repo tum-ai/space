@@ -23,7 +23,7 @@ router = APIRouter()
 
 
 @router.post(
-    "/review_tool/submit/membership_application_review",
+    "/review_tool/membership_application_review",
     response_description="Submit a review of a membership application.",
     response_model=ResponseSubmitReview,
 )
