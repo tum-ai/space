@@ -16,14 +16,19 @@ function Certificate() {
 	}
 
 	const departments = [
-		'DEV',
-		'MARKETING',
-		'INDUSTRY',
-		'MAKEATHON',
-		'COMMUNITY',
+		'Software Development (DEV)',
+		'Marketing',
+		'Industry',
+		'Makeathon',
+		'Community',
+		'Partners & Sponsors (PnS)'
+		'Legal & Finance (LnF)'
+		'Venture',
+		'Education',
+		'Research & Development (RnD)'
 	];
 
-	const positions = ['MEMBER', 'TEAMLEAD'];
+	const positions = ['member', 'teamlead', 'advisor'];
 
 	// TODO choose member's name from member profiles directly and fill in information accordingly
 	return (
