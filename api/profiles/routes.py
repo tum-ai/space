@@ -79,6 +79,10 @@ from utils.response import (
     ErrorResponse,
 )
 
+from mail.send import send_email
+
+from security.firebase_auth import generate_reset_password_link
+
 
 router = APIRouter()
 
@@ -420,20 +424,39 @@ def invite_members(
     request: Request,
     data: Annotated[List[ProfileMemberInvitation], Body(embed=True)],
 ) -> dict:
-    created_profiles, error_profiles = invite_new_members(
-        request.app.state.sql_engine, data
-    )
-    created_profiles_out = [ProfileOut.from_db_model(p) for p in created_profiles]
-    error_profiles_out = [
-        {"data": err_data, "error": err} for err_data, err in error_profiles
-    ]
-    return {
-        "status_code": 200,
-        "response_type": "success",
-        "description": "Members invited successfully",
-        "succeeded": created_profiles_out,
-        "failed": error_profiles_out,
-    }
+    try:
+        created_profiles, error_profiles = invite_new_members(
+            request.app.state.sql_engine, data
+        )
+        created_profiles_out = [ProfileOut.from_db_model(p) for p in created_profiles]
+        for profile in created_profiles_out:
+            link = generate_reset_password_link(profile.email)
+            send_email(
+                profile.email, 
+                "Welcome to TUM.ai Space", 
+                f"Dear {profile.first_name} {profile.last_name},\n\nYou have been \
+                invited to TUM.ai Space. Please follow the link below to reset your \
+                    password. After that you can login under space.tum-ai.com.\
+                    \n\n{link}\n\nBest regards,\nTUM.ai Space Team"
+            )
+        error_profiles_out = [
+            {"data": err_data, "error": err} for err_data, err in error_profiles
+        ]
+        return {
+            "status_code": 200,
+            "response_type": "success",
+            "description": "Members invited successfully",
+            "succeeded": created_profiles_out,
+            "failed": error_profiles_out,
+        }
+    except Exception:
+        return {
+            "status_code": 500,
+            "response_type": "error",
+            "description": "Error occured",
+            "succeeded": [],
+            "failed": [],
+        }
 
 
 # ------------------------------------------------------------------------------------ #
