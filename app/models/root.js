@@ -1,28 +1,66 @@
 import axios from 'axios';
-import { MemberModel } from './member.js';
-import { MembersModel } from './members.js';
+import { InviteModel } from './invite.js';
+import { MeModel } from './me.js';
 import { ProfileModel } from './profile.js';
+import { ProfilesModel } from './profiles.js';
+import { RolesModel } from './roles.js';
+import { UiModel } from './ui.js';
 
 export class RootModel {
-	membersModel;
-	profileModel;
-
 	constructor() {
-		axios.defaults.baseURL = process.env.NEXT_PUBLIC_API_URL;
-		this.memberModel = new MemberModel(this);
-		this.membersModel = new MembersModel(this);
 		this.profileModel = new ProfileModel(this);
-
-		this.membersModel.loadMembers();
-		this.profileModel.loadProfile();
+		this.profilesModel = new ProfilesModel(this);
+		this.inviteModel = new InviteModel(this);
+		this.uiModel = new UiModel(this);
+		this.meModel = new MeModel(this);
+		this.rolesModel = new RolesModel(this);
 	}
 
-	// I dont't understand this part but it works
-	hydrate(data) {
-		if (data.x) {
-			this.memberModel.hydrate(data.x);
-			this.membersModel.hydrate(data.x);
-			this.profileModel.hydrate(data.x);
+	async GET(path) {
+		try {
+			const response = await axios(path);
+			return response?.data?.data;
+		} catch (error) {
+			console.log(error);
+			this.uiModel.updateModalContent(<div>Error:</div>);
+			this.uiModel.toggleModal();
+			return;
+		}
+	}
+
+	async PATCH(path, data) {
+		try {
+			const response = await axios(path, {
+				data: data,
+				method: 'PATCH',
+			});
+			return response.data.data;
+		} catch (error) {
+			console.log(error);
+			const response = error.response;
+			const data = response.data;
+			const message = data.detail[0]['msg'];
+			this.uiModel.toggleModal();
+			this.uiModel.updateModalContent(<div>Error: {message}</div>);
+			return;
+		}
+	}
+
+	async POST(path, data) {
+		try {
+			const response = await axios(path, {
+				data: data,
+				method: 'POST',
+			});
+			return response.data;
+		} catch (error) {
+			console.log(error);
+			const response = error.response;
+			const data = response.data;
+			const message = data.detail[0]['msg'];
+			this.uiModel.toggleModal();
+			this.uiModel.updateModalContent(<div>Error: {message}</div>);
+			return;
 		}
 	}
 }

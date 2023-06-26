@@ -300,6 +300,14 @@ class DepartmentMembership(MixinAsDict, SaBaseModel):
             + ", department_handle={self.department_handle!r})"
         )
 
+    def force_load(self) -> None:
+        if not self.profile_id or not self.profile.id:
+            raise KeyError
+        
+        if not self.department or not self.department.handle:
+            raise KeyError
+
+
 
 class Role(MixinAsDict, SaBaseModel):
     """database relation"""
@@ -345,6 +353,13 @@ class RoleHoldership(MixinAsDict, SaBaseModel):
             f"RoleHoldership(profile_id={self.profile_id!r}, "
             f"role_handle={self.role_handle!r})"
         )
+        
+    def force_load(self) -> None:
+        if not self.profile_id or not self.profile.id:
+            raise KeyError
+        if not self.role_handle or not self.role.handle:
+            raise KeyError
+        self.profile.force_load()
 
 
 class Gender(enum.Enum):

@@ -15,29 +15,31 @@ function Modal({ className, trigger, state, setState, onClose, ...props }) {
 				: null}
 			{state && (
 				<>
+					<div className='absolute h-screen w-screen bg-black opacity-40 z-20 top-0 left-0 flex'></div>
 					<div
 						onClick={(e) => {
 							e.stopPropagation();
 							setState();
 							// onClose && onClose();
 						}}
-						className='absolute h-screen w-screen bg-black opacity-40 z-20 top-0 left-0'
-					></div>
-					<div
-						className='absolute overflow-auto px-4 h-fit w-full max-w-2xl z-30 right-0 left-0 mx-auto top-0 bottom-0 my-auto'
-						style={{
-							maxHeight: '90%',
-						}}
+						className='absolute h-screen w-screen z-20 top-0 left-0 flex'
 					>
-						{React.cloneElement(props.children, {
-							onClick: (e) => {
-								e.stopPropagation();
-							},
-							onClose: () => {
-								setState(false);
-								onClose && onClose();
-							},
-						})}
+						<div
+							className='overflow-auto px-4 h-fit w-fit z-30 m-auto'
+							style={{
+								maxHeight: '90%',
+							}}
+						>
+							{React.cloneElement(props.children, {
+								onClick: (e) => {
+									e.stopPropagation();
+								},
+								onClose: () => {
+									setState(false);
+									onClose && onClose();
+								},
+							})}
+						</div>
 					</div>
 				</>
 			)}
