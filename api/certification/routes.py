@@ -56,26 +56,27 @@ class FormData(BaseModel):
     any_of_positions=[(PositionType.TEAMLEAD, None), (None, "board")],
     any_of_roles=["create_certificate"],
 )
-def list_role_holderships(
+def generate_certificate(
     request: Request,
     data: Annotated[Dict[str, str], Body(embed=True)],
-) -> dict:
-    response = requests.post(
-        "http://localhost:3009/create-certificate/membership",
-        headers={"content_type": "application/json"},
-        data=data,
-        timeout=15,
-    )
-
-    if 200 <= response.status_code < 300:
-        return StreamingResponse(
-            BytesIO(response.content), media_type="application/pdf"
+) -> dict | StreamingResponse:
+    try:
+        response = requests.post(
+            # Using Docker name resolution
+            "http://cert/create-certificate/membership",
+            headers={"content_type": "application/json"},
+            data=data,
+            timeout=150,
         )
 
-    else:
-        print(response.content)
-        return {
-            "status_code": 500,
-            "response_type": "error",
-            "description": "",
-        }
+        if 200 <= response.status_code < 300:
+            return StreamingResponse(
+                BytesIO(response.content), media_type="application/pdf"
+            )
+    except Exception:
+        pass
+    return {
+        "status_code": 500,
+        "response_type": "error",
+        "description": "Error generating certificate",
+    }
