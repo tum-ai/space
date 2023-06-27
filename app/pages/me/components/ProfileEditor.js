@@ -4,6 +4,7 @@ import Select from "/components/Select";
 import Textarea from "/components/Textarea";
 import { useStores } from "/providers/StoreProvider";
 import { useRouter } from "next/router";
+import { useState } from "react";
 
 const newJobExperience = {
   employer: "",
@@ -13,14 +14,23 @@ const newJobExperience = {
 };
 
 const socialNetworksTypes = [
-  { key: "Option 1", value: "option1" },
-  { key: "Option 2", value: "option2" },
-  { key: "Option 3", value: "option3" },
+  // 'Slack', 'LinkedIn', 'GitHub', 'Phone', 'Instagram', 'Telegram', 'Discord', 'Other'
+  { key: "Slack", value: "Slack" },
+  { key: "LinkedIn", value: "LinkedIn" },
+  { key: "GitHub", value: "GitHub" },
+  { key: "Phone", value: "Phone" },
+  { key: "Instagram", value: "Instagram" },
+  { key: "Telegram", value: "Telegram" },
+  { key: "Discord", value: "Discord" },
+  { key: "Other", value: "Other" },
 ];
 
 function ProfileEditor({ isSignUpForm = false }) {
   const { uiModel, meModel } = useStores();
   const editorProfile = meModel.editorProfile;
+  const [selectedOptions, setSelectedOptions] = useState(
+    editorProfile.social_networks.map((network) => network.type)
+  );
   const router = useRouter();
 
   const newSocialNetwork = {
@@ -30,6 +40,7 @@ function ProfileEditor({ isSignUpForm = false }) {
   };
 
   function handleChange(e) {
+    console.log(e);
     meModel.updateEditorProfile({
       [e.target.name]: e.target.value,
     });
@@ -70,6 +81,24 @@ function ProfileEditor({ isSignUpForm = false }) {
       [type]: updatedExperience,
     });
   }
+
+  const handleSelect = (item, index) => {
+    console.log(item, index);
+    const updatedSelectedOptions = [...selectedOptions];
+    updatedSelectedOptions[index] = item.value;
+    setSelectedOptions(updatedSelectedOptions);
+    meModel.updateEditorProfile({
+      social_networks: editorProfile.social_networks.map((network, i) => {
+        if (i === index) {
+          return {
+            ...network,
+            type: item.value,
+          };
+        }
+        return network;
+      }),
+    });
+  };
 
   return (
     <div className="flex flex-col space-y-6 rounded-lg p-6 bg-white dark:bg-gray-700 w-full">
@@ -237,15 +266,17 @@ function ProfileEditor({ isSignUpForm = false }) {
           ? null
           : editorProfile.social_networks.map((experience, index) => (
               <div key={index} className="grid grid-cols-2 gap-4">
-                <Input
-                  label="Type"
-                  type="text"
+                <Select
+                  setSelectedItem={(item) => handleSelect(item, index)}
+                  selectedItem={{
+                    key: experience.type,
+                    value: experience.type,
+                  }}
+                  placeholder="Select an option"
+                  data={socialNetworksTypes}
                   name="type"
-                  value={experience.type}
-                  required={true}
-                  onChange={(e) =>
-                    handleListItemChange(e, index, "social_networks")
-                  }
+                  label="Type"
+                  disabled={false}
                 />
                 <Input
                   label="Link"
