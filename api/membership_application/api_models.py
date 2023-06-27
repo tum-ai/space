@@ -1,13 +1,16 @@
-from pydantic import BaseModel
 from datetime import (
-    date
+    date,
 )
 from typing import (
     Optional,
 )
-from database.db_models import Gender
+
+from pydantic import (
+    BaseModel,
+)
 
 from database.db_models import (
+    Gender,
     MembershipApplication,
 )
 
@@ -35,8 +38,7 @@ class MembershipApplicationListOut(BaseModel):
 
     @classmethod
     def from_db_model(
-        cls, 
-        application: MembershipApplication
+        cls, application: MembershipApplication
     ) -> "MembershipApplicationListOut":
         return MembershipApplicationListOut(
             id=application.id,
@@ -137,8 +139,7 @@ class MembershipApplicationOut(BaseModel):
 
     @classmethod
     def from_db_model(
-        cls, 
-        application: MembershipApplication
+        cls, application: MembershipApplication
     ) -> "MembershipApplicationOut":
         return MembershipApplicationOut(
             id=application.id,
@@ -150,12 +151,10 @@ class MembershipApplicationOut(BaseModel):
             nationality=application.nationality,
             birthday=application.birthday,
             place_of_residence=application.place_of_residence,
-
             resume=application.resume,
             linkedin=application.linkedin,
             personal_website=application.personal_website,
             github=application.github,
-
             occupation=application.occupation,
             degree_level=application.degree_level,
             degree_name=application.degree_name,
@@ -163,18 +162,15 @@ class MembershipApplicationOut(BaseModel):
             university=application.university,
             areas_of_expertise=application.areas_of_expertise,
             hours_per_week=application.hours_per_week,
-
             drive_passion=application.drive_passion,
             what_sets_apart=application.what_sets_apart,
             most_proud_achievement=application.most_proud_achievement,
             learning_from_project_failure=application.learning_from_project_failure,
-
             expectations=application.expectations,
             what_want_to_do=application.what_want_to_do,
             upcoming_commitments=application.upcoming_commitments,
             topics_ai=application.topics_ai,
             skills=application.skills,
-
             num1_department_choice=application.num1_department_choice,
             num2_department_choice=application.num2_department_choice,
             num3_department_choice=application.num3_department_choice,
@@ -182,10 +178,8 @@ class MembershipApplicationOut(BaseModel):
             num2_department_reasoning=application.num2_department_reasoning,
             num3_department_reasoning=application.num3_department_reasoning,
             department_reasoning=application.department_reasoning,
-
             research_development_interest=application.research_development_interest,
             research_development_reasoning=application.research_development_reasoning,
-
             tumai_awareness=application.tumai_awareness,
             shirtSize=application.shirtSize,
             becomeTeamlead=application.becomeTeamlead,
@@ -240,7 +234,6 @@ class MembershipApplicationOut(BaseModel):
                 "tumai_awareness": "I'm aware of TUM.ai and its mission.",
                 "shirtSize": "Medium",
                 "becomeTeamlead": False,
-                "teamlead_reasoning": ""
+                "teamlead_reasoning": "",
             }
-
         }

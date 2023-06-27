@@ -14,15 +14,15 @@ from pydantic import (
     BaseModel,
 )
 from sqlalchemy import (
+    Boolean,
     CheckConstraint,
     Column,
     DateTime,
     Enum,
+    Float,
     ForeignKey,
     Integer,
     String,
-    Boolean,
-    Float,
     func,
 )
 from sqlalchemy.ext.hybrid import (
@@ -352,7 +352,7 @@ class RoleHoldership(MixinAsDict, SaBaseModel):
             f"RoleHoldership(profile_id={self.profile_id!r}, "
             f"role_handle={self.role_handle!r})"
         )
-        
+
     def force_load(self) -> None:
         if not self.profile_id or not self.profile.id:
             raise KeyError
@@ -389,8 +389,7 @@ class MembershipApplication(MixinAsDict, SaBaseModel):
     nationality: Mapped[str] = mapped_column(String(100), nullable=False)
     birthday = Column(DateTime, nullable=True)
     place_of_residence: Mapped[Optional[str]] = mapped_column(
-        String(100), 
-        nullable=True
+        String(100), nullable=True
     )
 
     # Digital appearance
@@ -401,9 +400,7 @@ class MembershipApplication(MixinAsDict, SaBaseModel):
 
     # Professional info
     occupation: Mapped[str] = mapped_column(
-        String(50), 
-        nullable=True, 
-        default="student"
+        String(50), nullable=True, default="student"
     )
     degree_level: Mapped[str] = mapped_column(String(20), nullable=False)
     degree_name: Mapped[str] = mapped_column(String(80), nullable=False)
@@ -429,18 +426,22 @@ class MembershipApplication(MixinAsDict, SaBaseModel):
     num1_department_choice: Mapped[str] = mapped_column(String, nullable=False)
     num2_department_choice: Mapped[str] = mapped_column(String, nullable=False)
     num3_department_choice: Mapped[str] = mapped_column(String, nullable=False)
-    num1_department_reasoning: Mapped[Optional[str]
-                                      ] = mapped_column(String, nullable=True)
-    num2_department_reasoning: Mapped[Optional[str]
-                                      ] = mapped_column(String, nullable=True)
-    num3_department_reasoning: Mapped[Optional[str]
-                                      ] = mapped_column(String, nullable=True)
+    num1_department_reasoning: Mapped[Optional[str]] = mapped_column(
+        String, nullable=True
+    )
+    num2_department_reasoning: Mapped[Optional[str]] = mapped_column(
+        String, nullable=True
+    )
+    num3_department_reasoning: Mapped[Optional[str]] = mapped_column(
+        String, nullable=True
+    )
     department_reasoning: Mapped[str] = mapped_column(String, nullable=False)
 
     # RD questions
     research_development_interest: Mapped[bool] = mapped_column(Boolean, nullable=True)
     research_development_reasoning: Mapped[Optional[str]] = mapped_column(
-        String, nullable=True)
+        String, nullable=True
+    )
 
     # General questions
     tumai_awareness: Mapped[str] = mapped_column(String, nullable=False)
@@ -451,7 +452,8 @@ class MembershipApplication(MixinAsDict, SaBaseModel):
     # ----------------------------- RELATIONAL FK FIELDS ----------------------------- #
     # back reference from MembershipApplicationReview
     reviews: Mapped[List["MembershipApplicationReview"]] = relationship(
-        "MembershipApplicationReview", back_populates="application")
+        "MembershipApplicationReview", back_populates="application"
+    )
 
     def __repr__(self) -> str:
         return f"MembershipApplication(id={self.id}, \
@@ -490,10 +492,12 @@ class MembershipApplicationReview(MixinAsDict, SaBaseModel):
     reviewer: Mapped[int] = mapped_column(ForeignKey(Profile.id), nullable=False)
     profile: Mapped["Profile"] = relationship("Profile", back_populates="reviews")
 
-    reviewee: Mapped[int] = mapped_column(ForeignKey(
-        MembershipApplication.id, ondelete="CASCADE"), nullable=False)
+    reviewee: Mapped[int] = mapped_column(
+        ForeignKey(MembershipApplication.id, ondelete="CASCADE"), nullable=False
+    )
     application: Mapped["MembershipApplication"] = relationship(
-        "MembershipApplication", back_populates="reviews")
+        "MembershipApplication", back_populates="reviews"
+    )
 
     def __repr__(self) -> str:
         return f"MembershipApplicationReview(review_id={self.review_id}, \
@@ -502,8 +506,9 @@ class MembershipApplicationReview(MixinAsDict, SaBaseModel):
     def force_load(self) -> None:
         if not self.reviewer:
             raise KeyError
-        
+
         self.profile.force_load()
+
 
 class MembershipApplicationReferral(MixinAsDict, SaBaseModel):
     __tablename__ = "membership_application_referral"
