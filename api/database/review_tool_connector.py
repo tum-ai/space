@@ -2,9 +2,14 @@ import sqlalchemy as sa
 from sqlalchemy.orm import (
     Session,
 )
-from .db_models import MembershipApplicationReview
 
-from review_tool.api_models import MembershipApplicationReviewIn
+from review_tool.api_models import (
+    MembershipApplicationReviewIn,
+)
+
+from .db_models import (
+    MembershipApplicationReview,
+)
 
 
 def create_db_membership_application_review(
@@ -28,7 +33,7 @@ def create_db_membership_application_review(
             referral=new_membership_application_review.referral,
             finalscore=new_membership_application_review.finalscore,
             reviewer=reviewer,
-            reviewee=new_membership_application_review.reviewee
+            reviewee=new_membership_application_review.reviewee,
         )
         db_session.add(db_membership_application_review)
         db_session.flush()

@@ -31,22 +31,7 @@ Also make sure to have [pre-commit](https://pre-commit.com) installed by running
 
 ### Running the project
 **Initial setup**
-  - Create `/api/.env`
-    ```
-    environment=development
-    DB_HOST=localhost
-    DB_PORT=5432
-    DB_NAME=space-db
-    DB_USER=space-db
-    DB_PASSWORD=space-db
-
-    MAIL_USERNAME="space-dev@tum-ai.com"
-    MAIL_PASSWORD="<Notion PWs: MAIL APP PW>"
-    MAIL_FROM="space-dev@tum-ai.com"
-    MAIL_PORT=587
-    MAIL_SERVER="smtp.gmail.com"
-    MAIL_FROM_NAME="TUM.ai Space Team (DEV)"
-    ```
+  - Copy the content from [here](https://www.notion.so/tum-ai/Space-API-env-e491aeb6ca324387bf46fc453412eba7?pvs=4) and put it into `/api/.env`
 
     On MacOS:
     ```
