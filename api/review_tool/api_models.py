@@ -1,13 +1,18 @@
-from pydantic import BaseModel
-from profiles.api_models import ProfileOutPublic
-
 from typing import (
     Optional,
 )
 
-from database.db_models import (
-    MembershipApplicationReview
+from pydantic import (
+    BaseModel,
 )
+
+from database.db_models import (
+    MembershipApplicationReview,
+)
+from profiles.api_models import (
+    ProfileOutPublic,
+)
+
 
 class MembershipApplicationReviewOut(BaseModel):
     id: int
@@ -26,11 +31,10 @@ class MembershipApplicationReviewOut(BaseModel):
     finalscore: float
     reviewer: ProfileOutPublic
     reviewee: int
-    
+
     @classmethod
     def from_db_model(
-        cls, 
-        review: MembershipApplicationReview
+        cls, review: MembershipApplicationReview
     ) -> "MembershipApplicationReview":
         return MembershipApplicationReviewOut(
             id=review.id,
@@ -75,7 +79,7 @@ class MembershipApplicationReviewOut(BaseModel):
                 "referral": 1,
                 "reviewer": ProfileOutPublic.dummy(),
                 "finalscore": 7.5,
-                "reviewee": 1
+                "reviewee": 1,
             }
         }
 
@@ -118,6 +122,6 @@ class MembershipApplicationReviewIn(BaseModel):
                 "furthercomments": "Should keep an eye on progress",
                 "referral": 1,
                 "finalscore": 7.5,
-                "reviewee": 1
+                "reviewee": 1,
             }
         }

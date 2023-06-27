@@ -13,9 +13,7 @@ from .db_models import (
 
 
 def list_db_membership_application(
-    sql_engine: sa.Engine, 
-    page: int, 
-    page_size: int
+    sql_engine: sa.Engine, page: int, page_size: int
 ) -> List[MembershipApplication]:
     with Session(sql_engine) as db_session:
         db_membership_applications: List[MembershipApplication] = (
@@ -32,8 +30,7 @@ def list_db_membership_application(
 
 
 def retrieve_db_membership_application(
-    sql_engine: sa.Engine, 
-    application_id: int
+    sql_engine: sa.Engine, application_id: int
 ) -> MembershipApplication:
     with Session(sql_engine) as db_session:
         db_model = db_session.query(MembershipApplication).get(application_id)

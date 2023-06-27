@@ -54,5 +54,6 @@ def create_invite_email_user(display_name: str, email: str) -> Union[UserRecord,
     except Exception:
         return "FirebaseError"
 
+
 def generate_reset_password_link(email):
     return auth.generate_password_reset_link(email, None)

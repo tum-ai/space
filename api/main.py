@@ -9,13 +9,16 @@ from fastapi.middleware.cors import (
 )
 
 from certification.routes import router as CertificationRouter
-from review_tool.routes import router as ReviewToolRouter
-from membership_application.routes import router as MembershipApplicationRouter
 from database.setup import (
     close_db_client,
     setup_db_client,
 )
+from mail.send import (
+    send_email,
+)
+from membership_application.routes import router as MembershipApplicationRouter
 from profiles.routes import router as ProfilesRouter
+from review_tool.routes import router as ReviewToolRouter
 from security.decorators import (
     ensure_authenticated,
     ensure_authorization,
@@ -27,12 +30,11 @@ from utils.config import (
     CONFIG,
 )
 from utils.error_handlers import (
-    error_handlers
+    error_handlers,
 )
 from utils.log import (
     log,
 )
-from mail.send import send_email
 
 app = FastAPI()
 db_client = None
@@ -104,15 +106,11 @@ def authorization_role_test(request: Request) -> dict:
 @error_handlers
 @ensure_authorization(any_of_roles=["test-role"])
 def email_test(
-    request: Request, 
-    subject: str, 
+    request: Request,
+    subject: str,
     body: str,
 ) -> dict:
-    send_email(
-        receipient="admin+tumaispacedev@tum-ai.com",
-        subject=subject,
-        body=body
-    )
+    send_email(receipient="admin+tumaispacedev@tum-ai.com", subject=subject, body=body)
     return {"msg": "Send success!"}
 
 

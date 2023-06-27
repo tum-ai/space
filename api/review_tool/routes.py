@@ -1,10 +1,6 @@
 from typing import (
-    Annotated
+    Annotated,
 )
-from database.review_tool_connector import create_db_membership_application_review
-from review_tool.api_models import MembershipApplicationReviewIn
-
-from review_tool.response_models import ResponseSubmitReview
 
 from fastapi import (
     APIRouter,
@@ -12,6 +8,15 @@ from fastapi import (
     Request,
 )
 
+from database.review_tool_connector import (
+    create_db_membership_application_review,
+)
+from review_tool.api_models import (
+    MembershipApplicationReviewIn,
+)
+from review_tool.response_models import (
+    ResponseSubmitReview,
+)
 from security.decorators import (
     ensure_authorization,
 )
