@@ -12,6 +12,7 @@ from pydantic import (
 from database.db_models import (
     Gender,
     MembershipApplication,
+    MembershipApplicationReferral,
 )
 
 
@@ -235,5 +236,42 @@ class MembershipApplicationOut(BaseModel):
                 "shirtSize": "Medium",
                 "becomeTeamlead": False,
                 "teamlead_reasoning": "",
+            }
+        }
+
+
+class MembershipApplicationReferralIn(BaseModel):
+    applicant_first_name: str
+    applicant_last_name: str
+    points: int
+    comment: Optional[str]
+    referral_by: int
+
+    @classmethod
+    def from_db_model(
+        cls, referral: MembershipApplicationReferral
+    ) -> "MembershipApplicationReferralIn":
+        return MembershipApplicationReferralIn(
+            applicant_first_name=referral.applicant_first_name,
+            applicant_last_name=referral.applicant_last_name,
+            points=referral.points,
+            comment=referral.comment,
+            referral_by=referral.referral_by,
+        )
+
+    @classmethod
+    def dummy(cls) -> "MembershipApplicationReferralIn":
+        return MembershipApplicationReferralIn.parse_obj(
+            cls.Config.schema_extra["example"]
+        )
+
+    class Config:
+        schema_extra = {
+            "example": {
+                "applicant_first_name": "John",
+                "applicant_last_name": "Test",
+                "points": 10,
+                "comment": "He is my best friend.",
+                "referral_by": 1,
             }
         }
