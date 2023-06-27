@@ -40,7 +40,6 @@ function ProfileEditor({ isSignUpForm = false }) {
   };
 
   function handleChange(e) {
-    console.log(e);
     meModel.updateEditorProfile({
       [e.target.name]: e.target.value,
     });
@@ -50,7 +49,6 @@ function ProfileEditor({ isSignUpForm = false }) {
     const { name, value } = e.target;
     meModel.updateEditorProfile({
       [type]: editorProfile[type].map((item, i) => {
-        console.log(editorProfile[type]);
         if (i === index) {
           return {
             ...item,
@@ -83,7 +81,6 @@ function ProfileEditor({ isSignUpForm = false }) {
   }
 
   const handleSelect = (item, index) => {
-    console.log(item, index);
     const updatedSelectedOptions = [...selectedOptions];
     updatedSelectedOptions[index] = item.value;
     setSelectedOptions(updatedSelectedOptions);
