@@ -58,9 +58,8 @@ function Links() {
               {component}
             </ProtectedItem>
           );
-        } else {
-          return component;
         }
+        return component;
       })}
     </>
   );
