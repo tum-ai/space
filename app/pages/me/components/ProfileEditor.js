@@ -29,7 +29,8 @@ function ProfileEditor({ isSignUpForm = false }) {
   const { uiModel, meModel } = useStores();
   const editorProfile = meModel.editorProfile;
   const [selectedOptions, setSelectedOptions] = useState(
-    editorProfile.social_networks.map((network) => network.type)
+    editorProfile.social_networks &&
+      editorProfile.social_networks.map((network) => network.type)
   );
   const router = useRouter();
 
@@ -68,9 +69,11 @@ function ProfileEditor({ isSignUpForm = false }) {
   function handleRemoveExperience(index, type) {
     const updatedExperience = [...editorProfile[type]];
     updatedExperience.splice(index, 1);
+    console.log(updatedExperience);
     meModel.updateEditorProfile({
       [type]: updatedExperience,
     });
+    console.log(editorProfile[type]);
   }
 
   const handleSelect = (item, index) => {
