@@ -1,6 +1,4 @@
-
 import datetime
-
 from typing import (
     Annotated,
     List,
@@ -13,36 +11,25 @@ from fastapi import (
     Body,
     Request,
 )
-from profiles.response_models import (
-    ResponseDepartmentList,
-    ResponseDepartment,
-    ResponseRoleList,
-    ResponseRoleHoldershipList,
-    ResponseRoleHoldershipUpdateList,
-    ResponseProfile,
-    ResponsePublicProfile,
-    ResponseInviteProfilesList,
-    ResponseProfileList,
-    ResponsePublicProfileList,
-    ResponseDeletedIntPKList,
-    ResponseDepartmentMembershipWithProfileList,
-    ResponseDepartmentMembershipWithProfile,
-    ResponseDepartmentMembershipCreateUpdateList,
-)
 
 from database.db_models import (
     PositionType,
 )
 from database.profiles_connector import (
+    create_db_department_memberships,
+    delete_db_department_memberships,
     delete_db_profile,
     delete_db_profiles,
+    get_db_department_memberships,
     invite_new_members,
+    list_db_department_memberships,
     list_db_departments,
     list_db_profiles,
     list_db_roleholderships,
     list_db_roles,
     retrieve_db_department,
     retrieve_db_profile,
+    update_db_department_memberships,
     update_db_profile,
     update_db_roleholderships,
     list_db_department_memberships,
@@ -51,7 +38,13 @@ from database.profiles_connector import (
     update_db_department_memberships,
     delete_db_department_memberships,
 )
+from mail.send import (
+    send_email,
+)
 from profiles.api_models import (
+    DepartmentMembershipInCreate,
+    DepartmentMembershipInUpdate,
+    DepartmentMembershipWithShortProfileOut,
     DepartmentOut,
     ProfileInUpdate,
     ProfileMemberInvitation,
@@ -64,9 +57,28 @@ from profiles.api_models import (
     DepartmentMembershipInCreate,
     DepartmentMembershipInUpdate,
 )
+from profiles.response_models import (
+    ResponseDeletedIntPKList,
+    ResponseDepartment,
+    ResponseDepartmentList,
+    ResponseDepartmentMembershipCreateUpdateList,
+    ResponseDepartmentMembershipWithProfile,
+    ResponseDepartmentMembershipWithProfileList,
+    ResponseInviteProfilesList,
+    ResponseProfile,
+    ResponseProfileList,
+    ResponsePublicProfile,
+    ResponsePublicProfileList,
+    ResponseRoleHoldershipList,
+    ResponseRoleHoldershipUpdateList,
+    ResponseRoleList,
+)
 from security.decorators import (
     ensure_authenticated,
     ensure_authorization,
+)
+from security.firebase_auth import (
+    generate_reset_password_link,
 )
 from utils.error_handlers import (
     error_handlers,
@@ -78,7 +90,6 @@ from utils.response import (
     BaseResponse,
     ErrorResponse,
 )
-
 
 router = APIRouter()
 
@@ -420,20 +431,39 @@ def invite_members(
     request: Request,
     data: Annotated[List[ProfileMemberInvitation], Body(embed=True)],
 ) -> dict:
-    created_profiles, error_profiles = invite_new_members(
-        request.app.state.sql_engine, data
-    )
-    created_profiles_out = [ProfileOut.from_db_model(p) for p in created_profiles]
-    error_profiles_out = [
-        {"data": err_data, "error": err} for err_data, err in error_profiles
-    ]
-    return {
-        "status_code": 200,
-        "response_type": "success",
-        "description": "Members invited successfully",
-        "succeeded": created_profiles_out,
-        "failed": error_profiles_out,
-    }
+    try:
+        created_profiles, error_profiles = invite_new_members(
+            request.app.state.sql_engine, data
+        )
+        created_profiles_out = [ProfileOut.from_db_model(p) for p in created_profiles]
+        for profile in created_profiles_out:
+            link = generate_reset_password_link(profile.email)
+            send_email(
+                profile.email,
+                "Welcome to TUM.ai space",
+                f"Dear {profile.first_name} {profile.last_name},\n\nYou have been \
+                invited to TUM.ai space. Please follow the link below to reset your \
+                    password. After that you can login under space.tum-ai.com.\
+                    \n\n{link}\n\nBest regards,\nthe TUM.ai space Team",
+            )
+        error_profiles_out = [
+            {"data": err_data, "error": err} for err_data, err in error_profiles
+        ]
+        return {
+            "status_code": 200,
+            "response_type": "success",
+            "description": "Members invited successfully",
+            "succeeded": created_profiles_out,
+            "failed": error_profiles_out,
+        }
+    except Exception:
+        return {
+            "status_code": 500,
+            "response_type": "error",
+            "description": "Error occured",
+            "succeeded": [],
+            "failed": [],
+        }
 
 
 # ------------------------------------------------------------------------------------ #
@@ -487,7 +517,7 @@ def list_department_memberships(
     ended_after: Optional[datetime.datetime] = None,
 ) -> dict:
     db_department_memberships = list_db_department_memberships(
-        request.app.state.sql_engine, 
+        request.app.state.sql_engine,
         page,
         page_size,
         profile_id,
@@ -499,7 +529,7 @@ def list_department_memberships(
         ended_after,
     )
     out_department_memberships = [
-        DepartmentMembershipWithShortProfileOut.from_db_model(rh) 
+        DepartmentMembershipWithShortProfileOut.from_db_model(rh)
         for rh in db_department_memberships
     ]
     return {
@@ -520,16 +550,13 @@ def list_department_memberships(
     any_of_positions=[(PositionType.TEAMLEAD, None), (None, "board")],
     any_of_roles=["departmemt_membership_management"],
 )
-def get_department_membership(
-    request: Request,
-    department_membership_id: int
-) -> dict:
+def get_department_membership(request: Request, department_membership_id: int) -> dict:
     db_department_membership = get_db_department_memberships(
-        request.app.state.sql_engine, 
-        department_membership_id
+        request.app.state.sql_engine, department_membership_id
     )
-    out_department_membership = \
-        DepartmentMembershipWithShortProfileOut.from_db_model(db_department_membership)
+    out_department_membership = DepartmentMembershipWithShortProfileOut.from_db_model(
+        db_department_membership
+    )
     return {
         "status_code": 200,
         "response_type": "success",
@@ -615,12 +642,10 @@ def update_department_memberships(
     any_of_roles=["departmemt_membership_management"],
 )
 def delete_department_membership(
-    request: Request,
-    department_membership_ids: List[int]
+    request: Request, department_membership_ids: List[int]
 ) -> dict:
     deleted_ids = delete_db_department_memberships(
-        request.app.state.sql_engine, 
-        department_membership_ids
+        request.app.state.sql_engine, department_membership_ids
     )
     return {
         "status_code": 200,

@@ -20,9 +20,13 @@ AUTH:
         - 'https://space.staging.tum-ai.com'
         - 'http://localhost'
         - 'http://localhost:3000'
+        - 'http://localhost:3009'
         - 'http://192.168.178.21'
         - 'http://192.168.178.21:3000'
     USERS_DASHBOARD_API_KEY: 'someApiKey'
+CERTIFICATE:
+    CERTIFICATE_ALLOWED_ORIGINS:
+        - 'http://localhost:3009'
 #-------------------------------------------------------------------------------#
 LOGGER:
     LOGGER_NAME: 'tumai-space-global'

@@ -34,7 +34,7 @@ function Auth() {
     console.log(data);
     try {
       await meModel.signup(data.email, data.password);
-      router.push("/members/signup-form");
+      router.push("/");
     } catch (err) {
       setError(true);
       // TODO case handling and proper output

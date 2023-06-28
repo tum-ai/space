@@ -1,6 +1,10 @@
-from typing import Any, List
+from typing import (
+    Any,
+    List,
+)
 
 from profiles.api_models import (
+    DepartmentMembershipWithShortProfileOut,
     DepartmentOut,
     ProfileOut,
     ProfileOutPublic,
@@ -9,7 +13,13 @@ from profiles.api_models import (
     RoleInOut,
     DepartmentMembershipWithShortProfileOut,
 )
-from utils.response import BaseResponse
+from utils.response import (
+    BaseResponse,
+)
+
+# ------------------------------------------------------------------------------------ #
+#                              Department Response Models                              #
+# ------------------------------------------------------------------------------------ #
 
 
 # ------------------------------------------------------------------------------------ #
@@ -135,9 +145,11 @@ class ResponseDepartmentMembershipWithProfileList(BaseResponse):
     data: List[DepartmentMembershipWithShortProfileOut]
 
     class Config:
-        schema_extra = BaseResponse.schema_wrapper([
-            DepartmentMembershipWithShortProfileOut.dummy(),
-        ])
+        schema_extra = BaseResponse.schema_wrapper(
+            [
+                DepartmentMembershipWithShortProfileOut.dummy(),
+            ]
+        )
 
 
 class ResponseDepartmentMembershipWithProfile(BaseResponse):
@@ -155,4 +167,3 @@ class ResponseDepartmentMembershipCreateUpdateList(BaseResponse):
 
     class Config:
         schema_extra = BaseResponse.schema_wrapper([])
-

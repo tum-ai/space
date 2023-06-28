@@ -13,6 +13,8 @@ from sqlalchemy.orm import (
 )
 
 from profiles.api_models import (
+    DepartmentMembershipInCreate,
+    DepartmentMembershipInUpdate,
     ProfileInCreate,
     ProfileInUpdate,
     ProfileMemberInvitation,
@@ -38,7 +40,6 @@ from .db_models import (  # PublicProfile
 from .setup import (
     setup_db_client_appless,
 )
-
 
 # ------------------------------------------------------------------------------------ #
 #                                 department operations                                #
@@ -476,9 +477,9 @@ def invite_new_members(
     return created_profiles, error_profiles
 
 
- # ----------------------------------------------------------------------------------- #
- #                         Authorization Management operations                         #
- # ----------------------------------------------------------------------------------- #
+# ----------------------------------------------------------------------------------- #
+#                         Authorization Management operations                         #
+# ----------------------------------------------------------------------------------- #
 
 
 def list_db_roles(sql_engine: sa.Engine) -> List[Role]:
@@ -595,29 +596,24 @@ def list_db_department_memberships(
     ended_after: Optional[datetime.datetime] = None,
 ) -> List[DepartmentMembership]:
     with Session(sql_engine) as db_session:
-        
         # build filter
         filter = sa.and_(sa.true(), sa.true())
         if profile_id is not None:
-            filter = sa.and_(
-                filter, DepartmentMembership.profile_id == profile_id)
+            filter = sa.and_(filter, DepartmentMembership.profile_id == profile_id)
         if department_handle is not None:
             filter = sa.and_(
-                filter, DepartmentMembership.department_handle == department_handle)
+                filter, DepartmentMembership.department_handle == department_handle
+            )
         if position is not None:
             filter = sa.and_(filter, DepartmentMembership.position == position)
         if started_before is not None:
-            filter = sa.and_(
-                filter, DepartmentMembership.time_from < started_before)
+            filter = sa.and_(filter, DepartmentMembership.time_from < started_before)
         if started_after is not None:
-            filter = sa.and_(
-                filter, DepartmentMembership.time_from > started_after)
+            filter = sa.and_(filter, DepartmentMembership.time_from > started_after)
         if ended_before is not None:
-            filter = sa.and_(
-                filter, DepartmentMembership.time_to < ended_before)
+            filter = sa.and_(filter, DepartmentMembership.time_to < ended_before)
         if ended_after is not None:
-            filter = sa.and_(
-                filter, DepartmentMembership.time_to > ended_after)
+            filter = sa.and_(filter, DepartmentMembership.time_to > ended_after)
 
         db_department_memberships: List[DepartmentMembership] = (
             db_session.query(DepartmentMembership)
@@ -634,11 +630,9 @@ def list_db_department_memberships(
 
 
 def get_db_department_memberships(
-    sql_engine: sa.Engine,
-    department_membership_id: int
+    sql_engine: sa.Engine, department_membership_id: int
 ) -> DepartmentMembership:
     with Session(sql_engine) as db_session:
-        
         db_model = db_session.query(DepartmentMembership).get(department_membership_id)
         if not db_model:
             raise KeyError
@@ -653,7 +647,7 @@ def create_db_department_memberships(
     """
     Returns:
         List[DepartmentMembership]: successfully created memberships
-        List[Tuple[DepartmentMembershipInCreate, str]]: 
+        List[Tuple[DepartmentMembershipInCreate, str]]:
             failed memberships with error message
     """
     created_memberships = []
@@ -701,15 +695,14 @@ def update_db_department_memberships(
     for membership in department_memberships:
         try:
             with Session(sql_engine) as db_session:
-                db_membership = db_session\
-                    .query(DepartmentMembership)\
-                    .get(membership.id)
-                
+                db_membership = db_session.query(DepartmentMembership).get(
+                    membership.id
+                )
+
                 if not db_membership:
                     raise ValueError(
                         f"Membership with id {membership.id} does not exist!"
                     )
-                
                 db_membership.position = membership.position
                 db_membership.time_from = membership.time_from
                 db_membership.time_to = membership.time_to
