@@ -32,11 +32,6 @@ from database.profiles_connector import (
     update_db_department_memberships,
     update_db_profile,
     update_db_roleholderships,
-    list_db_department_memberships,
-    get_db_department_memberships,
-    create_db_department_memberships,
-    update_db_department_memberships,
-    delete_db_department_memberships,
 )
 from mail.send import (
     send_email,
@@ -53,9 +48,6 @@ from profiles.api_models import (
     RoleHoldershipInOut,
     RoleHoldershipUpdateInOut,
     RoleInOut,
-    DepartmentMembershipWithShortProfileOut,
-    DepartmentMembershipInCreate,
-    DepartmentMembershipInUpdate,
 )
 from profiles.response_models import (
     ResponseDeletedIntPKList,
@@ -163,6 +155,7 @@ def list_role_holderships(
         "data": out_roles,
     }
 
+
 @router.get(
     "/me/role/holderships",
     response_description="List all role assignments to user",
@@ -182,6 +175,7 @@ def list_user_role_holderships(
         "description": "Role holderships successfully retrieved",
         "data": out_roles,
     }
+
 
 @router.patch(
     "/role/holderships",
@@ -492,6 +486,7 @@ def list_roles(request: Request) -> dict:
 # ------------------------------------------------------------------------------------ #
 #                       DepartmemtMembership management endpoints                      #
 # ------------------------------------------------------------------------------------ #
+
 
 @router.get(
     "/department-memberships",

@@ -13,8 +13,6 @@ from sqlalchemy.orm import (
 )
 
 from profiles.api_models import (
-    DepartmentMembershipInCreate,
-    DepartmentMembershipInUpdate,
     ProfileInCreate,
     ProfileInUpdate,
     ProfileMemberInvitation,
@@ -582,6 +580,7 @@ def update_db_roleholderships(
 # ------------------------------------------------------------------------------------ #
 #                      DepartmemtMembership management operations                      #
 # ------------------------------------------------------------------------------------ #
+
 
 def list_db_department_memberships(
     sql_engine: sa.Engine,

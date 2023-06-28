@@ -11,16 +11,10 @@ from profiles.api_models import (
     RoleHoldershipInOut,
     RoleHoldershipUpdateInOut,
     RoleInOut,
-    DepartmentMembershipWithShortProfileOut,
 )
 from utils.response import (
     BaseResponse,
 )
-
-# ------------------------------------------------------------------------------------ #
-#                              Department Response Models                              #
-# ------------------------------------------------------------------------------------ #
-
 
 # ------------------------------------------------------------------------------------ #
 #                              Department Response Models                              #

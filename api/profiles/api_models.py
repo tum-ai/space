@@ -183,6 +183,7 @@ class DepartmentMembershipOut(BaseModel):
             }
         }
 
+
 class ProfileInCreateUpdateBase(BaseModel):
     email: str
     phone: Optional[str]
@@ -336,6 +337,7 @@ class ProfileOut(BaseModel):
                 ],
             }
         }
+
 
 class ProfileOutPublic(BaseModel):
     id: int

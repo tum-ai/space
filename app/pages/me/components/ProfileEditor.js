@@ -45,19 +45,12 @@ function ProfileEditor({ isSignUpForm = false }) {
     });
   }
 
-  function handleListItemChange(e, index, type) {
-    const { name, value } = e.target;
-    meModel.updateEditorProfile({
-      [type]: editorProfile[type].map((item, i) => {
-        if (i === index) {
-          return {
-            ...item,
-            [name]: value,
-          };
-        }
-        return item;
-      }),
+  function handleListItemChange(event, index, type) {
+    const { name, value } = event.target;
+    const updatedProfile = editorProfile[type].map((item, i) => {
+      return i === index ? { ...item, [name]: value } : item;
     });
+    meModel.updateEditorProfile({ [type]: updatedProfile });
   }
 
   function handleAddExperience(type, newExperience) {
@@ -197,57 +190,48 @@ function ProfileEditor({ isSignUpForm = false }) {
           You can update your job history and add your previous work experience
           here.
         </div>
-        {!editorProfile.job_history
-          ? null
-          : editorProfile.job_history.map((experience, index) => (
-              <div key={index} className="grid grid-cols-2 gap-4">
-                <Input
-                  label="Employer"
-                  type="text"
-                  name="employer"
-                  value={experience.employer}
-                  required={true}
-                  onChange={(e) =>
-                    handleListItemChange(e, index, "job_history")
-                  }
-                />
-                <Input
-                  label="Position"
-                  type="text"
-                  name="position"
-                  required={true}
-                  value={experience.position}
-                  onChange={(e) =>
-                    handleListItemChange(e, index, "job_history")
-                  }
-                />
-                <Input
-                  label="Start date"
-                  type="date"
-                  name="date_from"
-                  required={true}
-                  value={experience.date_from}
-                  onChange={(e) =>
-                    handleListItemChange(e, index, "job_history")
-                  }
-                />
-                <Input
-                  label="End date"
-                  type="date"
-                  name="date_to"
-                  required={true}
-                  value={experience.date_to}
-                  onChange={(e) =>
-                    handleListItemChange(e, index, "job_history")
-                  }
-                />
-                <button
-                  onClick={() => handleRemoveExperience(index, "job_history")}
-                >
-                  Remove
-                </button>
-              </div>
-            ))}
+        {editorProfile.job_history &&
+          editorProfile.job_history.map((experience, index) => (
+            <div key={index} className="grid grid-cols-2 gap-4">
+              <Input
+                label="Employer"
+                type="text"
+                name="employer"
+                value={experience.employer}
+                required={true}
+                onChange={(e) => handleListItemChange(e, index, "job_history")}
+              />
+              <Input
+                label="Position"
+                type="text"
+                name="position"
+                required={true}
+                value={experience.position}
+                onChange={(e) => handleListItemChange(e, index, "job_history")}
+              />
+              <Input
+                label="Start date"
+                type="date"
+                name="date_from"
+                required={true}
+                value={experience.date_from}
+                onChange={(e) => handleListItemChange(e, index, "job_history")}
+              />
+              <Input
+                label="End date"
+                type="date"
+                name="date_to"
+                required={true}
+                value={experience.date_to}
+                onChange={(e) => handleListItemChange(e, index, "job_history")}
+              />
+              <button
+                onClick={() => handleRemoveExperience(index, "job_history")}
+              >
+                Remove
+              </button>
+            </div>
+          ))}
         <button
           onClick={() => handleAddExperience("job_history", newJobExperience)}
         >
@@ -259,41 +243,38 @@ function ProfileEditor({ isSignUpForm = false }) {
           Feel free to add any relevant social media networks (e.g. LinkedIn,
           GitHub, etc.) here.
         </div>
-        {!editorProfile.social_networks
-          ? null
-          : editorProfile.social_networks.map((experience, index) => (
-              <div key={index} className="grid grid-cols-2 gap-4">
-                <Select
-                  setSelectedItem={(item) => handleSelect(item, index)}
-                  selectedItem={{
-                    key: experience.type,
-                    value: experience.type,
-                  }}
-                  placeholder="Select an option"
-                  data={socialNetworksTypes}
-                  name="type"
-                  label="Type"
-                  disabled={false}
-                />
-                <Input
-                  label="Link"
-                  type="text"
-                  name="link"
-                  required={true}
-                  value={experience.link}
-                  onChange={(e) =>
-                    handleListItemChange(e, index, "social_networks")
-                  }
-                />
-                <button
-                  onClick={() =>
-                    handleRemoveExperience(index, "social_networks")
-                  }
-                >
-                  Remove
-                </button>
-              </div>
-            ))}
+        {editorProfile.social_networks &&
+          editorProfile.social_networks.map((experience, index) => (
+            <div key={index} className="grid grid-cols-2 gap-4">
+              <Select
+                setSelectedItem={(item) => handleSelect(item, index)}
+                selectedItem={{
+                  key: experience.type,
+                  value: experience.type,
+                }}
+                placeholder="Select an option"
+                data={socialNetworksTypes}
+                name="type"
+                label="Type"
+                disabled={false}
+              />
+              <Input
+                label="Link"
+                type="text"
+                name="link"
+                required={true}
+                value={experience.link}
+                onChange={(e) =>
+                  handleListItemChange(e, index, "social_networks")
+                }
+              />
+              <button
+                onClick={() => handleRemoveExperience(index, "social_networks")}
+              >
+                Remove
+              </button>
+            </div>
+          ))}
         <button
           onClick={() =>
             handleAddExperience("social_networks", newSocialNetwork)
