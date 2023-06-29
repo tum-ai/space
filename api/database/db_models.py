@@ -513,9 +513,6 @@ class MembershipApplicationReview(MixinAsDict, SaBaseModel):
 class MembershipApplicationReferral(MixinAsDict, SaBaseModel):
     __tablename__ = "membership_application_referral"
 
-    # -------------------------------- MANAGED FIELDS -------------------------------- #
-    user_id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-
     # ---------------------------- USER CHANGEABLE FIELDS ---------------------------- #
     applicant_first_name: Mapped[str] = mapped_column(String(50), nullable=False)
     applicant_last_name: Mapped[str] = mapped_column(String(50), nullable=False)
@@ -524,7 +521,9 @@ class MembershipApplicationReferral(MixinAsDict, SaBaseModel):
     email: Mapped[str] = mapped_column(String, primary_key=True)
 
     # ----------------------------- RELATIONAL FK FIELDS ----------------------------- #
-    referral_by: Mapped[int] = mapped_column(ForeignKey(Profile.id), nullable=False)
+    referral_by: Mapped[int] = mapped_column(
+        ForeignKey(Profile.id), primary_key=True, nullable=False
+    )
     profile: Mapped["Profile"] = relationship("Profile", back_populates="referrals")
 
     def __repr__(self) -> str:
