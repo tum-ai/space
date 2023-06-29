@@ -54,6 +54,7 @@ def create_db_membership_application_referral(
             applicant_last_name=new_membership_application_referral.applicant_last_name,
             points=new_membership_application_referral.points,
             comment=new_membership_application_referral.comment,
+            email=new_membership_application_referral.email,
             referral_by=referral_by,
         )
 

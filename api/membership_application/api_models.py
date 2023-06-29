@@ -245,7 +245,7 @@ class MembershipApplicationReferralIn(BaseModel):
     applicant_last_name: str
     points: int
     comment: Optional[str]
-    referral_by: int
+    email: str
 
     @classmethod
     def from_db_model(
@@ -256,7 +256,7 @@ class MembershipApplicationReferralIn(BaseModel):
             applicant_last_name=referral.applicant_last_name,
             points=referral.points,
             comment=referral.comment,
-            referral_by=referral.referral_by,
+            email=referral.email,
         )
 
     @classmethod
@@ -273,5 +273,6 @@ class MembershipApplicationReferralIn(BaseModel):
                 "points": 10,
                 "comment": "He is my best friend.",
                 "referral_by": 1,
+                "email": "john@gmx.de",
             }
         }

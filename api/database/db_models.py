@@ -521,6 +521,7 @@ class MembershipApplicationReferral(MixinAsDict, SaBaseModel):
     applicant_last_name: Mapped[str] = mapped_column(String(50), nullable=False)
     points: Mapped[int] = mapped_column(Integer, nullable=False)
     comment: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    email: Mapped[str] = mapped_column(String, primary_key=True)
 
     # ----------------------------- RELATIONAL FK FIELDS ----------------------------- #
     referral_by: Mapped[int] = mapped_column(ForeignKey(Profile.id), nullable=False)

@@ -26,6 +26,7 @@ from membership_application.response_models import (
     ResponseSubmitMembershipApplicationReferral,
 )
 from security.decorators import (
+    ensure_authenticated,
     ensure_authorization,
 )
 from utils.error_handlers import (
@@ -93,9 +94,7 @@ def get_membership_application(request: Request, application_id: int) -> dict:
     response_model=ResponseSubmitMembershipApplicationReferral,
 )
 @error_handlers
-@ensure_authorization(
-    any_of_roles=["invite_members"],
-)
+@ensure_authenticated
 def submit_membership_application_referral(
     request: Request,
     data: Annotated[MembershipApplicationReferralIn, Body(embed=True)],
