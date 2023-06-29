@@ -20,6 +20,7 @@ export class MeModel {
 				axios.defaults.headers = {
 					authorization: `bearer ${user.accessToken}`,
 				};
+				console.log(user.accessToken);
 				const profile = (await axios('/me')).data.data;
 				const roles = (await axios('/me/role/holderships')).data.data;
 				profile['role_holderships'] = roles.map((obj) => obj['role']);
