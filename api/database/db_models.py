@@ -176,13 +176,13 @@ class Profile(MixinAsDict, SaBaseModel):
 
     @hybrid_property
     def decoded_job_history(self) -> List[JobHistoryElement]:
-        job_history = []
-        if job_history and len(job_history) > 0:
-            for entry in f"{job_history}".split(","):
+        new_job_history = []
+        if self.job_history and len(self.job_history) > 0:
+            for entry in f"{self.job_history}".split(","):
                 fields = entry.split(":")
                 if len(fields) != 4:
                     continue
-                job_history.append(
+                new_job_history.append(
                     JobHistoryElement(
                         employer=fields[0],
                         position=fields[1],
@@ -190,7 +190,8 @@ class Profile(MixinAsDict, SaBaseModel):
                         date_to=fields[3],
                     )
                 )
-        return job_history
+        print("decoded new job history: ", new_job_history)
+        return new_job_history
 
     def __repr__(self) -> str:
         return f"Profile(id={self.id}, fullname={self.full_name})"
