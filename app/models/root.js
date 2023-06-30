@@ -36,7 +36,7 @@ export class RootModel {
 				data: data,
 				method: 'PATCH',
 			});
-			return response.data.data;
+			return response?.data.data;
 		} catch (error) {
 			console.log(error);
 			const response = error.response;
@@ -58,7 +58,7 @@ export class RootModel {
 			if (returnResponse) {
 				return response;
 			}
-			return response.data;
+			return response?.data;
 		} catch (error) {
 			console.log(error);
 			const response = error.response;

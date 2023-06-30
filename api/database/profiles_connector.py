@@ -13,14 +13,14 @@ from sqlalchemy.orm import (
 )
 
 from profiles.api_models import (
-    DepartmentMembershipInCreate,
-    DepartmentMembershipInUpdate,
     ProfileInCreate,
     ProfileInUpdate,
     ProfileMemberInvitation,
     RoleHoldershipInOut,
     RoleHoldershipUpdateInOut,
     SocialNetworkIn,
+    DepartmentMembershipInCreate,
+    DepartmentMembershipInUpdate,
 )
 from security.firebase_auth import (
     create_invite_email_user,
@@ -265,7 +265,7 @@ def update_db_profile(
                 new_sn: SocialNetworkIn = new_sn_types[old_k]
                 if (old_sn.link != new_sn.link) or (old_sn.handle != new_sn.handle):
                     # values changed
-                    # old_sn.link = new_sn.link
+                    old_sn.link = new_sn.link
                     old_sn.handle = new_sn.handle
                     db_session.add(old_sn)
                 # else: nothing changed, leave
@@ -274,6 +274,10 @@ def update_db_profile(
                 new_sn_types.pop(old_k)
 
             else:  # not in use anymore -> delete
+                db_profile.social_networks = [
+                    sn for sn in db_profile.social_networks 
+                    if sn.type != old_k
+                ]
                 db_session.delete(old_sn)
 
         # create objects for new social networks
@@ -702,7 +706,6 @@ def update_db_department_memberships(
                     raise ValueError(
                         f"Membership with id {membership.id} does not exist!"
                     )
-
                 db_membership.position = membership.position
                 db_membership.time_from = membership.time_from
                 db_membership.time_to = membership.time_to
