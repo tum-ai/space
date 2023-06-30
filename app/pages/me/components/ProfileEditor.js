@@ -28,58 +28,13 @@ const socialNetworksTypes = [
 function ProfileEditor({ isSignUpForm = false }) {
 	const { uiModel, meModel } = useStores();
 	const editorProfile = meModel.editorProfile;
-	const [selectedOptions, setSelectedOptions] = useState(
-		editorProfile.social_networks &&
-			editorProfile.social_networks.map((network) => network.type)
-	);
 	const router = useRouter();
-
-	const newSocialNetwork = {
-		type: '',
-		link: '',
-		profile_id: editorProfile.id,
-	};
 
 	function handleChange(e) {
 		meModel.updateEditorProfile({
 			[e.target.name]: e.target.value,
 		});
 	}
-
-	function handleListItemChange(event, index, type) {
-		const { name, value } = event.target;
-		const updatedProfile = editorProfile[type].map((item, i) => {
-			return i === index ? { ...item, [name]: value } : item;
-		});
-		meModel.updateEditorProfile({ [type]: updatedProfile });
-	}
-
-	function handleRemoveExperience(index, type) {
-		const updatedExperience = [...editorProfile[type]];
-		updatedExperience.splice(index, 1);
-		console.log(updatedExperience);
-		meModel.updateEditorProfile({
-			[type]: updatedExperience,
-		});
-		console.log(editorProfile[type]);
-	}
-
-	const handleSelect = (item, index) => {
-		const updatedSelectedOptions = [...selectedOptions];
-		updatedSelectedOptions[index] = item.value;
-		setSelectedOptions(updatedSelectedOptions);
-		meModel.updateEditorProfile({
-			social_networks: editorProfile.social_networks.map((network, i) => {
-				if (i === index) {
-					return {
-						...network,
-						type: item.value,
-					};
-				}
-				return network;
-			}),
-		});
-	};
 
 	return (
 		<div className='flex flex-col space-y-6 rounded-lg p-6 bg-white dark:bg-gray-700 w-full'>
@@ -178,63 +133,7 @@ function ProfileEditor({ isSignUpForm = false }) {
 				{/* Job Experience Editor */}
 				<JobExperience />
 				{/* Social Networks Editor */}
-				<div className='col-span-2 text-xl font-light'>
-					Social Networks
-				</div>
-				<div className='col-span-2 text-black font-light'>
-					Feel free to add any relevant social media networks (e.g.
-					LinkedIn, GitHub, etc.) here.
-				</div>
-				{editorProfile.social_networks &&
-					editorProfile.social_networks.map((experience, index) => (
-						<div key={index} className='grid grid-cols-1 gap-4'>
-							<Select
-								setSelectedItem={(item) =>
-									handleSelect(item, index)
-								}
-								selectedItem={{
-									key: experience.type,
-									value: experience.type,
-								}}
-								placeholder='Select an option'
-								data={socialNetworksTypes}
-								name='type'
-								label='Type'
-								disabled={false}
-							/>
-							<Input
-								label='Link'
-								type='text'
-								name='link'
-								required={true}
-								value={experience.link}
-								onChange={(e) =>
-									handleListItemChange(
-										e,
-										index,
-										'social_networks'
-									)
-								}
-							/>
-							<button
-								onClick={() =>
-									handleRemoveExperience(
-										index,
-										'social_networks'
-									)
-								}
-							>
-								Remove
-							</button>
-						</div>
-					))}
-				<button
-					onClick={() =>
-						handleAddExperience('social_networks', newSocialNetwork)
-					}
-				>
-					Add Social Network
-				</button>
+				<SocialNetworks />
 				<div className='col-span-2 flex space-x-2'>
 					<button
 						type='submit'
@@ -255,6 +154,127 @@ function ProfileEditor({ isSignUpForm = false }) {
 					)}
 				</div>
 			</form>
+		</div>
+	);
+}
+
+function SocialNetworks() {
+	const { meModel } = useStores();
+	const editorProfile = meModel.editorProfile;
+	const [selectedOptions, setSelectedOptions] = useState(
+		editorProfile.social_networks &&
+			editorProfile.social_networks.map((network) => network.type)
+	);
+
+	const newSocialNetwork = {
+		type: '',
+		link: '',
+		profile_id: editorProfile.id,
+	};
+
+	function handleAddExperience(type, newExperience) {
+		if (!editorProfile[type]) {
+			meModel.updateEditorProfile({
+				[type]: [newExperience],
+			});
+			return;
+		}
+
+		meModel.updateEditorProfile({
+			[type]: [...editorProfile[type], newExperience],
+		});
+	}
+
+	function handleRemoveExperience(index, type) {
+		const updatedExperience = [...editorProfile[type]];
+		updatedExperience.splice(index, 1);
+		console.log(updatedExperience);
+		meModel.updateEditorProfile({
+			[type]: updatedExperience,
+		});
+		console.log(editorProfile[type]);
+	}
+
+	function handleListItemChange(event, index, type) {
+		const { name, value } = event.target;
+		const updatedProfile = editorProfile[type].map((item, i) => {
+			return i === index ? { ...item, [name]: value } : item;
+		});
+		meModel.updateEditorProfile({ [type]: updatedProfile });
+	}
+
+	const handleSelect = (item, index) => {
+		const updatedSelectedOptions = [...selectedOptions];
+		updatedSelectedOptions[index] = item.value;
+		setSelectedOptions(updatedSelectedOptions);
+		meModel.updateEditorProfile({
+			social_networks: editorProfile.social_networks.map((network, i) => {
+				if (i === index) {
+					return {
+						...network,
+						type: item.value,
+					};
+				}
+				return network;
+			}),
+		});
+	};
+
+	return (
+		<div className='w-full col-span-2'>
+			<div className='col-span-2 text-xl font-light'>Social Networks</div>
+			<div className='col-span-2 text-black font-light'>
+				Feel free to add any relevant social media networks (e.g.
+				LinkedIn, GitHub, etc.) here.
+			</div>
+			{editorProfile.social_networks &&
+				editorProfile.social_networks.map((experience, index) => (
+					<div key={index} className='grid grid-cols-1 gap-4'>
+						<Select
+							setSelectedItem={(item) =>
+								handleSelect(item, index)
+							}
+							selectedItem={{
+								key: experience.type,
+								value: experience.type,
+							}}
+							placeholder='Select an option'
+							data={socialNetworksTypes}
+							name='type'
+							label='Type'
+							disabled={false}
+						/>
+						<Input
+							label='Link'
+							type='text'
+							name='link'
+							required={true}
+							value={experience.link}
+							onChange={(e) =>
+								handleListItemChange(
+									e,
+									index,
+									'social_networks'
+								)
+							}
+						/>
+						<button
+							onClick={() =>
+								handleRemoveExperience(index, 'social_networks')
+							}
+						>
+							Remove
+						</button>
+					</div>
+				))}
+			<button
+				className='hover:text-black mt-4 dark:hover:text-white hover:underline bg-gray-200 dark:bg-gray-700 p-2 rounded-lg'
+				onClick={() =>
+					handleAddExperience('social_networks', newSocialNetwork)
+				}
+			>
+				Add Social Network
+			</button>
 		</div>
 	);
 }
