@@ -274,7 +274,10 @@ def update_db_profile(
                 new_sn_types.pop(old_k)
 
             else:  # not in use anymore -> delete
-                db_profile.social_networks = [sn for sn in db_profile.social_networks if sn.type != old_k]
+                db_profile.social_networks = [
+                    sn for sn in db_profile.social_networks 
+                    if sn.type != old_k
+                ]
                 db_session.delete(old_sn)
 
         # create objects for new social networks
