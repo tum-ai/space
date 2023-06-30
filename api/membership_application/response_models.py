@@ -28,3 +28,8 @@ class ResponseMembershipApplicationList(BaseResponse):
                 MembershipApplicationListOut.dummy(),
             ]
         )
+
+
+class ResponseSubmitMembershipApplicationReferral(BaseResponse):
+    class Config:
+        schema_extra = BaseResponse.schema_wrapper([])
