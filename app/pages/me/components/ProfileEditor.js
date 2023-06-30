@@ -191,11 +191,9 @@ function SocialNetworks() {
 	function handleRemoveExperience(index, type) {
 		const updatedExperience = [...editorProfile[type]];
 		updatedExperience.splice(index, 1);
-		console.log(updatedExperience);
 		meModel.updateEditorProfile({
 			[type]: updatedExperience,
 		});
-		console.log(editorProfile[type]);
 	}
 
 	function handleListItemChange(event, index, type) {
@@ -305,11 +303,9 @@ function JobExperience() {
 	function handleRemoveExperience(index, type) {
 		const updatedExperience = [...editorProfile[type]];
 		updatedExperience.splice(index, 1);
-		console.log(updatedExperience);
 		meModel.updateEditorProfile({
 			[type]: updatedExperience,
 		});
-		console.log(editorProfile[type]);
 	}
 
 	function handleListItemChange(event, index, type) {
