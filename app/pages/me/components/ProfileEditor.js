@@ -130,10 +130,13 @@ function ProfileEditor({ isSignUpForm = false }) {
 						required={false}
 					/>
 				</div>
+				<hr className='col-span-2' />
 				{/* Job Experience Editor */}
 				<JobExperience />
+				<hr className='col-span-2' />
 				{/* Social Networks Editor */}
 				<SocialNetworks />
+				<hr className='col-span-2' />
 				<div className='col-span-2 flex space-x-2'>
 					<button
 						type='submit'
@@ -221,7 +224,7 @@ function SocialNetworks() {
 	};
 
 	return (
-		<div className='w-full col-span-2'>
+		<div className='w-full col-span-2 space-y-4'>
 			<div className='col-span-2 text-xl font-light'>Social Networks</div>
 			<div className='col-span-2 text-black font-light'>
 				Feel free to add any relevant social media networks (e.g.
@@ -229,7 +232,10 @@ function SocialNetworks() {
 			</div>
 			{editorProfile.social_networks &&
 				editorProfile.social_networks.map((experience, index) => (
-					<div key={index} className='grid grid-cols-1 gap-4'>
+					<div
+						key={index}
+						className='border-2 border-gray-100 rounded-2xl p-4'
+					>
 						<Select
 							setSelectedItem={(item) =>
 								handleSelect(item, index)
@@ -315,7 +321,7 @@ function JobExperience() {
 	}
 
 	return (
-		<div className='w-full col-span-2'>
+		<div className='w-full col-span-2 space-y-4'>
 			<div className='col-span-2 text-xl font-light'>Job history</div>
 			<div className='col-span-2 text-black font-light'>
 				You can update your job history and add your previous work
@@ -323,7 +329,10 @@ function JobExperience() {
 			</div>
 			{editorProfile.job_history &&
 				editorProfile.job_history.map((experience, index) => (
-					<div key={index} className='grid grid-cols-1 gap-4'>
+					<div
+						key={index}
+						className='border-2 border-gray-100 rounded-2xl p-4'
+					>
 						<Input
 							label='Employer'
 							type='text'
