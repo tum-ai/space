@@ -43,3 +43,12 @@ def create_db_membership_application_review(
         db_membership_application_review.force_load()
 
     return db_membership_application_review
+
+
+def retrieve_db_membership_application_review(
+    sql_engine: sa.Engine, review_id: int
+) -> MembershipApplicationReview:
+    with Session(sql_engine) as db_session:
+        db_model = db_session.query(MembershipApplicationReview).get(review_id)
+        db_model.force_load()
+        return db_model
