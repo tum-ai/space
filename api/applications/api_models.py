@@ -33,7 +33,7 @@ class ApplicationIn(BaseModel):
                     "type": "Industry",
                     "fields": [
                         {
-                            "key": 'question_mVGEg3_8b5711e3-f6a2-4e25-9e68-5d730598c681',
+                            "key": 'question-68-5d730598c681',
                             "label": 'utm_campaign',
                             "type": 'HIDDEN_FIELDS',
                             "value": 'newsletter',
@@ -71,7 +71,7 @@ class ApplicationOut(BaseModel):
                     "type": "Industry",
                     "fields": [
                         {
-                            "key": 'question_mVGEg3_8b5711e3-f6a2-4e25-9e68-5d730598c681',
+                            "key": 'question_mVGEg3_e25-9e68-5d730598c681',
                             "label": 'utm_campaign',
                             "type": 'HIDDEN_FIELDS',
                             "value": 'newsletter',

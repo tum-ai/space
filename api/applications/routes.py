@@ -78,7 +78,7 @@ def list_applications(request: Request, page: int = 1, page_size: int = 100) -> 
     any_of_roles=["submit_reviews"],
 )
 @error_handlers
-def list_applications(request: Request, application_id: int) -> dict:
+def list_application(request: Request, application_id: int) -> dict:
     db_application = list_db_application(
         request.app.state.sql_engine, application_id
     )
