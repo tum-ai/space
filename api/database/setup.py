@@ -20,6 +20,7 @@ from sqlalchemy.orm.session import (
 
 from database.db_models import (
     Role,
+    Department,
     SaBaseModel,
 )
 from profiles.db_views import (
@@ -71,6 +72,9 @@ async def setup_db_client(running_app: FastAPI) -> None:
     # add pre-existing roles
     upset_roles(running_app.state.sql_engine)
 
+    # add pre-existing departments
+    upset_departments(running_app.state.sql_engine)
+
 
 def setup_db_client_appless() -> Engine:
     log.info("Setting up sqlalchemy/postgres database connection")
@@ -83,6 +87,66 @@ async def close_db_client(running_app: FastAPI) -> None:
     log.info("Closing sqlalchemy/postgres database connection")
     if running_app.state.sql_engine is not None:
         running_app.state.sql_engine.dispose()
+
+
+def upset_departments(engine: Engine) -> None:
+    core_departments = [
+        Department(
+            handle="DEV",
+            name="Software Development",
+            description="Software Development",
+        ),
+        Department(
+            handle="MARKETING",
+            name="Marketing",
+            description="Marketing",
+        ),
+        Department(
+            handle="INDUSTRY",
+            name="Industry",
+            description="Industry",
+        ),
+        Department(
+            handle="MAKEATHON",
+            name="Makeathon",
+            description="Makeathon",
+        ),
+        Department(
+            handle="COMMUNITY",
+            name="Community",
+            description="Community",
+        ),
+        Department(
+            handle="PNS",
+            name="Partners & Sponsors",
+            description="Partners & Sponsors",
+        ),
+        Department(
+            handle="LNF",
+            name="Legal & Finance",
+            description="Legal & Finance",
+        ),
+        Department(
+            handle="VENTURE",
+            name="Venture",
+            description="Venture",
+        ),
+        Department(
+            handle="EDUCATION",
+            name="Education",
+            description="Education",
+        ),
+        Department(
+            handle="RND",
+            name="Research & Development",
+            description="Research & Development",
+        ),
+    ]
+
+    with Session(engine) as session:
+        for department in core_departments:
+            session.merge(department)
+        session.commit()
 
 
 def upset_roles(engine: Engine) -> None:

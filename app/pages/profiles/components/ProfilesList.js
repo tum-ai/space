@@ -6,8 +6,7 @@ import Select from "/components/Select";
 import { useStores } from "/providers/StoreProvider";
 
 function ProfilesList() {
-  const { profilesModel, rolesModel, meModel } = useStores();
-  console.log(meModel.editorProfile);
+  const { profilesModel, rolesModel } = useStores();
   return (
     <div className="flex flex-col space-y-4">
       <div className="flex flex-col space-y-10 justify-end">
