@@ -48,7 +48,6 @@ export class ReviewToolModel {
 
 	async fetchApplications() {
 		const applications = await this.root.GET('/applications/');
-		console.log(applications);
 		this.applications = applications;
 		this.filteredApplications = applications;
 	}
@@ -66,6 +65,7 @@ export class ReviewToolModel {
 			this.root.uiModel.toggleModal();
 			this.editorReview = {};
 			this.applicationOnReview = {};
+			this.openTab = 'Applications';
 		}
 		this.applicationOnReview = {};
 	}

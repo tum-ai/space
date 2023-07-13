@@ -52,7 +52,7 @@ const Applications = observer(() => {
 				)}
 			</div>
 			{reviewToolModel.filteredApplications?.map((application) => (
-				<Application data={application} />
+				<Application key={application.id} data={application} />
 			))}
 		</div>
 	);
@@ -90,8 +90,12 @@ const ApplicationOverview = observer(() => {
 	const applicationOnReview = reviewToolModel.applicationOnReview;
 
 	return (
-		<div className='space-y-4'>
+		<div className='space-y-4 overflow-scroll'>
 			<div className='grid lg:grid-cols-2 gap-4'>
+				<div>
+					<span className='font-thin'>ID: </span>
+					{applicationOnReview.id}
+				</div>
 				<div>
 					<span className='font-thin'>From: </span>
 					{applicationOnReview.submission?.data?.formName}
@@ -131,7 +135,7 @@ const ReviewForm = observer(() => {
 
 	return (
 		<form
-			className='grid lg:grid-cols-2 gap-4'
+			className='grid lg:grid-cols-2 gap-4 sticky top-24'
 			onSubmit={async (e) => {
 				e.preventDefault();
 				await reviewToolModel.submitReview();
