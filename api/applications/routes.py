@@ -17,7 +17,6 @@ from database.application_connector import (
 )
 from applications.api_models import (
     ApplicationOut,
-    ApplicationIn,
 )
 from applications.response_models import (
     ResponseSubmitApplication,
@@ -25,7 +24,6 @@ from applications.response_models import (
     ResponseRetrieveApplications,
 )
 from security.decorators import (
-    ensure_authenticated,
     ensure_authorization,
 )
 from utils.error_handlers import (
@@ -97,13 +95,12 @@ def list_application(request: Request, application_id: int) -> dict:
     response_model=ResponseSubmitApplication,
 )
 @error_handlers
-@ensure_authenticated
-def submit_membership_application_referral(
+def submit_application(
     request: Request,
-    application: Annotated[ApplicationIn, Body(embed=True)],
+    submission: Annotated[dict, Body(embed=True)],
 ) -> dict:
     create_db_application(
-        request.app.state.sql_engine, application
+        request.app.state.sql_engine, submission
     )
 
     return {

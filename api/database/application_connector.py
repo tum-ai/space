@@ -7,10 +7,6 @@ from sqlalchemy.orm import (
     Session,
 )
 
-from applications.api_models import (
-    ApplicationIn,
-)
-
 from .db_models import (
     Application,
 )
@@ -41,11 +37,11 @@ def list_db_application(
 
 def create_db_application(
     sql_engine: sa.Engine,
-    application: ApplicationIn,
+    submission: dict,
 ) -> Application:
     with Session(sql_engine) as db_session:
         db_application = Application(
-            submission=application.submission
+            submission=submission
         )
 
         db_session.add(db_application)
