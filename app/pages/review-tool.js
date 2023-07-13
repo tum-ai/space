@@ -82,7 +82,7 @@ function Application({ data }) {
 
 function Review() {
 	return (
-		<div className='grid lg:grid-cols-2 p-4 gap-4'>
+		<div className='grid md:grid-cols-2 p-4 gap-4'>
 			<ReviewForm />
 			<ApplicationOverview />
 		</div>
