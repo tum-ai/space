@@ -2,16 +2,75 @@ import { observer } from "mobx-react";
 import Input from "/components/Input";
 import { useStores } from "/providers/StoreProvider";
 import ProtectedItem from "/components/ProtectedItem";
+import Select from "/components/Select";
 import { useEffect, useState } from "react";
 import axios from "axios";
 
-const positionTypes = {
-  TEAMLEAD: "Teamlead",
-  PRESIDENT: "President",
-  MEMBER: "Member",
-  ALUMNI: "Alumni",
-  APPLICANT: "Applicant",
-};
+const positionTypes = [
+  {
+    key: "TEAMLEAD",
+    value: "Teamlead",
+  },
+  {
+    key: "PRESIDENT",
+    value: "President",
+  },
+  {
+    key: "MEMBER",
+    value: "Member",
+  },
+  {
+    key: "ALUMNI",
+    value: "Alumni",
+  },
+  {
+    key: "APPLICANT",
+    value: "Applicant",
+  },
+];
+
+const departmentTypes = [
+  {
+    key: "DEV",
+    value: "Software Development",
+  },
+  {
+    key: "MARKETING",
+    value: "Marketing",
+  },
+  {
+    key: "INDUSTRY",
+    value: "Industry",
+  },
+  {
+    key: "MAKEATHON",
+    value: "Makeathon",
+  },
+  {
+    key: "COMMUNITY",
+    value: "Community",
+  },
+  {
+    key: "PNS",
+    value: "Partners & Sponsors",
+  },
+  {
+    key: "LNF",
+    value: "Legal & Finance",
+  },
+  {
+    key: "VENTURE",
+    value: "Venture",
+  },
+  {
+    key: "EDUCATION",
+    value: "Education",
+  },
+  {
+    key: "RND",
+    value: "Research & Development",
+  },
+];
 
 const newDepartmentMembership = {
   profile_id: -1,
@@ -46,14 +105,27 @@ function DepartmentMembershipEditor({ profile_id }) {
     setDepartments(updatedProfile);
   }
 
+  const handleSelect = (item, index, type) => {
+    const updatedSelectedOptions = [...departments];
+    updatedSelectedOptions[index][type] = item.key;
+    setDepartments(updatedSelectedOptions);
+  };
+
   // fetch departments from the API and populate it depending on the profile id
   useEffect(() => {
     async function fetchDepartments() {
       try {
         // Make the GET request to the department endpoint
-        const response = await axios(`/department-memberships`);
         const data = (await axios(`/department-memberships`)).data.data;
         if (data) {
+          data.map((item) => {
+            item.department_handle = item.department.handle;
+            item.position = item.position.replace("PositionType.", "");
+            item.profile_id = item.profile.id;
+            delete item.profile;
+            delete item.department;
+          });
+          console.log(data);
           setDepartments(data);
         }
       } catch (error) {
@@ -78,48 +150,65 @@ function DepartmentMembershipEditor({ profile_id }) {
             an administrator. TODO
           </div>
           {departments &&
-            departments.map((experience, index) => (
-              <div
-                key={index}
-                className="border-2 border-gray-100 rounded-2xl p-4"
-              >
-                <Input
-                  label="Department"
-                  type="text"
-                  name="department_handle"
-                  required={true}
-                  value={experience.department_handle}
-                  onChange={(e) => handleListItemChange(e, index)}
-                />
-                <Input
-                  label="Position"
-                  type="text"
-                  name="position"
-                  required={true}
-                  value={experience.position}
-                  onChange={(e) => handleListItemChange(e, index)}
-                />
-                <Input
-                  label="Time from"
-                  type="date"
-                  name="time_from"
-                  required={true}
-                  value={experience.time_from}
-                  onChange={(e) => handleListItemChange(e, index)}
-                />
-                <Input
-                  label="Time to"
-                  type="date"
-                  name="time_to"
-                  required={true}
-                  value={experience.time_to}
-                  onChange={(e) => handleListItemChange(e, index)}
-                />
-                <button onClick={() => handleRemoveExperience(index)}>
-                  Remove
-                </button>
-              </div>
-            ))}
+            departments.map((experience, index) => {
+              if (profile_id !== experience.profile_id) {
+                return null;
+              }
+              return (
+                <div
+                  key={index}
+                  className="border-2 border-gray-100 rounded-2xl p-4"
+                >
+                  <Select
+                    setSelectedItem={(item) =>
+                      handleSelect(item, index, "department_handle")
+                    }
+                    selectedItem={{
+                      key: experience.department_handle,
+                      value: experience.department_handle,
+                    }}
+                    placeholder="Select an option"
+                    data={departmentTypes}
+                    name="department_handle"
+                    label="Department"
+                    disabled={false}
+                  />
+                  <Select
+                    setSelectedItem={(item) =>
+                      handleSelect(item, index, "position")
+                    }
+                    selectedItem={{
+                      key: experience.position,
+                      value: experience.position,
+                    }}
+                    placeholder="Select an option"
+                    data={positionTypes}
+                    name="position"
+                    label="Position"
+                    disabled={false}
+                  />
+                  <Input
+                    label="Time from"
+                    type="datetime-local"
+                    name="time_from"
+                    required={true}
+                    value={experience.time_from}
+                    onChange={(e) => handleListItemChange(e, index)}
+                  />
+                  <Input
+                    label="Time to"
+                    type="datetime-local"
+                    name="time_to"
+                    required={true}
+                    value={experience.time_to}
+                    onChange={(e) => handleListItemChange(e, index)}
+                  />
+                  <button onClick={() => handleRemoveExperience(index)}>
+                    Remove
+                  </button>
+                </div>
+              );
+            })}
           <button
             className="hover:text-black mt-4 dark:hover:text-white hover:underline bg-gray-200 dark:bg-gray-700 p-2 rounded-lg"
             onClick={() => handleAddExperience()}
