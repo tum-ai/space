@@ -65,7 +65,7 @@ def list_applications(request: Request, page: int = 1, page_size: int = 100) -> 
         "description": "PublicProfile list successfully received",
         "page": page,
         "page_size": page_size,
-        "applications": out_applications,
+        "data": out_applications,
     }
     
 
@@ -87,7 +87,7 @@ def list_applications(request: Request, application_id: int) -> dict:
         "status_code": 200,
         "response_type": "success",
         "description": "PublicProfile list successfully received",
-        "application": out_application,
+        "data": out_application,
     }
 
 

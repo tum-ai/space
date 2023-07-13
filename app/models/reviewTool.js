@@ -49,7 +49,7 @@ export class ReviewToolModel {
 	}
 
 	async fetchApplications() {
-		const applications = await this.root.GET('/membership_applications/');
+		const applications = await this.root.GET('/applications/');
 		this.applications = applications;
 		this.filteredApplications = applications;
 	}

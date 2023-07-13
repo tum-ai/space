@@ -16,14 +16,14 @@ class ResponseSubmitApplication(BaseResponse):
 
 
 class ResponseRetrieveApplication(BaseResponse):
-    application: ApplicationOut
+    data: ApplicationOut
     
     class Config:
         schema_extra = BaseResponse.schema_wrapper([])
 
 
 class ResponseRetrieveApplications(BaseResponse):
-    applications: List[ApplicationOut]
+    data: List[ApplicationOut]
     
     class Config:
         schema_extra = BaseResponse.schema_wrapper([])
