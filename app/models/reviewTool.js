@@ -65,6 +65,8 @@ export class ReviewToolModel {
 			);
 			this.root.uiModel.toggleModal();
 			this.editorReview = {};
+			this.applicationOnReview = {};
 		}
+		this.applicationOnReview = {};
 	}
 }

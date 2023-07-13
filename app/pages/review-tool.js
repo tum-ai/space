@@ -93,7 +93,7 @@ const ApplicationOverview = observer(() => {
 		<div className='space-y-4'>
 			<div className='grid lg:grid-cols-2 gap-4'>
 				<div>
-					<span className='font-thin'>Form: </span>
+					<span className='font-thin'>From: </span>
 					{applicationOnReview.submission?.data?.formName}
 				</div>
 				<div>
