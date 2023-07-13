@@ -18,6 +18,7 @@ def create_db_membership_application_review(
     new_membership_application_review: MembershipApplicationReviewIn,
 ) -> MembershipApplicationReview:
     with Session(sql_engine) as db_session:
+        # TODO: calculate finalscore and referral these correctly
         db_membership_application_review = MembershipApplicationReview(
             motivation=new_membership_application_review.motivation,
             skill=new_membership_application_review.skill,
@@ -30,8 +31,8 @@ def create_db_membership_application_review(
             dept3Score=new_membership_application_review.dept3Score,
             maybegoodfit=new_membership_application_review.maybegoodfit,
             furthercomments=new_membership_application_review.furthercomments,
-            referral=new_membership_application_review.referral,
-            finalscore=new_membership_application_review.finalscore,
+            referral=1,
+            finalscore=1,
             reviewer=reviewer,
             reviewee=new_membership_application_review.reviewee,
         )

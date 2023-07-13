@@ -3,6 +3,7 @@ import Link from 'next/link';
 import ProtectedItem from '../components/ProtectedItem';
 import Tabs from '../components/Tabs';
 import Icon from '/components/Icon';
+import Input from '/components/Input';
 import Page from '/components/Page';
 import { useStores } from '/providers/StoreProvider';
 
@@ -67,8 +68,159 @@ function Application({ data }) {
 	);
 }
 
-const Review = observer(() => {
-	return <div>review</div>;
+function Review() {
+	return (
+		<div className='grid lg:grid-cols-2 p-4 gap-4'>
+			<ReviewForm />
+			<ApplicationOverview />
+		</div>
+	);
+}
+
+const ReviewForm = observer(() => {
+	const { reviewToolModel } = useStores();
+	const editorReview = reviewToolModel.editorReview;
+
+	function handleChange(e) {
+		reviewToolModel.updateEditorReview({
+			[e.target.name]: e.target.value,
+		});
+	}
+
+	return (
+		<form
+			className='grid lg:grid-cols-2 gap-4'
+			onSubmit={async (e) => {
+				e.preventDefault();
+				await reviewToolModel.submitReview();
+			}}
+		>
+			<Input
+				label='Motivation'
+				type='number'
+				id='motivation'
+				name='motivation'
+				value={editorReview?.motivation}
+				onChange={handleChange}
+				required={true}
+			/>
+			<Input
+				label='Skill'
+				type='number'
+				id='skill'
+				name='skill'
+				value={editorReview?.skill}
+				onChange={handleChange}
+				required={true}
+			/>
+			<Input
+				label='Overall fit'
+				type='number'
+				id='fit'
+				name='fit'
+				value={editorReview?.fit}
+				onChange={handleChange}
+				required={true}
+			/>
+			<Input
+				label='Fit in Tum.ai'
+				type='number'
+				id='in_tumai'
+				name='in_tumai'
+				value={editorReview?.in_tumai}
+				onChange={handleChange}
+				required={true}
+			/>
+			<Input
+				label='Tum.ai fit comment'
+				type='text'
+				id='commentFitTUMai'
+				name='commentFitTUMai'
+				value={editorReview?.commentFitTUMai}
+				onChange={handleChange}
+				required={false}
+			/>
+			<Input
+				label='Time commitment'
+				type='text'
+				id='timecommit'
+				name='timecommit'
+				value={editorReview?.timecommit}
+				onChange={handleChange}
+				required={false}
+			/>
+			<Input
+				label='Department 1 score'
+				type='number'
+				id='dept1Score'
+				name='dept1Score'
+				value={editorReview?.dept1Score}
+				onChange={handleChange}
+				required={true}
+			/>
+			<Input
+				label='Department 2 score'
+				type='number'
+				id='dept2Score'
+				name='dept2Score'
+				value={editorReview?.dept2Score}
+				onChange={handleChange}
+				required={true}
+			/>
+			<Input
+				label='Department 3 score'
+				type='number'
+				id='dept3Score'
+				name='dept3Score'
+				value={editorReview?.dept3Score}
+				onChange={handleChange}
+				required={true}
+			/>
+			<Input
+				label='Good fit?'
+				type='text'
+				id='maybegoodfit'
+				name='maybegoodfit'
+				value={editorReview?.maybegoodfit}
+				onChange={handleChange}
+				required={false}
+			/>
+			<Input
+				label='Further comments'
+				type='text'
+				id='furthercomments'
+				name='furthercomments'
+				value={editorReview?.furthercomments}
+				onChange={handleChange}
+				required={false}
+			/>
+			<button type='submit'>Submit review</button>
+			<button
+				type='button'
+				onClick={() => {
+					reviewToolModel.updateEditorReview({
+						motivation: 4,
+						skill: 7,
+						fit: 6,
+						in_tumai: 2,
+						commentFitTUMai: 'The fit seems good',
+						timecommit: '10 hours per week',
+						dept1Score: 8,
+						dept2Score: 5,
+						dept3Score: 7,
+						maybegoodfit: 'Yes, potentially',
+						furthercomments: 'Should keep an eye on progress',
+					});
+				}}
+			>
+				test
+			</button>
+		</form>
+	);
+});
+
+const ApplicationOverview = observer(() => {
+	return <div>Application</div>;
 });
 
 export default ReviewTool;

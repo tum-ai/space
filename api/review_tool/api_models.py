@@ -96,8 +96,6 @@ class MembershipApplicationReviewIn(BaseModel):
     dept3Score: int
     maybegoodfit: Optional[str]
     furthercomments: Optional[str]
-    referral: int
-    finalscore: float
     reviewee: int
 
     @classmethod
