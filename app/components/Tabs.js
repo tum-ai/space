@@ -1,9 +1,9 @@
 import * as RadixTabs from '@radix-ui/react-tabs';
 import React from 'react';
 
-export default function Tabs({ tabs }) {
+export default function Tabs({ tabs, ...props }) {
 	return (
-		<RadixTabs.Root defaultValue={Object.keys(tabs).at(0)}>
+		<RadixTabs.Root {...props}>
 			<RadixTabs.List className='grid grid-cols-2 text-xl'>
 				{Object.keys(tabs).map((tabName) => (
 					<RadixTabs.Trigger

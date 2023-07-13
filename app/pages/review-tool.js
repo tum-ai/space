@@ -7,8 +7,9 @@ import Input from '/components/Input';
 import Page from '/components/Page';
 import { useStores } from '/providers/StoreProvider';
 
-function ReviewTool() {
-	// TODO choose member's name from member profiles directly and fill in information accordingly
+const ReviewTool = observer(() => {
+	const { reviewToolModel } = useStores();
+
 	return (
 		<ProtectedItem showNotFound roles={['submit_reviews']}>
 			<Page>
@@ -17,12 +18,15 @@ function ReviewTool() {
 						Applications: <Applications />,
 						Review: <Review />,
 					}}
+					value={reviewToolModel.openTab}
+					onValueChange={(tab) => {
+						reviewToolModel.setOpenTab(tab);
+					}}
 				/>
 			</Page>
 		</ProtectedItem>
-		// TODO download button for cert
 	);
-}
+});
 
 const Applications = observer(() => {
 	const { reviewToolModel } = useStores();
@@ -37,7 +41,7 @@ const Applications = observer(() => {
 					}}
 					placeholder='search..'
 					className='w-full bg-transparent outline-none'
-				></input>
+				/>
 				{reviewToolModel.search && (
 					<button
 						onClick={(e) => {
@@ -56,14 +60,22 @@ const Applications = observer(() => {
 });
 
 function Application({ data }) {
+	const { reviewToolModel } = useStores();
 	return (
-		<div className='bg-white rounded-2xl shadow grid grid-cols-4 lg:grid-cols-6 p-6'>
+		<div className='bg-white rounded-2xl shadow grid grid-cols-4 lg:grid-cols-7 p-6'>
 			<div>{data.id}</div>
 			<div>{data.first_name}</div>
 			<div>{data.last_name}</div>
 			<div>{data.email}</div>
 			<div>{data.degree_level}</div>
 			<Link href={data.resume}>Resume</Link>
+			<button
+				onClick={() => {
+					reviewToolModel.reviewApplication(data.id);
+				}}
+			>
+				review
+			</button>
 		</div>
 	);
 }
@@ -194,7 +206,12 @@ const ReviewForm = observer(() => {
 				onChange={handleChange}
 				required={false}
 			/>
-			<button type='submit'>Submit review</button>
+			<button
+				className='p-4 px-8 py-1 rounded-lg w-full bg-gray-200 text-black'
+				type='submit'
+			>
+				Submit review
+			</button>
 			<button
 				type='button'
 				onClick={() => {
@@ -220,7 +237,21 @@ const ReviewForm = observer(() => {
 });
 
 const ApplicationOverview = observer(() => {
-	return <div>Application</div>;
+	const { reviewToolModel } = useStores();
+	const applicationOnReview = reviewToolModel.applicationOnReview;
+
+	return (
+		<div className='grid lg:grid-cols-2 gap-4'>
+			{Object.entries(applicationOnReview)?.map((k, v) => {
+				return (
+					<div>
+						<div className='font-thin'>{k}</div>
+						<div>{v}</div>
+					</div>
+				);
+			})}
+		</div>
+	);
 });
 
 export default ReviewTool;

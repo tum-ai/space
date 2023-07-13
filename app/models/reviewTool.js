@@ -6,9 +6,8 @@ export class ReviewToolModel {
 	filteredApplications = [];
 	search = '';
 	editorReview = {};
-	applicationOnReview = {
-		id: 1,
-	};
+	applicationOnReview = {};
+	openTab = 'Applications';
 
 	constructor(root) {
 		this.root = root;
@@ -17,8 +16,20 @@ export class ReviewToolModel {
 		this.fetchApplications();
 	}
 
+	setOpenTab(tab) {
+		this.openTab = tab;
+	}
+
 	updateEditorReview(change) {
 		this.editorReview = { ...this.editorReview, ...change };
+	}
+
+	reviewApplication(id) {
+		this.applicationOnReview = this.applications.find(
+			(application) => application.id == id
+		);
+		this.setOpenTab('Review');
+		console.log('setting');
 	}
 
 	setSearch(value) {
