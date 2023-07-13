@@ -54,10 +54,10 @@ export class ReviewToolModel {
 	}
 
 	async submitReview() {
-		const data = await this.root.POST(
-			'/review_tool/membership_application_review',
-			{ ...this.editorReview, reviewee: this.applicationOnReview?.id }
-		);
+		const data = await this.root.POST('/review_tool/application_review', {
+			...this.editorReview,
+			reviewee: this.applicationOnReview?.id,
+		});
 		if (!data) return;
 		if (data?.response_type == 'success') {
 			this.root.uiModel.updateModalContent(

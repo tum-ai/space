@@ -9,10 +9,10 @@ from fastapi import (
 )
 
 from database.review_tool_connector import (
-    create_db_membership_application_review,
+    create_db_application_review,
 )
 from review_tool.api_models import (
-    MembershipApplicationReviewIn,
+    ApplicationReviewIn,
 )
 from review_tool.response_models import (
     ResponseSubmitReview,
@@ -28,8 +28,8 @@ router = APIRouter()
 
 
 @router.post(
-    "/review_tool/membership_application_review",
-    response_description="Submit a review of a membership application.",
+    "/review_tool/application_review",
+    response_description="Submit a review of a  application.",
     response_model=ResponseSubmitReview,
 )
 @error_handlers
@@ -38,9 +38,9 @@ router = APIRouter()
 )
 def submit_review(
     request: Request,
-    data: Annotated[MembershipApplicationReviewIn, Body(embed=True)],
+    data: Annotated[ApplicationReviewIn, Body(embed=True)],
 ) -> dict:
-    create_db_membership_application_review(
+    create_db_application_review(
         request.app.state.sql_engine, request.state.profile.id, data
     )
 
