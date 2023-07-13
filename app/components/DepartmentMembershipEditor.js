@@ -125,7 +125,6 @@ function DepartmentMembershipEditor({ profile_id }) {
             delete item.profile;
             delete item.department;
           });
-          console.log(data);
           setDepartments(data);
         }
       } catch (error) {
@@ -146,8 +145,8 @@ function DepartmentMembershipEditor({ profile_id }) {
             Department Memberships
           </div>
           <div className="col-span-2 text-black font-light">
-            Attention: You are editing the department memberships of the user as
-            an administrator. TODO
+            Attention: You are editing the department memberships of this user
+            as an administrator.
           </div>
           {departments &&
             departments.map((experience, index) => {
@@ -203,9 +202,11 @@ function DepartmentMembershipEditor({ profile_id }) {
                     value={experience.time_to}
                     onChange={(e) => handleListItemChange(e, index)}
                   />
+                  {/*
                   <button onClick={() => handleRemoveExperience(index)}>
                     Remove
                   </button>
+                  */}
                 </div>
               );
             })}
@@ -223,12 +224,10 @@ function DepartmentMembershipEditor({ profile_id }) {
             className="p-4 px-8 py-1 rounded-lg w-1/2 bg-gray-200 text-black"
             onClick={async (e) => {
               e.preventDefault();
-              console.log("deps", departments);
               const response = await axios.post(
                 `/department-memberships`,
                 departments
               );
-              console.log("response", response);
               uiModel.toggleModal();
             }}
           >
