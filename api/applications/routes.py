@@ -46,11 +46,11 @@ router = APIRouter()
     response_description="List all applications",
     response_model=Union[ResponseRetrieveApplications, ErrorResponse],
 )
+@enable_paging(max_page_size=100)
+@error_handlers
 @ensure_authorization(
     any_of_roles=["submit_reviews"],
 )
-@enable_paging(max_page_size=100)
-@error_handlers
 def list_applications(request: Request, page: int = 1, page_size: int = 100) -> dict:
     db_applications = list_db_applications(
         request.app.state.sql_engine, page, page_size

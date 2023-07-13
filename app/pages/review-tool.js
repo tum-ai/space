@@ -1,5 +1,4 @@
 import { observer } from 'mobx-react';
-import Link from 'next/link';
 import ProtectedItem from '../components/ProtectedItem';
 import Tabs from '../components/Tabs';
 import Icon from '/components/Icon';
@@ -52,7 +51,7 @@ const Applications = observer(() => {
 					</button>
 				)}
 			</div>
-			{reviewToolModel.filteredApplications.map((application) => (
+			{reviewToolModel.filteredApplications?.map((application) => (
 				<Application data={application} />
 			))}
 		</div>
@@ -64,11 +63,6 @@ function Application({ data }) {
 	return (
 		<div className='bg-white rounded-2xl shadow grid grid-cols-4 lg:grid-cols-7 p-6'>
 			<div>{data.id}</div>
-			<div>{data.first_name}</div>
-			<div>{data.last_name}</div>
-			<div>{data.email}</div>
-			<div>{data.degree_level}</div>
-			<Link href={data.resume}>Resume</Link>
 			<button
 				onClick={() => {
 					reviewToolModel.reviewApplication(data.id);
@@ -83,11 +77,47 @@ function Application({ data }) {
 function Review() {
 	return (
 		<div className='grid md:grid-cols-2 p-4 gap-4'>
-			<ReviewForm />
+			<div>
+				<ReviewForm />
+			</div>
 			<ApplicationOverview />
 		</div>
 	);
 }
+
+const ApplicationOverview = observer(() => {
+	const { reviewToolModel } = useStores();
+	const applicationOnReview = reviewToolModel.applicationOnReview;
+
+	return (
+		<div className='space-y-4'>
+			<div className='grid lg:grid-cols-2 gap-4'>
+				<div>
+					<span className='font-thin'>Form: </span>
+					{applicationOnReview.submission?.data?.formName}
+				</div>
+				<div>
+					<span className='font-thin'>Created at: </span>
+					{applicationOnReview.submission?.data?.createdAt &&
+						new Date(
+							applicationOnReview.submission?.data?.createdAt
+						).toDateString()}
+				</div>
+			</div>
+			<hr className='border-2' />
+			<div className='grid lg:grid-cols-2 gap-4'>
+				{applicationOnReview.submission?.data?.fields?.map((field) => {
+					return (
+						<div>
+							<div className='font-thin'>{field.label}</div>
+							<div>{JSON.stringify(field.value)}</div>
+						</div>
+					);
+				})}
+			</div>
+		</div>
+	);
+});
 
 const ReviewForm = observer(() => {
 	const { reviewToolModel } = useStores();
@@ -233,24 +263,6 @@ const ReviewForm = observer(() => {
 				test
 			</button>
 		</form>
-	);
-});
-
-const ApplicationOverview = observer(() => {
-	const { reviewToolModel } = useStores();
-	const applicationOnReview = reviewToolModel.applicationOnReview;
-
-	return (
-		<div className='grid lg:grid-cols-2 gap-4'>
-			{Object.entries(applicationOnReview)?.map((k, v) => {
-				return (
-					<div>
-						<div className='font-thin'>{k}</div>
-						<div>{v}</div>
-					</div>
-				);
-			})}
-		</div>
 	);
 });
 

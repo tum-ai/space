@@ -12,8 +12,6 @@ export class ReviewToolModel {
 	constructor(root) {
 		this.root = root;
 		makeAutoObservable(this);
-
-		this.fetchApplications();
 	}
 
 	setOpenTab(tab) {
@@ -50,6 +48,7 @@ export class ReviewToolModel {
 
 	async fetchApplications() {
 		const applications = await this.root.GET('/applications/');
+		console.log(applications);
 		this.applications = applications;
 		this.filteredApplications = applications;
 	}
