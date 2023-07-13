@@ -14,6 +14,7 @@ from database.setup import (
     setup_db_client,
 )
 from membership_application.routes import router as MembershipApplicationRouter
+from applications.routes import router as ApplicationRouter
 from profiles.routes import router as ProfilesRouter
 from review_tool.routes import router as ReviewToolRouter
 from security.decorators import (
@@ -117,3 +118,4 @@ app.include_router(ProfilesRouter, tags=["Profile"])
 app.include_router(CertificationRouter, tags=["Certification"])
 app.include_router(ReviewToolRouter, tags=["ReviewTool"])
 app.include_router(MembershipApplicationRouter, tags=["MembershipApplication"])
+app.include_router(ApplicationRouter, tags=["Application"])

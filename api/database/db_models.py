@@ -24,6 +24,7 @@ from sqlalchemy import (
     Integer,
     String,
     func,
+    JSON
 )
 from sqlalchemy.ext.hybrid import (
     hybrid_property,
@@ -459,6 +460,26 @@ class MembershipApplication(MixinAsDict, SaBaseModel):
     def __repr__(self) -> str:
         return f"MembershipApplication(id={self.id}, \
             first_name={self.first_name}, last_name={self.last_name})"
+            
+class Application(MixinAsDict, SaBaseModel):
+    """database relation"""
+
+    __tablename__ = "application"
+
+    # -------------------------------- MANAGED FIELDS -------------------------------- #
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    submission: Mapped[str] = mapped_column(JSON, nullable=False)
+
+    def __repr__(self) -> str:
+        return (
+            f"Application(id={self.id!r}"
+        )
+
+    def force_load(self) -> None:
+        if not self.id:
+            raise KeyError
+        if not self.submission:
+            raise KeyError
 
 
 class MembershipApplicationReview(MixinAsDict, SaBaseModel):
