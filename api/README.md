@@ -30,7 +30,7 @@ erDiagram
         datetime birthday "optional"
         string nationality "optional, maxlen(100)"
         string description "optional, maxlen(300)"
-        image profile_picture  "TODO"
+        TEXT profile_picture  "base64 image string"
         string activity_status "optional, maxlen(50)"
 
         string degree_level "optional, maxlen(20)"

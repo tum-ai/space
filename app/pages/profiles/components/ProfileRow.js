@@ -14,11 +14,10 @@ function ProfileRow({ profile }) {
 		<div className='flex space-x-10 justify-between bg-white dark:bg-gray-700 p-4 rounded-xl shadow'>
 			<div className='grid grid-cols-2 gap-2 w-full'>
 				{/* profile picture */}
-				{profile.picture ? (
-					<Image
+				{profile.profile_picture ? (
+					<img
 						className='rounded-full w-14 h-14 object-cover border'
-						src={profile.picture}
-						alt='me'
+						src={profile.profile_picture}
 					/>
 				) : (
 					<div className='rounded-full w-14 h-14 bg-gray-300 dark:bg-gray-800 flex text-center drop-shadow-lg'>

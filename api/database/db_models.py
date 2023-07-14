@@ -14,6 +14,7 @@ from pydantic import (
     BaseModel,
 )
 from sqlalchemy import (
+    TEXT,
     CheckConstraint,
     Column,
     DateTime,
@@ -117,8 +118,7 @@ class Profile(MixinAsDict, SaBaseModel):
     nationality: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
     description: Mapped[Optional[str]] = mapped_column(String(200), nullable=True)
 
-    # TODO: see https://sqlalchemy-imageattach.readthedocs.io/en/0.8.0/api/entity.html
-    # profile_picture
+    profile_picture: Mapped[Optional[str]] = mapped_column(TEXT, nullable=True)
 
     activity_status: Mapped[Optional[str]] = mapped_column(String(50), nullable=True)
 
