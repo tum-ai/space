@@ -5,6 +5,7 @@ import { InviteModel } from './invite.js';
 import { MeModel } from './me.js';
 import { ProfileModel } from './profile.js';
 import { ProfilesModel } from './profiles.js';
+import { ReviewToolModel } from './reviewTool.js';
 import { RolesModel } from './roles.js';
 import { UiModel } from './ui.js';
 
@@ -18,6 +19,7 @@ export class RootModel {
 		this.rolesModel = new RolesModel(this);
 		this.certificateModel = new CertificateModel(this);
 		this.departmentMembershipsModel = new DepartmentMembershipsModel(this);
+		this.reviewToolModel = new ReviewToolModel(this);
 	}
 
 	async GET(path) {
