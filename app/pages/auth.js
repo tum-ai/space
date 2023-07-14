@@ -11,8 +11,6 @@ function Auth() {
     password: "",
   });
   const router = useRouter();
-  const [error, setError] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -22,9 +20,7 @@ function Auth() {
       await meModel.login(data.email, data.password);
       router.push("/");
     } catch (err) {
-      setError(true);
-      // TODO case handling and proper output
-      setErrorMessage("Login went wrong");
+      // TODO error handling and show in UI
       console.log(err);
     }
   };
