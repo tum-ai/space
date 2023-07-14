@@ -32,6 +32,7 @@ export class MeModel {
 				});
 				this.root.rolesModel.getRoles();
 				this.root.rolesModel.getRoleHolderships();
+				this.root.departmentMembershipsModel.fetchDepartments();
 			} else {
 				this.setUser(null);
 			}
