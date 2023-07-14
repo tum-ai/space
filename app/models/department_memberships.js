@@ -78,6 +78,10 @@ export class DepartmentMembershipsModel {
 				}))
 		);
 		if (data) {
+			this.departments = this.departments.map((department) => ({
+				...department,
+				new: null,
+			}));
 			this.root.uiModel.toggleModal();
 		}
 	}

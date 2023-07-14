@@ -97,89 +97,26 @@ function DepartmentMembershipEditor({ profile_id }) {
 							) {
 								return null;
 							}
-							return (
-								<div
-									key={index}
-									className='border-2 border-gray-100 rounded-2xl p-4'
-								>
-									<Select
-										setSelectedItem={(item) =>
-											departmentMembershipsModel.handleSelect(
-												item,
-												index,
-												'department_handle'
-											)
+							if (departmentMembership.new) {
+								return (
+									<DepartmentMembershipNew
+										key={index}
+										departmentMembership={
+											departmentMembership
 										}
-										selectedItem={{
-											key: departmentMembership.department_handle,
-											value: departmentMembership.department_handle,
-										}}
-										placeholder='Select an option'
-										data={departmentTypes}
-										name='department_handle'
-										label='Department'
-										disabled={false}
+										index={index}
 									/>
-									<Select
-										setSelectedItem={(item) =>
-											departmentMembershipsModel.handleSelect(
-												item,
-												index,
-												'position'
-											)
-										}
-										selectedItem={{
-											key: departmentMembership.position,
-											value: departmentMembership.position,
-										}}
-										placeholder='Select an option'
-										data={positionTypes}
-										name='position'
-										label='Position'
-										disabled={false}
-									/>
-									<Input
-										label='Time from'
-										type='datetime-local'
-										name='time_from'
-										required={true}
-										value={departmentMembership.time_from}
-										onChange={(e) =>
-											departmentMembershipsModel.handleListItemChange(
-												e,
-												index
-											)
+								);
+							} else {
+								return (
+									<DepartmentMembership
+										key={index}
+										departmentMembership={
+											departmentMembership
 										}
 									/>
-									<Input
-										label='Time to'
-										type='datetime-local'
-										name='time_to'
-										required={true}
-										value={departmentMembership.time_to}
-										onChange={(e) =>
-											departmentMembershipsModel.handleListItemChange(
-												e,
-												index
-											)
-										}
-									/>
-
-									<button
-										type='button'
-										onClick={async () => {
-											await departmentMembershipsModel.deleteDepartmentMembership(
-												departmentMembership.id
-											);
-											departmentMembershipsModel.handleRemoveDepartment(
-												departmentMembership.id
-											);
-										}}
-									>
-										Remove
-									</button>
-								</div>
-							);
+								);
+							}
 						})}
 					<button
 						className='hover:text-black mt-4 dark:hover:text-white hover:underline bg-gray-200 dark:bg-gray-700 p-2 rounded-lg'
@@ -220,5 +157,116 @@ function DepartmentMembershipEditor({ profile_id }) {
 		</ProtectedItem>
 	);
 }
+
+function DepartmentMembership({ departmentMembership }) {
+	const { departmentMembershipsModel } = useStores();
+	return (
+		<div className='border-2 border-gray-100 rounded-2xl p-4'>
+			<div>{departmentMembership.department_handle}</div>
+			<div>{departmentMembership.position}</div>
+			<div>
+				{departmentMembership.time_from
+					? new Date(departmentMembership.time_from).toDateString()
+					: '-'}
+			</div>
+			<div>
+				{departmentMembership.time_from
+					? new Date(departmentMembership.time_to).toDateString()
+					: '-'}
+			</div>
+			<button
+				type='button'
+				onClick={async () => {
+					await departmentMembershipsModel.deleteDepartmentMembership(
+						departmentMembership.id
+					);
+					departmentMembershipsModel.handleRemoveDepartment(
+						departmentMembership.id
+					);
+				}}
+			>
+				Remove
+			</button>
+		</div>
+	);
+}
+
+const DepartmentMembershipNew = observer(({ departmentMembership, index }) => {
+	const { departmentMembershipsModel } = useStores();
+	return (
+		<div key={index} className='border-2 border-gray-100 rounded-2xl p-4'>
+			<Select
+				setSelectedItem={(item) =>
+					departmentMembershipsModel.handleSelect(
+						item,
+						index,
+						'department_handle'
+					)
+				}
+				selectedItem={{
+					key: departmentMembership.department_handle,
+					value: departmentMembership.department_handle,
+				}}
+				placeholder='Select an option'
+				data={departmentTypes}
+				name='department_handle'
+				label='Department'
+				disabled={false}
+			/>
+			<Select
+				setSelectedItem={(item) =>
+					departmentMembershipsModel.handleSelect(
+						item,
+						index,
+						'position'
+					)
+				}
+				selectedItem={{
+					key: departmentMembership.position,
+					value: departmentMembership.position,
+				}}
+				placeholder='Select an option'
+				data={positionTypes}
+				name='position'
+				label='Position'
+				disabled={false}
+			/>
+			<Input
+				label='Time from'
+				type='datetime-local'
+				name='time_from'
+				required={true}
+				value={departmentMembership.time_from}
+				onChange={(e) =>
+					departmentMembershipsModel.handleListItemChange(e, index)
+				}
+			/>
+			<Input
+				label='Time to'
+				type='datetime-local'
+				name='time_to'
+				required={true}
+				value={departmentMembership.time_to}
+				onChange={(e) =>
+					departmentMembershipsModel.handleListItemChange(e, index)
+				}
+			/>
+
+			<button
+				type='button'
+				onClick={async () => {
+					await departmentMembershipsModel.deleteDepartmentMembership(
+						departmentMembership.id
+					);
+					departmentMembershipsModel.handleRemoveDepartment(
+						departmentMembership.id
+					);
+				}}
+			>
+				Remove
+			</button>
+		</div>
+	);
+});
 
 export default observer(DepartmentMembershipEditor);
