@@ -7,14 +7,14 @@ from pydantic import (
 )
 
 from database.db_models import (
-    MembershipApplicationReview,
+    ApplicationReview,
 )
 from profiles.api_models import (
     ProfileOutPublic,
 )
 
 
-class MembershipApplicationReviewOut(BaseModel):
+class ApplicationReviewOut(BaseModel):
     id: int
     motivation: int
     skill: int
@@ -34,9 +34,9 @@ class MembershipApplicationReviewOut(BaseModel):
 
     @classmethod
     def from_db_model(
-        cls, review: MembershipApplicationReview
-    ) -> "MembershipApplicationReview":
-        return MembershipApplicationReviewOut(
+        cls, review: ApplicationReview
+    ) -> "ApplicationReview":
+        return ApplicationReviewOut(
             id=review.id,
             motivation=review.motivation,
             skill=review.skill,
@@ -56,8 +56,8 @@ class MembershipApplicationReviewOut(BaseModel):
         )
 
     @classmethod
-    def dummy(cls) -> "MembershipApplicationReviewOut":
-        return MembershipApplicationReviewOut.parse_obj(
+    def dummy(cls) -> "ApplicationReviewOut":
+        return ApplicationReviewOut.parse_obj(
             cls.Config.schema_extra["example"]
         )
 
@@ -84,7 +84,7 @@ class MembershipApplicationReviewOut(BaseModel):
         }
 
 
-class MembershipApplicationReviewIn(BaseModel):
+class ApplicationReviewIn(BaseModel):
     motivation: int
     skill: int
     fit: int
@@ -96,13 +96,11 @@ class MembershipApplicationReviewIn(BaseModel):
     dept3Score: int
     maybegoodfit: Optional[str]
     furthercomments: Optional[str]
-    referral: int
-    finalscore: float
     reviewee: int
 
     @classmethod
-    def dummy(cls) -> "MembershipApplicationReviewIn":
-        return MembershipApplicationReviewIn.parse_obj(
+    def dummy(cls) -> "ApplicationReviewIn":
+        return ApplicationReviewIn.parse_obj(
             cls.Config.schema_extra["example"]
         )
 
