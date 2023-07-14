@@ -13,14 +13,14 @@ from sqlalchemy.orm import (
 )
 
 from profiles.api_models import (
+    DepartmentMembershipInCreate,
+    DepartmentMembershipInUpdate,
     ProfileInCreate,
     ProfileInUpdate,
     ProfileMemberInvitation,
     RoleHoldershipInOut,
     RoleHoldershipUpdateInOut,
     SocialNetworkIn,
-    DepartmentMembershipInCreate,
-    DepartmentMembershipInUpdate,
 )
 from security.firebase_auth import (
     create_invite_email_user,
@@ -156,6 +156,7 @@ def create_db_profiles(
                 university=new_profile.university,
                 job_history=job_history_encoded,
                 time_joined=new_profile.time_joined,
+                profile_picture=new_profile.profile_picture,
             )
             db_session.add(db_profile)
             db_session.flush()
@@ -242,6 +243,8 @@ def update_db_profile(
         db_profile.degree_level = profile_to_update.degree_level
         db_profile.degree_name = profile_to_update.degree_name
 
+        db_profile.profile_picture = profile_to_update.profile_picture
+
         if db_profile.degree_semester != profile_to_update.degree_semester:
             db_profile.degree_semester = profile_to_update.degree_semester
             db_profile.degree_semester_last_change_date = datetime.datetime.now()
@@ -275,8 +278,7 @@ def update_db_profile(
 
             else:  # not in use anymore -> delete
                 db_profile.social_networks = [
-                    sn for sn in db_profile.social_networks 
-                    if sn.type != old_k
+                    sn for sn in db_profile.social_networks if sn.type != old_k
                 ]
                 db_session.delete(old_sn)
 

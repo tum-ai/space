@@ -193,7 +193,7 @@ class ProfileInCreateUpdateBase(BaseModel):
     nationality: Optional[str]
     description: Optional[str]
 
-    # profile_picture  # TODO
+    profile_picture: Optional[str]
 
     activity_status: Optional[str]
 
@@ -259,7 +259,7 @@ class ProfileOut(BaseModel):
     nationality: Optional[str]
     description: Optional[str]
 
-    # profile_picture  # TODO
+    profile_picture: Optional[str]
 
     activity_status: Optional[str]
 
@@ -299,6 +299,7 @@ class ProfileOut(BaseModel):
                 DepartmentMembershipOut.from_db_model(s)
                 for s in profile.department_memberships
             ],
+            profile_picture=profile.profile_picture,
         )
 
     @classmethod
@@ -346,7 +347,7 @@ class ProfileOutPublic(BaseModel):
     last_name: str
     description: Optional[str]
 
-    # profile_picture  # TODO
+    profile_picture: Optional[str]
 
     activity_status: Optional[str]
 
@@ -381,6 +382,7 @@ class ProfileOutPublic(BaseModel):
                 DepartmentMembershipOut.from_db_model(s)
                 for s in profile.department_memberships
             ],
+            profile_picture=profile.profile_picture,
         )
 
     @classmethod

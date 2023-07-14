@@ -26,11 +26,15 @@ from security.firebase_auth import (
 from utils.config import (
     CONFIG,
 )
-from utils.error_handlers import error_handlers
+from utils.error_handlers import (
+    error_handlers,
+)
 from utils.log import (
     log,
 )
-from mail.send import send_email
+from mail.send import (
+    send_email,
+)
 
 app = FastAPI()
 db_client = None
