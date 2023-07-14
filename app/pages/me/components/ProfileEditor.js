@@ -34,28 +34,26 @@ function ProfileEditor({ isSignUpForm = false }) {
 		return new Promise((resolve, reject) => {
 			const reader = new FileReader();
 			reader.onload = () => resolve(reader.result);
-			reader.onerror = error => reject(error);
+			reader.onerror = (error) => reject(error);
 			reader.readAsDataURL(file);
 		});
 	}
 
 	async function handleChange(e) {
 		// profile picture handling
-		if(e.target.name === 'profile_picture') {
+		if (e.target.name === 'profile_picture') {
 			const file = e.target.files[0];
-        	const base64 = await convertImageToBase64(file);
-			console.log(base64)
-        	meModel.updateEditorProfile({
-				["profile_picture"]: base64,
+			const base64 = await convertImageToBase64(file);
+			meModel.updateEditorProfile({
+				['profile_picture']: base64,
 			});
-		}
-		else {
+		} else {
 			meModel.updateEditorProfile({
 				[e.target.name]: e.target.value,
 			});
 		}
 	}
-	// TODO add image preview if an image is available
+
 	return (
 		<div className='flex flex-col space-y-6 rounded-lg p-6 bg-white dark:bg-gray-700 w-full'>
 			<div className='text-2xl font-light'>Edit profile</div>
@@ -68,14 +66,34 @@ function ProfileEditor({ isSignUpForm = false }) {
 				}}
 				className='flex flex-col gap-4 lg:grid lg:grid-cols-2 lg:space-y-0 lg:gap-8'
 			>
-				<Input
-					label='Profile Image'
-					type='file'
-					accept='image/*'
-					id='profile_picture'
-					name='profile_picture'
-					onChange={handleChange}
-				/>
+				<div className='flex items-center space-x-4'>
+					{editorProfile.profile_picture ? (
+						<div className='flex flex-col items-center'>
+							<img
+								className='rounded-full w-28 h-28 object-cover border drop-shadow-lg'
+								src={editorProfile.profile_picture}
+							/>
+							<button
+								onClick={() => {
+									meModel.updateEditorProfile({
+										['profile_picture']: null,
+									});
+								}}
+							>
+								remove
+							</button>
+						</div>
+					) : (
+						<Input
+							label='Profile Image'
+							type='file'
+							accept='image/*'
+							id='profile_picture'
+							name='profile_picture'
+							onChange={handleChange}
+						/>
+					)}
+				</div>
 				<Input
 					label='First name'
 					type='text'
