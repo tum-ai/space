@@ -13,6 +13,9 @@ from database.setup import (
     close_db_client,
     setup_db_client,
 )
+from mail.send import (
+    send_email,
+)
 from membership_application.routes import router as MembershipApplicationRouter
 from profiles.routes import router as ProfilesRouter
 from review_tool.routes import router as ReviewToolRouter
@@ -26,11 +29,12 @@ from security.firebase_auth import (
 from utils.config import (
     CONFIG,
 )
-from utils.error_handlers import error_handlers
+from utils.error_handlers import (
+    error_handlers,
+)
 from utils.log import (
     log,
 )
-from mail.send import send_email
 
 app = FastAPI()
 db_client = None

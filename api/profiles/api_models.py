@@ -299,7 +299,7 @@ class ProfileOut(BaseModel):
                 DepartmentMembershipOut.from_db_model(s)
                 for s in profile.department_memberships
             ],
-            profile_picture=profile.profile_picture
+            profile_picture=profile.profile_picture,
         )
 
     @classmethod
@@ -382,7 +382,7 @@ class ProfileOutPublic(BaseModel):
                 DepartmentMembershipOut.from_db_model(s)
                 for s in profile.department_memberships
             ],
-            profile_picture=profile.profile_picture
+            profile_picture=profile.profile_picture,
         )
 
     @classmethod

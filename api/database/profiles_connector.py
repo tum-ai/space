@@ -13,14 +13,14 @@ from sqlalchemy.orm import (
 )
 
 from profiles.api_models import (
+    DepartmentMembershipInCreate,
+    DepartmentMembershipInUpdate,
     ProfileInCreate,
     ProfileInUpdate,
     ProfileMemberInvitation,
     RoleHoldershipInOut,
     RoleHoldershipUpdateInOut,
     SocialNetworkIn,
-    DepartmentMembershipInCreate,
-    DepartmentMembershipInUpdate,
 )
 from security.firebase_auth import (
     create_invite_email_user,
@@ -278,8 +278,7 @@ def update_db_profile(
 
             else:  # not in use anymore -> delete
                 db_profile.social_networks = [
-                    sn for sn in db_profile.social_networks 
-                    if sn.type != old_k
+                    sn for sn in db_profile.social_networks if sn.type != old_k
                 ]
                 db_session.delete(old_sn)
 

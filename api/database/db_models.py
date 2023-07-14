@@ -14,6 +14,7 @@ from pydantic import (
     BaseModel,
 )
 from sqlalchemy import (
+    TEXT,
     Boolean,
     CheckConstraint,
     Column,
@@ -23,7 +24,6 @@ from sqlalchemy import (
     ForeignKey,
     Integer,
     String,
-    TEXT,
     func,
 )
 from sqlalchemy.ext.hybrid import (
