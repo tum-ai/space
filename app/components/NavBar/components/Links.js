@@ -51,8 +51,12 @@ function Links() {
 						}}
 						href={link.path}
 						className={
-							'text-gray-500 hover:text-black dark:hover:text-white hover:underline ' +
-							(router.asPath?.includes(link.path) && 'font-bold')
+							'text-gray-500 hover:text-black dark:hover:text-white ' +
+							(router.asPath?.includes(link.path) &&
+								(link.path == '/'
+									? router.asPath == link.path
+									: true) &&
+								'underline')
 						}
 					>
 						{link.text}
