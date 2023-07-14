@@ -156,6 +156,7 @@ def create_db_profiles(
                 university=new_profile.university,
                 job_history=job_history_encoded,
                 time_joined=new_profile.time_joined,
+                profile_picture=new_profile.profile_picture,
             )
             db_session.add(db_profile)
             db_session.flush()
@@ -241,6 +242,8 @@ def update_db_profile(
 
         db_profile.degree_level = profile_to_update.degree_level
         db_profile.degree_name = profile_to_update.degree_name
+
+        db_profile.profile_picture = profile_to_update.profile_picture
 
         if db_profile.degree_semester != profile_to_update.degree_semester:
             db_profile.degree_semester = profile_to_update.degree_semester

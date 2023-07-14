@@ -30,12 +30,32 @@ function ProfileEditor({ isSignUpForm = false }) {
 	const editorProfile = meModel.editorProfile;
 	const router = useRouter();
 
-	function handleChange(e) {
-		meModel.updateEditorProfile({
-			[e.target.name]: e.target.value,
+	function convertImageToBase64(file) {
+		return new Promise((resolve, reject) => {
+			const reader = new FileReader();
+			reader.onload = () => resolve(reader.result);
+			reader.onerror = error => reject(error);
+			reader.readAsDataURL(file);
 		});
 	}
 
+	async function handleChange(e) {
+		// profile picture handling
+		if(e.target.name === 'profile_picture') {
+			const file = e.target.files[0];
+        	const base64 = await convertImageToBase64(file);
+			console.log(base64)
+        	meModel.updateEditorProfile({
+				["profile_picture"]: base64,
+			});
+		}
+		else {
+			meModel.updateEditorProfile({
+				[e.target.name]: e.target.value,
+			});
+		}
+	}
+	// TODO add image preview if an image is available
 	return (
 		<div className='flex flex-col space-y-6 rounded-lg p-6 bg-white dark:bg-gray-700 w-full'>
 			<div className='text-2xl font-light'>Edit profile</div>
@@ -48,6 +68,14 @@ function ProfileEditor({ isSignUpForm = false }) {
 				}}
 				className='flex flex-col gap-4 lg:grid lg:grid-cols-2 lg:space-y-0 lg:gap-8'
 			>
+				<Input
+					label='Profile Image'
+					type='file'
+					accept='image/*'
+					id='profile_picture'
+					name='profile_picture'
+					onChange={handleChange}
+				/>
 				<Input
 					label='First name'
 					type='text'
