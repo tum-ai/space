@@ -1,13 +1,16 @@
 import { observer } from 'mobx-react';
 import { Image } from 'next/image';
 import Link from 'next/link';
+import DepartmentMembershipEditor from './DepartmentMembershipEditor';
 import Icon from '/components/Icon';
 import ProtectedItem from '/components/ProtectedItem';
 import SelectMultiple from '/components/SelectMultiple';
 import { useStores } from '/providers/StoreProvider';
 
 function ProfileRow({ profile }) {
-	const { rolesModel } = useStores();
+	const { rolesModel, meModel, uiModel } = useStores();
+	const user = meModel.user;
+	const user_profile = user?.profile;
 	const roleHolderships = rolesModel.roleHolderships[profile.id] || [];
 
 	return (
@@ -27,14 +30,35 @@ function ProfileRow({ profile }) {
 						/>
 					</div>
 				)}
-
-				<div className='flex items-center justify-end w-auto'>
-					<Link href={'/profiles/' + profile.id}>
-						<Icon
-							name={'FaExternalLinkAlt'}
-							className='p-2 rounded hover:scale-105 bg-gray-100 dark:bg-black'
-						/>
-					</Link>
+				<div className='flex flex-col gap-y-1'>
+					<ProtectedItem roles={['admin']}>
+						<div className='flex items-center justify-end w-auto'>
+							<button
+								onClick={() => {
+									uiModel.updateModalContent(
+										<DepartmentMembershipEditor
+											profile_id={profile.id}
+										/>
+									);
+									uiModel.toggleModal();
+									meModel.editorProfile = { ...user_profile };
+								}}
+							>
+								<Icon
+									name={'FaEdit'}
+									className='p-2 rounded hover:scale-105 bg-gray-100 dark:bg-black'
+								/>
+							</button>
+						</div>
+					</ProtectedItem>
+					<div className='flex items-center justify-end w-auto'>
+						<Link href={'/profiles/' + profile.id}>
+							<Icon
+								name={'FaExternalLinkAlt'}
+								className='p-2 rounded hover:scale-105 bg-gray-100 dark:bg-black'
+							/>
+						</Link>
+					</div>
 				</div>
 				{/* profile name and department */}
 				<div className='flex flex-col col-span-2'>
