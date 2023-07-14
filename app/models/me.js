@@ -33,6 +33,7 @@ export class MeModel {
 				// fetch stuff that you are authorized for
 				this.root.rolesModel.getRoles();
 				this.root.rolesModel.getRoleHolderships();
+				this.root.departmentMembershipsModel.fetchDepartments();
 				this.root.reviewToolModel.fetchApplications();
 			} else {
 				this.setUser(null);
