@@ -110,9 +110,9 @@ const ApplicationOverview = observer(() => {
 			</div>
 			<hr className='border-2' />
 			<div className='grid lg:grid-cols-2 gap-4'>
-				{applicationOnReview.submission?.data?.fields?.map((field) => {
+				{applicationOnReview.submission?.data?.fields?.map((field, index) => {
 					return (
-						<div>
+						<div key={index}>
 							<div className='font-thin'>{field.label}</div>
 							<div>{JSON.stringify(field.value)}</div>
 						</div>

@@ -1,6 +1,7 @@
 import { observer } from 'mobx-react';
 import Link from 'next/link';
 import { useStores } from '/providers/StoreProvider';
+import Icon from '/components/Icon';
 
 function User() {
 	const { uiModel, meModel } = useStores();
