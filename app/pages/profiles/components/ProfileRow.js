@@ -1,5 +1,4 @@
 import { observer } from 'mobx-react';
-import { Image } from 'next/image';
 import Link from 'next/link';
 import DepartmentMembershipEditor from './DepartmentMembershipEditor';
 import Icon from '/components/Icon';
@@ -11,7 +10,7 @@ function ProfileRow({ profile }) {
 	const { rolesModel, meModel, uiModel } = useStores();
 	const user = meModel.user;
 	const user_profile = user?.profile;
-	const roleHolderships = rolesModel.roleHolderships[profile.id] || [];
+	const roleHolderships = rolesModel.roleHolderships[profile?.id] || [];
 
 	return (
 		<div className='flex space-x-10 justify-between bg-white dark:bg-gray-700 p-4 rounded-xl shadow'>
@@ -37,7 +36,7 @@ function ProfileRow({ profile }) {
 								onClick={() => {
 									uiModel.updateModalContent(
 										<DepartmentMembershipEditor
-											profile_id={profile.id}
+											profile_id={profile?.id}
 										/>
 									);
 									uiModel.toggleModal();
@@ -52,7 +51,7 @@ function ProfileRow({ profile }) {
 						</div>
 					</ProtectedItem>
 					<div className='flex items-center justify-end w-auto'>
-						<Link href={'/profiles/' + profile.id}>
+						<Link href={'/profiles/' + profile?.id}>
 							<Icon
 								name={'FaExternalLinkAlt'}
 								className='p-2 rounded hover:scale-105 bg-gray-100 dark:bg-black'
@@ -101,12 +100,12 @@ function ProfileRow({ profile }) {
 									? newRoles
 									: deletedRoles;
 								data = data.map((item) => ({
-									profile_id: profile.id,
+									profile_id: profile?.id,
 									role_handle: item,
 									method: method,
 								}));
 								await rolesModel.updateRoles(data);
-								rolesModel.setProfileRoles(profile.id, items);
+								rolesModel.setProfileRoles(profile?.id, items);
 							}}
 						></SelectMultiple>
 					</div>
