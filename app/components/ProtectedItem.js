@@ -13,7 +13,7 @@ function ProtectedItem({ roles, redirectToAuth, showNotFound, children }) {
 		if (!user && redirectToAuth && !showNotFound) {
 			router.push('/notfound');
 		}
-	}, [user]);
+	}, [user, redirectToAuth, showNotFound, router]);
 
 	if (loading) {
 		return <div>loading ...</div>;
