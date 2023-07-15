@@ -18,10 +18,11 @@ function ProfileRow({ profile }) {
 			<div className='grid grid-cols-2 gap-2 w-full'>
 				{/* profile picture */}
 				{profile.profile_picture ? (
-					<img
+					<Image
 						className='rounded-full w-14 h-14 object-cover border'
 						src={profile.profile_picture}
-					/>
+						alt=''
+				 	/>
 				) : (
 					<div className='rounded-full w-14 h-14 bg-gray-300 dark:bg-gray-800 flex text-center drop-shadow-lg'>
 						<Icon

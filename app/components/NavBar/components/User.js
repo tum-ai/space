@@ -1,6 +1,8 @@
 import { observer } from 'mobx-react';
 import Link from 'next/link';
 import { useStores } from '/providers/StoreProvider';
+import Image from 'next/image';
+import { FaUser } from 'react-icons/fa';
 
 function User() {
 	const { uiModel, meModel } = useStores();
@@ -22,13 +24,14 @@ function User() {
 						}
 					>
 						{user.profile.profile_picture ? (
-							<img
-								className='rounded-full w-8 h-8 object-cover'
-								src={user.profile.profile_picture}
-							/>
+							<Image
+							className='rounded-full w-8 h-8 object-cover'
+							src={user.profile.profile_picture}
+							alt=''
+						  />
 						) : (
 							<div className='rounded-full w-8 h-8 bg-gray-300 dark:bg-gray-800 flex text-center drop-shadow-lg'>
-								<Icon
+								<FaUser
 									name={'FaUser'}
 									className='m-auto text-xl text-white'
 								/>
