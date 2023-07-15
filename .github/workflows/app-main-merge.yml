@@ -17,7 +17,7 @@ jobs:
       - uses: actions/checkout@v3
       - name: Setup environment type
         working-directory: ./app
-        run: echo "REACT_APP_ENVIRONMENT=production" > .env
+        run: echo "REACT_APP_ENVIRONMENT=production" > .env && echo "NEXT_PUBLIC_API_URL=https://api.space.tum-ai.com/" > .env
       - name: CI & Build
         working-directory: ./app
         run: npm ci && npm run build
