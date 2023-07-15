@@ -1,5 +1,6 @@
 import { observer } from 'mobx-react';
 import Link from 'next/link';
+import Icon from '/components/Icon';
 import { useStores } from '/providers/StoreProvider';
 
 function User() {
