@@ -112,7 +112,7 @@ const ApplicationOverview = observer(() => {
 			<div className='grid lg:grid-cols-2 gap-4'>
 				{applicationOnReview.submission?.data?.fields?.map((field) => {
 					return (
-						<div>
+						<div key={field.label}>
 							<div className='font-thin'>{field.label}</div>
 							<div>{JSON.stringify(field.value)}</div>
 						</div>
