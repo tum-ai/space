@@ -5,6 +5,7 @@ import Icon from '/components/Icon';
 import ProtectedItem from '/components/ProtectedItem';
 import SelectMultiple from '/components/SelectMultiple';
 import { useStores } from '/providers/StoreProvider';
+import Image from 'next/image';
 
 function ProfileRow({ profile }) {
 	const { rolesModel, meModel, uiModel } = useStores();
@@ -16,11 +17,12 @@ function ProfileRow({ profile }) {
 		<div className='flex space-x-10 justify-between bg-white dark:bg-gray-700 p-4 rounded-xl shadow'>
 			<div className='grid grid-cols-2 gap-2 w-full'>
 				{/* profile picture */}
-				{profile.profile_picture ? (
-					<img
+				{profile?.profile_picture ? (
+					<Image
 						className='rounded-full w-14 h-14 object-cover border'
 						src={profile.profile_picture}
-					/>
+						alt=''
+				 	/>
 				) : (
 					<div className='rounded-full w-14 h-14 bg-gray-300 dark:bg-gray-800 flex text-center drop-shadow-lg'>
 						<Icon
@@ -62,7 +64,7 @@ function ProfileRow({ profile }) {
 				{/* profile name and department */}
 				<div className='flex flex-col col-span-2'>
 					<div className='font-bold'>
-						{profile.first_name + ' ' + profile.last_name}
+						{profile?.first_name + ' ' + profile?.last_name}
 					</div>
 				</div>
 				<ProtectedItem roles={['admin']}>

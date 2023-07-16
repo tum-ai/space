@@ -5,6 +5,7 @@ import Input from '/components/Input';
 import Select from '/components/Select';
 import Textarea from '/components/Textarea';
 import { useStores } from '/providers/StoreProvider';
+import Image from 'next/image';
 
 const newJobExperience = {
 	employer: '',
@@ -69,9 +70,10 @@ function ProfileEditor({ isSignUpForm = false }) {
 				<div className='flex items-center space-x-4'>
 					{editorProfile.profile_picture ? (
 						<div className='flex flex-col items-center'>
-							<img
+							<Image
 								className='rounded-full w-28 h-28 object-cover border drop-shadow-lg'
 								src={editorProfile.profile_picture}
+								alt=''
 							/>
 							<button
 								onClick={() => {
