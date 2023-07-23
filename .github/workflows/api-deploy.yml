@@ -1,21 +1,30 @@
-# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
-# More GitHub Actions for Azure: https://github.com/Azure/actions
-# More info on Python, GitHub Actions, and Azure App Service: https://aka.ms/python-webapps-actions
-
-name: Build & deploy Python api to Azure Web App - tumai-space-api (PROD)
+name: Build & deploy backend to tumai rootserver
 
 on:
-  push:
-    paths:
-    - 'api/**'
-    branches:
-      - main
-  workflow_dispatch:
+  release:
+    types: [published]
+
+env:
+  - ENVIRON=prod
+  - FIREBASE_ADMINSDK_CERTIFICATE=${{ secrets.FIREBASE_ADMINSDK_CERTIFICATE }}
+  # [database environment]
+  - DB_HOST=space.db.staging
+  - DB_PORT=5432
+  - DB_NAME=space-db
+  - DB_USER=space-db
+  - DB_PASSWORD=${{ secrets.SPACE_DB_PASSWORD }}
+  # [mail environment]
+  - MAIL_USERNAME=space@tum-ai.com
+  - MAIL_PASSWORD=${{ secrets.GMAIL_APP_PASSWORD }}
+  - MAIL_FROM=space@tum-ai.com
+  - MAIL_PORT=587
+  - MAIL_SERVER=smtp.gmail.com
+  - MAIL_FROM_NAME=TUM.ai Space Team
 
 jobs:
   build:
+    name: root-server deployment
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v3
 
@@ -51,24 +60,10 @@ jobs:
             !.pytest_cache/
             !venv/
 
-  deploy:
-    runs-on: ubuntu-latest
-    needs: build
-    environment:
-      name: 'Production'
-      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+      - name: Setup SSH to deployment root-server
+        uses: webfactory/ssh-agent@v0.5.2
+        with:
+          ssh-private-key: ${{ secrets.SSH_SERVER_GHA_PRIVATE_KEY }}
 
-    steps:
-      - name: Download artifact from build job
-        uses: actions/download-artifact@v2
-        with:
-          name: python-app
-          path: .
-          
-      - name: 'Deploy to Azure Web App'
-        uses: azure/webapps-deploy@v2
-        id: deploy-to-webapp
-        with:
-          app-name: 'tumai-space-api'
-          slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_F292746127E04206BF3B55C55532B963 }}
+      - name: force pull branch, and run Docker Compose
+        run: ssh gha@91.210.224.56 'cd /apps/tumai/space && git fetch --all && git reset --hard origin/main && docker-compose build --no-cache && docker-compose up -d --remove-orphans'

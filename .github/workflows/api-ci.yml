@@ -10,7 +10,26 @@ on:
   workflow_dispatch:
 
 jobs:
-  ci-build:
+  pre-commit:
+    name: Pre-commit
+    timeout-minutes: 15
+    runs-on: ubuntu-latest
+    env:
+      PRE_COMMIT_USE_MICROMAMBA: 1
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Set up micromamba
+        uses: mamba-org/setup-micromamba@5b9dc5cf9560f2808ade896803b2f68cfcfdd52b
+      - name: Add micromamba to GITHUB_PATH
+        run: echo "${HOME}/micromamba-bin" >> "$GITHUB_PATH"
+      - name: Install Python 3.11
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+      - name: Run pre-commit checks
+        uses: pre-commit/action@v3.0.0
+  ci:
     name: Ubuntu CI for backend /api
     runs-on: ubuntu-latest
     steps:
@@ -26,14 +45,11 @@ jobs:
       
       - name: write secret file
         run: |
-          mkdir -p /home/runner/work/space/space/api/.secrets        
-          touch /home/runner/work/space/space/api/.secrets/tumai-space-firebase-adminsdk.json 
-          echo "${{ secrets.FIREBASE_ADMINSDK_CERTIFICATE_STAGING }}" > /home/runner/work/space/space/api/.secrets/tumai-space-firebase-adminsdk.json
+          mkdir -p api/.secrets        
+          touch api/.secrets/tumai-space-firebase-adminsdk.json 
+          echo "${{ secrets.FIREBASE_ADMINSDK_CERTIFICATE_STAGING }}" > api/.secrets/tumai-space-firebase-adminsdk.json
       # TODO: shorten paths
 
       - name: Run pytest
         run: python -m pytest .
-        working-directory: /home/runner/work/space/space/api
-
-      # - name: Build docker container
-      #   run: 
+        working-directory: api
