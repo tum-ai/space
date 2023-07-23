@@ -289,6 +289,7 @@ dist
 .tern-port
 
 # Stores VSCode versions used for testing VSCode extensions
+.vscode
 .vscode-test
 
 # yarn v2
@@ -510,3 +511,5 @@ sketch
 
 # End of https://www.toptal.com/developers/gitignore/api/firebase,node,react,web,pycharm,webstorm
 api/playground.ipynb
+
+.debug

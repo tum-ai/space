@@ -1,3 +1,6 @@
+[build-system]
+requires = ["setuptools", "setuptools-scm", "wheel"]
+
 [project]
 name = "TUM.ai space api"
 version = "0.1.0"
@@ -5,17 +8,38 @@ description = ""
 authors = [
     { name = "Robin Holzinger", email = "robin.holzingr@gmail.com" }
 ]
-python = "3.10"
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.11",
+]
+requires-python = ">=3.11"
 
-[tool.isort]
-profile = "black"
-skip = ["venv", "__pycache__"]
-force_grid_wrap = 1
+
+[project.urls]
+repository = "https://github.com/Quantco/quantcore.mssqlkit"
+
+[tool.setuptools.packages.find]
+include = ["api_space.*"]
+
+
+[tool.ruff]
+line-length = 88
+select = ["F", "E", "W", "I", "N", "UP"]
+target-version = "py311"
 
 [tool.mypy]
-disallow_untyped_defs = "True"
-disable_error_code = "union-attr"
-exclude = ["venv/*", "__init__.py", "__pycache__/*", "docs/*"]
+check_untyped_defs = true
+ignore_missing_imports = true
+no_implicit_optional = true
+python_version = '3.11'
+exclude = ["__init__.py", "__pycache__/*", "docs/*"]
+
+
+explicit_package_bases = true
+namespace_packages = true
+
+[tool.pytest.ini_options]
+addopts = "--import-mode=importlib --cov=space_api --cov-report term-missing"
 
 [tool.coverage.run]
-omit = ["venv/*", "*__init__.py", "tests/*", "__pycache__"]
+omit = ["*__init__.py", "tests/*", "__pycache__"]

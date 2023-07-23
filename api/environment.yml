@@ -1,0 +1,40 @@
+name: space
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.11
+  - pip
+
+  # development
+  - ipykernel
+
+  # linting
+  - mypy
+  - ruff
+  - typing_extensions
+  - types-python-dateutil
+  - types-pyyaml
+
+  # testing
+  - pytest
+
+  # runtime
+  - fastapi
+  - gunicorn
+  - httptools
+  - httpx
+  - psycopg2-binary
+  - pydantic >=2.0
+  - python-dateutil
+  - pyyaml
+  - starlette
+  - sqlalchemy >=2.0
+  - sqlalchemy-utils
+  - uvicorn
+  - uvloop
+
+  - pip:
+    # runtime
+    - fastapi-mail
+    - firebase-admin

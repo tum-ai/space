@@ -1,11 +1,12 @@
-FROM python:3.10
+FROM mambaorg/micromamba:latest
 
-WORKDIR /code
+WORKDIR /apps/space/api
 
-COPY ./requirements.txt /requirements.txt
+COPY --chown=$MAMBA_USER:$MAMBA_USER ./environment.yml environment.yml
+RUN micromamba install -y -n base -f environment.yml
 
-RUN pip install --no-cache-dir --upgrade -r /requirements.txt
+RUN mkdir .secrets && \
+    touch .secrets/tumai-space-firebase-adminsdk.json && \
+    echo ${FIREBASE_ADMINSDK_CERTIFICATE} > .secrets/tumai-space-firebase-adminsdk.json
 
-COPY . /code
-
-WORKDIR /code
+COPY --chown=$MAMBA_USER:$MAMBA_USER . /apps/space/api

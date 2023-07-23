@@ -1,0 +1,50 @@
+# ENV VARIABLES NEEDED FOR BUILD
+# - ENVIRON=development|staging|prod
+# - FIREBASE_ADMINSDK_CERTIFICATE
+# [database environment]
+# - DB_HOST=space.db(.staging|.prod)
+# - DB_PORT
+# - DB_NAME
+# - DB_USER
+# - DB_PASSWORD
+# [mail environment]
+# - MAIL_USERNAME
+# - MAIL_PASSWORD
+# - MAIL_FROM
+# - MAIL_PORT
+# - MAIL_SERVER
+# - MAIL_FROM_NAME
+
+version: '3.9'
+services:
+  api:
+    container_name: "tum-ai-space-api-${ENVIRON}"
+    image: "tum-ai-space-api-${ENVIRON}"
+    build: .
+    restart: unless-stopped
+    command: gunicorn main:app -k uvicorn.workers.UvicornWorker --workers=4 --reload --bind=0.0.0.0
+    ports:
+      - '8000:8000'
+    networks:
+      - backend-net
+    environment:
+      - environment=${ENVIRON}
+      - FIREBASE_ADMINSDK_CERTIFICATE=${FIREBASE_ADMINSDK_CERTIFICATE}
+      # database environment
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      # mail environment
+      - MAIL_USERNAME=${MAIL_USERNAME}
+      - MAIL_PASSWORD=${MAIL_PASSWORD}
+      - MAIL_FROM=${MAIL_FROM}
+      - MAIL_PORT=${MAIL_PORT}
+      - MAIL_SERVER=${MAIL_SERVER}
+      - MAIL_FROM_NAME=${MAIL_FROM_NAME}
+
+networks:
+  backend-net:
+      driver: bridge
+      name: backend-net
