@@ -32,6 +32,9 @@ jobs:
   ci:
     name: Ubuntu CI for backend /api
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash -el {0}
     steps:
       - uses: actions/checkout@v3
       - uses: mamba-org/setup-micromamba@5b9dc5cf9560f2808ade896803b2f68cfcfdd52b
