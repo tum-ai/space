@@ -180,9 +180,9 @@ const ReviewForm = observer(() => {
 			<Input
 				label='Tum.ai fit comment'
 				type='text'
-				id='commentFitTUMai'
-				name='commentFitTUMai'
-				value={editorReview?.commentFitTUMai}
+				id='comment_fit_tumai'
+				name='comment_fit_tumai'
+				value={editorReview?.comment_fit_tumai}
 				onChange={handleChange}
 				required={false}
 			/>
@@ -198,27 +198,27 @@ const ReviewForm = observer(() => {
 			<Input
 				label='Department 1 score'
 				type='number'
-				id='dept1Score'
-				name='dept1Score'
-				value={editorReview?.dept1Score}
+				id='dept1_score'
+				name='dept1_score'
+				value={editorReview?.dept1_score}
 				onChange={handleChange}
 				required={true}
 			/>
 			<Input
 				label='Department 2 score'
 				type='number'
-				id='dept2Score'
-				name='dept2Score'
-				value={editorReview?.dept2Score}
+				id='dept2_score'
+				name='dept2_score'
+				value={editorReview?.dept2_score}
 				onChange={handleChange}
 				required={true}
 			/>
 			<Input
 				label='Department 3 score'
 				type='number'
-				id='dept3Score'
-				name='dept3Score'
-				value={editorReview?.dept3Score}
+				id='dept3_score'
+				name='dept3_score'
+				value={editorReview?.dept3_score}
 				onChange={handleChange}
 				required={true}
 			/>
@@ -254,11 +254,11 @@ const ReviewForm = observer(() => {
 						skill: 7,
 						fit: 6,
 						in_tumai: 2,
-						commentFitTUMai: 'The fit seems good',
+						comment_fit_tumai: 'The fit seems good',
 						timecommit: '10 hours per week',
-						dept1Score: 8,
-						dept2Score: 5,
-						dept3Score: 7,
+						dept1_score: 8,
+						dept2_score: 5,
+						dept3_score: 7,
 						maybegoodfit: 'Yes, potentially',
 						furthercomments: 'Should keep an eye on progress',
 					});

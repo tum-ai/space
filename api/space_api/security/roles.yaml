@@ -1,0 +1,89 @@
+# TODO: design the roles and permissions
+
+# Naming Convention: <FEATURE>.<ACTION>.<TARGET>
+# <FEATURE> - the feature the permission is related to. E.g. profile, analytics, etc.
+# <ACTION> - the action the permission allows. E.g. edit, delete, etc.
+# <TARGET> - the target the permission is related to. E.g. self, all, etc.
+
+ADMIN:
+  DESCRIPTION: 'Admin Role. Reserved for the DEV department and the President overviewing the DEV department.'
+  PERMISSIONS:
+    - profile:
+        - create:
+            - self
+            - all
+        - edit:
+            - self
+            - all
+        - delete:
+            - self
+            - all
+        - view:
+            - self
+            - all
+    - analytics:
+        - view:
+            - self
+            - all
+PRESIDENT:
+  DESCRIPTION: 'President Role. Reserved to the President of the TUM.ai.'
+  PERMISSIONS:
+    - profile:
+        - create:
+            - self
+            - all
+        - edit:
+            - self
+            - all
+        - delete:
+            - self
+            - all
+        - view:
+            - self
+            - all
+TEAM_LEAD:
+  DESCRIPTION: 'Team Lead Role. Reserved to the Team Leads of the TUM.ai.'
+  PERMISSIONS:
+    - profile:
+        - create:
+            - self
+            - all
+        - edit:
+            - self
+        - delete:
+            - self
+        - view:
+            - self
+            - all
+MEMBER:
+  DESCRIPTION: 'Member Role. Reserved to the Members of the TUM.ai.'
+  PERMISSIONS:
+    - profile:
+        - create:
+            - self
+        - edit:
+            - self
+        - delete:
+            - self
+        - view:
+            - self
+            - all
+APPLICANT:
+  DESCRIPTION: 'Applicant Role. Reserved to the Applicants of the TUM.ai.'
+  PERMISSIONS:
+    - profile:
+        - create:
+            - self
+        - edit:
+            - self
+        - delete:
+            - self
+        - view:
+            - self
+            - all
+DEFAULT:
+  DESCRIPTION: 'Default Role. Reserved for the guests of the TUM.ai Space. Identical to No Role.'
+  PERMISSIONS:
+    - profile:
+        - view:
+            - all
