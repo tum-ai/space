@@ -1,7 +1,15 @@
-from pydantic import BaseModel, Extra, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class BaseResponse(BaseModel):
+    model_config = ConfigDict(
+        json_schema_extra={
+            "status_code": 200,
+            "response_type": "success",
+            "description": "Operation successful",
+        }
+    )
+
     status_code: int
     response_type: str
     description: str
@@ -22,23 +30,13 @@ class BaseResponse(BaseModel):
             }
         }
 
-    class Config:
-        schema_extra = {
-            "example": {
-                "status_code": 200,
-                "response_type": "success",
-                "description": "Operation successful",
-            }
-        }
-
 
 class ErrorResponse(BaseResponse):
-    class Config:
-        extra = Extra.forbid
-        schema_extra = {
-            "example": {
-                "status_code": 400,
-                "response_type": "error",
-                "description": "Bad request",
-            }
-        }
+    model_config = ConfigDict(
+        extra="forbid",
+        json_schema_extra={
+            "status_code": 400,
+            "response_type": "error",
+            "description": "Bad request",
+        },
+    )

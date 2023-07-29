@@ -10,14 +10,12 @@ class ResponseSubmitApplication(BaseResponse):
 
 
 class ResponseRetrieveApplication(BaseResponse):
-    data: ApplicationOut
+    model_config = ConfigDict(json_schema_extra=BaseResponse.schema_wrapper([]))
 
-    class Config:
-        model_config = ConfigDict(json_schema_extra=BaseResponse.schema_wrapper([]))
+    data: ApplicationOut
 
 
 class ResponseRetrieveApplications(BaseResponse):
-    data: list[ApplicationOut]
+    model_config = ConfigDict(json_schema_extra=BaseResponse.schema_wrapper([]))
 
-    class Config:
-        model_config = ConfigDict(json_schema_extra=BaseResponse.schema_wrapper([]))
+    data: list[ApplicationOut]

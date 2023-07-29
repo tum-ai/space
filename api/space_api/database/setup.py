@@ -14,16 +14,15 @@ from .db_models import Department, Role, SaBaseModel
 DBSession = scoped_session(sessionmaker())
 
 
-DB_HOST = os.environ["DB_HOST"]
-DB_PORT = int(os.getenv("DB_PORT") or "5432")
-DB_NAME = os.environ["DB_NAME"]
-DB_USER = os.environ["DB_USER"]
-DB_PASSWORD = os.environ["DB_PASSWORD"]
-
-
 def create_sqla_engine() -> Engine:
-    conn_str = f"postgresql://{DB_USER}:%s@{DB_HOST}:{DB_PORT}/{DB_NAME}" % quote_plus(
-        DB_PASSWORD
+    db_host = os.environ["DB_HOST"]
+    db_port = int(os.getenv("DB_PORT") or "5432")
+    db_name = os.environ["DB_NAME"]
+    db_user = os.environ["DB_USER"]
+    db_password = os.environ["DB_PASSWORD"]
+
+    conn_str = f"postgresql://{db_user}:%s@{db_host}:{db_port}/{db_name}" % quote_plus(
+        db_password
     )
     engine: Engine = create_engine(
         conn_str,

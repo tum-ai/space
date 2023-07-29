@@ -4,7 +4,7 @@ from typing import Annotated, Any
 import requests
 from fastapi import APIRouter, Body, Request
 from fastapi.responses import StreamingResponse
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 from space_api.security.decorators import ensure_authorization
 from space_api.utils.error_handlers import error_handlers
@@ -14,10 +14,9 @@ router = APIRouter()
 
 
 class ResponseCertificate(BaseResponse):
-    data: Any = None
+    model_config = ConfigDict(json_schema_extra="")
 
-    class Config:
-        schema_extra = BaseResponse.schema_wrapper("")
+    data: Any = None
 
 
 class FormData(BaseModel):
