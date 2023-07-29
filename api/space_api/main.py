@@ -18,8 +18,7 @@ from .utils.log import log
 app = FastAPI()
 db_client = None
 
-# synchronous setup
-# ------------------------------------------------------------------------------#
+# --------------------------------- synchronous setup -------------------------------- #
 init_firebase_auth()
 
 allowed_origins = CONFIG.get("AUTH_ALLOWED_ORIGINS")
@@ -33,7 +32,8 @@ app.add_middleware(
     allow_methods=allow_all,
     allow_headers=allow_all,
 )
-# ------------------------------------------------------------------------------#
+
+# ------------------------------------- endpoints ------------------------------------ #
 
 
 # asynchronous setup

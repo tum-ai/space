@@ -9,21 +9,21 @@ on:
   workflow_dispatch:
 
 env:
-  - ENVIRON=staging
-  - FIREBASE_ADMINSDK_CERTIFICATE=${{ secrets.FIREBASE_ADMINSDK_CERTIFICATE_STAGING }}
+  ENVIRON=staging
+  FIREBASE_ADMINSDK_CERTIFICATE: ${{ secrets.FIREBASE_ADMINSDK_CERTIFICATE_STAGING }}
   # [database environment]
-  - DB_HOST=space.db.staging
-  - DB_PORT=5432
-  - DB_NAME=space-db
-  - DB_USER=space-db
-  - DB_PASSWORD=${{ secrets.SPACE_DB_STAGING_PASSWORD }}
+  DB_HOST: space.db.staging
+  DB_PORT: 5432
+  DB_NAME: space-db
+  DB_USER: space-db
+  DB_PASSWORD: ${{ secrets.SPACE_DB_STAGING_PASSWORD }}
   # [mail environment]
-  - MAIL_USERNAME=space-staging@tum-ai.com
-  - MAIL_PASSWORD=${{ secrets.GMAIL_APP_PASSWORD_STAGING }}
-  - MAIL_FROM=space-staging@tum-ai.com
-  - MAIL_PORT=587
-  - MAIL_SERVER=smtp.gmail.com
-  - MAIL_FROM_NAME=TUM.ai Space Team (STAGING)
+  MAIL_USERNAME: space-staging@tum-ai.com
+  MAIL_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD_STAGING }}
+  MAIL_FROM: space-staging@tum-ai.com
+  MAIL_PORT: 587
+  MAIL_SERVER: smtp.gmail.com
+  MAIL_FROM_NAME: TUM.ai Space Team (STAGING)
 
 jobs:
   deploy-staging:
