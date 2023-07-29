@@ -3,6 +3,7 @@ name: Build & deploy backend to tumai rootserver
 on:
   release:
     types: [published]
+  workflow_dispatch:
 
 env:
   ENVIRON: prod

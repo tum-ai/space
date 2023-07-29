@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
 
 env:
-  ENVIRON=staging
+  ENVIRON: staging
   FIREBASE_ADMINSDK_CERTIFICATE: ${{ secrets.FIREBASE_ADMINSDK_CERTIFICATE_STAGING }}
   # [database environment]
   DB_HOST: space.db.staging
