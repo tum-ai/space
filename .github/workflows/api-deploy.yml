@@ -5,21 +5,21 @@ on:
     types: [published]
 
 env:
-  ENVIRON=prod
-  FIREBASE_ADMINSDK_CERTIFICATE=${{ secrets.FIREBASE_ADMINSDK_CERTIFICATE }}
+  ENVIRON: prod
+  FIREBASE_ADMINSDK_CERTIFICATE: ${{ secrets.FIREBASE_ADMINSDK_CERTIFICATE }}
   # [database environment]
-  DB_HOST=space.db.staging
-  DB_PORT=5432
-  DB_NAME=space-db
-  DB_USER=space-db
-  DB_PASSWORD=${{ secrets.SPACE_DB_PASSWORD }}
+  DB_HOST: space.db.staging
+  DB_PORT: 5432
+  DB_NAME: space-db
+  DB_USER: space-db
+  DB_PASSWORD: ${{ secrets.SPACE_DB_PASSWORD }}
   # [mail environment]
-  MAIL_USERNAME=space@tum-ai.com
-  MAIL_PASSWORD=${{ secrets.GMAIL_APP_PASSWORD }}
-  MAIL_FROM=space@tum-ai.com
-  MAIL_PORT=587
-  MAIL_SERVER=smtp.gmail.com
-  MAIL_FROM_NAME=TUM.ai Space Team
+  MAIL_USERNAME: space@tum-ai.com
+  MAIL_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+  MAIL_FROM: space@tum-ai.com
+  MAIL_PORT: 587
+  MAIL_SERVER: smtp.gmail.com
+  MAIL_FROM_NAME: TUM.ai Space Team
 
 jobs:
   build:
