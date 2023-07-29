@@ -9,6 +9,9 @@ on:
     
   workflow_dispatch:
 
+env:
+  - FIREBASE_ADMINSDK_CERTIFICATE=${{ secrets.FIREBASE_ADMINSDK_CERTIFICATE_STAGING }}
+
 jobs:
   pre-commit:
     name: Pre-commit
