@@ -14,7 +14,7 @@ router = APIRouter()
 
 
 class ResponseCertificate(BaseResponse):
-    model_config = ConfigDict(json_schema_extra="")
+    model_config = ConfigDict(json_schema_extra={"example": ""})
 
     data: Any = None
 

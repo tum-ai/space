@@ -25,45 +25,33 @@ jobs:
   build:
     name: root-server deployment
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash -el {0}
     steps:
       - uses: actions/checkout@v3
-
-      - name: Set up Python version
-        uses: actions/setup-python@v4
+      - uses: mamba-org/setup-micromamba@5b9dc5cf9560f2808ade896803b2f68cfcfdd52b
         with:
-          python-version: '3.11'
-      
-      - name: Install dependencies
-        run: pip install -r api/requirements.txt
-        
+          environment-file: api/environment.yml
+          init-shell: bash
       - name: Lint with Ruff
-        run: cd ./api && python -m ruff check .
-        # TODO: integrate mypy
-      
+        run: python -m ruff check .
+        working-directory: api
+      - name: Run mypy
+        run: python -m mypy .
+        working-directory: api
       - name: write secret file
         run: |
-          mkdir -p /home/runner/work/space/space/api/.secrets          
-          touch /home/runner/work/space/space/api/.secrets/tumai-space-firebase-adminsdk.json 
-          echo "${{ secrets.FIREBASE_ADMINSDK_CERTIFICATE }}" > /home/runner/work/space/space/api/.secrets/tumai-space-firebase-adminsdk.json
-
+          mkdir -p api/.secrets             
+          touch api/.secrets/tumai-space-firebase-adminsdk.json 
+          echo "${{ secrets.FIREBASE_ADMINSDK_CERTIFICATE }}" > api/.secrets/tumai-space-firebase-adminsdk.json
       - name: Run pytest
-        run: PYTHONPATH=/home/runner/work/space/space/api pytest ./api
-      
-      - name: Upload artifact for deployment jobs
-        uses: actions/upload-artifact@v2
-        with:
-          name: python-app
-          path: |
-            api/ 
-            !__pycache__/
-            !.mypy_cache/
-            !.pytest_cache/
-            !venv/
-
+        run: python -m pytest tests
+        working-directory: api
       - name: Setup SSH to deployment root-server
         uses: webfactory/ssh-agent@v0.5.2
         with:
           ssh-private-key: ${{ secrets.SSH_SERVER_GHA_PRIVATE_KEY }}
-
       - name: force pull branch, and run Docker Compose
         run: ssh gha@91.210.224.56 'cd /apps/tumai/space && git fetch --all && git reset --hard origin/main && docker-compose build --no-cache && docker-compose up -d --remove-orphans'
+  
