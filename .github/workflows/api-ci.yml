@@ -57,5 +57,5 @@ jobs:
       # TODO: shorten paths
 
       - name: Run pytest
-        run: python -m pytest api
+        run: python -m pytest tests
         working-directory: api
