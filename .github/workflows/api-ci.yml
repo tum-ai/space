@@ -44,7 +44,8 @@ jobs:
       - name: Install pip dependencies
         run: pip install -e api
       - name: Lint with Ruff
-        run: cd ./api && python -m ruff check .
+        run: python -m ruff check .
+        working-directory: api
 
       # TODO: integrate mypy
       
@@ -56,5 +57,5 @@ jobs:
       # TODO: shorten paths
 
       - name: Run pytest
-        run: python -m pytest .
+        run: python -m pytest api
         working-directory: api

@@ -1,5 +1,6 @@
 from fastapi.testclient import TestClient
-from main import app
+
+from space_api.main import app
 
 client = TestClient(app)
 

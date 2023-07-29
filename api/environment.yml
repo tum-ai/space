@@ -18,6 +18,7 @@ dependencies:
 
   # testing
   - pytest
+  - pytest-cov
 
   # runtime
   - fastapi
