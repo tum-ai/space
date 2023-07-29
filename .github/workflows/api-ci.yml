@@ -41,8 +41,6 @@ jobs:
         with:
           environment-file: api/environment.yml
           init-shell: bash
-      - name: Install pip dependencies
-        run: pip install -e api
       - name: Lint with Ruff
         run: python -m ruff check .
         working-directory: api
