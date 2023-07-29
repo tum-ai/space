@@ -11,3 +11,7 @@ lint-fix:
 
 test:
 	PYTHONPATH=${PYTHONPATH} pytest
+
+build:
+	docker-compose build --no-cache
+	docker-compose up -d
