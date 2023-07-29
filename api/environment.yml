@@ -5,6 +5,8 @@ channels:
 dependencies:
   - python=3.11
   - pip
+  - setuptools-scm
+  - setuptools
 
   # development
   - ipykernel
@@ -36,6 +38,10 @@ dependencies:
   - uvloop
 
   - pip:
+    # linting
+    - types-pyyaml
+    - types-python-dateutil
+    - types-requests
     # runtime
     - fastapi-mail
     - firebase-admin

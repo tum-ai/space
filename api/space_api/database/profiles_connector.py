@@ -11,7 +11,6 @@ from space_api.profiles.api_models import (
     ProfileInCreate,
     ProfileInUpdate,
     ProfileMemberInvitation,
-    RoleHoldershipInOut,
     RoleHoldershipUpdateInOut,
     SocialNetworkIn,
 )
@@ -216,14 +215,15 @@ def update_db_profile(
     with Session(sql_engine) as db_session:
         job_history_encoded = Profile.encode_job_history(profile_to_update.job_history)
 
-        db_profile: Profile = db_session.query(Profile).get(profile_id)
+        db_profile: Profile | None = db_session.query(Profile).get(profile_id)
+        assert db_profile
 
         db_profile.email = profile_to_update.email
         db_profile.phone = profile_to_update.phone
 
         db_profile.first_name = profile_to_update.first_name
         db_profile.last_name = profile_to_update.last_name
-        db_profile.birthday = profile_to_update.birthday
+        db_profile.birthday = profile_to_update.birthday  # type: ignore
         db_profile.nationality = profile_to_update.nationality
         db_profile.description = profile_to_update.description
 
@@ -236,12 +236,14 @@ def update_db_profile(
 
         if db_profile.degree_semester != profile_to_update.degree_semester:
             db_profile.degree_semester = profile_to_update.degree_semester
-            db_profile.degree_semester_last_change_date = datetime.datetime.now()
+            db_profile.degree_semester_last_change_date = (
+                datetime.datetime.now()  # type: ignore
+            )
 
         db_profile.university = profile_to_update.university
         db_profile.job_history = job_history_encoded
 
-        db_profile.time_joined = profile_to_update.time_joined
+        db_profile.time_joined = profile_to_update.time_joined  # type: ignore
 
         # social network change computation:
         # - pk of social network: profile_id (fixed here), type
@@ -254,7 +256,7 @@ def update_db_profile(
             old_sn: SocialNetwork = old_sn_types[old_k]
             if old_k in new_sn_types:
                 # still in use: detect changes
-                new_sn: SocialNetworkIn = new_sn_types[old_k]
+                new_sn: SocialNetworkIn = new_sn_types[str(old_k)]  # type: ignore
                 if (old_sn.link != new_sn.link) or (old_sn.handle != new_sn.handle):
                     # values changed
                     old_sn.link = new_sn.link
@@ -263,7 +265,7 @@ def update_db_profile(
                 # else: nothing changed, leave
 
                 # remove from new_sn_types, so that new items remain in dict
-                new_sn_types.pop(old_k)
+                new_sn_types.pop(str(old_k))  # type: ignore
 
             else:  # not in use anymore -> delete
                 db_profile.social_networks = [
@@ -309,6 +311,7 @@ def list_db_profiles(sql_engine: sa.Engine, page: int, page_size: int) -> list[P
 def retrieve_db_profile(sql_engine: sa.Engine, profile_id: int) -> Profile:
     with Session(sql_engine) as db_session:
         db_model = db_session.query(Profile).get(profile_id)
+        assert db_model
         db_model.force_load()
         return db_model
 
@@ -451,7 +454,7 @@ def invite_new_members(
                 db_department_membership = DepartmentMembership(
                     profile_id=db_profile.id,
                     department_handle=new_profile.department_handle,
-                    position=PositionType[new_profile.department_position],
+                    position=new_profile.department_position,
                     time_from=datetime.datetime.now(),
                     time_to=None,
                 )
@@ -462,8 +465,8 @@ def invite_new_members(
                 assert db_profile.id
                 for sn in db_profile.social_networks:
                     assert sn.profile_id
-                for sn in db_profile.department_memberships:
-                    assert sn.profile_id
+                for dm in db_profile.department_memberships:
+                    assert dm.profile_id
 
                 created_profiles.append(db_profile)
 
@@ -510,14 +513,16 @@ def list_db_roleholderships(
 
 def update_db_roleholderships(
     sql_engine: sa.Engine, new_role_holderships: list[RoleHoldershipUpdateInOut]
-) -> tuple[list[RoleHoldershipUpdateInOut], list[tuple[RoleHoldershipInOut, str]]]:
+) -> tuple[
+    list[RoleHoldershipUpdateInOut], list[tuple[RoleHoldershipUpdateInOut, str]]
+]:
     """
     Returns:
         List[Profile]: successfully created role holderships
         List[Tuple[RoleHoldership, str]]: failed role holderships with error message
     """
-    created_profiles = []
-    error_profiles = []
+    created_profiles: list[RoleHoldershipUpdateInOut] = []
+    error_profiles: list[tuple[RoleHoldershipUpdateInOut, str]] = []
 
     for new_role_holdership in new_role_holderships:
         try:

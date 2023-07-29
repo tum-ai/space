@@ -2,6 +2,7 @@ import datetime
 from typing import Annotated
 
 from fastapi import APIRouter, Body, Request
+from pydantic import EmailStr
 
 from space_api.database.profiles_connector import (
     create_db_department_memberships,
@@ -408,7 +409,7 @@ def invite_members(
         for profile in created_profiles_out:
             link = generate_reset_password_link(profile.email)
             send_email(
-                profile.email,
+                EmailStr(profile.email),
                 "Welcome to TUM.ai space",
                 f"Dear {profile.first_name} {profile.last_name},\n\nYou have been \
                 invited to TUM.ai space. Please follow the link below to reset your \

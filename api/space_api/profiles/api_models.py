@@ -3,17 +3,7 @@ from typing import Any, Literal, cast
 
 from pydantic import BaseModel, ConfigDict, Field
 
-from space_api.database.db_models import (
-    Department,
-    DepartmentMembership,
-    JobHistoryElement,
-    PositionType,
-    Profile,
-    Role,
-    RoleHoldership,
-    SocialNetwork,
-    SocialNetworkType,
-)
+from space_api.database import db_models
 
 # ------------------------------------------------------------------------------------ #
 #                                 department operations                                #
@@ -38,7 +28,7 @@ class DepartmentOut(BaseModel):
     description: str
 
     @classmethod
-    def from_db_model(cls, department: Department) -> "DepartmentOut":
+    def from_db_model(cls, department: db_models.Department) -> "DepartmentOut":
         return DepartmentOut(
             handle=department.handle,
             name=department.name,
@@ -70,7 +60,7 @@ class RoleInOut(BaseModel):
     description: str
 
     @classmethod
-    def from_db_model(cls, role: Role) -> "RoleInOut":
+    def from_db_model(cls, role: db_models.Role) -> "RoleInOut":
         return RoleInOut(handle=role.handle, description=role.description or "")
 
     @classmethod
@@ -96,7 +86,7 @@ class ProfileMemberInvitation(BaseModel):
     first_name: str
     last_name: str
     department_handle: str
-    department_position: str
+    department_position: db_models.PositionType
 
     @classmethod
     def dummy(cls) -> "ProfileMemberInvitation":
@@ -115,7 +105,7 @@ class SocialNetworkIn(BaseModel):
         }
     )
 
-    type: SocialNetworkType
+    type: db_models.SocialNetworkType
     handle: str | None
     link: str | None
 
@@ -138,15 +128,15 @@ class SocialNetworkOut(BaseModel):
     )
 
     profile_id: int
-    type: SocialNetworkType
+    type: db_models.SocialNetworkType
     handle: str | None
     link: str | None
 
     @classmethod
-    def from_db_model(cls, s: SocialNetwork) -> "SocialNetworkOut":
+    def from_db_model(cls, s: db_models.SocialNetwork) -> "SocialNetworkOut":
         return SocialNetworkOut(
             profile_id=s.profile_id,
-            type=cast(SocialNetworkType, s.type),
+            type=cast(db_models.SocialNetworkType, s.type),
             handle=s.handle,
             link=s.link,
         )
@@ -169,16 +159,18 @@ class DepartmentMembershipOut(BaseModel):
     )
 
     profile_id: int
-    position: PositionType
+    position: db_models.PositionType
     department_handle: str
     time_from: datetime | None = Field(None)
     time_to: datetime | None = Field(None)
 
     @classmethod
-    def from_db_model(cls, s: DepartmentMembership) -> "DepartmentMembershipOut":
+    def from_db_model(
+        cls, s: db_models.DepartmentMembership
+    ) -> "DepartmentMembershipOut":
         return DepartmentMembershipOut(
             profile_id=s.profile_id,
-            position=cast(PositionType, s.position),
+            position=cast(db_models.PositionType, s.position),
             department_handle=s.department_handle,
             time_from=cast(datetime, s.time_from),
             time_to=cast(datetime, s.time_to),
@@ -207,8 +199,8 @@ class ProfileInCreateUpdateBase(BaseModel):
                 "degree_semester": "5",
                 "university": "TUM",
                 "job_history": [
-                    JobHistoryElement.dummy(),
-                    JobHistoryElement.dummy(),
+                    db_models.JobHistoryElement.dummy(),
+                    db_models.JobHistoryElement.dummy(),
                 ],
                 "time_joined": datetime.now(),
                 "social_networks": [
@@ -235,7 +227,7 @@ class ProfileInCreateUpdateBase(BaseModel):
     degree_name: str | None = Field(None)
     degree_semester: int | None = Field(None)
     university: str | None = Field(None)
-    job_history: list[JobHistoryElement]
+    job_history: list[db_models.JobHistoryElement]
     time_joined: datetime | None = Field(None)
 
     social_networks: list["SocialNetworkIn"]
@@ -274,8 +266,8 @@ class ProfileOut(BaseModel):
                 "degree_semester": "5",
                 "university": "TUM",
                 "job_history": [
-                    JobHistoryElement.dummy(),
-                    JobHistoryElement.dummy(),
+                    db_models.JobHistoryElement.dummy(),
+                    db_models.JobHistoryElement.dummy(),
                 ],
                 "time_joined": datetime.now(),
                 "social_networks": [
@@ -309,14 +301,14 @@ class ProfileOut(BaseModel):
     degree_name: str | None = Field(None)
     degree_semester: int | None = Field(None)
     university: str | None = Field(None)
-    job_history: list[JobHistoryElement]
+    job_history: list[db_models.JobHistoryElement]
     time_joined: datetime | None = Field(None)
 
     social_networks: list["SocialNetworkOut"]
     department_memberships: list["DepartmentMembershipOut"]
 
     @classmethod
-    def from_db_model(cls, profile: Profile) -> "ProfileOut":
+    def from_db_model(cls, profile: db_models.Profile) -> "ProfileOut":
         return ProfileOut(
             id=profile.id,
             firebase_uid=profile.firebase_uid,
@@ -364,8 +356,8 @@ class ProfileOutPublic(BaseModel):
                 "degree_semester": "5",
                 "university": "TUM",
                 "job_history": [
-                    JobHistoryElement.dummy(),
-                    JobHistoryElement.dummy(),
+                    db_models.JobHistoryElement.dummy(),
+                    db_models.JobHistoryElement.dummy(),
                 ],
                 "time_joined": datetime.now(),
                 "social_networks": [
@@ -394,14 +386,14 @@ class ProfileOutPublic(BaseModel):
     degree_name: str | None = Field(None)
     degree_semester: int | None = Field(None)
     university: str | None = Field(None)
-    job_history: list[JobHistoryElement]
+    job_history: list[db_models.JobHistoryElement]
     time_joined: datetime | None = Field(None)
 
     social_networks: list["SocialNetworkOut"]
     department_memberships: list["DepartmentMembershipOut"]
 
     @classmethod
-    def from_db_model(cls, profile: Profile) -> "ProfileOutPublic":
+    def from_db_model(cls, profile: db_models.Profile) -> "ProfileOutPublic":
         return ProfileOutPublic(
             id=profile.id,
             first_name=profile.first_name,
@@ -449,7 +441,7 @@ class ProfileOutPublicReduced(BaseModel):
     description: str | None = Field(None)
 
     @classmethod
-    def from_db_model(cls, profile: Profile) -> "ProfileOutPublicReduced":
+    def from_db_model(cls, profile: db_models.Profile) -> "ProfileOutPublicReduced":
         return ProfileOutPublicReduced(
             id=profile.id,
             first_name=profile.first_name,
@@ -487,7 +479,9 @@ class RoleHoldershipInOut(BaseModel):
     role: RoleInOut
 
     @classmethod
-    def from_db_model(cls, role_holdership: RoleHoldership) -> "RoleHoldershipInOut":
+    def from_db_model(
+        cls, role_holdership: db_models.RoleHoldership
+    ) -> "RoleHoldershipInOut":
         return RoleHoldershipInOut(
             profile=ProfileOutPublic.from_db_model(role_holdership.profile),
             role=RoleInOut.from_db_model(role_holdership.role),
@@ -516,7 +510,9 @@ class RoleHoldershipUpdateInOut(BaseModel):
 
     @classmethod
     def from_db_model(
-        cls, role_holdership: RoleHoldership, method: Literal["create", "delete"]
+        cls,
+        role_holdership: db_models.RoleHoldership,
+        method: Literal["create", "delete"],
     ) -> "RoleHoldershipUpdateInOut":
         return RoleHoldershipUpdateInOut(
             profile_id=role_holdership.profile_id,
@@ -558,7 +554,7 @@ class DepartmentMembershipWithShortProfileOut(BaseModel):
 
     @classmethod
     def from_db_model(
-        cls, dm: DepartmentMembership
+        cls, dm: db_models.DepartmentMembership
     ) -> "DepartmentMembershipWithShortProfileOut":
         return DepartmentMembershipWithShortProfileOut(
             id=dm.id,
@@ -601,7 +597,9 @@ class DepartmentMembership(BaseModel):
     time_to: datetime | None = Field(None)
 
     @classmethod
-    def from_db_model(cls, dm: DepartmentMembership) -> "DepartmentMembership":
+    def from_db_model(
+        cls, dm: db_models.DepartmentMembership
+    ) -> "DepartmentMembership":
         return DepartmentMembership(
             id=dm.id,
             profile=ProfileOutPublicReduced.from_db_model(dm.profile),

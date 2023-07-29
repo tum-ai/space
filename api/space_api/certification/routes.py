@@ -36,7 +36,7 @@ class FormData(BaseModel):
 def generate_certificate(
     request: Request,
     data: Annotated[dict[str, str], Body(embed=True)],
-) -> dict:
+) -> Any:
     try:
         response = requests.post(
             # Using Docker name resolution

@@ -18,10 +18,11 @@ from sqlalchemy import (
     func,
 )
 from sqlalchemy.ext.hybrid import hybrid_property
-from sqlalchemy.orm import Mapped, declarative_base, mapped_column, relationship
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
-# don't touch this base class!
-SaBaseModel = declarative_base()
+
+class SaBaseModel(DeclarativeBase):
+    pass
 
 
 class MixinAsDict:
@@ -150,7 +151,7 @@ class Profile(MixinAsDict, SaBaseModel):
     @hybrid_property
     def tum_ai_semester(self) -> int:
         """automatically computed by python from db model"""
-        return relativedelta(datetime.now(), self.date_joined).years * 2
+        return relativedelta(datetime.now(), self.time_joined).years * 2  # type: ignore
 
     @hybrid_property
     def full_name(self) -> str:
@@ -182,7 +183,7 @@ class Profile(MixinAsDict, SaBaseModel):
     @classmethod
     def encode_job_history(cls, job_history: list[JobHistoryElement]) -> str | None:
         # encode job_history in csv of <employer:position:from:to>
-        encoded_history: str | None = ""
+        encoded_history: str = ""
         for hist in job_history:
             # TODO abstraction
             encoded_history = (
@@ -190,11 +191,9 @@ class Profile(MixinAsDict, SaBaseModel):
                 + f"{hist.date_from}:{hist.date_to},"
             )
         if len(encoded_history or "") > 0:
-            encoded_history = encoded_history[:-1]  # strip trailing comma
+            return encoded_history[:-1]  # strip trailing comma
         else:
-            encoded_history = None
-
-        return encoded_history
+            return None
 
     def force_load(self) -> None:
         for sn in self.social_networks:
@@ -400,25 +399,27 @@ class ApplicationReview(MixinAsDict, SaBaseModel):
     finalscore: Mapped[float] = mapped_column(Float, nullable=False, default=-1.0)
 
     # ----------------------------- RELATIONAL FK FIELDS ----------------------------- #
-    reviewer: Mapped[int] = mapped_column(ForeignKey(Profile.id), nullable=False)
-    profile: Mapped["Profile"] = relationship("Profile", back_populates="reviews")
+    reviewer_id: Mapped[int] = mapped_column(ForeignKey(Profile.id), nullable=False)
+    reviewer: Mapped["Profile"] = relationship("Profile", back_populates="reviews")
 
-    reviewee: Mapped[int] = mapped_column(
+    reviewee_id: Mapped[int] = mapped_column(
         ForeignKey(Application.id, ondelete="CASCADE"), nullable=False
     )
+    reviewee: Mapped["Application"] = relationship("Profile", back_populates="reviews")
     application: Mapped["Application"] = relationship(
         "Application", back_populates="reviews"
     )
 
     def __repr__(self) -> str:
-        return f"ApplicationReview(review_id={self.review_id}, \
+        return f"ApplicationReview(id={self.id}, \
             reviewer_id={self.reviewer_id}, reviewee_id={self.reviewee_id})"
 
     def force_load(self) -> None:
-        if not self.reviewer:
+        if not self.reviewer_id:
             raise KeyError
 
-        self.profile.force_load()
+        self.reviewer.force_load()
+        self.reviewee.force_load()
 
 
 class ApplicationReferral(MixinAsDict, SaBaseModel):
@@ -435,9 +436,10 @@ class ApplicationReferral(MixinAsDict, SaBaseModel):
     referral_by: Mapped[int] = mapped_column(
         ForeignKey(Profile.id), primary_key=True, nullable=False
     )
+    profile_id: Mapped[int] = mapped_column(ForeignKey(Profile.id, ondelete="CASCADE"))
     profile: Mapped["Profile"] = relationship("Profile", back_populates="referrals")
 
     def __repr__(self) -> str:
-        return f"ApplicationReferral(user_id={self.user_id}, \
+        return f"ApplicationReferral(profile_id={self.profile_id}, \
             applicant_first_name={self.applicant_first_name}, \
-                applicant_last_name={self.applicant_last_name})"
+            applicant_last_name={self.applicant_last_name})"

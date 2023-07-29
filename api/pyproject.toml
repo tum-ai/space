@@ -1,6 +1,9 @@
 [build-system]
 requires = ["setuptools", "setuptools-scm", "wheel"]
 
+[tool.setuptools_scm]
+version_scheme = "post-release"
+
 [project]
 name = "tumai-space-api"
 version = "0.1.0"

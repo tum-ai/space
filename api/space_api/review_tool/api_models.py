@@ -48,7 +48,7 @@ class ApplicationReviewOut(BaseModel):
     reviewee: int
 
     @classmethod
-    def from_db_model(cls, review: ApplicationReview) -> "ApplicationReview":
+    def from_db_model(cls, review: ApplicationReview) -> "ApplicationReviewOut":
         return ApplicationReviewOut(
             id=review.id,
             motivation=review.motivation,
@@ -65,7 +65,7 @@ class ApplicationReviewOut(BaseModel):
             referral=review.referral,
             finalscore=review.finalscore,
             reviewer=ProfileOutPublic.from_db_model(review.reviewer),
-            reviewee=review.reviewee,
+            reviewee=review.reviewee_id,
         )
 
     @classmethod

@@ -40,12 +40,10 @@ async def setup_db_client(running_app: FastAPI) -> None:
     # create/initialize tables
     DBSession.configure(bind=running_app.state.sql_engine)
 
-    SaBaseModel.metadata.bind = running_app.state.sql_engine
-
     # create views
     init_views(running_app.state.sql_engine, SaBaseModel)
 
-    SaBaseModel.metadata.create_all(running_app.state.sql_engine, checkfirst=True)
+    SaBaseModel.metadata.create_all(bind=running_app.state.sql_engine, checkfirst=True)
 
     # add pre-existing roles
     upset_roles(running_app.state.sql_engine)

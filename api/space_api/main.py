@@ -43,7 +43,7 @@ async def startup_event() -> None:
     This function is called when the server starts up.
     It is used to set up the database connection and other configurations.
     """
-    log.debug("async setup..."),
+    log.debug("async setup...")
     await setup_db_client(app)
 
 
@@ -53,7 +53,7 @@ async def shutdown_event() -> None:
     This function is called when the application shuts down.
     It is used to perform any cleanup tasks.
     """
-    log.debug("async shutdown..."),
+    log.debug("async shutdown...")
     await close_db_client(app)
 
 
