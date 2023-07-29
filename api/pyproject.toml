@@ -3,6 +3,7 @@ requires = ["setuptools", "setuptools-scm", "wheel"]
 
 [project]
 name = "tumai-space-api"
+version = "0.1.0"
 description = ""
 authors = [
     { name = "Robin Holzinger", email = "robin.holzingr@gmail.com" }
