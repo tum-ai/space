@@ -94,6 +94,8 @@ def update_db_membership_application_review(
             .filter(sa.and_(MembershipApplicationReview.id == review_id, MembershipApplicationReview.reviewer == profile_id))
             .first()
         )
+        if db_model is None:
+            return None
 
         if updated_membership_application_review.motivation:
             db_model.motivation = updated_membership_application_review.motivation

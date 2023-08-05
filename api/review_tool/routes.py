@@ -158,6 +158,12 @@ def update_review(
     updated_review_model = update_db_membership_application_review(
         request.app.state.sql_engine, request.state.profile.id, review_id, data
     )
+    if updated_review_model is None:
+        return {
+            "status_code": 403,
+            "response_type": "error",
+            "description": "You are not reviewer of this review or review does not exist.",
+        }
     updated_review = MembershipApplicationReviewOut.from_db_model(updated_review_model)
 
     return {
