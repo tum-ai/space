@@ -10,10 +10,18 @@ API_ROOT_DIR = Path(__file__).parent.parent
 
 
 def init_firebase_auth() -> App:
-    with open(
-        API_ROOT_DIR.parent / ".secrets" / "tumai-space-firebase-adminsdk.json", "w+"
-    ) as f:
-        f.write(os.environ["FIREBASE_ADMINSDK_CERTIFICATE"])
+    if not os.path.exists(
+        os.path.join(
+            API_ROOT_DIR.parent,
+            ".secrets",
+            "tumai-space-firebase-adminsdk.json"
+        )
+    ):
+        with open(
+            API_ROOT_DIR.parent / ".secrets" / "tumai-space-firebase-adminsdk.json",
+            "w+"
+        ) as f:
+            f.write(os.environ["FIREBASE_ADMINSDK_CERTIFICATE"])
     cred = credentials.Certificate(
         API_ROOT_DIR.parent / ".secrets" / "tumai-space-firebase-adminsdk.json"
     )
