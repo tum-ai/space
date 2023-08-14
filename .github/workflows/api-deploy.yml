@@ -49,12 +49,13 @@ jobs:
         run: python -m pytest tests
         working-directory: api
       - name: force pull branch, and run Docker Compose
-        uses: JimCronqvist/action-ssh@master
+        uses: appleboy/ssh-action@v1.0.0
         with:
-          hosts: ‘${{ env.SSH_SERVER_USER }}@${{ env.SSH_SERVER_HOST }}’
-          privateKey: ${{ env.SSH_SERVER_GHA_PRIVATE_KEY }}
-          debug: false
-          command: |
+          host: ${{ secrets.SSH_SERVER_HOST }}
+          username: ${{ secrets.SSH_SERVER_USER }}
+          key: ${{ secrets.SSH_SERVER_GHA_PRIVATE_KEY }}
+          port: 22
+          script: |
             cd /apps/tumai/space
             git fetch --all
             git reset --hard origin/main
