@@ -35,6 +35,12 @@ Make sure to have the following installed before running `make`:
 
 Also make sure to have [pre-commit](https://pre-commit.com) installed by running `pre-commit install` once.
 
+Create conda environment for the API:
+```
+cd api
+conda env create -f environment.yaml
+```
+
 ### Running the project
 
 **Initial setup**
