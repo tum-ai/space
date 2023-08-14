@@ -6,19 +6,19 @@ from firebase_admin import App, auth, credentials  # type: ignore
 from firebase_admin.auth import UserRecord  # type: ignore
 from firebase_admin.exceptions import AlreadyExistsError  # type: ignore
 
-API_ROOT_DIR = Path(__file__).parent.parent
+API_ROOT_DIR = Path(__file__).parent.parent.parent
 
 
 def init_firebase_auth() -> App:
-    secrets_path = (
-        API_ROOT_DIR.parent / ".secrets" / "tumai-space-firebase-adminsdk.json"
-    )
+    secrets_path = API_ROOT_DIR / ".secrets" / "tumai-space-firebase-adminsdk.json"
     if not os.path.exists(secrets_path):
+        # create folder if needed
+        if not os.path.exists(secrets_path.parent):
+            os.makedirs(secrets_path.parent)
+
         with open(secrets_path, "w+") as f:
             f.write(os.environ["FIREBASE_ADMINSDK_CERTIFICATE"])
-    cred = credentials.Certificate(
-        API_ROOT_DIR.parent / ".secrets" / "tumai-space-firebase-adminsdk.json"
-    )
+    cred = credentials.Certificate(secrets_path)
     app = firebase_admin.initialize_app(cred)
     return app
 
