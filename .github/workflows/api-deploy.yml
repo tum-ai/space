@@ -21,6 +21,10 @@ env:
   MAIL_PORT: 587
   MAIL_SERVER: smtp.gmail.com
   MAIL_FROM_NAME: TUM.ai Space Team
+  # [deployment server]
+  SSH_SERVER_HOST: ${{ vars.SSH_SERVER_HOST }}
+  SSH_SERVER_USER: ${{ vars.SSH_SERVER_USER }}
+  SSH_SERVER_GHA_PRIVATE_KEY:  ${{ secrets.SSH_SERVER_GHA_PRIVATE_KEY }}
 
 jobs:
   build:
@@ -48,7 +52,7 @@ jobs:
         uses: JimCronqvist/action-ssh@master
         with:
           hosts: ‘${{ env.SSH_SERVER_USER }}@${{ env.SSH_SERVER_HOST }}’
-          privateKey: ${{ secrets.SSH_SERVER_GHA_PRIVATE_KEY }}
+          privateKey: ${{ env.SSH_SERVER_GHA_PRIVATE_KEY }}
           debug: false
           command: |
             cd /apps/tumai/space
