@@ -1,4 +1,3 @@
-from typing import List
 import sqlalchemy as sa
 from sqlalchemy.orm import (
     Session,
@@ -52,7 +51,8 @@ def retrieve_db_membership_application_review(
     with Session(sql_engine) as db_session:
         db_model = (
             db_session.query(MembershipApplicationReview)
-            .filter(sa.and_(MembershipApplicationReview.id == review_id, MembershipApplicationReview.reviewer == profile_id))
+            .filter(sa.and_(MembershipApplicationReview.id == review_id,
+                            MembershipApplicationReview.reviewer == profile_id))
             .first()
         )
 
@@ -60,19 +60,22 @@ def retrieve_db_membership_application_review(
 
 
 def retrieve_db_membership_application_all_reviews_for_reviewer(
-    sql_engine: sa.Engine, profile_id: int 
+    sql_engine: sa.Engine, profile_id: int
 ) -> MembershipApplicationReview:
     with Session(sql_engine) as db_session:
-        db_model = db_session.query(MembershipApplicationReview).filter(MembershipApplicationReview.reviewer == profile_id).all()
+        db_model = (
+            db_session.query(MembershipApplicationReview)
+        .filter(MembershipApplicationReview.reviewer == profile_id).all()
+        )
 
         return db_model
-    
+
 
 def retrieve_db_membership_application_all_reviews(
     sql_engine: sa.Engine, page: int, page_size: int
-) -> List[MembershipApplicationReview]:
-    with Session(sql_engine) as db_session:    
-        db_membership_applications_reviews: List[MembershipApplicationReview] = (
+) -> list[MembershipApplicationReview]:
+    with Session(sql_engine) as db_session:
+        db_membership_applications_reviews: list[MembershipApplicationReview] = (
                 db_session.query(MembershipApplicationReview)
                 .offset(page_size * (page - 1))
                 .limit(page_size)
@@ -80,7 +83,7 @@ def retrieve_db_membership_application_all_reviews(
             )
 
         return db_membership_applications_reviews
-    
+
 
 def update_db_membership_application_review(
     sql_engine: sa.Engine,
@@ -91,7 +94,8 @@ def update_db_membership_application_review(
     with Session(sql_engine) as db_session:
         db_model = (
             db_session.query(MembershipApplicationReview)
-            .filter(sa.and_(MembershipApplicationReview.id == review_id, MembershipApplicationReview.reviewer == profile_id))
+            .filter(sa.and_(MembershipApplicationReview.id == review_id,
+                             MembershipApplicationReview.reviewer == profile_id))
             .first()
         )
         if db_model is None:
@@ -106,7 +110,8 @@ def update_db_membership_application_review(
         if updated_membership_application_review.in_tumai:
             db_model.in_tumai = updated_membership_application_review.in_tumai
         if updated_membership_application_review.commentFitTUMai:
-            db_model.commentFitTUMai = updated_membership_application_review.commentFitTUMai
+            db_model.commentFitTUMai = (updated_membership_application_review
+                                        .commentFitTUMai)
         if updated_membership_application_review.timecommit:
             db_model.timecommit = updated_membership_application_review.timecommit
         if updated_membership_application_review.dept1Score:
@@ -118,7 +123,8 @@ def update_db_membership_application_review(
         if updated_membership_application_review.maybegoodfit:
             db_model.maybegoodfit = updated_membership_application_review.maybegoodfit
         if updated_membership_application_review.furthercomments:
-            db_model.furthercomments = updated_membership_application_review.furthercomments
+            db_model.furthercomments = (updated_membership_application_review
+                                        .furthercomments)
         if updated_membership_application_review.referral:
             db_model.referral = updated_membership_application_review.referral
         if updated_membership_application_review.finalscore:
@@ -134,4 +140,3 @@ def update_db_membership_application_review(
         db_model.force_load()
 
         return db_model
-        
