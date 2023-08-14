@@ -18,6 +18,7 @@ def init_firebase_auth() -> App:
 
         with open(secrets_path, "w+") as f:
             f.write(os.environ["FIREBASE_ADMINSDK_CERTIFICATE"])
+
     cred = credentials.Certificate(secrets_path)
     app = firebase_admin.initialize_app(cred)
     return app
