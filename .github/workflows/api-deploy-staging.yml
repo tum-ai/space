@@ -62,6 +62,29 @@ jobs:
             git fetch --all
             git reset --hard origin/dev
             cd api/
+
+            # ENV VARIABLES NEEDED FOR BUILD
+            export ENVIRON=${{ env.ENVIRON }}
+            export FIREBASE_ADMINSDK_CERTIFICATE=${{ env.FIREBASE_ADMINSDK_CERTIFICATE }}
+
+            # ENV VARIABLES NEEDED FOR RUN
+            export API_PORT=${{ env.API_PORT }}
+                        
+            # [database environment]
+            export DB_HOST=${{ env.DB_HOST }}
+            export DB_PORT=${{ env.DB_PORT }}
+            export DB_NAME=${{ env.DB_NAME }}
+            export DB_USER=${{ env.DB_USER }}
+            export DB_PASSWORD=${{ env.DB_PASSWORD }}
+
+            # [mail environment]
+            export MAIL_USERNAME=${{ env.MAIL_USERNAME }}
+            export MAIL_PASSWORD=${{ env.MAIL_PASSWORD }}
+            export MAIL_FROM=${{ env.MAIL_FROM }}
+            export MAIL_PORT=${{ env.MAIL_PORT }}
+            export MAIL_SERVER=${{ env.MAIL_SERVER }}
+            export MAIL_FROM_NAME=${{ env.MAIL_FROM_NAME }}
+
             docker-compose build --no-cache
             docker-compose down --remove-orphans
             docker-compose up -d --remove-orphans
