@@ -1,75 +1,46 @@
 version: '3.9'
 services:
-    # -------------------------------------------------------------------------------- #
-    #                                    BACKEND DB                                    #
-    # -------------------------------------------------------------------------------- #
-    space-db:
-        image: postgres:14-alpine
-        restart: unless-stopped
-        hostname: space.db
-        container_name: space-db
-        volumes:
-            - .data/space_db/postgresql:/var/lib/postgresql/data/
-        ports:
-            - "5432:5432"
-        environment:
-            POSTGRES_USER: space-db
-            POSTGRES_PASSWORD: space-db
-            POSTGRES_DB: space-db
-        networks:
-            - backend-net
+  space-db:
+    image: postgres:14-alpine
+    restart: unless-stopped
+    hostname: space.db
+    container_name: space-db
+    volumes:
+      - .data/space_db/postgresql:/var/lib/postgresql/data/
+    ports:
+      - "15432:5432"
+    environment:
+      POSTGRES_USER: space-db
+      POSTGRES_PASSWORD: space-db
+      POSTGRES_DB: space-db
+    networks:
+      - backend-net
 
-    # -------------------------------------------------------------------------------- #
-    #                                    BACKEND API                                   #
-    # -------------------------------------------------------------------------------- #
-    tum-ai-space-api:
-        image: tum-ai-space-api
-        build: ./api
-        restart: unless-stopped
-        hostname: api.tum-ai-dev.com
-        container_name: tum-ai-space-api
-        command: gunicorn main:app -k uvicorn.workers.UvicornWorker --workers=4 --reload --bind=0.0.0.0
-        volumes:
-            - ./api/:/code
-        ports:
-            - '8000:8000'
-        depends_on:
-            - space-db
-        networks:
-            - backend-net
-        environment:
-            - environment=development
-            - DB_HOST=space.db
-            - DB_PORT=5432
-            - DB_NAME=space-db
-            - DB_USER=space-db
-            - DB_PASSWORD=space-db
-
-    # [CERTIFICATION API] #################################################
-    space.files:
-        image: httpd:latest
-        container_name: space.files
-        hostname: space.files
-        ports:
-            - '9990:80'
-        volumes:
-            - ./.fileserver:/usr/local/apache2/htdocs
-        networks:
-            - backend-net
-    
-    cert:
-        hostname: cert
-        image: tum-ai-space-tools-certification-server
-        build: ./tools/certification-api
-        restart: unless-stopped
-        container_name: cert
-        command: npm run dev
-        ports:
-            - '3009:80'
-        networks:
-            - backend-net
+  # [CERTIFICATION API] #################################################
+  space.files:
+    image: httpd:latest
+    container_name: space.files
+    hostname: space.files
+    ports:
+      - '9990:80'
+    volumes:
+      - ./.fileserver:/usr/local/apache2/htdocs
+    networks:
+      - backend-net
+  
+  cert:
+    hostname: cert
+    image: tum-ai-space-tools-certification-server
+    build: ./tools/certification-api
+    restart: unless-stopped
+    container_name: cert
+    command: npm run dev
+    ports:
+      - '3009:80'
+    networks:
+      - backend-net
 
 networks:
-    backend-net:
-        driver: bridge
-        name: backend-net
+  backend-net:
+    driver: bridge
+    name: backend-net

@@ -23,7 +23,7 @@ function NavBarMobile() {
 				</button>
 			</div>
 			{uiModel.navBarActive && (
-				<div className='slide-down absolute z-0 pt-20 bg-gradient-to-b bg-white dark:from-black dark:to-gray-900 p-4 rounded-b-lg flex flex-col space-y-4 justify-between items-center w-full shadow-lg'>
+				<div className='slide-down absolute z-0 pt-20 bg-gradient-to-b bg-white dark:bg-black p-4 rounded-b-lg flex flex-col space-y-4 justify-between items-center w-full shadow-lg'>
 					<Links />
 					<div className='flex space-x-4'>
 						<User />

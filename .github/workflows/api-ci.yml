@@ -1,0 +1,64 @@
+name: Backend CI - /api
+
+on:
+  pull_request:
+    paths:
+    - 'api/**'
+    branches:
+      - main
+    
+  push:
+    branches:
+      - main
+
+  workflow_dispatch:
+
+env:
+  FIREBASE_ADMINSDK_CERTIFICATE: ${{ secrets.FIREBASE_ADMINSDK_CERTIFICATE_STAGING }}
+
+jobs:
+  pre-commit:
+    name: Pre-commit
+    timeout-minutes: 15
+    runs-on: ubuntu-latest
+    env:
+      PRE_COMMIT_USE_MICROMAMBA: 1
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Set up micromamba
+        uses: mamba-org/setup-micromamba@5b9dc5cf9560f2808ade896803b2f68cfcfdd52b
+      - name: Add micromamba to GITHUB_PATH
+        run: echo "${HOME}/micromamba-bin" >> "$GITHUB_PATH"
+      - name: Install Python 3.11
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+      - name: Run pre-commit checks
+        uses: pre-commit/action@v3.0.0
+  ci:
+    name: Ubuntu CI for backend /api
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash -el {0}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: mamba-org/setup-micromamba@5b9dc5cf9560f2808ade896803b2f68cfcfdd52b
+        with:
+          environment-file: api/environment.yml
+          init-shell: bash
+      - name: Lint with Ruff
+        run: python -m ruff check .
+        working-directory: api
+      - name: Run mypy
+        run: python -m mypy .
+        working-directory: api
+      - name: write secret file
+        run: |
+          mkdir -p api/.secrets        
+          touch api/.secrets/tumai-space-firebase-adminsdk.json 
+          echo "${{ secrets.FIREBASE_ADMINSDK_CERTIFICATE_STAGING }}" > api/.secrets/tumai-space-firebase-adminsdk.json
+      - name: Run pytest
+        run: python -m pytest tests
+        working-directory: api

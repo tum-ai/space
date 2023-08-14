@@ -1,9 +1,11 @@
 import axios from 'axios';
 import { CertificateModel } from './certificate.js';
+import { DepartmentMembershipsModel } from './department_memberships.js';
 import { InviteModel } from './invite.js';
 import { MeModel } from './me.js';
 import { ProfileModel } from './profile.js';
 import { ProfilesModel } from './profiles.js';
+import { ReviewToolModel } from './reviewTool.js';
 import { RolesModel } from './roles.js';
 import { UiModel } from './ui.js';
 
@@ -16,6 +18,8 @@ export class RootModel {
 		this.meModel = new MeModel(this);
 		this.rolesModel = new RolesModel(this);
 		this.certificateModel = new CertificateModel(this);
+		this.departmentMembershipsModel = new DepartmentMembershipsModel(this);
+		this.reviewToolModel = new ReviewToolModel(this);
 	}
 
 	async GET(path) {
@@ -35,6 +39,24 @@ export class RootModel {
 			const response = await axios(path, {
 				data: data,
 				method: 'PATCH',
+			});
+			return response?.data.data;
+		} catch (error) {
+			console.log(error);
+			const response = error.response;
+			const data = response.data;
+			const message = data.detail[0]['msg'];
+			this.uiModel.toggleModal();
+			this.uiModel.updateModalContent(<div>Error: {message}</div>);
+			return;
+		}
+	}
+
+	async DELETE(path, data) {
+		try {
+			const response = await axios(path, {
+				data: data,
+				method: 'DELETE',
 			});
 			return response?.data.data;
 		} catch (error) {

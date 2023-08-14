@@ -33,11 +33,11 @@ function ProfileOverview() {
 			<div className='grid grid-cols-1 xl:grid-cols-2 gap-10 p-8 px-4 lg:px-10 rounded-xl'>
 				{/* name + image */}
 				<div className=' xl:col-span-2 flex flex-col items-start max-w-90 space-y-6'>
-					{profile.picture ? (
+					{profile.profile_picture ? (
 						<Image
-							className='rounded-full w-28 h-28 object-cover border drop-shadow-lg m-auto'
-							src={profile.picture}
-							alt='me'
+						className='rounded-full w-28 h-28 object-cover border drop-shadow-lg m-auto'
+						src={profile.profile_picture}
+						alt=''
 						/>
 					) : (
 						<div className='rounded-full w-28 h-28 bg-gray-300 dark:bg-gray-800 flex text-center drop-shadow-lg m-auto'>

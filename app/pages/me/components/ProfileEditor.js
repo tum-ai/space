@@ -5,6 +5,7 @@ import Input from '/components/Input';
 import Select from '/components/Select';
 import Textarea from '/components/Textarea';
 import { useStores } from '/providers/StoreProvider';
+import Image from 'next/image';
 
 const newJobExperience = {
 	employer: '',
@@ -30,10 +31,28 @@ function ProfileEditor({ isSignUpForm = false }) {
 	const editorProfile = meModel.editorProfile;
 	const router = useRouter();
 
-	function handleChange(e) {
-		meModel.updateEditorProfile({
-			[e.target.name]: e.target.value,
+	function convertImageToBase64(file) {
+		return new Promise((resolve, reject) => {
+			const reader = new FileReader();
+			reader.onload = () => resolve(reader.result);
+			reader.onerror = (error) => reject(error);
+			reader.readAsDataURL(file);
 		});
+	}
+
+	async function handleChange(e) {
+		// profile picture handling
+		if (e.target.name === 'profile_picture') {
+			const file = e.target.files[0];
+			const base64 = await convertImageToBase64(file);
+			meModel.updateEditorProfile({
+				['profile_picture']: base64,
+			});
+		} else {
+			meModel.updateEditorProfile({
+				[e.target.name]: e.target.value,
+			});
+		}
 	}
 
 	return (
@@ -48,6 +67,35 @@ function ProfileEditor({ isSignUpForm = false }) {
 				}}
 				className='flex flex-col gap-4 lg:grid lg:grid-cols-2 lg:space-y-0 lg:gap-8'
 			>
+				<div className='flex items-center space-x-4'>
+					{editorProfile.profile_picture ? (
+						<div className='flex flex-col items-center'>
+							<Image
+								className='rounded-full w-28 h-28 object-cover border drop-shadow-lg'
+								src={editorProfile.profile_picture}
+								alt=''
+							/>
+							<button
+								onClick={() => {
+									meModel.updateEditorProfile({
+										['profile_picture']: null,
+									});
+								}}
+							>
+								remove
+							</button>
+						</div>
+					) : (
+						<Input
+							label='Profile Image'
+							type='file'
+							accept='image/*'
+							id='profile_picture'
+							name='profile_picture'
+							onChange={handleChange}
+						/>
+					)}
+				</div>
 				<Input
 					label='First name'
 					type='text'
