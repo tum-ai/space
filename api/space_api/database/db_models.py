@@ -420,7 +420,7 @@ class ApplicationReview(MixinAsDict, SaBaseModel):
             raise KeyError
 
         self.reviewer.force_load()
-        self.reviewee.force_load()
+        self.application.force_load()
 
 
 class ApplicationReferral(MixinAsDict, SaBaseModel):
@@ -444,6 +444,6 @@ class ApplicationReferral(MixinAsDict, SaBaseModel):
     )
 
     def __repr__(self) -> str:
-        return f"ApplicationReferral(profile_id={self.profile_id}, \
+        return f"ApplicationReferral(referer_id={self.referer_id}, \
             applicant_first_name={self.applicant_first_name}, \
             applicant_last_name={self.applicant_last_name})"
