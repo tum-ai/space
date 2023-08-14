@@ -1,60 +1,61 @@
 name: Build & deploy staging backend to tumai rootserver
 
 on:
-    push:
-        paths:
-            - 'api/**'
-        branches:
-            - main
-    workflow_dispatch:
+  push:
+    paths:
+      - 'api/**'
+    branches:
+      - dev
+  workflow_dispatch:
 
 env:
-    ENVIRON: staging
-    FIREBASE_ADMINSDK_CERTIFICATE: ${{ secrets.FIREBASE_ADMINSDK_CERTIFICATE_STAGING }}
-    # [database environment]
-    DB_HOST: space.db.staging
-    DB_PORT: 5432
-    DB_NAME: space-db
-    DB_USER: space-db
-    DB_PASSWORD: ${{ secrets.SPACE_DB_STAGING_PASSWORD }}
-    # [mail environment]
-    MAIL_USERNAME: space-staging@tum-ai.com
-    MAIL_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD_STAGING }}
-    MAIL_FROM: space-staging@tum-ai.com
-    MAIL_PORT: 587
-    MAIL_SERVER: smtp.gmail.com
-    MAIL_FROM_NAME: TUM.ai Space Team (STAGING)
+  ENVIRON: staging
+  FIREBASE_ADMINSDK_CERTIFICATE: ${{ secrets.FIREBASE_ADMINSDK_CERTIFICATE_STAGING }}
+  # [database environment]
+  DB_HOST: space.db.staging
+  DB_PORT: 5432
+  DB_NAME: space-db
+  DB_USER: space-db
+  DB_PASSWORD: ${{ secrets.SPACE_DB_STAGING_PASSWORD }}
+  # [mail environment]
+  MAIL_USERNAME: space-staging@tum-ai.com
+  MAIL_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD_STAGING }}
+  MAIL_FROM: space-staging@tum-ai.com
+  MAIL_PORT: 587
+  MAIL_SERVER: smtp.gmail.com
+  MAIL_FROM_NAME: TUM.ai Space Team (STAGING)
 
 jobs:
-    deploy-staging:
-        name: Staging root-server deployment
-        runs-on: ubuntu-latest
-        defaults:
-            run:
-                shell: bash -el {0}
-        steps:
-            - uses: actions/checkout@v3
-            - uses: mamba-org/setup-micromamba@5b9dc5cf9560f2808ade896803b2f68cfcfdd52b
-              with:
-                  environment-file: api/environment.yml
-                  init-shell: bash
-            - name: Lint with Ruff
-              run: python -m ruff check .
-              working-directory: api
-            - name: Run mypy
-              run: python -m mypy .
-              working-directory: api
-            - name: write secret file
-              run: |
-                  mkdir -p api/.secrets        
-                  touch api/.secrets/tumai-space-firebase-adminsdk.json 
-                  echo "${{ secrets.FIREBASE_ADMINSDK_CERTIFICATE_STAGING }}" > api/.secrets/tumai-space-firebase-adminsdk.json
-            # - name: Run pytest
-            #   run: python -m pytest tests
-            #   working-directory: api
-            - name: Setup SSH to deployment root-server
-              uses: webfactory/ssh-agent@v0.5.2
-              with:
-                  ssh-private-key: ${{ secrets.SSH_SERVER_GHA_PRIVATE_KEY }}
-            - name: force pull branch, and run Docker Compose
-              run: ssh gha@91.210.224.56 'cd /apps/tumai/space-staging && git fetch --all && git reset --hard origin/main && docker-compose build --no-cache && docker-compose up -d --remove-orphans'
+  deploy-staging:
+    name: Staging root-server deployment
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash -el {0}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: mamba-org/setup-micromamba@5b9dc5cf9560f2808ade896803b2f68cfcfdd52b
+        with:
+          environment-file: api/environment.yml
+          init-shell: bash
+      - name: Lint with Ruff
+        run: python -m ruff check .
+        working-directory: api
+      - name: Run mypy
+        run: python -m mypy .
+        working-directory: api
+      - name: Run pytest
+        run: python -m pytest tests
+        working-directory: api
+      - name: force pull branch, and run Docker Compose
+        uses: JimCronqvist/action-ssh@master
+        with:
+          hosts: ‘${{ env.SSH_SERVER_USER }}@${{ env.SSH_SERVER_HOST }}’
+          privateKey: ${{ secrets.SSH_SERVER_GHA_PRIVATE_KEY }}
+          debug: false
+          command: |
+            cd /apps/tumai/space-staging
+            git fetch --all
+            git reset --hard origin/dev
+            docker-compose build --no-cache
+            docker-compose up -d --remove-orphans
