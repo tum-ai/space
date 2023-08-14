@@ -412,7 +412,6 @@ class ApplicationReview(MixinAsDict, SaBaseModel):
     reviewee_id: Mapped[int] = mapped_column(
         ForeignKey(Application.id, ondelete="CASCADE"), nullable=False
     )
-    reviewee: Mapped["Application"] = relationship("Profile", back_populates="reviews")
     application: Mapped["Application"] = relationship(
         "Application", back_populates="reviews"
     )
@@ -443,17 +442,7 @@ class ApplicationReferral(MixinAsDict, SaBaseModel):
     referer_id: Mapped[int] = mapped_column(
         ForeignKey(Profile.id), primary_key=True, nullable=False
     )
-    referer: Mapped["Profile"] = relationship(
-        "Profile",
-        back_populates="referrals_given",
-        foreign_keys="ApplicationReferral.referer_id",
-    )
-    profile_id: Mapped[int] = mapped_column(ForeignKey(Profile.id, ondelete="CASCADE"))
-    profile: Mapped["Profile"] = relationship(
-        "Profile",
-        back_populates="referrals_received",
-        foreign_keys="ApplicationReferral.profile_id",
-    )
+    profile: Mapped["Profile"] = relationship("Profile", back_populates="referrals")
 
     def __repr__(self) -> str:
         return f"ApplicationReferral(profile_id={self.profile_id}, \

@@ -37,7 +37,7 @@ export class RootModel {
 	async PATCH(path, data) {
 		try {
 			const response = await axios(path, {
-				data: data,
+				data: { data: data },
 				method: 'PATCH',
 			});
 			return response?.data.data;
@@ -73,7 +73,7 @@ export class RootModel {
 	async POST(path, data, config, returnResponse) {
 		try {
 			const response = await axios(path, {
-				data: data,
+				data: { data: data },
 				method: 'POST',
 				...config,
 			});
