@@ -65,7 +65,6 @@ jobs:
 
             # ENV VARIABLES NEEDED FOR BUILD
             export ENVIRON=${{ env.ENVIRON }}
-            # export FIREBASE_ADMINSDK_CERTIFICATE=${{ env.FIREBASE_ADMINSDK_CERTIFICATE }}
 
             # ENV VARIABLES NEEDED FOR RUN
             export API_PORT=${{ env.API_PORT }}
