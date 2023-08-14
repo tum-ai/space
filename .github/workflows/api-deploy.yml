@@ -41,11 +41,6 @@ jobs:
       - name: Run mypy
         run: python -m mypy .
         working-directory: api
-      - name: write secret file
-        run: |
-          mkdir -p api/.secrets             
-          touch api/.secrets/tumai-space-firebase-adminsdk.json 
-          echo "${{ secrets.FIREBASE_ADMINSDK_CERTIFICATE }}" > api/.secrets/tumai-space-firebase-adminsdk.json
       - name: Run pytest
         run: python -m pytest tests
         working-directory: api
