@@ -8,6 +8,7 @@ on:
 env:
   ENVIRON: prod
   FIREBASE_ADMINSDK_CERTIFICATE: ${{ secrets.FIREBASE_ADMINSDK_CERTIFICATE }}
+  API_PORT: 8000
   # [database environment]
   DB_HOST: space.db.staging
   DB_PORT: 5432

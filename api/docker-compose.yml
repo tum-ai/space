@@ -1,6 +1,8 @@
 # ENV VARIABLES NEEDED FOR BUILD
 # - ENVIRON=development|staging|prod
 # - FIREBASE_ADMINSDK_CERTIFICATE
+# ENV VARIABLES NEEDED FOR RUN
+# - API_PORT
 # [database environment]
 # - DB_HOST=space.db(.staging|.prod)
 # - DB_PORT
@@ -24,7 +26,7 @@ services:
     restart: unless-stopped
     command: gunicorn space_api.main:app -k uvicorn.workers.UvicornWorker --workers=4 --reload --bind=0.0.0.0
     ports:
-      - '8000:8000'
+      - '${API_PORT}:8000'
     networks:
       - backend-net
     environment:
@@ -47,5 +49,5 @@ services:
 
 networks:
   backend-net:
-      driver: bridge
-      name: backend-net
+    driver: bridge
+    name: backend-net
