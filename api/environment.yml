@@ -1,47 +1,48 @@
 name: space
 channels:
-  - conda-forge
-  - defaults
+    - conda-forge
+    - defaults
 dependencies:
-  - python=3.11
-  - pip
-  - setuptools-scm
-  - setuptools
+    - python=3.11
+    - pip
+    - setuptools-scm
+    - setuptools
 
-  # development
-  - ipykernel
+    # development
+    - ipykernel
 
-  # linting
-  - mypy
-  - ruff
-  - typing_extensions
-  - types-python-dateutil
-  - types-pyyaml
-
-  # testing
-  - pytest
-  - pytest-cov
-
-  # runtime
-  - fastapi
-  - gunicorn
-  - httptools
-  - httpx
-  - psycopg2-binary
-  - pydantic >=2.0
-  - python-dateutil
-  - pyyaml
-  - starlette
-  - sqlalchemy >=2.0
-  - sqlalchemy-utils
-  - uvicorn
-  - uvloop
-
-  - pip:
     # linting
-    - types-pyyaml
+    - mypy
+    - ruff
+    - typing_extensions
     - types-python-dateutil
-    - types-requests
+    - types-pyyaml
+
+    # testing
+    - pytest
+    - pytest-cov
+
     # runtime
-    - fastapi-mail
-    - firebase-admin
+    - fastapi
+    - gunicorn
+    - httptools
+    - httpx
+    - psycopg2-binary
+    - pydantic >=2.0
+    - python-dateutil
+    - pyyaml
+    - starlette
+    - sqlalchemy >=2.0
+    - sqlalchemy-utils
+    - uvicorn
+    - uvloop
+    - pre_commit
+
+    - pip:
+          # linting
+          - types-pyyaml
+          - types-python-dateutil
+          - types-requests
+          # runtime
+          - fastapi-mail
+          - firebase-admin
