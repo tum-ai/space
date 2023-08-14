@@ -12,7 +12,7 @@ def create_db_application_review(
     new__application_review: ApplicationReviewIn,
 ) -> ApplicationReview:
     with Session(sql_engine) as db_session:
-        # TODO: calculate finalscore and referral these correctly
+        # TODO @munzerdw: calculate finalscore and referral these correctly
         db__application_review = ApplicationReview(
             motivation=new__application_review.motivation,
             skill=new__application_review.skill,
