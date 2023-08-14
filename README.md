@@ -67,7 +67,7 @@ make run  # in root dir (launch api in docker container)
 or (recommended):
 
 ```bash
-uvicorn main:app --host 0.0.0.0 --reload --port 8000
+uvicorn space_api.main:app --host 0.0.0.0 --reload --port 8000
 ```
 
 **Frontend** in `app/`
