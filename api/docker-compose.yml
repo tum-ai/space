@@ -25,10 +25,11 @@ services:
     build: .
     restart: unless-stopped
     command: gunicorn space_api.main:app -k uvicorn.workers.UvicornWorker --workers=4 --reload --bind=0.0.0.0
-    ports:
-      - '${API_PORT}:8000'
+    # ports:
+    #   - '${API_PORT}:8000'
     networks:
       - backend-net
+      - proxy-net
     environment:
       - PYTHONPATH=${PYTHONPATH}
       - environment=${ENVIRON}
@@ -46,8 +47,13 @@ services:
       - MAIL_PORT=${MAIL_PORT}
       - MAIL_SERVER=${MAIL_SERVER}
       - MAIL_FROM_NAME=${MAIL_FROM_NAME}
+    volumes:
+      - .secrets/:/apps/space/api/.secrets/
 
 networks:
   backend-net:
     driver: bridge
     name: backend-net
+  proxy-net:
+    driver: bridge
+    name: proxy-net

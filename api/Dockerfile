@@ -1,3 +1,5 @@
+# For rootserver deployment only
+
 FROM mambaorg/micromamba:latest
 
 WORKDIR /apps/space/api
