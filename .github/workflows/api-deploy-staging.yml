@@ -2,8 +2,6 @@ name: Build & deploy staging backend to tumai rootserver
 
 on:
   push:
-    paths:
-      - 'api/**'
     branches:
       - dev
   workflow_dispatch:
