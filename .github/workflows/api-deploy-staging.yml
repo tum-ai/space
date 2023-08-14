@@ -52,8 +52,8 @@ jobs:
       - name: force pull branch, and run Docker Compose
         uses: appleboy/ssh-action@v1.0.0
         with:
-          host: ${{ secrets.SSH_SERVER_HOST }}
-          username: ${{ secrets.SSH_SERVER_USER }}
+          host: ${{ env.SSH_SERVER_HOST }}
+          username: ${{ env.SSH_SERVER_USER }}
           key: ${{ secrets.SSH_SERVER_GHA_PRIVATE_KEY }}
           port: 22
           script: |
