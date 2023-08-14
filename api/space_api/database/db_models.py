@@ -136,12 +136,19 @@ class Profile(MixinAsDict, SaBaseModel):
 
     # back reference from ApplicationReview
     reviews: Mapped[list["ApplicationReview"]] = relationship(
-        "ApplicationReview", back_populates="profile"
+        "ApplicationReview", back_populates="reviewer"
     )
 
     # back reference from MembershipApplicationReferral
-    referrals: Mapped[list["ApplicationReferral"]] = relationship(
-        "ApplicationReferral", back_populates="profile"
+    referrals_received: Mapped[list["ApplicationReferral"]] = relationship(
+        "ApplicationReferral",
+        back_populates="profile",
+        foreign_keys="ApplicationReferral.profile_id",
+    )
+    referrals_given: Mapped[list["ApplicationReferral"]] = relationship(
+        "ApplicationReferral",
+        back_populates="referer",
+        foreign_keys="ApplicationReferral.referer_id",
     )
 
     # --------------------------- AUTOMATIC/COMPUTED FIELDS -------------------------- #
@@ -433,11 +440,20 @@ class ApplicationReferral(MixinAsDict, SaBaseModel):
     email: Mapped[str] = mapped_column(String, primary_key=True)
 
     # ----------------------------- RELATIONAL FK FIELDS ----------------------------- #
-    referral_by: Mapped[int] = mapped_column(
+    referer_id: Mapped[int] = mapped_column(
         ForeignKey(Profile.id), primary_key=True, nullable=False
     )
+    referer: Mapped["Profile"] = relationship(
+        "Profile",
+        back_populates="referrals_given",
+        foreign_keys="ApplicationReferral.referer_id",
+    )
     profile_id: Mapped[int] = mapped_column(ForeignKey(Profile.id, ondelete="CASCADE"))
-    profile: Mapped["Profile"] = relationship("Profile", back_populates="referrals")
+    profile: Mapped["Profile"] = relationship(
+        "Profile",
+        back_populates="referrals_received",
+        foreign_keys="ApplicationReferral.profile_id",
+    )
 
     def __repr__(self) -> str:
         return f"ApplicationReferral(profile_id={self.profile_id}, \
