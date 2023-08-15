@@ -1,11 +1,11 @@
 import { observer } from 'mobx-react';
+import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import Input from '/components/Input';
 import Select from '/components/Select';
 import Textarea from '/components/Textarea';
 import { useStores } from '/providers/StoreProvider';
-import Image from 'next/image';
 
 const newJobExperience = {
 	employer: '',
@@ -73,6 +73,8 @@ function ProfileEditor({ isSignUpForm = false }) {
 							<Image
 								className='rounded-full w-28 h-28 object-cover border drop-shadow-lg'
 								src={editorProfile.profile_picture}
+								width={100}
+								height={100}
 								alt=''
 							/>
 							<button

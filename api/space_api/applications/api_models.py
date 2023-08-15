@@ -35,4 +35,4 @@ class ApplicationOut(BaseModel):
     @classmethod
     def dummy(cls) -> "ApplicationOut":
         json = cast(dict[str, Any], cls.model_config.get("json_schema_extra"))
-        return ApplicationOut.model_validate(json["example"])
+        return json["example"]

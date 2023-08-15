@@ -1,11 +1,11 @@
 import { observer } from 'mobx-react';
+import Image from 'next/image';
 import Link from 'next/link';
 import DepartmentMembershipEditor from './DepartmentMembershipEditor';
 import Icon from '/components/Icon';
 import ProtectedItem from '/components/ProtectedItem';
 import SelectMultiple from '/components/SelectMultiple';
 import { useStores } from '/providers/StoreProvider';
-import Image from 'next/image';
 
 function ProfileRow({ profile }) {
 	const { rolesModel, meModel, uiModel } = useStores();
@@ -21,8 +21,10 @@ function ProfileRow({ profile }) {
 					<Image
 						className='rounded-full w-14 h-14 object-cover border'
 						src={profile.profile_picture}
+						width={100}
+						height={100}
 						alt=''
-				 	/>
+					/>
 				) : (
 					<div className='rounded-full w-14 h-14 bg-gray-300 dark:bg-gray-800 flex text-center drop-shadow-lg'>
 						<Icon

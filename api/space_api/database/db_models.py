@@ -77,7 +77,7 @@ class JobHistoryElement(BaseModel):
     @classmethod
     def dummy(cls) -> "JobHistoryElement":
         json = cast(dict[str, Any], cls.model_config.get("json_schema_extra"))
-        return JobHistoryElement.model_validate(json["example"])
+        return json["example"]
 
 
 class Profile(MixinAsDict, SaBaseModel):
@@ -140,11 +140,6 @@ class Profile(MixinAsDict, SaBaseModel):
     )
 
     # back reference from MembershipApplicationReferral
-    referrals_received: Mapped[list["ApplicationReferral"]] = relationship(
-        "ApplicationReferral",
-        back_populates="profile",
-        foreign_keys="ApplicationReferral.profile_id",
-    )
     referrals_given: Mapped[list["ApplicationReferral"]] = relationship(
         "ApplicationReferral",
         back_populates="referer",
@@ -412,7 +407,6 @@ class ApplicationReview(MixinAsDict, SaBaseModel):
     reviewee_id: Mapped[int] = mapped_column(
         ForeignKey(Application.id, ondelete="CASCADE"), nullable=False
     )
-    reviewee: Mapped["Application"] = relationship("Profile", back_populates="reviews")
     application: Mapped["Application"] = relationship(
         "Application", back_populates="reviews"
     )
@@ -426,7 +420,7 @@ class ApplicationReview(MixinAsDict, SaBaseModel):
             raise KeyError
 
         self.reviewer.force_load()
-        self.reviewee.force_load()
+        self.application.force_load()
 
 
 class ApplicationReferral(MixinAsDict, SaBaseModel):
@@ -448,14 +442,8 @@ class ApplicationReferral(MixinAsDict, SaBaseModel):
         back_populates="referrals_given",
         foreign_keys="ApplicationReferral.referer_id",
     )
-    profile_id: Mapped[int] = mapped_column(ForeignKey(Profile.id, ondelete="CASCADE"))
-    profile: Mapped["Profile"] = relationship(
-        "Profile",
-        back_populates="referrals_received",
-        foreign_keys="ApplicationReferral.profile_id",
-    )
 
     def __repr__(self) -> str:
-        return f"ApplicationReferral(profile_id={self.profile_id}, \
+        return f"ApplicationReferral(referer_id={self.referer_id}, \
             applicant_first_name={self.applicant_first_name}, \
             applicant_last_name={self.applicant_last_name})"
