@@ -38,7 +38,7 @@ class DepartmentOut(BaseModel):
     @classmethod
     def dummy(cls) -> "DepartmentOut":
         json = cast(dict[str, Any], cls.model_config.get("json_schema_extra"))
-        return DepartmentOut.model_validate(json["example"])
+        return json["example"]
 
 
 # ------------------------------------------------------------------------------------ #
@@ -66,7 +66,7 @@ class RoleInOut(BaseModel):
     @classmethod
     def dummy(cls) -> "RoleInOut":
         json = cast(dict[str, Any], cls.model_config.get("json_schema_extra"))
-        return RoleInOut.model_validate(json["example"])
+        return json["example"]
 
 
 class ProfileMemberInvitation(BaseModel):
@@ -91,7 +91,7 @@ class ProfileMemberInvitation(BaseModel):
     @classmethod
     def dummy(cls) -> "ProfileMemberInvitation":
         json = cast(dict[str, Any], cls.model_config.get("json_schema_extra"))
-        return ProfileMemberInvitation.model_validate(json["example"])
+        return json["example"]
 
 
 class SocialNetworkIn(BaseModel):
@@ -112,7 +112,7 @@ class SocialNetworkIn(BaseModel):
     @classmethod
     def dummy(cls) -> "SocialNetworkIn":
         json = cast(dict[str, Any], cls.model_config.get("json_schema_extra"))
-        return SocialNetworkIn.model_validate(json["example"])
+        return json["example"]
 
 
 class SocialNetworkOut(BaseModel):
@@ -144,7 +144,7 @@ class SocialNetworkOut(BaseModel):
     @classmethod
     def dummy(cls) -> "SocialNetworkOut":
         json = cast(dict[str, Any], cls.model_config.get("json_schema_extra"))
-        return SocialNetworkOut.model_validate(json["example"])
+        return json["example"]
 
 
 class DepartmentMembershipOut(BaseModel):
@@ -179,7 +179,7 @@ class DepartmentMembershipOut(BaseModel):
     @classmethod
     def dummy(cls) -> "DepartmentMembershipOut":
         json = cast(dict[str, Any], cls.model_config.get("json_schema_extra"))
-        return DepartmentMembershipOut.model_validate(json["example"])
+        return json["example"]
 
 
 class ProfileInCreateUpdateBase(BaseModel):
@@ -235,7 +235,7 @@ class ProfileInCreateUpdateBase(BaseModel):
     @classmethod
     def dummy(cls) -> "ProfileInCreateUpdateBase":
         json = cast(dict[str, Any], cls.model_config.get("json_schema_extra"))
-        return ProfileInCreateUpdateBase.model_validate(json["example"])
+        return json["example"]
 
 
 class ProfileInCreate(ProfileInCreateUpdateBase):
@@ -339,7 +339,7 @@ class ProfileOut(BaseModel):
     @classmethod
     def dummy(cls) -> "ProfileOut":
         json = cast(dict[str, Any], cls.model_config.get("json_schema_extra"))
-        return ProfileOut.model_validate(json["example"])
+        return json["example"]
 
 
 class ProfileOutPublic(BaseModel):
@@ -419,7 +419,7 @@ class ProfileOutPublic(BaseModel):
     @classmethod
     def dummy(cls) -> "ProfileOutPublic":
         json = cast(dict[str, Any], cls.model_config.get("json_schema_extra"))
-        return ProfileOutPublic.model_validate(json["example"])
+        return json["example"]
 
 
 class ProfileOutPublicReduced(BaseModel):
@@ -452,7 +452,7 @@ class ProfileOutPublicReduced(BaseModel):
     @classmethod
     def dummy(cls) -> "ProfileOutPublicReduced":
         json = cast(dict[str, Any], cls.model_config.get("json_schema_extra"))
-        return ProfileOutPublicReduced.model_validate(json["example"])
+        return json["example"]
 
 
 class UpdateProfile(BaseModel):
@@ -490,7 +490,7 @@ class RoleHoldershipInOut(BaseModel):
     @classmethod
     def dummy(cls) -> "RoleHoldershipInOut":
         json = cast(dict[str, Any], cls.model_config.get("json_schema_extra"))
-        return RoleHoldershipInOut.model_validate(json["example"])
+        return json["example"]
 
 
 class RoleHoldershipUpdateInOut(BaseModel):
@@ -523,7 +523,7 @@ class RoleHoldershipUpdateInOut(BaseModel):
     @classmethod
     def dummy(cls) -> "RoleHoldershipUpdateInOut":
         json = cast(dict[str, Any], cls.model_config.get("json_schema_extra"))
-        return RoleHoldershipUpdateInOut.model_validate(json["example"])
+        return json["example"]
 
 
 # ------------------------------------------------------------------------------------ #
@@ -572,7 +572,7 @@ class DepartmentMembershipWithShortProfileOut(BaseModel):
     @classmethod
     def dummy(cls) -> "DepartmentMembershipWithShortProfileOut":
         json = cast(dict[str, Any], cls.model_config.get("json_schema_extra"))
-        return DepartmentMembershipWithShortProfileOut.model_validate(json["example"])
+        return json["example"]
 
 
 class DepartmentMembership(BaseModel):
@@ -616,7 +616,7 @@ class DepartmentMembership(BaseModel):
     @classmethod
     def dummy(cls) -> "DepartmentMembership":
         json = cast(dict[str, Any], cls.model_config.get("json_schema_extra"))
-        return DepartmentMembership.model_validate(json["example"])
+        return json["example"]
 
 
 class DepartmentMembershipInCreate(BaseModel):
@@ -641,7 +641,7 @@ class DepartmentMembershipInCreate(BaseModel):
     @classmethod
     def dummy(cls) -> "DepartmentMembershipInCreate":
         json = cast(dict[str, Any], cls.model_config.get("json_schema_extra"))
-        return DepartmentMembershipInCreate.model_validate(json["example"])
+        return json["example"]
 
 
 class DepartmentMembershipInUpdate(BaseModel):
@@ -664,4 +664,4 @@ class DepartmentMembershipInUpdate(BaseModel):
     @classmethod
     def dummy(cls) -> "DepartmentMembershipInUpdate":
         json = cast(dict[str, Any], cls.model_config.get("json_schema_extra"))
-        return DepartmentMembershipInUpdate.model_validate(json["example"])
+        return json["example"]
