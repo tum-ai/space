@@ -8,6 +8,7 @@ on:
 env:
   ENVIRON: prod
   FIREBASE_ADMINSDK_CERTIFICATE: ${{ secrets.FIREBASE_ADMINSDK_CERTIFICATE }}
+  API_PORT: 8000
   # [database environment]
   DB_HOST: space.db.staging
   DB_PORT: 5432
@@ -21,6 +22,10 @@ env:
   MAIL_PORT: 587
   MAIL_SERVER: smtp.gmail.com
   MAIL_FROM_NAME: TUM.ai Space Team
+  # [deployment server]
+  SSH_SERVER_HOST: ${{ vars.SSH_SERVER_HOST }}
+  SSH_SERVER_USER: ${{ vars.SSH_SERVER_USER }}
+  SSH_SERVER_GHA_PRIVATE_KEY:  ${{ secrets.SSH_SERVER_GHA_PRIVATE_KEY }}
 
 jobs:
   build:
@@ -45,14 +50,39 @@ jobs:
         run: python -m pytest tests
         working-directory: api
       - name: force pull branch, and run Docker Compose
-        uses: JimCronqvist/action-ssh@master
+        uses: appleboy/ssh-action@v1.0.0
         with:
-          hosts: ‘${{ env.SSH_SERVER_USER }}@${{ env.SSH_SERVER_HOST }}’
-          privateKey: ${{ secrets.SSH_SERVER_GHA_PRIVATE_KEY }}
-          debug: false
-          command: |
+          host: ${{ env.SSH_SERVER_HOST }}
+          username: ${{ env.SSH_SERVER_USER }}
+          key: ${{ secrets.SSH_SERVER_GHA_PRIVATE_KEY }}
+          port: 22
+          script: |
             cd /apps/tumai/space
             git fetch --all
             git reset --hard origin/main
+            cd api/
+
+            # ENV VARIABLES NEEDED FOR BUILD
+            export ENVIRON="${{ env.ENVIRON }}"
+
+            # ENV VARIABLES NEEDED FOR RUN
+            export API_PORT="${{ env.API_PORT }}"
+                        
+            # [database environment]
+            export DB_HOST="${{ env.DB_HOST }}"
+            export DB_PORT="${{ env.DB_PORT }}"
+            export DB_NAME="${{ env.DB_NAME }}"
+            export DB_USER="${{ env.DB_USER }}"
+            export DB_PASSWORD="${{ env.DB_PASSWORD }}"
+
+            # [mail environment]
+            export MAIL_USERNAME="${{ env.MAIL_USERNAME }}"
+            export MAIL_PASSWORD="${{ env.MAIL_PASSWORD }}"
+            export MAIL_FROM="${{ env.MAIL_FROM }}"
+            export MAIL_PORT="${{ env.MAIL_PORT }}"
+            export MAIL_SERVER="${{ env.MAIL_SERVER }}"
+            export MAIL_FROM_NAME="${{ env.MAIL_FROM_NAME }}"
+
             docker-compose build --no-cache
+            docker-compose down --remove-orphans
             docker-compose up -d --remove-orphans

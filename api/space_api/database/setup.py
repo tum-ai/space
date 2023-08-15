@@ -33,7 +33,7 @@ def create_sqla_engine() -> Engine:
 
 async def setup_db_client(running_app: FastAPI) -> None:
     log.info("Setting up sqlalchemy/postgres database connection")
-    # sqlalchemy: postgres db
+    # sqlalchemy: postgres database
     running_app.state.sql_engine = create_sqla_engine()
 
     # create/initialize tables
