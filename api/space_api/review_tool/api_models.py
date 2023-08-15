@@ -91,7 +91,7 @@ class ApplicationReviewIn(BaseModel):
                 "furthercomments": "Should keep an eye on progress",
                 "referral": 1,
                 "finalscore": 7.5,
-                "reviewee": 1,
+                "reviewee_id": 1,
             }
         }
     )
@@ -107,7 +107,7 @@ class ApplicationReviewIn(BaseModel):
     dept3_score: int
     maybegoodfit: str | None
     furthercomments: str | None
-    reviewee: int
+    reviewee_id: int
 
     @classmethod
     def dummy(cls) -> "ApplicationReviewIn":

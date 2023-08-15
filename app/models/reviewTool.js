@@ -55,7 +55,7 @@ export class ReviewToolModel {
 	async submitReview() {
 		const data = await this.root.POST('/review_tool/application_review', {
 			...this.editorReview,
-			reviewee: this.applicationOnReview?.id,
+			reviewee_id: this.applicationOnReview?.id,
 		});
 		if (!data) return;
 		if (data?.response_type == 'success') {
