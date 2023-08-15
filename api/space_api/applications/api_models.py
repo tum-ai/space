@@ -26,7 +26,7 @@ class ApplicationOut(BaseModel):
     )
 
     id: int
-    submission: str
+    submission: dict
 
     @classmethod
     def from_db_model(cls, application: Application) -> "ApplicationOut":
