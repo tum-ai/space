@@ -10,7 +10,7 @@ env:
   FIREBASE_ADMINSDK_CERTIFICATE: ${{ secrets.FIREBASE_ADMINSDK_CERTIFICATE }}
   API_PORT: 8000
   # [database environment]
-  DB_HOST: space.db.staging
+  DB_HOST: space.db
   DB_PORT: 5432
   DB_NAME: space-db
   DB_USER: space-db
