@@ -77,7 +77,7 @@ class JobHistoryElement(BaseModel):
     @classmethod
     def dummy(cls) -> "JobHistoryElement":
         json = cast(dict[str, Any], cls.model_config.get("json_schema_extra"))
-        return JobHistoryElement.model_validate(json["example"])
+        return json["example"]
 
 
 class Profile(MixinAsDict, SaBaseModel):
