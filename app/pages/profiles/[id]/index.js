@@ -1,10 +1,10 @@
-import ProfileOverview from './components/ProfileOverview';
-import Page from '/components/Page';
+import ProfileOverview from "./components/ProfileOverview";
+import Page from "/components/Page";
 
 export default function Profile() {
-	return (
-		<Page>
-			<ProfileOverview />
-		</Page>
-	);
+  return (
+    <Page>
+      <ProfileOverview />
+    </Page>
+  );
 }

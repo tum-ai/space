@@ -1,133 +1,123 @@
-import React, { useRef, useState } from 'react';
-import Icon from './Icon';
-import useOutsideAlerter from '/hooks/useOutsideAlerter';
+import React, { useRef, useState } from "react";
+import Icon from "./Icon";
+import useOutsideAlerter from "/hooks/useOutsideAlerter";
 
 export default function SelectMultiple({
-	label,
-	className,
-	data,
-	selectedItems,
-	setSelectedItems,
-	placeholder,
-	flowRight,
+  label,
+  className,
+  data,
+  selectedItems,
+  setSelectedItems,
+  placeholder,
+  flowRight,
 }) {
-	const [active, setActive] = useState(false);
-	const wrapperRef = useRef(null);
-	useOutsideAlerter(wrapperRef, () => {
-		setActive(false);
-	});
+  const [active, setActive] = useState(false);
+  const wrapperRef = useRef(null);
+  useOutsideAlerter(wrapperRef, () => {
+    setActive(false);
+  });
 
-	return (
-		<div
-			ref={wrapperRef}
-			className={'flex flex-col space-y-2 justify-between ' + className}
-			style={{ maxWidth: '500px' }}
-		>
-			{label && <label className='font-light'>{label}</label>}
-			<div className='relative border border-gray-300 rounded'>
-				<button
-					className={
-						'selectMultiple w-full focus:outline-none trans flex justify-between items-center space-x-1 h-8 px-3 pr-0 ' +
-						(!selectedItems.length && 'cursor-pointer')
-					}
-					onClick={(e) => {
-						e.stopPropagation();
-						setActive(!active);
-					}}
-				>
-					<div className='flex space-x-1 truncate'>
-						{selectedItems.length ? (
-							selectedItems.map((item, i) => (
-								<Selected
-									key={i}
-									item={item}
-									onDelete={(e) => {
-										e.stopPropagation();
-										setSelectedItems(
-											selectedItems.filter(
-												(x) => x.value !== item.value
-											)
-										);
-									}}
-								/>
-							))
-						) : (
-							<div className='selectMultiple cursor-pointer font-light'>
-								{placeholder || 'Select'}
-							</div>
-						)}
-					</div>
-					<div className='selectMultiple inline-flex items-center px-3 cursor-pointer '>
-						<Icon
-							className='pointer-events-none'
-							name={active ? 'FaAngleUp' : 'FaAngleDown'}
-						/>
-					</div>
-				</button>
-				<div
-					className={
-						'selectMultiple absolute max-h-64 w-full mt-2 overflow-auto flex flex-col shadow trans rounded origin-bottom-left z-40 bg-white dark:bg-gray-700 ' +
-						(active
-							? 'opacity-100 scale-100 visible'
-							: 'opacity-0 scale-75 hidden') +
-						' ' +
-						(flowRight ? 'left-0' : 'right-0')
-					}
-				>
-					{data.map((item, i) => {
-						const selected = selectedItems.find(
-							(x) => x.value === item.value
-						);
-						return (
-							<Item
-								key={i}
-								onClick={(e) => {
-									e.stopPropagation();
-									!selected
-										? setSelectedItems([
-												...selectedItems,
-												item,
-										  ])
-										: setSelectedItems(
-												selectedItems.filter(
-													(x) =>
-														x.value !== item.value
-												)
-										  );
-								}}
-								selected={selected}
-							>
-								{item.key}
-							</Item>
-						);
-					})}
-				</div>
-			</div>
-		</div>
-	);
+  return (
+    <div
+      ref={wrapperRef}
+      className={"flex flex-col justify-between space-y-2 " + className}
+      style={{ maxWidth: "500px" }}
+    >
+      {label && <label className="font-light">{label}</label>}
+      <div className="relative rounded border border-gray-300">
+        <button
+          className={
+            "selectMultiple trans flex h-8 w-full items-center justify-between space-x-1 px-3 pr-0 focus:outline-none " +
+            (!selectedItems.length && "cursor-pointer")
+          }
+          onClick={(e) => {
+            e.stopPropagation();
+            setActive(!active);
+          }}
+        >
+          <div className="flex space-x-1 truncate">
+            {selectedItems.length ? (
+              selectedItems.map((item, i) => (
+                <Selected
+                  key={i}
+                  item={item}
+                  onDelete={(e) => {
+                    e.stopPropagation();
+                    setSelectedItems(
+                      selectedItems.filter((x) => x.value !== item.value),
+                    );
+                  }}
+                />
+              ))
+            ) : (
+              <div className="selectMultiple cursor-pointer font-light">
+                {placeholder || "Select"}
+              </div>
+            )}
+          </div>
+          <div className="selectMultiple inline-flex cursor-pointer items-center px-3 ">
+            <Icon
+              className="pointer-events-none"
+              name={active ? "FaAngleUp" : "FaAngleDown"}
+            />
+          </div>
+        </button>
+        <div
+          className={
+            "selectMultiple trans absolute z-40 mt-2 flex max-h-64 w-full origin-bottom-left flex-col overflow-auto rounded bg-white shadow dark:bg-gray-700 " +
+            (active
+              ? "visible scale-100 opacity-100"
+              : "hidden scale-75 opacity-0") +
+            " " +
+            (flowRight ? "left-0" : "right-0")
+          }
+        >
+          {data.map((item, i) => {
+            const selected = selectedItems.find((x) => x.value === item.value);
+            return (
+              <Item
+                key={i}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  !selected
+                    ? setSelectedItems([...selectedItems, item])
+                    : setSelectedItems(
+                        selectedItems.filter((x) => x.value !== item.value),
+                      );
+                }}
+                selected={selected}
+              >
+                {item.key}
+              </Item>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
 }
 
 function Item({ selected, ...props }) {
-	return (
-		<div
-			className={
-				'selectMultiple text-h5 cursor-pointer trans px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-500 trans ' +
-				(!selected && 'opacity-50 bg-secondary-50')
-			}
-			{...props}
-		>
-			{props.children}
-		</div>
-	);
+  return (
+    <div
+      className={
+        "selectMultiple text-h5 trans trans cursor-pointer px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-500 " +
+        (!selected && "bg-secondary-50 opacity-50")
+      }
+      {...props}
+    >
+      {props.children}
+    </div>
+  );
 }
 
 function Selected({ item, onDelete }) {
-	return (
-		<div className='flex space-x-2 whitespace-nowrap bg-gray-300 dark:bg-gray-500 px-1 rounded text-h5'>
-			{item.key}
-			<div className='inline-flex items-center px-3 cursor-pointer '>
-				<Icon name={'FaTimes'} onClick={onDelete} />
-			</div>
-		</div>
-	);
+  return (
+    <div className="text-h5 flex space-x-2 whitespace-nowrap rounded bg-gray-300 px-1 dark:bg-gray-500">
+      {item.key}
+      <div className="inline-flex cursor-pointer items-center px-3 ">
+        <Icon name={"FaTimes"} onClick={onDelete} />
+      </div>
+    </div>
+  );
 }

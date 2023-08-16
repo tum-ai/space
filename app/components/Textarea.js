@@ -1,13 +1,13 @@
 function Textarea({ label, ...props }) {
-	return (
-		<div className='flex flex-col space-y-2 w-full'>
-			{label && <label className='text-sm font-thin'>{label}</label>}
-			<textarea
-				{...props}
-				className='p-2 rounded border bg-gray-100 dark:bg-gray-700 outline-none'
-			/>
-		</div>
-	);
+  return (
+    <div className="flex w-full flex-col space-y-2">
+      {label && <label className="text-sm font-thin">{label}</label>}
+      <textarea
+        {...props}
+        className="rounded border bg-gray-100 p-2 outline-none dark:bg-gray-700"
+      />
+    </div>
+  );
 }
 
 export default Textarea;

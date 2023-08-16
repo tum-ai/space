@@ -6,8 +6,18 @@ html,
 body {
   padding: 0;
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    Segoe UI,
+    Roboto,
+    Oxygen,
+    Ubuntu,
+    Cantarell,
+    Fira Sans,
+    Droid Sans,
+    Helvetica Neue,
+    sans-serif;
 }
 
 a {
@@ -41,7 +51,7 @@ a {
 }
 
 .slide-down {
-  animation: slide-down .2s ease-in-out;
+  animation: slide-down 0.2s ease-in-out;
   top: 0px;
   z-index: -10;
 }
@@ -50,22 +60,36 @@ a {
 
 @keyframes glow {
   from {
-    text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #e60073, 0 0 40px #e60073, 0 0 50px #6400e6, 0 0 60px #0032e6, 0 0 70px #008ee6;
+    text-shadow:
+      0 0 10px #fff,
+      0 0 20px #fff,
+      0 0 30px #e60073,
+      0 0 40px #e60073,
+      0 0 50px #6400e6,
+      0 0 60px #0032e6,
+      0 0 70px #008ee6;
   }
-  
+
   to {
-    text-shadow: 0 0 20px #fff, 0 0 30px #4deaff, 0 0 40px #4dff8e, 0 0 50px #4dff65, 0 0 60px #a3ff4d, 0 0 70px #fff04d, 0 0 80px #fff64d;
+    text-shadow:
+      0 0 20px #fff,
+      0 0 30px #4deaff,
+      0 0 40px #4dff8e,
+      0 0 50px #4dff65,
+      0 0 60px #a3ff4d,
+      0 0 70px #fff04d,
+      0 0 80px #fff64d;
   }
 }
 
 @keyframes slide-down {
   0% {
-      top: -10px;
-      opacity: 0;
+    top: -10px;
+    opacity: 0;
   }
   100% {
-      top: 0px;
-      opacity: 1;
+    top: 0px;
+    opacity: 1;
   }
 }
 
