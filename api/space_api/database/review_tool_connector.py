@@ -109,6 +109,8 @@ def update_db_application_review(
             .first()
         )
 
+        assert db_model
+
         if updated_application_review.motivation:
             db_model.motivation = updated_application_review.motivation
         if updated_application_review.skill:
