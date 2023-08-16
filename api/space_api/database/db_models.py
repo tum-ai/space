@@ -418,6 +418,8 @@ class ApplicationReview(MixinAsDict, SaBaseModel):
     def force_load(self) -> None:
         if not self.reviewer_id:
             raise KeyError
+        if not self.reviewee_id:
+            raise KeyError
 
         self.reviewer.force_load()
         self.application.force_load()

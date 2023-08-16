@@ -113,3 +113,39 @@ class ApplicationReviewIn(BaseModel):
     def dummy(cls) -> "ApplicationReviewIn":
         json = cast(dict[str, Any], cls.model_config.get("json_schema_extra"))
         return json["example"]
+
+class ApplicationReviewUpdate(BaseModel):
+    model_config = ConfigDict(
+        json_schema_extra={
+            "example": {
+                "motivation": 4,
+                "skill": 7,
+                "fit": 6,
+                "in_tumai": 2,
+                "comment_fit_tumai": "The fit seems good",
+                "timecommit": "10 hours per week",
+                "dept1_score": 8,
+                "dept2_score": 5,
+                "dept3_score": 7,
+                "maybegoodfit": "Yes, potentially",
+                "furthercomments": "Should keep an eye on progress",
+            }
+        }
+    )
+
+    motivation: int
+    skill: int
+    fit: int
+    in_tumai: int
+    comment_fit_tumai: str | None
+    timecommit: str | None
+    dept1_score: int
+    dept2_score: int
+    dept3_score: int
+    maybegoodfit: str | None
+    furthercomments: str | None
+
+    @classmethod
+    def dummy(cls) -> "ApplicationReviewUpdate":
+        json = cast(dict[str, Any], cls.model_config.get("json_schema_extra"))
+        return json["example"]
