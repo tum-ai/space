@@ -35,9 +35,11 @@ function ProfileOverview() {
 				<div className=' xl:col-span-2 flex flex-col items-start max-w-90 space-y-6'>
 					{profile.profile_picture ? (
 						<Image
-						className='rounded-full w-28 h-28 object-cover border drop-shadow-lg m-auto'
-						src={profile.profile_picture}
-						alt=''
+							className='rounded-full w-28 h-28 object-cover border drop-shadow-lg m-auto'
+							src={profile.profile_picture}
+							width={100}
+							height={100}
+							alt=''
 						/>
 					) : (
 						<div className='rounded-full w-28 h-28 bg-gray-300 dark:bg-gray-800 flex text-center drop-shadow-lg m-auto'>

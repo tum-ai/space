@@ -8,11 +8,11 @@ from .db_models import ApplicationReview
 
 def create_db_application_review(
     sql_engine: sa.Engine,
-    reviewer: int,
+    reviewer_id: int,
     new__application_review: ApplicationReviewIn,
 ) -> ApplicationReview:
     with Session(sql_engine) as db_session:
-        # TODO: calculate finalscore and referral these correctly
+        # TODO @munzerdw: calculate finalscore and referral these correctly
         db__application_review = ApplicationReview(
             motivation=new__application_review.motivation,
             skill=new__application_review.skill,
@@ -27,8 +27,8 @@ def create_db_application_review(
             furthercomments=new__application_review.furthercomments,
             referral=1,
             finalscore=1,
-            reviewer=reviewer,
-            reviewee=new__application_review.reviewee,
+            reviewer_id=reviewer_id,
+            reviewee_id=new__application_review.reviewee_id,
         )
         db_session.add(db__application_review)
         db_session.flush()

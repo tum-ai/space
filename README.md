@@ -35,6 +35,12 @@ Make sure to have the following installed before running `make`:
 
 Also make sure to have [pre-commit](https://pre-commit.com) installed by running `pre-commit install` once.
 
+Create conda environment for the API:
+```
+cd api
+conda env create -f environment.yaml
+```
+
 ### Running the project
 
 **Initial setup**
@@ -67,7 +73,7 @@ make run  # in root dir (launch api in docker container)
 or (recommended):
 
 ```bash
-uvicorn main:app --host 0.0.0.0 --reload --port 8000
+uvicorn space_api.main:app --host 0.0.0.0 --reload --port 8000
 ```
 
 **Frontend** in `app/`

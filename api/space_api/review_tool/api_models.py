@@ -71,7 +71,7 @@ class ApplicationReviewOut(BaseModel):
     @classmethod
     def dummy(cls) -> "ApplicationReviewOut":
         json = cast(dict[str, Any], cls.model_config.get("json_schema_extra"))
-        return ApplicationReviewOut.model_validate(json["example"])
+        return json["example"]
 
 
 class ApplicationReviewIn(BaseModel):
@@ -91,7 +91,7 @@ class ApplicationReviewIn(BaseModel):
                 "furthercomments": "Should keep an eye on progress",
                 "referral": 1,
                 "finalscore": 7.5,
-                "reviewee": 1,
+                "reviewee_id": 1,
             }
         }
     )
@@ -107,9 +107,9 @@ class ApplicationReviewIn(BaseModel):
     dept3_score: int
     maybegoodfit: str | None
     furthercomments: str | None
-    reviewee: int
+    reviewee_id: int
 
     @classmethod
     def dummy(cls) -> "ApplicationReviewIn":
         json = cast(dict[str, Any], cls.model_config.get("json_schema_extra"))
-        return ApplicationReviewIn.model_validate(json["example"])
+        return json["example"]

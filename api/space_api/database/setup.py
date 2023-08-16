@@ -33,7 +33,7 @@ def create_sqla_engine() -> Engine:
 
 async def setup_db_client(running_app: FastAPI) -> None:
     log.info("Setting up sqlalchemy/postgres database connection")
-    # sqlalchemy: postgres db
+    # sqlalchemy: postgres database
     running_app.state.sql_engine = create_sqla_engine()
 
     # create/initialize tables
@@ -45,13 +45,10 @@ async def setup_db_client(running_app: FastAPI) -> None:
     SaBaseModel.metadata.create_all(bind=running_app.state.sql_engine, checkfirst=True)
 
     # add pre-existing roles
-    upset_roles(running_app.state.sql_engine)
-
-    # add pre-existing roles
-    upset_roles(running_app.state.sql_engine)
+    upsert_roles(running_app.state.sql_engine)
 
     # add pre-existing departments
-    upset_departments(running_app.state.sql_engine)
+    upsert_departments(running_app.state.sql_engine)
 
 
 def setup_db_client_appless() -> Engine:
@@ -67,7 +64,7 @@ async def close_db_client(running_app: FastAPI) -> None:
         running_app.state.sql_engine.dispose()
 
 
-def upset_departments(engine: Engine) -> None:
+def upsert_departments(engine: Engine) -> None:
     core_departments = [
         Department(
             handle="DEV",
@@ -127,7 +124,7 @@ def upset_departments(engine: Engine) -> None:
         session.commit()
 
 
-def upset_roles(engine: Engine) -> None:
+def upsert_roles(engine: Engine) -> None:
     core_roles = [
         Role(handle="admin", description="Administrator"),
         Role(handle="invite_members", description="Member Invitations"),

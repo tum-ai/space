@@ -3,7 +3,6 @@ import os
 import traceback
 
 from fastapi_mail import ConnectionConfig, FastMail, MessageSchema, MessageType
-from pydantic import EmailStr
 
 
 def _conn_config() -> ConnectionConfig:
@@ -21,7 +20,7 @@ def _conn_config() -> ConnectionConfig:
     return conf
 
 
-def send_email(receipient: EmailStr, subject: str, body: str) -> None:
+def send_email(receipient: str, subject: str, body: str) -> None:
     try:
         message = MessageSchema(
             subject=subject,

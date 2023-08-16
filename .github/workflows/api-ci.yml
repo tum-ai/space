@@ -3,13 +3,10 @@ name: Backend CI - /api
 on:
   pull_request:
     paths:
-    - 'api/**'
+      - 'api/**'
     branches:
       - main
-    
-  push:
-    branches:
-      - main
+      - dev
 
   workflow_dispatch:
 
@@ -33,7 +30,7 @@ jobs:
       - name: Install Python 3.11
         uses: actions/setup-python@v4
         with:
-          python-version: "3.11"
+            python-version: '3.11'
       - name: Run pre-commit checks
         uses: pre-commit/action@v3.0.0
   ci:
@@ -54,11 +51,6 @@ jobs:
       - name: Run mypy
         run: python -m mypy .
         working-directory: api
-      - name: write secret file
-        run: |
-          mkdir -p api/.secrets        
-          touch api/.secrets/tumai-space-firebase-adminsdk.json 
-          echo "${{ secrets.FIREBASE_ADMINSDK_CERTIFICATE_STAGING }}" > api/.secrets/tumai-space-firebase-adminsdk.json
       - name: Run pytest
         run: python -m pytest tests
         working-directory: api

@@ -1,8 +1,8 @@
 import { observer } from 'mobx-react';
+import Image from 'next/image';
 import ProfileEditor from './ProfileEditor';
 import Icon from '/components/Icon';
 import { useStores } from '/providers/StoreProvider';
-import Image from 'next/image';
 
 function ProfileOverview() {
 	const { meModel, uiModel } = useStores();
@@ -36,6 +36,8 @@ function ProfileOverview() {
 						<Image
 							className='rounded-full w-28 h-28 object-cover border drop-shadow-lg m-auto'
 							src={profile.profile_picture}
+							width={100}
+							height={100}
 							alt=''
 						/>
 					) : (
