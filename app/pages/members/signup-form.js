@@ -15,8 +15,8 @@ function SignUpForm() {
   meModel.editorProfile = { ...profile };
   return (
     <Page>
-      <div className="font-thin text-6xl">Welcome to TUM.ai Space!</div>
-      <div className="font-light text-gray-500 py-8 px-4 text-xl">
+      <div className="text-6xl font-thin">Welcome to TUM.ai Space!</div>
+      <div className="px-4 py-8 text-xl font-light text-gray-500">
         Please complete your profile to get started. You can always edit your
         profile later.
       </div>

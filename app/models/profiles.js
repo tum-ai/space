@@ -1,104 +1,101 @@
-import { makeAutoObservable } from 'mobx';
+import { makeAutoObservable } from "mobx";
 
 export class ProfilesModel {
-	root;
-	profiles = [];
-	filteredProfiles = [];
-	filter = {};
-	search = '';
-	sortBy = '';
+  root;
+  profiles = [];
+  filteredProfiles = [];
+  filter = {};
+  search = "";
+  sortBy = "";
 
-	constructor(root) {
-		this.root = root;
-		makeAutoObservable(this);
+  constructor(root) {
+    this.root = root;
+    makeAutoObservable(this);
 
-		this.fetchProfiles();
-	}
+    this.fetchProfiles();
+  }
 
-	getProfiles() {
-		return this.profiles;
-	}
+  getProfiles() {
+    return this.profiles;
+  }
 
-	findProfile(id) {
-		return this.profiles.find((profile) => profile.id === id);
-	}
+  findProfile(id) {
+    return this.profiles.find((profile) => profile.id === id);
+  }
 
-	setProfiles(profiles) {
-		this.profiles = profiles;
-	}
+  setProfiles(profiles) {
+    this.profiles = profiles;
+  }
 
-	getRoles() {
-		const rolesSet = new Set(this.profiles.map((profile) => profile.role));
-		return Array.from(rolesSet);
-	}
+  getRoles() {
+    const rolesSet = new Set(this.profiles.map((profile) => profile.role));
+    return Array.from(rolesSet);
+  }
 
-	setFilter(key, value) {
-		if (!value) {
-			delete this.filter[key];
-		} else {
-			this.filter[key] = value;
-		}
-		this.filterProfiles();
-	}
+  setFilter(key, value) {
+    if (!value) {
+      delete this.filter[key];
+    } else {
+      this.filter[key] = value;
+    }
+    this.filterProfiles();
+  }
 
-	resetFilters() {
-		this.filter = {};
-		this.filterProfiles();
-	}
+  resetFilters() {
+    this.filter = {};
+    this.filterProfiles();
+  }
 
-	filterProfiles() {
-		this.filteredProfiles = this.profiles.filter((profile) => {
-			for (const key in this.filter) {
-				if (key == 'role') {
-					if (
-						!this.root.rolesModel.roleHolderships[
-							profile.id
-						]?.includes(this.filter[key])
-					) {
-						return false;
-					}
-				} else if (
-					this.filter[key] &&
-					profile[key] != this.filter[key]
-				) {
-					return false;
-				}
-			}
-			return (
-				!this.search ||
-				JSON.stringify({ ...profile, _id: '' })
-					.toLocaleLowerCase()
-					.includes(this.search.toLocaleLowerCase())
-			);
-		});
-		this.sortProfiles();
-	}
+  filterProfiles() {
+    this.filteredProfiles = this.profiles.filter((profile) => {
+      for (const key in this.filter) {
+        if (key == "role") {
+          if (
+            !this.root.rolesModel.roleHolderships[profile.id]?.includes(
+              this.filter[key],
+            )
+          ) {
+            return false;
+          }
+        } else if (this.filter[key] && profile[key] != this.filter[key]) {
+          return false;
+        }
+      }
+      return (
+        !this.search ||
+        JSON.stringify({ ...profile, _id: "" })
+          .toLocaleLowerCase()
+          .includes(this.search.toLocaleLowerCase())
+      );
+    });
+    this.sortProfiles();
+  }
 
-	sortProfiles() {
-		if (this.sortBy) {
-			this.filteredProfiles = this.filteredProfiles.sort(
-				(profileA, profileB) => {
-					return profileA[this.sortBy] > profileB[this.sortBy];
-				}
-			);
-		}
-	}
+  sortProfiles() {
+    if (this.sortBy) {
+      this.filteredProfiles = this.filteredProfiles.sort(
+        (profileA, profileB) => {
+          return profileA[this.sortBy] > profileB[this.sortBy];
+        },
+      );
+    }
+  }
 
-	setSearch(value) {
-		this.search = value;
-		this.filterProfiles();
-	}
+  setSearch(value) {
+    this.search = value;
+    this.filterProfiles();
+  }
 
-	setSortBy(value) {
-		this.sortBy = value;
-		this.sortProfiles();
-	}
+  setSortBy(value) {
+    this.sortBy = value;
+    this.sortProfiles();
+  }
 
-	async fetchProfiles() {
-		const profiles = await this.root.GET('/profiles/');
-		this.profiles = profiles;
-		this.filteredProfiles = profiles;
-	}
+  async fetchProfiles() {
+    const profiles = await this.root.GET("/profiles/");
+    this.profiles = profiles;
+    this.filteredProfiles = profiles;
+  }
 }
 
 // var mockData =

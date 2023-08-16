@@ -1,5 +1,5 @@
-import { initializeApp } from 'firebase/app'
-import { getAuth } from 'firebase/auth'
+import { initializeApp } from "firebase/app";
+import { getAuth } from "firebase/auth";
 import { environment_name } from "../config/environment";
 
 const firebaseConfigProd = {
@@ -9,7 +9,7 @@ const firebaseConfigProd = {
   storageBucket: "tumai-space.appspot.com",
   messagingSenderId: "593770252428",
   appId: "1:593770252428:web:6f89e79ee9f052111493a9",
-  measurementId: "G-YD0J0DVV7D"
+  measurementId: "G-YD0J0DVV7D",
 };
 
 const firebaseConfigStaging = {
@@ -19,11 +19,11 @@ const firebaseConfigStaging = {
   storageBucket: "tumai-space-staging.appspot.com",
   messagingSenderId: "516645247811",
   appId: "1:516645247811:web:4d14368557a7e1ec132df6",
-  measurementId: "G-ZNLMYF66DT"
+  measurementId: "G-ZNLMYF66DT",
 };
 
 var firebaseConfig;
-if (environment_name === 'production') {
+if (environment_name === "production") {
   firebaseConfig = firebaseConfigProd;
   // TODO: staging
 } else {
@@ -31,7 +31,7 @@ if (environment_name === 'production') {
   // throw new Error(`Invalid environment: ${environment_name}`);
 }
 
-console.log("Env: ", environment_name)
+console.log("Env: ", environment_name);
 
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
