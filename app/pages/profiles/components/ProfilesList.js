@@ -9,13 +9,13 @@ function ProfilesList() {
   const { profilesModel, rolesModel } = useStores();
   return (
     <div className="flex flex-col space-y-4">
-      <div className="flex flex-col space-y-10 justify-end">
-        <div className="font-light text-gray-500 mt-2">
+      <div className="flex flex-col justify-end space-y-10">
+        <div className="mt-2 font-light text-gray-500">
           Total {profilesModel.filteredProfiles.length} members
         </div>
-        <div className="w-full flex">
-          <div className="m-auto bg-white dark:bg-gray-700 rounded w-full lg:w-1/2 p-2 flex space-x-4">
-            <Icon name={"FaSearch"} className="p-2 rounded" />
+        <div className="flex w-full">
+          <div className="m-auto flex w-full space-x-4 rounded bg-white p-2 dark:bg-gray-700 lg:w-1/2">
+            <Icon name={"FaSearch"} className="rounded p-2" />
             <input
               value={profilesModel.search}
               onChange={(e) => {
@@ -35,7 +35,7 @@ function ProfilesList() {
             )}
           </div>
         </div>
-        <div className="flex flex-col space-y-2 lg:flex-row lg:space-x-4 items-start lg:items-end">
+        <div className="flex flex-col items-start space-y-2 lg:flex-row lg:items-end lg:space-x-4">
           <div className="space-x-2">
             <span className="font-thin">filters: </span>
             {Object.keys(profilesModel.filter).length > 0 && (
@@ -81,7 +81,7 @@ function ProfilesList() {
           />
         </div>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-3 lg:grid-cols-5">
         {profilesModel.filteredProfiles.map((profile, i) => (
           <ProfileRow key={i} profile={profile} />
         ))}

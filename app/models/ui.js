@@ -1,27 +1,27 @@
-import { makeAutoObservable } from 'mobx';
+import { makeAutoObservable } from "mobx";
 
 export class UiModel {
-	modalActive = false;
-	navBarActive = false;
-	modalContent;
+  modalActive = false;
+  navBarActive = false;
+  modalContent;
 
-	constructor(root) {
-		this.root = root;
-		makeAutoObservable(this);
-	}
+  constructor(root) {
+    this.root = root;
+    makeAutoObservable(this);
+  }
 
-	updateModalContent(modalContent) {
-		this.modalContent = modalContent;
-	}
+  updateModalContent(modalContent) {
+    this.modalContent = modalContent;
+  }
 
-	setNavBarActive(state) {
-		this.navBarActive = state;
-	}
+  setNavBarActive(state) {
+    this.navBarActive = state;
+  }
 
-	toggleModal() {
-		this.modalActive = !this.modalActive;
-		if (!this.modalActive) {
-			this.modalContent = undefined;
-		}
-	}
+  toggleModal() {
+    this.modalActive = !this.modalActive;
+    if (!this.modalActive) {
+      this.modalContent = undefined;
+    }
+  }
 }

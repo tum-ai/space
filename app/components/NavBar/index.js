@@ -1,13 +1,13 @@
-import NavBarDesktop from './components/NavBarDesktop';
-import NavBarMobile from './components/NavBarMobile';
+import NavBarDesktop from "./components/NavBarDesktop";
+import NavBarMobile from "./components/NavBarMobile";
 
 function NavBar() {
-	return (
-		<>
-			<NavBarDesktop />
-			<NavBarMobile />
-		</>
-	);
+  return (
+    <>
+      <NavBarDesktop />
+      <NavBarMobile />
+    </>
+  );
 }
 
 export default NavBar;
