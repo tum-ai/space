@@ -56,6 +56,9 @@ def retrieve_db_application_review(
             .filter(sa.and_(ApplicationReview.id == review_id))
             .first()
         )
+
+        assert db_model
+
         if db_model is not None:
             db_model.force_load()
 
@@ -64,7 +67,7 @@ def retrieve_db_application_review(
 
 def retrieve_db_application_all_reviews_for_reviewer(
     sql_engine: sa.Engine, profile_id: int
-) -> ApplicationReview:
+) -> list[ApplicationReview]:
     with Session(sql_engine) as db_session:
         db_applications_reviews = (
             db_session

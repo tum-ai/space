@@ -14,7 +14,11 @@ from space_api.utils.error_handlers import error_handlers
 from space_api.utils.paging import enable_paging
 from space_api.utils.response import ErrorResponse
 
-from .api_models import ApplicationReviewIn, ApplicationReviewOut
+from .api_models import (
+    ApplicationReviewIn,
+    ApplicationReviewOut,
+    ApplicationReviewUpdate,
+)
 from .response_models import (
     ResponseApplicationReview,
     ResponseApplicationReviewList,
@@ -143,7 +147,7 @@ def get_application_reviews(
 def update_review(
     request: Request,
     review_id: int,
-    data: Annotated[ApplicationReviewIn, Body(embed=True)],
+    data: Annotated[ApplicationReviewUpdate, Body(embed=True)],
 ) -> dict:
     updated_review_model = update_db_application_review(
         request.app.state.sql_engine, request.state.profile.id, review_id, data
