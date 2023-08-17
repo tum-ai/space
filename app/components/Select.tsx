@@ -1,8 +1,19 @@
 import React, { useRef, useState } from "react";
 import Icon from "./Icon";
-import useOutsideAlerter from "/hooks/useOutsideAlerter";
+import useOutsideAlerter from "@hooks/useOutsideAlerter";
 
-export default function Select({
+interface Props {
+  selectedItem: { key: string; value: string };
+  setSelectedItem: (item: any) => void;
+  placeholder: string;
+  data: { key: string; value: string }[];
+  className?: string;
+  label?: string;
+  disabled?: boolean;
+  trigger?: any;
+}
+
+function Select({
   setSelectedItem,
   selectedItem,
   placeholder,
@@ -11,7 +22,7 @@ export default function Select({
   trigger,
   label,
   disabled,
-}) {
+}: Props) {
   const [active, setActive] = useState(false);
   const wrapperRef = useRef(null);
   useOutsideAlerter(wrapperRef, () => {
@@ -28,6 +39,7 @@ export default function Select({
       style={{ maxWidth: "600px" }}
     >
       {label && <label className="font-light">{label}</label>}
+
       <div className="relative rounded">
         {React.cloneElement(
           trigger ? (
@@ -126,3 +138,5 @@ function Item({ selected, ...props }) {
     </div>
   );
 }
+
+export default Select;

@@ -1,6 +1,16 @@
 import React, { useRef, useState } from "react";
 import Icon from "./Icon";
-import useOutsideAlerter from "/hooks/useOutsideAlerter";
+import useOutsideAlerter from "@hooks/useOutsideAlerter";
+
+interface Props {
+  selectedItems: { key: string; value: string };
+  setSelectedItems: (item: any) => void;
+  label?: string;
+  data?: { key: string; value: string }[];
+  className?: string;
+  placeholder?: string;
+  flowRight?: boolean;
+}
 
 export default function SelectMultiple({
   label,
@@ -10,7 +20,7 @@ export default function SelectMultiple({
   setSelectedItems,
   placeholder,
   flowRight,
-}) {
+}: Props) {
   const [active, setActive] = useState(false);
   const wrapperRef = useRef(null);
   useOutsideAlerter(wrapperRef, () => {

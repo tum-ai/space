@@ -1,8 +1,8 @@
 import { observer } from "mobx-react";
-import Input from "/components/Input";
-import ProtectedItem from "/components/ProtectedItem";
-import Select from "/components/Select";
-import { useStores } from "/providers/StoreProvider";
+import Input from "@components/Input";
+import ProtectedItem from "@components/ProtectedItem";
+import Select from "@components/Select";
+import { useStores } from "@providers/StoreProvider";
 
 const positionTypes = [
   {
@@ -197,7 +197,6 @@ const DepartmentMembershipNew = observer(({ departmentMembership, index }) => {
         }}
         placeholder="Select an option"
         data={departmentTypes}
-        name="department_handle"
         label="Department"
         disabled={false}
       />
@@ -211,7 +210,6 @@ const DepartmentMembershipNew = observer(({ departmentMembership, index }) => {
         }}
         placeholder="Select an option"
         data={positionTypes}
-        name="position"
         label="Position"
         disabled={false}
       />

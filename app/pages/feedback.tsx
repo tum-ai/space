@@ -1,6 +1,6 @@
 import Script from "next/script";
-import ProtectedItem from "../components/ProtectedItem";
-import Page from "/components/Page";
+import ProtectedItem from "@components/ProtectedItem";
+import Page from "@components/Page";
 
 export default function Feedback() {
   return (
@@ -19,9 +19,6 @@ export default function Feedback() {
               loading="lazy"
               width="100%"
               height="427"
-              frameBorder="0"
-              marginHeight="0"
-              marginWidth="0"
               title="TUM.ai space feedback"
             ></iframe>
             <Script

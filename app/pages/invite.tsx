@@ -1,8 +1,8 @@
 import { observer } from "mobx-react";
 import ProtectedItem from "../components/ProtectedItem";
-import Page from "/components/Page";
-import Textarea from "/components/Textarea";
-import { useStores } from "/providers/StoreProvider";
+import Page from "@components/Page";
+import Textarea from "@components/Textarea";
+import { useStores } from "@providers/StoreProvider";
 
 const Invite = observer(() => {
   const { inviteModel } = useStores();
