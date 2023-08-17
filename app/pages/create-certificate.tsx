@@ -1,9 +1,9 @@
 import { observer } from "mobx-react";
 import ProtectedItem from "../components/ProtectedItem";
-import Input from "/components/Input";
-import Page from "/components/Page";
-import Select from "/components/Select";
-import { useStores } from "/providers/StoreProvider";
+import Input from "@components/Input";
+import Page from "@components/Page";
+import Select from "@components/Select";
+import { useStores } from "@providers/StoreProvider";
 
 function Certificate() {
   const { certificateModel } = useStores();

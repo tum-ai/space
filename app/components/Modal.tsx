@@ -1,6 +1,14 @@
 import React from "react";
 
-function Modal({ className, trigger, state, setState, onClose, ...props }) {
+interface Props {
+  state: boolean;
+  setState: (open: boolean) => void;
+  trigger?: any;
+  onClose?: () => void;
+  children?: React.ReactElement;
+}
+
+function Modal({ trigger, state, setState, onClose, children }: Props) {
   return (
     <>
       {trigger
@@ -19,8 +27,7 @@ function Modal({ className, trigger, state, setState, onClose, ...props }) {
           <div
             onClick={(e) => {
               e.stopPropagation();
-              setState();
-              // onClose && onClose();
+              setState(true);
             }}
             className="absolute left-0 top-0 z-20 flex h-screen w-screen"
           >
@@ -30,7 +37,7 @@ function Modal({ className, trigger, state, setState, onClose, ...props }) {
                 maxHeight: "90%",
               }}
             >
-              {React.cloneElement(props.children, {
+              {React.cloneElement(children, {
                 onClick: (e) => {
                   e.stopPropagation();
                 },

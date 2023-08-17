@@ -75,7 +75,7 @@ export class ProfilesModel {
     if (this.sortBy) {
       this.filteredProfiles = this.filteredProfiles.sort(
         (profileA, profileB) => {
-          return profileA[this.sortBy] > profileB[this.sortBy];
+          return profileA[this.sortBy] - profileB[this.sortBy];
         },
       );
     }

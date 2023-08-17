@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "lint": "eslint --ignore-path .esignorelint --ext .js,.jsx,.ts,.tsx .",
+    "lint": "next lint",
     "preinstall": "npm run lint",
     "start": "env-cmd -f .env next start",
     "build": "env-cmd -f .env next build",
@@ -25,6 +25,7 @@
     "react-icons": "^4.7.1"
   },
   "devDependencies": {
+    "@types/react": "^18.2.20",
     "autoprefixer": "^10.4.13",
     "env-cmd": "^10.1.0",
     "postcss": "^8.4.19",

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import axios from "axios";
 import {
   createUserWithEmailAndPassword,
@@ -5,7 +6,7 @@ import {
   signOut,
 } from "firebase/auth";
 import { makeAutoObservable } from "mobx";
-import { auth } from "/config/firebase";
+import { auth } from "@config/firebase";
 
 export class MeModel {
   root;
@@ -20,7 +21,6 @@ export class MeModel {
         axios.defaults.headers = {
           authorization: `bearer ${user.accessToken}`,
         };
-        console.log(user.accessToken);
         const profile = (await axios("/me")).data.data;
         const roles = (await axios("/me/role/holderships")).data.data;
         profile["role_holderships"] = roles.map((obj) => obj["role"]);

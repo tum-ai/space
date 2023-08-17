@@ -1,5 +1,5 @@
 import ProfilesList from "./components/ProfilesList";
-import Page from "/components/Page";
+import Page from "@components/Page";
 
 function Profiles() {
   return (
