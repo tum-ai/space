@@ -1,9 +1,9 @@
 import { observer } from "mobx-react";
-import { Image } from "next/image";
+import Image from "next/image";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
-import Icon from "/components/Icon";
-import { useStores } from "/providers/StoreProvider";
+import Icon from "@components/Icon";
+import { useStores } from "@providers/StoreProvider";
 
 function ProfileOverview() {
   const { profileModel } = useStores();
@@ -60,7 +60,7 @@ function ProfileOverview() {
                     />
                   ) : (
                     <Icon
-                      name={"Fa" + sn.type}
+                      name={("Fa" + sn.type) as any}
                       className="rounded-full p-2 hover:scale-105"
                     />
                   )}

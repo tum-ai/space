@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
 import ProtectedItem from "../../ProtectedItem";
-import { useStores } from "/providers/StoreProvider";
+import { useStores } from "@providers/StoreProvider";
 
 function Links() {
   const router = useRouter();

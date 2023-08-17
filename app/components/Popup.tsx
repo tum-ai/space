@@ -1,23 +1,19 @@
+import React from "react";
+
 function Popup({ className, trigger, state, setState, onClose, ...props }) {
   return (
     <>
-      {trigger
-        ? React.cloneElement(trigger, {
-            onClick: (e) => {
-              console.log("triggered");
-              e.stopPropagation();
-              if (trigger.props.onClick) trigger.props.onClick(e);
-              setState(true);
-            },
-          })
-        : null}
+      {trigger &&
+        React.cloneElement(trigger, {
+          onClick: (e) => {
+            console.log("triggered");
+            e.stopPropagation();
+            if (trigger.props.onClick) trigger.props.onClick(e);
+            setState(true);
+          },
+        })}
       {state && (
         <div
-          // onClick={(e) => {
-          //   e.stopPropagation()
-          //   setState(false)
-          //   onClose && onClose()
-          // }}
           className={
             "fixed left-0 top-0 flex h-screen w-screen items-center justify-center overflow-hidden blur " +
             className

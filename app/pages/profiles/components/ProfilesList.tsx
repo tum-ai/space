@@ -1,9 +1,9 @@
 import { observer } from "mobx-react";
 import ProtectedItem from "../../../components/ProtectedItem";
 import ProfileRow from "./ProfileRow";
-import Icon from "/components/Icon";
-import Select from "/components/Select";
-import { useStores } from "/providers/StoreProvider";
+import Icon from "@components/Icon";
+import Select from "@components/Select";
+import { useStores } from "@providers/StoreProvider";
 
 function ProfilesList() {
   const { profilesModel, rolesModel } = useStores();

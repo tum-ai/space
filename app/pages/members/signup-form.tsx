@@ -1,7 +1,7 @@
 import ProfileEditor from "../me/components/ProfileEditor";
-import Page from "../../components/Page";
 import { observer } from "mobx-react";
-import { useStores } from "/providers/StoreProvider";
+import Page from "@components/Page";
+import { useStores } from "@providers/StoreProvider";
 
 function SignUpForm() {
   const { meModel } = useStores();

@@ -25,6 +25,7 @@ export default function Feedback() {
               id="tally-js"
               src="https://tally.so/widgets/embed.js"
               onReady={() => {
+                // @ts-ignore
                 Tally.loadEmbeds();
               }}
             />

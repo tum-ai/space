@@ -15,7 +15,7 @@ export class InviteModel {
 
   formatText() {
     let rows = this.text.split("\n");
-    rows = rows.map((row) => {
+    return rows.map((row) => {
       const items = row.split(",");
       return {
         email: items[0],
@@ -25,7 +25,6 @@ export class InviteModel {
         department_position: items[4],
       };
     });
-    return rows;
   }
 
   async invite() {

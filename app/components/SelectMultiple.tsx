@@ -3,7 +3,7 @@ import Icon from "./Icon";
 import useOutsideAlerter from "@hooks/useOutsideAlerter";
 
 interface Props {
-  selectedItems: { key: string; value: string };
+  selectedItems: { key: string; value: string }[];
   setSelectedItems: (item: any) => void;
   label?: string;
   data?: { key: string; value: string }[];

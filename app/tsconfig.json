@@ -18,8 +18,10 @@
     "baseUrl": ".",
     "paths": {
       "@components/*": ["./components/*"],
+      "@models/*": ["./models/*"],
       "@providers/*": ["./providers/*"],
       "@hooks/*": ["./hooks/*"],
+      "@config/*": ["./config/*"],
       "~/*": ["./src/*"]
     },
     "strict": false

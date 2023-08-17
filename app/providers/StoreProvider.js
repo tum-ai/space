@@ -1,11 +1,11 @@
 import { enableStaticRendering } from "mobx-react";
 import React, { createContext, useContext } from "react";
-import { RootModel } from "/models/root";
+import { RootModel } from "@models/root";
 
 enableStaticRendering(typeof window === "undefined");
 
 let store;
-const StoreContext = createContext();
+const StoreContext = createContext(undefined);
 
 function initializeStore(initialData) {
   const _store = store ?? new RootModel();
