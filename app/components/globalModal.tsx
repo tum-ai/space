@@ -1,6 +1,6 @@
 import { observer } from "mobx-react";
-import Modal from "/components/Modal";
-import { useStores } from "/providers/StoreProvider";
+import Modal from "@components/Modal";
+import { useStores } from "@providers/StoreProvider";
 
 function GlobalModal() {
   const { uiModel } = useStores();

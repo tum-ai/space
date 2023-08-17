@@ -2,8 +2,8 @@
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { useStores } from "../providers/StoreProvider";
-import Input from "/components/Input";
-import Page from "/components/Page";
+import Input from "@components/Input";
+import Page from "@components/Page";
 
 function Auth() {
   const { meModel } = useStores();

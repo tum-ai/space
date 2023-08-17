@@ -1,7 +1,7 @@
 import ProfileOverview from "./components/ProfileOverview";
-import Page from "/components/Page";
+import Page from "@components/Page";
 
-export default function Profile() {
+export default function Me() {
   return (
     <Page>
       <ProfileOverview />

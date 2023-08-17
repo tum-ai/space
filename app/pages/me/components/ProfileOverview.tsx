@@ -1,35 +1,34 @@
 import { observer } from "mobx-react";
-import { Image } from "next/image";
-import { useRouter } from "next/router";
-import { useEffect } from "react";
-import Icon from "/components/Icon";
-import { useStores } from "/providers/StoreProvider";
+import Image from "next/image";
+import ProfileEditor from "./ProfileEditor";
+import Icon from "@components/Icon";
+import { useStores } from "@providers/StoreProvider";
 
 function ProfileOverview() {
-  const { profileModel } = useStores();
-  const router = useRouter();
-  const { id } = router.query;
-  useEffect(() => {
-    if (id) {
-      profileModel.getProfile(id);
-    }
-  }, [profileModel, id]);
-  const profile = profileModel.profile;
-
-  if (profileModel.loading) {
-    return <div>Loading...</div>;
-  }
-
-  if (profileModel.error) {
-    return <div>{profileModel.error}</div>;
-  }
+  const { meModel, uiModel } = useStores();
+  const user = meModel.user;
+  const profile = user?.profile;
 
   if (!profile) {
     return <div>Profile not found.</div>;
   }
-
   return (
     <div className="m-auto max-w-3xl bg-white dark:bg-gray-700">
+      <div className="flex w-full justify-end">
+        <button
+          className="right-0 p-2"
+          onClick={() => {
+            uiModel.updateModalContent(<ProfileEditor />);
+            uiModel.toggleModal();
+            meModel.editorProfile = { ...profile };
+          }}
+        >
+          <Icon
+            name={"FaEdit"}
+            className="rounded bg-gray-100 p-2 hover:scale-105 dark:bg-black"
+          />
+        </button>
+      </div>
       <div className="grid grid-cols-1 gap-10 rounded-xl p-8 px-4 lg:px-10 xl:grid-cols-2">
         {/* name + image */}
         <div className=" max-w-90 flex flex-col items-start space-y-6 xl:col-span-2">
@@ -60,7 +59,7 @@ function ProfileOverview() {
                     />
                   ) : (
                     <Icon
-                      name={"Fa" + sn.type}
+                      name={("Fa" + sn.type) as any}
                       className="rounded-full p-2 hover:scale-105"
                     />
                   )}

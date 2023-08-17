@@ -2,10 +2,10 @@ import { observer } from "mobx-react";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { useState } from "react";
-import Input from "/components/Input";
-import Select from "/components/Select";
-import Textarea from "/components/Textarea";
-import { useStores } from "/providers/StoreProvider";
+import Input from "@components/Input";
+import Select from "@components/Select";
+import Textarea from "@components/Textarea";
+import { useStores } from "@providers/StoreProvider";
 
 const newJobExperience = {
   employer: "",
@@ -289,7 +289,6 @@ function SocialNetworks() {
               }}
               placeholder="Select an option"
               data={socialNetworksTypes}
-              name="type"
               label="Type"
               disabled={false}
             />

@@ -17,7 +17,7 @@ export class RolesModel {
   async getRoleHolderships() {
     const roleHolderships = await this.root.GET("/role/holderships");
     if (!roleHolderships) return;
-    let rolesObject = {};
+    let rolesObject = [];
     for (let i = 0; i < roleHolderships.length; i++) {
       const roleHoldership = roleHolderships[i];
       if (!rolesObject[roleHoldership["profile"]["id"]]) {

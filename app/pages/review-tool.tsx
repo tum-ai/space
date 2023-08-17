@@ -1,10 +1,10 @@
 import { observer } from "mobx-react";
 import ProtectedItem from "../components/ProtectedItem";
-import Tabs from "../components/Tabs";
-import Icon from "/components/Icon";
-import Input from "/components/Input";
-import Page from "/components/Page";
-import { useStores } from "/providers/StoreProvider";
+import Tabs from "@components/Tabs";
+import Icon from "@components/Icon";
+import Input from "@components/Input";
+import Page from "@components/Page";
+import { useStores } from "@providers/StoreProvider";
 
 const ReviewTool = observer(() => {
   const { reviewToolModel } = useStores();

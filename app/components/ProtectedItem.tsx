@@ -1,9 +1,21 @@
 import { observer } from "mobx-react";
 import { useRouter } from "next/router";
 import React, { useEffect } from "react";
-import { useStores } from "/providers/StoreProvider";
+import { useStores } from "@providers/StoreProvider";
 
-function ProtectedItem({ roles, redirectToAuth, showNotFound, children }) {
+interface Props {
+  roles?: any[];
+  redirectToAuth?: boolean;
+  showNotFound?: boolean;
+  children?: React.ReactNode;
+}
+
+function ProtectedItem({
+  roles,
+  redirectToAuth,
+  showNotFound,
+  children,
+}: Props) {
   const { meModel } = useStores();
   const user = meModel.user;
   const loading = meModel.loading;

@@ -1,9 +1,11 @@
 import axios from "axios";
+import { makeAutoObservable } from "mobx";
 
 export class DepartmentModel {
   root;
   editorProfile = {};
   user = undefined;
+  profile;
 
   constructor(root) {
     this.root = root;
