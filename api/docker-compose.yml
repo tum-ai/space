@@ -25,8 +25,8 @@ services:
     build: .
     restart: unless-stopped
     command: gunicorn space_api.main:app -k uvicorn.workers.UvicornWorker --workers=4 --reload --bind=0.0.0.0
-    # ports:
-    #   - '${API_PORT}:8000'
+    ports:
+      - '${API_PORT}:8000'
     networks:
       - backend-net
       - proxy-net
