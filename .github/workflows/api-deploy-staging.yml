@@ -59,8 +59,8 @@ jobs:
           port: 22
           script: |
             cd /apps/tumai/space-staging
-            git fetch --all
-            git reset --hard origin/dev
+            git checkout dev
+            git pull
             cd api/
 
             # ENV VARIABLES NEEDED FOR BUILD
@@ -85,5 +85,6 @@ jobs:
             export MAIL_FROM_NAME="${{ env.MAIL_FROM_NAME }}"
 
             docker-compose build --no-cache
-            docker-compose down --remove-orphans
-            docker-compose up -d --remove-orphans
+            docker-compose -p tum-ai-space-api-staging down --remove-orphans
+            docker-compose -p tum-ai-space-api-staging up -d --remove-orphans
+
