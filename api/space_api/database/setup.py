@@ -9,7 +9,7 @@ from sqlalchemy.orm.session import Session
 from space_api.profiles.db_views import init_views
 from space_api.utils.log import log
 
-from .db_models import Department, Role, RoleHoldership, SaBaseModel
+from .db_models import Department, Role, SaBaseModel
 
 DBSession = scoped_session(sessionmaker())
 
@@ -49,9 +49,6 @@ async def setup_db_client(running_app: FastAPI) -> None:
 
     # add pre-existing departments
     upsert_departments(running_app.state.sql_engine)
-
-    # add admin role to first profile
-    add_admin(running_app.state.sql_engine)
 
 def setup_db_client_appless() -> Engine:
     log.info("Setting up sqlalchemy/postgres database connection")
@@ -142,11 +139,4 @@ def upsert_roles(engine: Engine) -> None:
     with Session(engine) as session:
         for role in core_roles:
             session.merge(role)
-        session.commit()
-
-def add_admin(engine: Engine) -> None:
-    admin_role_holdership = RoleHoldership(profile_id=1, role_handle="admin"),
-
-    with Session(engine) as session:
-        session.merge(admin_role_holdership)
         session.commit()
