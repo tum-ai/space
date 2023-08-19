@@ -1,11 +1,12 @@
 name: API CI - lint and pytest
 
 on:
-  push:
-    branches-ignore:
-      - main
+  pull_request:
     paths:
-    - 'app/**'
+      - 'app/**'
+    branches:
+      - main
+      - dev
   workflow_dispatch:
 
 jobs:
