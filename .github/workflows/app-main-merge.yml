@@ -3,11 +3,8 @@
 
 name: Deploy to Firebase Hosting on merge to Prod
 on:
-  push:
-    paths:
-    - 'app/**'
-    branches:
-      - main
+  release:
+    types: [published]
   workflow_dispatch:
 
 jobs:

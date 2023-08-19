@@ -3,11 +3,9 @@
 
 name: Deploy to Firebase Hosting on PR to staging
 on:
-  pull_request:
-    paths:
-    - 'app/**'
+  push:
     branches:
-      - main
+      - dev
   workflow_dispatch:
 
 jobs:
