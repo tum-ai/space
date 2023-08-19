@@ -1,13 +1,13 @@
 import axios from "axios";
-import { CertificateModel } from "./certificate.js";
-import { DepartmentMembershipsModel } from "./department_memberships.js";
-import { InviteModel } from "./invite.js";
-import { MeModel } from "./me.js";
-import { ProfileModel } from "./profile.js";
-import { ProfilesModel } from "./profiles.js";
-import { ReviewToolModel } from "./reviewTool.js";
-import { RolesModel } from "./roles.js";
-import { UiModel } from "./ui.js";
+import { CertificateModel } from "./certificate";
+import { DepartmentMembershipsModel } from "./department_memberships";
+import { InviteModel } from "./invite";
+import { MeModel } from "./me";
+import { ProfileModel } from "./profile";
+import { ProfilesModel } from "./profiles";
+import { ReviewToolModel } from "./reviewTool";
+import { RolesModel } from "./roles";
+import { UiModel } from "./ui";
 
 export class RootModel {
   profileModel: ProfileModel;
