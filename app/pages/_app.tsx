@@ -1,25 +1,22 @@
 import axios from "axios";
-import { useEffect } from "react";
+import { createContext } from "react";
 import GlobalModal from "../components/globalModal";
-import { StoreProvider } from "../providers/StoreProvider";
+import { useStores } from "../providers/StoreProvider";
 import "../styles/globals.css";
 import NavBar from "@components/NavBar/index";
 
 axios.defaults.baseURL = process.env.NEXT_PUBLIC_API_URL;
 
+export const StoresContext = createContext(null);
+
 function App({ Component, pageProps }) {
-  useEffect(() => {
-    document.documentElement.style.setProperty(
-      "--vh",
-      window.innerHeight * 0.01 + "px",
-    );
-  }, []);
+  const stores = useStores(pageProps.initialState);
   return (
-    <StoreProvider hydrationData={pageProps.hydrationData}>
+    <StoresContext.Provider value={stores}>
       <NavBar />
       <Component {...pageProps} />
       <GlobalModal />
-    </StoreProvider>
+    </StoresContext.Provider>
   );
 }
 
