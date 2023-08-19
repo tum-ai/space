@@ -61,7 +61,7 @@ const Applications = observer(() => {
 function Application({ data }) {
   const { reviewToolModel } = useStores();
   return (
-    <div className="grid grid-cols-4 rounded-2xl bg-white p-6 shadow lg:grid-cols-7">
+    <div className="grid grid-cols-4 rounded-2xl bg-white p-6 shadow dark:bg-gray-700 lg:grid-cols-7">
       <div>{data.id}</div>
       <button
         onClick={() => {
