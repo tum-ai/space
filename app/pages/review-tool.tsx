@@ -4,6 +4,7 @@ import Page from "@components/Page";
 import Tabs from "@components/Tabs";
 import { useStores } from "@providers/StoreProvider";
 import { observer } from "mobx-react";
+import Image from "next/image";
 import ProtectedItem from "../components/ProtectedItem";
 
 const ReviewTool = observer(() => {
@@ -51,6 +52,11 @@ const Applications = observer(() => {
           </button>
         )}
       </div>
+      <div className="grid grid-cols-3 px-6 md:grid-cols-4 lg:grid-cols-4">
+        <div>ID</div>
+        <div>Form Name</div>
+        <div>Reviewed By</div>
+      </div>
       {reviewToolModel.filteredApplications?.map((application) => (
         <Application key={application.id} data={application} />
       ))}
@@ -61,15 +67,45 @@ const Applications = observer(() => {
 function Application({ data }) {
   const { reviewToolModel } = useStores();
   return (
-    <div className="grid grid-cols-4 rounded-2xl bg-white p-6 shadow dark:bg-gray-700 lg:grid-cols-7">
+    <div className="grid grid-cols-3 rounded-2xl bg-white p-6 shadow dark:bg-gray-700 md:grid-cols-4 lg:grid-cols-4">
       <div>{data.id}</div>
-      <button
-        onClick={() => {
-          reviewToolModel.reviewApplication(data.id);
-        }}
-      >
-        review
-      </button>
+      <div>{data.submission?.data?.formName}</div>
+      <div className="flex">
+        {data.reviews?.map((review) => {
+          const profile = review.reviewer;
+          return (
+            <div
+              className="relative flex space-x-[-5]"
+              title={profile.first_name + " " + profile.last_name}
+            >
+              {profile.profile_picture ? (
+                <Image
+                  className="m-auto h-6 w-6 rounded-full border object-cover drop-shadow-lg"
+                  src={profile.profile_picture}
+                  width={100}
+                  height={100}
+                  alt=""
+                />
+              ) : (
+                <div className="m-auto flex h-6 w-6 rounded-full bg-gray-300 text-center drop-shadow-lg dark:bg-gray-800">
+                  <Icon name={"FaUser"} className="m-auto text-white" />
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+      <div className="flex w-full justify-end">
+        <button
+          className="flex items-center space-x-2"
+          onClick={() => {
+            reviewToolModel.reviewApplication(data.id);
+          }}
+        >
+          <p>review</p>
+          <Icon name="FaExternalLinkAlt" />
+        </button>
+      </div>
     </div>
   );
 }
