@@ -65,7 +65,8 @@ const Applications = observer(() => {
 });
 
 function Application({ data }) {
-  const { reviewToolModel } = useStores();
+  const { reviewToolModel, uiModel } = useStores();
+
   return (
     <div className="grid grid-cols-3 rounded-2xl bg-white p-6 shadow dark:bg-gray-700 md:grid-cols-4 lg:grid-cols-4">
       <div>{data.id}</div>
@@ -77,7 +78,19 @@ function Application({ data }) {
             <div
               key={i}
               className="relative flex space-x-[-5]"
-              title={profile.first_name + " " + profile.last_name}
+              title={
+                profile.first_name +
+                " " +
+                profile.last_name +
+                " - final score: " +
+                review.finalscore
+              }
+              onClick={() => {
+                reviewToolModel.setViewReview(review);
+                reviewToolModel.setViewApplication(data);
+                uiModel.updateModalContent(<ViewReview />);
+                uiModel.toggleModal();
+              }}
             >
               {profile.profile_picture ? (
                 <Image
@@ -111,47 +124,49 @@ function Application({ data }) {
   );
 }
 
+const ViewReview = observer(() => {
+  const { reviewToolModel } = useStores();
+  const applicationToView = reviewToolModel.viewApplication;
+  const viewReview = reviewToolModel.viewReview;
+
+  return (
+    <div className="grid gap-4 p-4 md:grid-cols-2">
+      <ReviewOverview data={viewReview} />
+      <ApplicationOverview data={applicationToView} />
+    </div>
+  );
+});
+
 function Review() {
   return (
     <div className="grid gap-4 p-4 md:grid-cols-2">
-      <div>
-        <ReviewForm />
-      </div>
-      <ApplicationOverview />
+      <ReviewForm />
+      <ApplicationToReview />
     </div>
   );
 }
 
-const ApplicationOverview = observer(() => {
-  const { reviewToolModel } = useStores();
-  const applicationOnReview = reviewToolModel.applicationOnReview;
-
-  if (!applicationOnReview) {
-    return <p>No application selected</p>;
-  }
-
+function ApplicationOverview({ data }) {
   return (
     <div className="space-y-4 overflow-scroll">
       <div className="grid gap-4 lg:grid-cols-2">
         <div>
           <span className="font-thin">ID: </span>
-          {applicationOnReview.id}
+          {data.id}
         </div>
         <div>
           <span className="font-thin">From: </span>
-          {applicationOnReview.submission?.data?.formName}
+          {data.submission?.data?.formName}
         </div>
         <div>
           <span className="font-thin">Created at: </span>
-          {applicationOnReview.submission?.data?.createdAt &&
-            new Date(
-              applicationOnReview.submission?.data?.createdAt,
-            ).toDateString()}
+          {data.submission?.data?.createdAt &&
+            new Date(data.submission?.data?.createdAt).toDateString()}
         </div>
       </div>
       <hr className="border-2" />
       <div className="grid gap-4 lg:grid-cols-2">
-        {applicationOnReview.submission?.data?.fields?.map((field) => {
+        {data.submission?.data?.fields?.map((field) => {
           return (
             <div key={field.label}>
               <div className="font-thin">{field.label}</div>
@@ -162,7 +177,41 @@ const ApplicationOverview = observer(() => {
       </div>
     </div>
   );
+}
+
+const ApplicationToReview = observer(() => {
+  const { reviewToolModel } = useStores();
+  const applicationOnReview = reviewToolModel.applicationOnReview;
+
+  if (!applicationOnReview) {
+    return <p>No application selected</p>;
+  }
+
+  return <ApplicationOverview data={applicationOnReview} />;
 });
+
+function ReviewOverview({ data }) {
+  return (
+    <div className="grid grid-cols-2 gap-4 overflow-scroll">
+      <div className="col-span-2 text-2xl">
+        <span>Reviewer: </span>
+        {data.reviewer?.first_name + " " + data.reviewer?.last_name}
+      </div>
+      {Object.entries(data)
+        .filter((entry) => {
+          return typeof entry[1] == "string" || typeof entry[1] == "number";
+        })
+        .map((entry: any) => {
+          return (
+            <div>
+              <div className="font-thin">{entry[0]}</div>
+              <div>{entry[1]}</div>
+            </div>
+          );
+        })}
+    </div>
+  );
+}
 
 const ReviewForm = observer(() => {
   const { reviewToolModel } = useStores();

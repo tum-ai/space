@@ -9,10 +9,20 @@ export class ReviewToolModel {
   editorReview = {};
   applicationOnReview: { id?: string };
   openTab = "Applications";
+  viewApplication = undefined;
+  viewReview = undefined;
 
   constructor(root) {
     this.root = root;
     makeAutoObservable(this);
+  }
+
+  setViewApplication(viewApplication) {
+    this.viewApplication = viewApplication;
+  }
+
+  setViewReview(viewReview) {
+    this.viewReview = viewReview;
   }
 
   setOpenTab(tab) {
