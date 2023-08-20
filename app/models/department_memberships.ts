@@ -1,16 +1,17 @@
 import { makeAutoObservable } from "mobx";
+import { RootModel } from "./root";
 
 export class DepartmentMembershipsModel {
-  root;
+  root: RootModel;
   departments = [];
   roles = [];
 
-  constructor(root) {
+  constructor(root: RootModel) {
     this.root = root;
     makeAutoObservable(this);
   }
 
-  setDepartments(departments) {
+  setDepartments(departments: any[]) {
     this.departments = departments;
   }
 

@@ -9,11 +9,11 @@ import { makeAutoObservable } from "mobx";
 import { auth } from "@config/firebase";
 
 export class MeModel {
-  root;
+  root: RootModel;
   editorProfile = {};
   user = undefined;
 
-  constructor(root) {
+  constructor(root: RootModel) {
     this.root = root;
     makeAutoObservable(this);
     auth.onAuthStateChanged(async (user) => {

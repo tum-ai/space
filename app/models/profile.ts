@@ -1,7 +1,8 @@
 import { makeAutoObservable } from "mobx";
+import { RootModel } from "./root";
 
 export class ProfileModel {
-  root;
+  root: RootModel;
   profile = {};
   loading = true;
 
@@ -10,7 +11,7 @@ export class ProfileModel {
     makeAutoObservable(this);
   }
 
-  async getProfile(id) {
+  async getProfile(id: string) {
     const profile = await this.root.GET("/profile/" + id);
     this.profile = profile;
     this.loading = false;
