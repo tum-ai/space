@@ -55,12 +55,26 @@ export class ReviewToolModel {
           .includes(this.search.toLocaleLowerCase())
       );
     });
+    this.sortApplications();
+  }
+
+  sortApplications() {
+    this.filteredApplications = this.filteredApplications.sort((a, b): any => {
+      const finalScoresA = a.reviews.map((review) => review.finalscore);
+      const finalScoresB = b.reviews.map((review) => review.finalscore);
+      const sumA = finalScoresA.reduce((a, b) => a + b, 0);
+      const avgA = sumA / finalScoresA.length || 0;
+      const sumB = finalScoresB.reduce((a, b) => a + b, 0);
+      const avgB = sumB / finalScoresB.length || 0;
+      return avgA < avgB;
+    });
   }
 
   async fetchApplications() {
     const applications = await this.root.GET("/applications/");
     this.applications = applications;
     this.filteredApplications = applications;
+    this.sortApplications();
   }
 
   async submitReview() {

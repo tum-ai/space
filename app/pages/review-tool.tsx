@@ -33,7 +33,7 @@ const Applications = observer(() => {
   const { reviewToolModel } = useStores();
   return (
     <div className="flex flex-col space-y-4 pt-4">
-      <div className="m-auto flex w-full space-x-4 rounded bg-white p-2 dark:bg-gray-700 lg:w-1/2">
+      <div className="m-auto flex w-full space-x-4 rounded bg-white p-2 dark:bg-gray-700 lg:mr-0 lg:w-[400px]">
         <Icon name={"FaSearch"} className="rounded p-2" />
         <input
           value={reviewToolModel.search}
@@ -53,10 +53,11 @@ const Applications = observer(() => {
           </button>
         )}
       </div>
-      <div className="grid grid-cols-3 px-6 md:grid-cols-4 lg:grid-cols-4">
+      <div className="grid grid-cols-3 px-6 md:grid-cols-5 lg:grid-cols-5">
         <div>ID</div>
         <div>Form Name</div>
         <div>Reviewed By</div>
+        <div>Avg. Final Score</div>
       </div>
       {reviewToolModel.filteredApplications?.map((application) => (
         <Application key={application.id} data={application} />
@@ -67,9 +68,11 @@ const Applications = observer(() => {
 
 function Application({ data }) {
   const { reviewToolModel, uiModel } = useStores();
-
+  const finalScoreSum = data.reviews?.reduce((finalscore, review) => {
+    return finalscore + review.finalscore;
+  }, 0);
   return (
-    <div className="grid grid-cols-3 rounded-2xl bg-white p-6 shadow dark:bg-gray-700 md:grid-cols-4 lg:grid-cols-4">
+    <div className="grid grid-cols-3 rounded bg-white p-6 shadow dark:bg-gray-700 md:grid-cols-5 lg:grid-cols-5">
       <div>{data.id}</div>
       <div>{data.submission?.data?.formName}</div>
       <div className="flex">
@@ -90,7 +93,7 @@ function Application({ data }) {
                 >
                   {profile.profile_picture ? (
                     <Image
-                      className="m-auto h-6 w-6 rounded-full border object-cover drop-shadow-lg"
+                      className="m-auto h-8 w-8 cursor-pointer rounded-full border object-cover drop-shadow-lg"
                       src={profile.profile_picture}
                       width={100}
                       height={100}
@@ -115,6 +118,7 @@ function Application({ data }) {
           );
         })}
       </div>
+      <div>{Math.round(finalScoreSum / data.reviews?.length) || "-"}</div>
       <div className="flex w-full justify-end">
         <button
           className="flex items-center space-x-2"
@@ -155,6 +159,7 @@ function Review() {
 function ApplicationOverview({ data }) {
   return (
     <div className="space-y-4 overflow-scroll">
+      <div className="col-span-2 text-2xl">Application</div>
       <div className="grid gap-4 lg:grid-cols-2">
         <div>
           <span className="font-thin">ID: </span>
