@@ -3,7 +3,7 @@ import { RootModel } from "./root";
 
 export class ProfileModel {
   root: RootModel;
-  profile = {};
+  profile: any = {};
   loading = true;
 
   constructor(root) {

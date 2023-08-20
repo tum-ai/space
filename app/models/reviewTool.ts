@@ -6,7 +6,7 @@ export class ReviewToolModel {
   applications = [];
   filteredApplications = [];
   search = "";
-  editorReview = {};
+  editorReview: any = {};
   applicationOnReview: { id?: string };
   openTab = "Applications";
   viewApplication = undefined;

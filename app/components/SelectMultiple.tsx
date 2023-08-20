@@ -1,12 +1,12 @@
-import React, { useRef, useState } from "react";
-import Icon from "./Icon";
 import useOutsideAlerter from "@hooks/useOutsideAlerter";
+import { useRef, useState } from "react";
+import Icon from "./Icon";
 
 interface Props {
   selectedItems: { key: string; value: string }[];
   setSelectedItems: (item: any) => void;
   label?: string;
-  data?: { key: string; value: string }[];
+  data?: { key: string | React.JSX.Element; value: string }[];
   className?: string;
   placeholder?: string;
   flowRight?: boolean;
