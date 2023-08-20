@@ -2,6 +2,7 @@ import Icon from "@components/Icon";
 import Input from "@components/Input";
 import Page from "@components/Page";
 import Tabs from "@components/Tabs";
+import Tooltip from "@components/Tooltip";
 import { useStores } from "@providers/StoreProvider";
 import { observer } from "mobx-react";
 import Image from "next/image";
@@ -75,37 +76,42 @@ function Application({ data }) {
         {data.reviews?.map((review, i) => {
           const profile = review.reviewer;
           return (
-            <div
-              key={i}
-              className="relative flex space-x-[-5]"
-              title={
-                profile.first_name +
-                " " +
-                profile.last_name +
-                " - final score: " +
-                review.finalscore
-              }
-              onClick={() => {
-                reviewToolModel.setViewReview(review);
-                reviewToolModel.setViewApplication(data);
-                uiModel.updateModalContent(<ViewReview />);
-                uiModel.toggleModal();
-              }}
-            >
-              {profile.profile_picture ? (
-                <Image
-                  className="m-auto h-6 w-6 rounded-full border object-cover drop-shadow-lg"
-                  src={profile.profile_picture}
-                  width={100}
-                  height={100}
-                  alt=""
-                />
-              ) : (
-                <div className="m-auto flex h-6 w-6 rounded-full bg-gray-300 text-center drop-shadow-lg dark:bg-gray-800">
-                  <Icon name={"FaUser"} className="m-auto text-white" />
+            <Tooltip
+              trigger={
+                <div
+                  key={i}
+                  className="relative flex space-x-[-5]"
+                  onClick={() => {
+                    reviewToolModel.setViewReview(review);
+                    reviewToolModel.setViewApplication(data);
+                    uiModel.updateModalContent(<ViewReview />);
+                    uiModel.toggleModal();
+                  }}
+                >
+                  {profile.profile_picture ? (
+                    <Image
+                      className="m-auto h-6 w-6 rounded-full border object-cover drop-shadow-lg"
+                      src={profile.profile_picture}
+                      width={100}
+                      height={100}
+                      alt=""
+                    />
+                  ) : (
+                    <div className="m-auto flex h-8 w-8 cursor-pointer rounded-full bg-gray-300 p-2 text-center drop-shadow-lg dark:bg-gray-800">
+                      <Icon name={"FaUser"} className="m-auto text-white" />
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
+              }
+            >
+              <div>
+                {profile.first_name +
+                  " " +
+                  profile.last_name +
+                  " - final score: " +
+                  review.finalscore}
+              </div>
+            </Tooltip>
           );
         })}
       </div>
