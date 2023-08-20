@@ -413,8 +413,8 @@ class ApplicationReview(MixinAsDict, SaBaseModel):
     )
 
     def __repr__(self) -> str:
-        return f"ApplicationReview(id={self.id}, \
-            reviewer_id={self.reviewer_id}, reviewee_id={self.reviewee_id})"
+        return f"ApplicationReview(reviewer_id=\
+    {self.reviewer_id}, reviewee_id={self.reviewee_id})"
 
     def force_load(self) -> None:
         if not self.reviewer_id:
