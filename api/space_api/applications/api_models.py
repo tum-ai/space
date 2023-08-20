@@ -3,6 +3,7 @@ from typing import Any, cast
 from pydantic import BaseModel, ConfigDict
 
 from space_api.database.db_models import Application
+from space_api.review_tool.api_models import ApplicationReviewOut
 
 
 class ApplicationOut(BaseModel):
@@ -27,10 +28,18 @@ class ApplicationOut(BaseModel):
 
     id: int
     submission: Any
+    reviews: list[ApplicationReviewOut]
 
     @classmethod
     def from_db_model(cls, application: Application) -> "ApplicationOut":
-        return ApplicationOut(id=application.id, submission=application.submission)
+        reviews = []
+        for review in application.reviews:
+            reviews.append(ApplicationReviewOut.from_db_model(review))
+        return ApplicationOut(
+            id=application.id,
+            submission=application.submission,
+            reviews=reviews
+        )
 
     @classmethod
     def dummy(cls) -> "ApplicationOut":
