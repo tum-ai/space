@@ -15,6 +15,9 @@ def list_db_applications(
             .all()
         )
 
+        for db_application in db_applications:
+            db_application.force_load()
+
         return db_applications
 
 

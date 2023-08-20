@@ -370,6 +370,11 @@ class Application(MixinAsDict, SaBaseModel):
             raise KeyError
         if not self.submission:
             raise KeyError
+        for review in self.reviews:
+            assert isinstance(review, ApplicationReview)
+            if not review.id:
+                raise KeyError
+            review.force_load()
 
 
 class ApplicationReview(MixinAsDict, SaBaseModel):
@@ -422,8 +427,6 @@ class ApplicationReview(MixinAsDict, SaBaseModel):
             raise KeyError
 
         self.reviewer.force_load()
-        self.application.force_load()
-
 
 class ApplicationReferral(MixinAsDict, SaBaseModel):
     __tablename__ = "application_referral"
