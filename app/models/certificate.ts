@@ -1,16 +1,17 @@
 import download from "downloadjs";
 import { makeAutoObservable } from "mobx";
+import { RootModel } from "./root";
 
 export class CertificateModel {
-  root;
+  root: RootModel;
   editorCertificate = {};
 
-  constructor(root) {
+  constructor(root: RootModel) {
     this.root = root;
     makeAutoObservable(this);
   }
 
-  updateEditorCertificate(changes) {
+  updateEditorCertificate(changes: any) {
     this.editorCertificate = { ...this.editorCertificate, ...changes };
   }
 

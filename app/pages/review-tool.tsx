@@ -1,10 +1,10 @@
-import { observer } from "mobx-react";
-import ProtectedItem from "../components/ProtectedItem";
-import Tabs from "@components/Tabs";
 import Icon from "@components/Icon";
 import Input from "@components/Input";
 import Page from "@components/Page";
+import Tabs from "@components/Tabs";
 import { useStores } from "@providers/StoreProvider";
+import { observer } from "mobx-react";
+import ProtectedItem from "../components/ProtectedItem";
 
 const ReviewTool = observer(() => {
   const { reviewToolModel } = useStores();
@@ -61,7 +61,7 @@ const Applications = observer(() => {
 function Application({ data }) {
   const { reviewToolModel } = useStores();
   return (
-    <div className="grid grid-cols-4 rounded-2xl bg-white p-6 shadow lg:grid-cols-7">
+    <div className="grid grid-cols-4 rounded-2xl bg-white p-6 shadow dark:bg-gray-700 lg:grid-cols-7">
       <div>{data.id}</div>
       <button
         onClick={() => {
@@ -88,6 +88,10 @@ function Review() {
 const ApplicationOverview = observer(() => {
   const { reviewToolModel } = useStores();
   const applicationOnReview = reviewToolModel.applicationOnReview;
+
+  if (!applicationOnReview) {
+    return <p>No application selected</p>;
+  }
 
   return (
     <div className="space-y-4 overflow-scroll">

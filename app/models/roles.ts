@@ -4,6 +4,7 @@ export class RolesModel {
   root;
   roleHolderships = [];
   roles = [];
+  profile;
 
   constructor(root) {
     this.root = root;

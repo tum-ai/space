@@ -1,7 +1,9 @@
 import { makeAutoObservable } from "mobx";
+import { RootModel } from "./root";
 
 export class InviteModel {
-  root;
+  root: RootModel;
+  editorProfile;
   text = "";
 
   constructor(root) {
@@ -32,27 +34,7 @@ export class InviteModel {
     const data = await this.root.POST("/profiles/invite/members", formatedText);
     if (!data) return;
     if (data.failed?.length > 0) {
-      this.root.uiModel.updateModalContent(
-        <div className="flex flex-col space-y-2">
-          <div className="">Failed to invite the following accounts:</div>
-          {data.failed.map((obj) => (
-            <div key={obj.data.email}>
-              <span className="font-bold">{obj.data.email}</span>
-              {": "}
-              {obj.error}
-            </div>
-          ))}
-        </div>,
-      );
-      this.root.uiModel.toggleModal();
-    } else {
-      this.root.uiModel.updateModalContent(
-        <div className="flex flex-col space-y-2">
-          Users invited successfully. They will receive an email shortly with a
-          link to reset their password.
-        </div>,
-      );
-      this.root.uiModel.toggleModal();
+      // TODO: Toast
       this.text = "";
     }
   }
