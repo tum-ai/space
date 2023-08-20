@@ -80,6 +80,7 @@ function Application({ data }) {
           const profile = review.reviewer;
           return (
             <Tooltip
+              key={i}
               trigger={
                 <div
                   key={i}
@@ -212,9 +213,9 @@ function ReviewOverview({ data }) {
         .filter((entry) => {
           return typeof entry[1] == "string" || typeof entry[1] == "number";
         })
-        .map((entry: any) => {
+        .map((entry: any, i) => {
           return (
-            <div>
+            <div key={i}>
               <div className="font-thin">{entry[0]}</div>
               <div>{entry[1]}</div>
             </div>
