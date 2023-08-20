@@ -71,10 +71,11 @@ function Application({ data }) {
       <div>{data.id}</div>
       <div>{data.submission?.data?.formName}</div>
       <div className="flex">
-        {data.reviews?.map((review) => {
+        {data.reviews?.map((review, i) => {
           const profile = review.reviewer;
           return (
             <div
+              key={i}
               className="relative flex space-x-[-5]"
               title={profile.first_name + " " + profile.last_name}
             >
