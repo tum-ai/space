@@ -66,7 +66,7 @@ export class ReviewToolModel {
       const avgA = sumA / finalScoresA.length || 0;
       const sumB = finalScoresB.reduce((a, b) => a + b, 0);
       const avgB = sumB / finalScoresB.length || 0;
-      return avgA < avgB;
+      return avgA - avgB;
     });
   }
 
