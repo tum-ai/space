@@ -60,7 +60,7 @@ jobs:
             cd /apps/tumai/space
             git fetch
             git checkout main
-            git pull
+            git pull origin main
             cd api/
 
             # ENV VARIABLES NEEDED FOR BUILD
