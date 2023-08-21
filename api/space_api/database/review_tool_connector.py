@@ -148,12 +148,12 @@ def update_db_application_review(
 def delete_db_application_review(
     sql_engine: sa.Engine,
     profile_id: int,
-    review_id: int) -> bool:
+    reviewee_id: int) -> bool:
     with Session(sql_engine) as db_session:
 
         db_review = (
             db_session.query(ApplicationReview)
-            .filter(sa.and_(ApplicationReview.id == review_id,
+            .filter(sa.and_(ApplicationReview.reviewee_id == reviewee_id,
                              ApplicationReview.reviewer_id == profile_id))
             .first()
         )

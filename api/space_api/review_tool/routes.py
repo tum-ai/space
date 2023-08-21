@@ -172,7 +172,7 @@ def update_review(
 
 
 @router.delete(
-    "/review_tool/delete_review/{review_id}/",
+    "/review_tool/delete_review/{reviewee_id}/",
     response_description="Delete a review of a membership application.",
     response_model=ResponseDeleteReview,
 )
@@ -180,11 +180,11 @@ def update_review(
 @ensure_authorization(
     any_of_roles=["submit_reviews"],
 )
-def delete_review(request: Request, review_id: int) -> dict:
+def delete_review(request: Request, reviewee_id: int) -> dict:
     review_deleted = delete_db_application_review(
         request.app.state.sql_engine,
         request.state.profile.id,
-        review_id)
+        reviewee_id)
 
     if review_deleted:
         return {
