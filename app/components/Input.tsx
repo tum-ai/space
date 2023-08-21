@@ -4,7 +4,7 @@ function Input({ label, ...props }) {
       {label && <label className="text-sm font-thin">{label}</label>}
       <input
         {...props}
-        className="rounded border bg-white p-2 py-3 outline-none dark:border-gray-500 dark:bg-gray-700"
+        className="rounded border bg-white px-2 py-3 outline-none dark:border-gray-500 dark:bg-gray-700"
       />
     </div>
   );
