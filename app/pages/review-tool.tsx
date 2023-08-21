@@ -83,7 +83,7 @@ function Application({ data }) {
               key={i}
               trigger={
                 <div
-                  key={i}
+                  key={review.reviewer_id + review.reviewee_id}
                   className="relative flex space-x-[-5]"
                   onClick={() => {
                     reviewToolModel.setViewReview(review);
@@ -142,7 +142,7 @@ const ViewReview = observer(() => {
 
   return (
     <div className="grid gap-4 p-4 md:grid-cols-2">
-      <ReviewOverview data={viewReview} />
+      <ReviewOverview review={viewReview} />
       <ApplicationOverview data={applicationToView} />
     </div>
   );
@@ -202,22 +202,22 @@ const ApplicationToReview = observer(() => {
   return <ApplicationOverview data={applicationOnReview} />;
 });
 
-function ReviewOverview({ data }) {
+function ReviewOverview({ review }) {
   return (
     <div className="grid grid-cols-2 gap-4 overflow-scroll">
       <div className="col-span-2 text-2xl">
         <span>Reviewer: </span>
-        {data.reviewer?.first_name + " " + data.reviewer?.last_name}
+        {review.reviewer?.first_name + " " + review.reviewer?.last_name}
       </div>
-      {Object.entries(data)
-        .filter((entry) => {
-          return typeof entry[1] == "string" || typeof entry[1] == "number";
+      {Object.entries(review)
+        .filter(([_, value]) => {
+          return typeof value == "string" || typeof value == "number";
         })
-        .map((entry: any, i) => {
+        .map(([key, value]: any, i) => {
           return (
-            <div key={i}>
-              <div className="font-thin">{entry[0]}</div>
-              <div>{entry[1]}</div>
+            <div key={key}>
+              <div className="font-thin">{key}</div>
+              <div>{value}</div>
             </div>
           );
         })}
