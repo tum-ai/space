@@ -39,7 +39,7 @@ erDiagram
         datetime degree_semester_last_change_date "optional"
         string university "optional, maxlen(160)"
 
-        %% format <> 
+        %% format <>
         %% escaping of control characters
         string job_history "optional, csv encoding"
 
