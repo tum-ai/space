@@ -1,12 +1,12 @@
-import { enableStaticRendering } from "mobx-react";
 import { RootModel } from "@models/root";
+import { enableStaticRendering } from "mobx-react";
 
 // Only enable static render on server
 enableStaticRendering(typeof window === "undefined");
 
 let rootStore: any;
 
-const initStore = (initialData?: any) => {
+const initStore = (initialData?: any): RootModel => {
   const store = rootStore ?? new RootModel();
 
   if (initialData) {

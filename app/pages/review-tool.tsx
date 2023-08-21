@@ -2,6 +2,7 @@ import Icon from "@components/Icon";
 import Input from "@components/Input";
 import Page from "@components/Page";
 import Tabs from "@components/Tabs";
+import Tooltip from "@components/Tooltip";
 import { useStores } from "@providers/StoreProvider";
 import { observer } from "mobx-react";
 import Image from "next/image";
@@ -32,7 +33,7 @@ const Applications = observer(() => {
   const { reviewToolModel } = useStores();
   return (
     <div className="flex flex-col space-y-4 pt-4">
-      <div className="m-auto flex w-full space-x-4 rounded bg-white p-2 dark:bg-gray-700 lg:w-1/2">
+      <div className="m-auto flex w-full space-x-4 rounded bg-white p-2 dark:bg-gray-700 lg:mr-0 lg:w-[400px]">
         <Icon name={"FaSearch"} className="rounded p-2" />
         <input
           value={reviewToolModel.search}
@@ -52,10 +53,11 @@ const Applications = observer(() => {
           </button>
         )}
       </div>
-      <div className="grid grid-cols-3 px-6 md:grid-cols-4 lg:grid-cols-4">
+      <div className="grid grid-cols-3 px-6 md:grid-cols-5">
         <div>ID</div>
         <div>Form Name</div>
         <div>Reviewed By</div>
+        <div>Avg. Final Score</div>
       </div>
       {reviewToolModel.filteredApplications?.map((application) => (
         <Application key={application.id} data={application} />
@@ -65,37 +67,59 @@ const Applications = observer(() => {
 });
 
 function Application({ data }) {
-  const { reviewToolModel } = useStores();
+  const { reviewToolModel, uiModel } = useStores();
+  const finalScoreSum = data.reviews?.reduce((finalscore, review) => {
+    return finalscore + review.finalscore;
+  }, 0);
   return (
-    <div className="grid grid-cols-3 rounded-2xl bg-white p-6 shadow dark:bg-gray-700 md:grid-cols-4 lg:grid-cols-4">
+    <div className="grid grid-cols-3 rounded bg-white p-6 shadow dark:bg-gray-700 md:grid-cols-5">
       <div>{data.id}</div>
       <div>{data.submission?.data?.formName}</div>
       <div className="flex">
         {data.reviews?.map((review, i) => {
           const profile = review.reviewer;
           return (
-            <div
+            <Tooltip
               key={i}
-              className="relative flex space-x-[-5]"
-              title={profile.first_name + " " + profile.last_name}
-            >
-              {profile.profile_picture ? (
-                <Image
-                  className="m-auto h-6 w-6 rounded-full border object-cover drop-shadow-lg"
-                  src={profile.profile_picture}
-                  width={100}
-                  height={100}
-                  alt=""
-                />
-              ) : (
-                <div className="m-auto flex h-6 w-6 rounded-full bg-gray-300 text-center drop-shadow-lg dark:bg-gray-800">
-                  <Icon name={"FaUser"} className="m-auto text-white" />
+              trigger={
+                <div
+                  key={review.reviewer_id + review.reviewee_id}
+                  className="relative flex space-x-[-5]"
+                  onClick={() => {
+                    reviewToolModel.setViewReview(review);
+                    reviewToolModel.setViewApplication(data);
+                    uiModel.updateModalContent(<ViewReview />);
+                    uiModel.toggleModal();
+                  }}
+                >
+                  {profile.profile_picture ? (
+                    <Image
+                      className="m-auto h-8 w-8 cursor-pointer rounded-full border object-cover drop-shadow-lg"
+                      src={profile.profile_picture}
+                      width={100}
+                      height={100}
+                      alt=""
+                    />
+                  ) : (
+                    <div className="m-auto flex h-8 w-8 cursor-pointer rounded-full bg-gray-300 p-2 text-center drop-shadow-lg dark:bg-gray-800">
+                      <Icon name={"FaUser"} className="m-auto text-white" />
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
+              }
+            >
+              <div>
+                {profile.first_name +
+                  " " +
+                  profile.last_name +
+                  " - final score: " +
+                  review.finalscore}
+              </div>
+            </Tooltip>
           );
         })}
       </div>
+      <div>{Math.round(finalScoreSum / data.reviews?.length) || "-"}</div>
       <div className="flex w-full justify-end">
         <button
           className="flex items-center space-x-2"
@@ -111,47 +135,50 @@ function Application({ data }) {
   );
 }
 
+const ViewReview = observer(() => {
+  const { reviewToolModel } = useStores();
+  const applicationToView = reviewToolModel.viewApplication;
+  const viewReview = reviewToolModel.viewReview;
+
+  return (
+    <div className="grid gap-4 p-4 md:grid-cols-2">
+      <ReviewOverview review={viewReview} />
+      <ApplicationOverview data={applicationToView} />
+    </div>
+  );
+});
+
 function Review() {
   return (
     <div className="grid gap-4 p-4 md:grid-cols-2">
-      <div>
-        <ReviewForm />
-      </div>
-      <ApplicationOverview />
+      <ReviewForm />
+      <ApplicationToReview />
     </div>
   );
 }
 
-const ApplicationOverview = observer(() => {
-  const { reviewToolModel } = useStores();
-  const applicationOnReview = reviewToolModel.applicationOnReview;
-
-  if (!applicationOnReview) {
-    return <p>No application selected</p>;
-  }
-
+function ApplicationOverview({ data }) {
   return (
     <div className="space-y-4 overflow-scroll">
+      <div className="col-span-2 text-2xl">Application</div>
       <div className="grid gap-4 lg:grid-cols-2">
         <div>
           <span className="font-thin">ID: </span>
-          {applicationOnReview.id}
+          {data.id}
         </div>
         <div>
           <span className="font-thin">From: </span>
-          {applicationOnReview.submission?.data?.formName}
+          {data.submission?.data?.formName}
         </div>
         <div>
           <span className="font-thin">Created at: </span>
-          {applicationOnReview.submission?.data?.createdAt &&
-            new Date(
-              applicationOnReview.submission?.data?.createdAt,
-            ).toDateString()}
+          {data.submission?.data?.createdAt &&
+            new Date(data.submission?.data?.createdAt).toDateString()}
         </div>
       </div>
       <hr className="border-2" />
       <div className="grid gap-4 lg:grid-cols-2">
-        {applicationOnReview.submission?.data?.fields?.map((field) => {
+        {data.submission?.data?.fields?.map((field) => {
           return (
             <div key={field.label}>
               <div className="font-thin">{field.label}</div>
@@ -162,7 +189,41 @@ const ApplicationOverview = observer(() => {
       </div>
     </div>
   );
+}
+
+const ApplicationToReview = observer(() => {
+  const { reviewToolModel } = useStores();
+  const applicationOnReview = reviewToolModel.applicationOnReview;
+
+  if (!applicationOnReview) {
+    return <p>No application selected</p>;
+  }
+
+  return <ApplicationOverview data={applicationOnReview} />;
 });
+
+function ReviewOverview({ review }) {
+  return (
+    <div className="grid grid-cols-2 gap-4 overflow-scroll">
+      <div className="col-span-2 text-2xl">
+        <span>Reviewer: </span>
+        {review.reviewer?.first_name + " " + review.reviewer?.last_name}
+      </div>
+      {Object.entries(review)
+        .filter(([_, value]) => {
+          return typeof value == "string" || typeof value == "number";
+        })
+        .map(([key, value]: any, i) => {
+          return (
+            <div key={key}>
+              <div className="font-thin">{key}</div>
+              <div>{value}</div>
+            </div>
+          );
+        })}
+    </div>
+  );
+}
 
 const ReviewForm = observer(() => {
   const { reviewToolModel } = useStores();

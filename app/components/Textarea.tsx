@@ -4,7 +4,7 @@ function Textarea({ label, ...props }) {
       {label && <label className="text-sm font-thin">{label}</label>}
       <textarea
         {...props}
-        className="rounded border bg-gray-100 p-2 outline-none dark:bg-gray-700"
+        className="rounded border bg-white p-4 outline-none dark:bg-gray-700"
       />
     </div>
   );
