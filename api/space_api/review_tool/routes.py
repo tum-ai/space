@@ -4,11 +4,11 @@ from fastapi import APIRouter, Body, Request
 
 from space_api.database.review_tool_connector import (
     create_db_application_review,
+    delete_db_application_review,
     retrieve_db_application_all_reviews,
     retrieve_db_application_all_reviews_for_reviewer,
     retrieve_db_application_review,
     update_db_application_review,
-    delete_db_application_review
 )
 from space_api.security.decorators import ensure_authorization
 from space_api.utils.error_handlers import error_handlers
@@ -182,7 +182,7 @@ def update_review(
 )
 def delete_review(request: Request, review_id: int) -> dict:
     review_deleted = delete_db_application_review(request.app.state.sql_engine, request.state.profile.id, review_id)
-    
+
     if review_deleted:
         return {
             "status_code": 200,
