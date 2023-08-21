@@ -61,7 +61,7 @@ jobs:
             cd /apps/tumai/space-staging
             git fetch
             git checkout dev
-            git pull
+            git pull origin dev
             cd api/
 
             # ENV VARIABLES NEEDED FOR BUILD
