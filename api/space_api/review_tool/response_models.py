@@ -21,3 +21,6 @@ class ResponseApplicationReviewList(BaseResponse):
 
     class Config:
         schema_extra = BaseResponse.schema_wrapper(ApplicationReviewOut.dummy())
+
+class ResponseDeleteReview(BaseResponse):
+    model_config = ConfigDict(json_schema_extra={"example": []})
