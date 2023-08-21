@@ -1,4 +1,5 @@
 // @ts-nocheck
+import { auth } from "@config/firebase";
 import axios from "axios";
 import {
   createUserWithEmailAndPassword,
@@ -6,13 +7,11 @@ import {
   signOut,
 } from "firebase/auth";
 import { makeAutoObservable } from "mobx";
-import { auth } from "@config/firebase";
 
 export class MeModel {
   root: RootModel;
-  editorProfile = {};
+  editorProfile: any = {};
   user = undefined;
-
   constructor(root: RootModel) {
     this.root = root;
     makeAutoObservable(this);

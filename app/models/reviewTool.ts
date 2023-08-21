@@ -6,13 +6,23 @@ export class ReviewToolModel {
   applications = [];
   filteredApplications = [];
   search = "";
-  editorReview = {};
+  editorReview: any = {};
   applicationOnReview: { id?: string };
   openTab = "Applications";
+  viewApplication = undefined;
+  viewReview = undefined;
 
   constructor(root) {
     this.root = root;
     makeAutoObservable(this);
+  }
+
+  setViewApplication(viewApplication) {
+    this.viewApplication = viewApplication;
+  }
+
+  setViewReview(viewReview) {
+    this.viewReview = viewReview;
   }
 
   setOpenTab(tab) {
@@ -45,12 +55,26 @@ export class ReviewToolModel {
           .includes(this.search.toLocaleLowerCase())
       );
     });
+    this.sortApplications();
+  }
+
+  sortApplications() {
+    this.filteredApplications = this.filteredApplications.sort((a, b): any => {
+      const finalScoresA = a.reviews.map((review) => review.finalscore);
+      const finalScoresB = b.reviews.map((review) => review.finalscore);
+      const sumA = finalScoresA.reduce((a, b) => a + b, 0);
+      const avgA = sumA / finalScoresA.length || 0;
+      const sumB = finalScoresB.reduce((a, b) => a + b, 0);
+      const avgB = sumB / finalScoresB.length || 0;
+      return avgB - avgA;
+    });
   }
 
   async fetchApplications() {
     const applications = await this.root.GET("/applications/");
     this.applications = applications;
     this.filteredApplications = applications;
+    this.sortApplications();
   }
 
   async submitReview() {

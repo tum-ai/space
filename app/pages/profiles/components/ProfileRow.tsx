@@ -1,13 +1,13 @@
-import { observer } from "mobx-react";
-import Image from "next/image";
-import Link from "next/link";
-import DepartmentMembershipEditor from "./DepartmentMembershipEditor";
 import Icon from "@components/Icon";
 import ProtectedItem from "@components/ProtectedItem";
 import SelectMultiple from "@components/SelectMultiple";
 import { useStores } from "@providers/StoreProvider";
+import { observer } from "mobx-react";
+import Image from "next/image";
+import Link from "next/link";
+import DepartmentMembershipEditor from "./DepartmentMembershipEditor";
 
-function ProfileRow({ profile }) {
+const ProfileRow = observer(({ profile }) => {
   const { rolesModel, meModel, uiModel } = useStores();
   const user = meModel.user;
   const user_profile = user?.profile;
@@ -77,7 +77,7 @@ function ProfileRow({ profile }) {
                       {role.description}
                     </div>
                   ),
-                  value: role.handle,
+                  value: role.handle as string,
                 })) || []
               }
               selectedItems={roleHolderships.map((role) => ({
@@ -108,6 +108,6 @@ function ProfileRow({ profile }) {
       </div>
     </div>
   );
-}
+});
 
-export default observer(ProfileRow);
+export default ProfileRow;
