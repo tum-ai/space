@@ -72,7 +72,7 @@ function Application({ data }) {
     return finalscore + review.finalscore;
   }, 0);
   return (
-    <div className="grid grid-cols-3 rounded bg-white p-6 shadow dark:bg-gray-700 md:grid-cols-5 lg:grid-cols-5">
+    <div className="grid grid-cols-3 rounded bg-white p-6 shadow dark:bg-gray-700 md:grid-cols-5">
       <div>{data.id}</div>
       <div>{data.submission?.data?.formName}</div>
       <div className="flex">
