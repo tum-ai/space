@@ -53,7 +53,7 @@ const Applications = observer(() => {
           </button>
         )}
       </div>
-      <div className="grid grid-cols-3 px-6 md:grid-cols-5 lg:grid-cols-5">
+      <div className="grid grid-cols-3 px-6 md:grid-cols-5">
         <div>ID</div>
         <div>Form Name</div>
         <div>Reviewed By</div>
