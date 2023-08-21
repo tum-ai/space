@@ -181,7 +181,10 @@ def update_review(
     any_of_roles=["submit_reviews"],
 )
 def delete_review(request: Request, review_id: int) -> dict:
-    review_deleted = delete_db_application_review(request.app.state.sql_engine, request.state.profile.id, review_id)
+    review_deleted = delete_db_application_review(
+        request.app.state.sql_engine,
+        request.state.profile.id,
+        review_id)
 
     if review_deleted:
         return {
@@ -193,5 +196,7 @@ def delete_review(request: Request, review_id: int) -> dict:
     return {
         "status_code": 403,
         "response_type": "error",
-        "description": "You are not authorized to delete this review or review does not exist.",
+        "description": """
+            You are not authorized to delete this review or review does not exist.
+        """,
     }
