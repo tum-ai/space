@@ -7,7 +7,7 @@ import Image from "next/image";
 import Link from "next/link";
 import DepartmentMembershipEditor from "./DepartmentMembershipEditor";
 
-function ProfileRow({ profile }) {
+const ProfileRow = observer(({ profile }) => {
   const { rolesModel, meModel, uiModel } = useStores();
   const user = meModel.user;
   const user_profile = user?.profile;
@@ -108,6 +108,6 @@ function ProfileRow({ profile }) {
       </div>
     </div>
   );
-}
+});
 
-export default observer(ProfileRow);
+export default ProfileRow;
