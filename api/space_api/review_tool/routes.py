@@ -8,6 +8,7 @@ from space_api.database.review_tool_connector import (
     retrieve_db_application_all_reviews_for_reviewer,
     retrieve_db_application_review,
     update_db_application_review,
+    delete_db_application_review
 )
 from space_api.security.decorators import ensure_authorization
 from space_api.utils.error_handlers import error_handlers
@@ -22,6 +23,7 @@ from .api_models import (
 from .response_models import (
     ResponseApplicationReview,
     ResponseApplicationReviewList,
+    ResponseDeleteReview,
     ResponseSubmitReview,
 )
 
@@ -166,4 +168,30 @@ def update_review(
         "response_type": "success",
         "description": "Review updated successfully",
         "data": updated_review,
+    }
+
+
+@router.delete(
+    "/review_tool/delete_review/{review_id}/",
+    response_description="Delete a review of a membership application.",
+    response_model=ResponseDeleteReview,
+)
+@error_handlers
+@ensure_authorization(
+    any_of_roles=["submit_reviews"],
+)
+def delete_review(request: Request, review_id: int) -> dict:
+    review_deleted = delete_db_application_review(request.app.state.sql_engine, request.state.profile.id, review_id)
+    
+    if review_deleted:
+        return {
+            "status_code": 200,
+            "response_type": "success",
+            "description": "Review deleted successfully",
+        }
+
+    return {
+        "status_code": 403,
+        "response_type": "error",
+        "description": "You are not authorized to delete this review or review does not exist.",
     }

@@ -146,3 +146,19 @@ def update_db_application_review(
         db_model.force_load()
 
         return db_model
+
+def delete_db_application_review(sql_engine: sa.Engine, profile_id: int, review_id: int) -> bool:
+    with Session(sql_engine) as db_session:
+        
+        db_review = (
+            db_session.query(ApplicationReview)
+            .filter(sa.and_(ApplicationReview.id == review_id, ApplicationReview.reviewer_id == profile_id))
+            .first()
+        )
+
+        if db_review:
+            db_session.delete(db_review)
+            db_session.commit()
+            return True
+        
+        return False
