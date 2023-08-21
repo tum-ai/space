@@ -50,7 +50,6 @@ async def setup_db_client(running_app: FastAPI) -> None:
     # add pre-existing departments
     upsert_departments(running_app.state.sql_engine)
 
-
 def setup_db_client_appless() -> Engine:
     log.info("Setting up sqlalchemy/postgres database connection")
 

@@ -1,6 +1,4 @@
-from typing import Annotated
-
-from fastapi import APIRouter, Body, Request
+from fastapi import APIRouter, Request
 
 from space_api.database.application_connector import (
     create_db_application,
@@ -77,9 +75,9 @@ def list_application(request: Request, application_id: int) -> dict:
 @error_handlers
 def submit_application(
     request: Request,
-    submission: Annotated[dict, Body(embed=True)],
+    payload: dict
 ) -> dict:
-    create_db_application(request.app.state.sql_engine, submission)
+    create_db_application(request.app.state.sql_engine, payload)
 
     return {
         "status_code": 200,

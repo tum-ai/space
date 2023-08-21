@@ -370,13 +370,13 @@ class Application(MixinAsDict, SaBaseModel):
             raise KeyError
         if not self.submission:
             raise KeyError
+        for review in self.reviews:
+            assert isinstance(review, ApplicationReview)
+            review.force_load()
 
 
 class ApplicationReview(MixinAsDict, SaBaseModel):
     __tablename__ = "application_review"
-
-    # -------------------------------- MANAGED FIELDS -------------------------------- #
-    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
 
     # --------------------------- AUTOMATIC/COMPUTED FIELDS -------------------------- #
     created_at = Column(DateTime(timezone=True), server_default=func.now())
@@ -401,19 +401,20 @@ class ApplicationReview(MixinAsDict, SaBaseModel):
     finalscore: Mapped[float] = mapped_column(Float, nullable=False, default=-1.0)
 
     # ----------------------------- RELATIONAL FK FIELDS ----------------------------- #
-    reviewer_id: Mapped[int] = mapped_column(ForeignKey(Profile.id), nullable=False)
+    reviewer_id: Mapped[int] = mapped_column(
+        ForeignKey(Profile.id), nullable=False, primary_key=True)
     reviewer: Mapped["Profile"] = relationship("Profile", back_populates="reviews")
 
     reviewee_id: Mapped[int] = mapped_column(
-        ForeignKey(Application.id, ondelete="CASCADE"), nullable=False
+        ForeignKey(Application.id, ondelete="CASCADE"), nullable=False, primary_key=True
     )
     application: Mapped["Application"] = relationship(
         "Application", back_populates="reviews"
     )
 
     def __repr__(self) -> str:
-        return f"ApplicationReview(id={self.id}, \
-            reviewer_id={self.reviewer_id}, reviewee_id={self.reviewee_id})"
+        return f"ApplicationReview(reviewer_id=\
+    {self.reviewer_id}, reviewee_id={self.reviewee_id})"
 
     def force_load(self) -> None:
         if not self.reviewer_id:
@@ -422,8 +423,6 @@ class ApplicationReview(MixinAsDict, SaBaseModel):
             raise KeyError
 
         self.reviewer.force_load()
-        self.application.force_load()
-
 
 class ApplicationReferral(MixinAsDict, SaBaseModel):
     __tablename__ = "application_referral"

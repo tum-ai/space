@@ -53,7 +53,6 @@ def retrieve_db_application_review(
     with Session(sql_engine) as db_session:
         db_model = (
             db_session.query(ApplicationReview)
-            .filter(sa.and_(ApplicationReview.id == review_id))
             .first()
         )
 
@@ -107,8 +106,7 @@ def update_db_application_review(
     with Session(sql_engine) as db_session:
         db_model = (
             db_session.query(ApplicationReview)
-            .filter(sa.and_(ApplicationReview.id == review_id,
-                             ApplicationReview.reviewer_id == profile_id))
+            .filter(ApplicationReview.reviewer_id == profile_id)
             .first()
         )
 

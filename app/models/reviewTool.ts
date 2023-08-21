@@ -1,12 +1,13 @@
 import { makeAutoObservable } from "mobx";
+import { RootModel } from "./root";
 
 export class ReviewToolModel {
-  root;
+  root: RootModel;
   applications = [];
   filteredApplications = [];
   search = "";
   editorReview = {};
-  applicationOnReview = {};
+  applicationOnReview: { id?: string };
   openTab = "Applications";
 
   constructor(root) {
@@ -59,10 +60,7 @@ export class ReviewToolModel {
     });
     if (!data) return;
     if (data?.response_type == "success") {
-      this.root.uiModel.updateModalContent(
-        <div className="">Review submitted successfully</div>,
-      );
-      this.root.uiModel.toggleModal();
+      // TODO: toast
       this.editorReview = {};
       this.applicationOnReview = {};
       this.openTab = "Applications";
