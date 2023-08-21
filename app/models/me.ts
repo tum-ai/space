@@ -12,8 +12,6 @@ export class MeModel {
   root: RootModel;
   editorProfile: any = {};
   user = undefined;
-  loading = false;
-
   constructor(root: RootModel) {
     this.root = root;
     makeAutoObservable(this);
