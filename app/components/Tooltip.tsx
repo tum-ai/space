@@ -1,6 +1,6 @@
 import * as TooltipRadix from "@radix-ui/react-tooltip";
 
-export default function Tooltip({ trigger, children, ...props }) {
+export default function Tooltip({ trigger, children }) {
   return (
     <TooltipRadix.Provider delayDuration={0}>
       <TooltipRadix.Root>
