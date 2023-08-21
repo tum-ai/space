@@ -6,7 +6,7 @@ export class ProfileModel {
   profile: any = {};
   loading = true;
 
-  constructor(root) {
+  constructor(root: RootModel) {
     this.root = root;
     makeAutoObservable(this);
   }
