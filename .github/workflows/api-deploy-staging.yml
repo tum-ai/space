@@ -58,10 +58,16 @@ jobs:
           key: ${{ secrets.SSH_SERVER_GHA_PRIVATE_KEY }}
           port: 22
           script: |
+            # add github to known hosts
+            rm -rf ~/.ssh/known_hosts
+            ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
+            chmod 600 ~/.ssh/known_hosts
+
+            # pull repo
             cd /apps/tumai/space-staging
-            git fetch
+            ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
             git checkout dev
-            git pull origin dev
+            git pull --force
             cd api/
 
             # ENV VARIABLES NEEDED FOR BUILD
