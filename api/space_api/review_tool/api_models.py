@@ -30,7 +30,6 @@ class ApplicationReviewOut(BaseModel):
         }
     )
 
-    id: int
     motivation: int
     skill: int
     fit: int
@@ -50,7 +49,6 @@ class ApplicationReviewOut(BaseModel):
     @classmethod
     def from_db_model(cls, review: ApplicationReview) -> "ApplicationReviewOut":
         return ApplicationReviewOut(
-            id=review.id,
             motivation=review.motivation,
             skill=review.skill,
             fit=review.fit,

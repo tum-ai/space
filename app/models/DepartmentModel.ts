@@ -1,13 +1,14 @@
 import axios from "axios";
 import { makeAutoObservable } from "mobx";
+import { RootModel } from "./root";
 
 export class DepartmentModel {
-  root;
+  root: RootModel;
   editorProfile = {};
   user = undefined;
   profile;
 
-  constructor(root) {
+  constructor(root: RootModel) {
     this.root = root;
     makeAutoObservable(this);
   }

@@ -64,6 +64,7 @@ jobs:
 
             # pull repo
             cd /apps/tumai/space
+            git fetch
             git checkout main
             git pull --force
             cd api/

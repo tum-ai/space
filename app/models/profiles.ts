@@ -1,10 +1,11 @@
 import { makeAutoObservable } from "mobx";
+import { RootModel } from "./root";
 
 export class ProfilesModel {
-  root;
+  root: RootModel;
   profiles = [];
   filteredProfiles = [];
-  filter = {};
+  filter: any = {};
   search = "";
   sortBy = "";
 
@@ -19,12 +20,12 @@ export class ProfilesModel {
     return this.profiles;
   }
 
-  findProfile(id) {
-    return this.profiles.find((profile) => profile.id === id);
+  setProfiles(profiles: any[]) {
+    this.profiles = profiles;
   }
 
-  setProfiles(profiles) {
-    this.profiles = profiles;
+  findProfile(id: string) {
+    return this.profiles.find((profile) => profile.id === id);
   }
 
   getRoles() {

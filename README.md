@@ -55,7 +55,8 @@ conda env create -f environment.yaml
 
 - Create `/app/.env`
   ```
-  environment=development
+  NEXT_PUBLIC_ENVIRONMENT=development
+  NEXT_PUBLIC_API_URL=http://localhost:8000/
   ```
 - Add Firebase Admin SDK Certificate (for staging env): Dev environment will use authentication of Staging Firebase project [Secrets file on Notion](https://www.notion.so/tum-ai/c893a21fc7034d3aa44f40d28fd71373?v=65bb26a99f124632ac28a8eabe3bf066)
   ```bash
