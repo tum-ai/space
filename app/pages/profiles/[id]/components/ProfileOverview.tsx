@@ -1,9 +1,9 @@
+import Icon from "@components/Icon";
+import { useStores } from "@providers/StoreProvider";
 import { observer } from "mobx-react";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
-import Icon from "@components/Icon";
-import { useStores } from "@providers/StoreProvider";
 
 function ProfileOverview() {
   const { profileModel } = useStores();
@@ -11,17 +11,13 @@ function ProfileOverview() {
   const { id } = router.query;
   useEffect(() => {
     if (id) {
-      profileModel.getProfile(id);
+      profileModel.getProfile(typeof id === "string" ? id : id[0]);
     }
   }, [profileModel, id]);
   const profile = profileModel.profile;
 
   if (profileModel.loading) {
     return <div>Loading...</div>;
-  }
-
-  if (profileModel.error) {
-    return <div>{profileModel.error}</div>;
   }
 
   if (!profile) {

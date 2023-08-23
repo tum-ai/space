@@ -1,13 +1,13 @@
-const environment_name = process.env.REACT_APP_ENVIRONMENT || "development";
+const environment_name = process.env.NEXT_PUBLIC_ENVIRONMENT || "development";
 
 var api_base_url = "http://localhost:8000/";
 
 switch (environment_name) {
   case "production":
-    api_base_url = "https://tumai-space-api.azurewebsites.net/";
+    api_base_url = "https://api.space.tum-ai.com/";
     break;
   case "staging":
-    api_base_url = "https://tumai-space-staging-api.azurewebsites.net/";
+    api_base_url = "https://api.space.staging.tum-ai.com/";
     break;
 
   default:
@@ -15,4 +15,4 @@ switch (environment_name) {
     break;
 }
 
-export { environment_name, api_base_url };
+export { api_base_url, environment_name };

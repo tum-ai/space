@@ -1,6 +1,8 @@
 import { makeAutoObservable } from "mobx";
+import { RootModel } from "./root";
 
 export class UiModel {
+  root: RootModel;
   modalActive = false;
   navBarActive = false;
   modalContent;

@@ -1,17 +1,28 @@
 import { makeAutoObservable } from "mobx";
+import { RootModel } from "./root";
 
 export class ReviewToolModel {
-  root;
+  root: RootModel;
   applications = [];
   filteredApplications = [];
   search = "";
-  editorReview = {};
-  applicationOnReview = {};
+  editorReview: any = {};
+  applicationOnReview: { id?: string };
   openTab = "Applications";
+  viewApplication = undefined;
+  viewReview = undefined;
 
   constructor(root) {
     this.root = root;
     makeAutoObservable(this);
+  }
+
+  setViewApplication(viewApplication) {
+    this.viewApplication = viewApplication;
+  }
+
+  setViewReview(viewReview) {
+    this.viewReview = viewReview;
   }
 
   setOpenTab(tab) {
@@ -44,12 +55,26 @@ export class ReviewToolModel {
           .includes(this.search.toLocaleLowerCase())
       );
     });
+    this.sortApplications();
+  }
+
+  sortApplications() {
+    this.filteredApplications = this.filteredApplications.sort((a, b): any => {
+      const finalScoresA = a.reviews.map((review) => review.finalscore);
+      const finalScoresB = b.reviews.map((review) => review.finalscore);
+      const sumA = finalScoresA.reduce((a, b) => a + b, 0);
+      const avgA = sumA / finalScoresA.length || 0;
+      const sumB = finalScoresB.reduce((a, b) => a + b, 0);
+      const avgB = sumB / finalScoresB.length || 0;
+      return avgB - avgA;
+    });
   }
 
   async fetchApplications() {
     const applications = await this.root.GET("/applications/");
     this.applications = applications;
     this.filteredApplications = applications;
+    this.sortApplications();
   }
 
   async submitReview() {
@@ -59,10 +84,7 @@ export class ReviewToolModel {
     });
     if (!data) return;
     if (data?.response_type == "success") {
-      this.root.uiModel.updateModalContent(
-        <div className="">Review submitted successfully</div>,
-      );
-      this.root.uiModel.toggleModal();
+      // TODO: toast
       this.editorReview = {};
       this.applicationOnReview = {};
       this.openTab = "Applications";
