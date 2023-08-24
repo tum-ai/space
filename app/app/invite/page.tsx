@@ -1,8 +1,8 @@
 "use client";
 import { Button } from "@components/Button";
 import ProtectedItem from "@components/ProtectedItem";
+import { Section } from "@components/Section";
 import Textarea from "@components/Textarea";
-import { Section } from "@components/section";
 import { useStores } from "@providers/StoreProvider";
 import { observer } from "mobx-react";
 
@@ -25,17 +25,20 @@ const Invite = observer(() => {
           }}
           className="grid grid-cols-1 items-end gap-4 lg:gap-8 rounded-lg p-8 bg-gray-200 dark:bg-gray-600"
           >
-          <h2 className="text-2xl">Create Certificate</h2>
+          <h2 className="text-2xl">Create Invitations</h2>
           <p>
+            Write each invite in one line like as below. 
+            After submitting the invitations, 
+            the invited emails will receive a welcome email 
+            and a link to reset their password. 
             Use the following format to invite members:
             <br />
             <br />
-            <code>email,first_name,last_name,department_handle,department_position</code>
+            <p>email, first_name, last_name, department_handle, department_position</p>
             <br />
+            <p><b>department_handle:</b> DEV, MARKETING, INDUSTRY, MAKEATHON, COMMUNITY, PNS, LNF, VENTURE, EDUCATION, RND</p>
             <br />
-            <code><b>department_handle:</b> DEV,MARKETING,INDUSTRY,MAKEATHON,COMMUNITY,PNS,LNF,VENTURE,EDUCATION,RND</code>
-            <br />
-            <code><b>department_position:</b> teamlead,president,member,alumni</code>
+            <p><b>department_position:</b> teamlead,president,member,alumni</p>
           </p>
           <Textarea
             label="New members"

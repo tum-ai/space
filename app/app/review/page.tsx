@@ -5,9 +5,9 @@ import Dialog from "@components/Dialog";
 import Icon from "@components/Icon";
 import Input from "@components/Input";
 import ProtectedItem from "@components/ProtectedItem";
+import { Section } from "@components/Section";
 import Tabs from "@components/Tabs";
 import Tooltip from "@components/Tooltip";
-import { Section } from "@components/section";
 import { useStores } from "@providers/StoreProvider";
 import { observer } from "mobx-react";
 

@@ -20,7 +20,7 @@ export default function RootLayout({
       <body>
         <StoresContext.Provider value={stores}>
           <NavBar />
-          {children}
+          <main className="pt-24">{children}</main>
         </StoresContext.Provider>
       </body>
     </html>
