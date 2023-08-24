@@ -17,7 +17,7 @@ function ProfileOverview() {
   }
   return (
     <div className="m-auto max-w-3xl bg-white dark:bg-gray-700">
-      <div className="flex w-full justify-end">
+      <div className="flex w-full justify-end p-4">
         <Dialog trigger={
           <Button onClick={() => { meModel.editorProfile = { ...profile } }}>Edit</Button>
         }>

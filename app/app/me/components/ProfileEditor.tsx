@@ -68,7 +68,9 @@ function ProfileEditor({ isSignUpForm = false }) {
               meModel.getProfile();
           }}>save</Button>
           </DialogRadix.Close>
-          <DialogRadix.Close><Button>cancel</Button></DialogRadix.Close>
+          <DialogRadix.Close>
+            <Button variant="secondary">cancel</Button>
+          </DialogRadix.Close>
         </div></DialogRadix.Title>
       <form
         className="flex flex-col gap-4 lg:grid lg:grid-cols-2 lg:gap-8 lg:space-y-0"
