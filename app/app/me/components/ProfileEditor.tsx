@@ -3,6 +3,7 @@ import Input from "@/components/Input";
 import Select from "@/components/Select";
 import Textarea from "@/components/Textarea";
 import { useStores } from "@/providers/StoreProvider";
+import * as DialogRadix from '@radix-ui/react-dialog';
 import { observer } from "mobx-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -28,7 +29,7 @@ const socialNetworksTypes = [
 ];
 
 function ProfileEditor({ isSignUpForm = false }) {
-  const { uiModel, meModel } = useStores();
+  const { meModel } = useStores();
   const editorProfile = meModel.editorProfile;
   const router = useRouter();
 
@@ -57,15 +58,9 @@ function ProfileEditor({ isSignUpForm = false }) {
   }
 
   return (
-    <div className="flex w-full flex-col space-y-6 rounded-lg bg-white p-6 dark:bg-gray-700">
-      <div className="text-2xl font-light">Edit profile</div>
+    <div className="flex w-full flex-col space-y-6">
+      <DialogRadix.Title><h1 className="text-3xl">Edit Profile</h1></DialogRadix.Title>
       <form
-        onSubmit={async (e) => {
-          e.preventDefault();
-          await meModel.editProfile();
-          meModel.getProfile();
-          isSignUpForm ? router.push("/") : uiModel.toggleModal();
-        }}
         className="flex flex-col gap-4 lg:grid lg:grid-cols-2 lg:gap-8 lg:space-y-0"
       >
         <div className="flex items-center space-x-4">
@@ -189,23 +184,14 @@ function ProfileEditor({ isSignUpForm = false }) {
         <SocialNetworks />
         <hr className="col-span-2" />
         <div className="col-span-2 flex space-x-2">
-          <button
-            type="submit"
-            className="w-1/2 rounded-lg bg-gray-200 p-4 px-8 py-1 text-black"
-          >
-            <div>save</div>
-          </button>
-          {isSignUpForm ? null : (
-            <button
-              onClick={() => {
-                // if user currently signs up, redirect him to main page
-                uiModel.toggleModal();
-              }}
-              className="w-1/2 rounded-lg border-2 p-4 px-8 py-1"
-            >
-              <div>cancel</div>
-            </button>
-          )}
+          <DialogRadix.Close 
+            onClick={async (e) => {
+              await meModel.editProfile();
+              meModel.getProfile();
+          }}>
+          save
+          </DialogRadix.Close>
+          <DialogRadix.Close>cancel</DialogRadix.Close>
         </div>
       </form>
     </div>

@@ -1,4 +1,5 @@
 "use client";
+import Dialog from "@/components/Dialog";
 import Icon from "@/components/Icon";
 import { useStores } from "@/providers/StoreProvider";
 import { observer } from "mobx-react";
@@ -6,7 +7,7 @@ import Image from "next/image";
 import ProfileEditor from "./ProfileEditor";
 
 function ProfileOverview() {
-  const { meModel, uiModel } = useStores();
+  const { meModel } = useStores();
   const user = meModel.user;
   const profile = user?.profile;
 
@@ -16,7 +17,7 @@ function ProfileOverview() {
   return (
     <div className="m-auto max-w-3xl bg-white dark:bg-gray-700">
       <div className="flex w-full justify-end">
-        <button
+        {/* <button
           className="right-0 p-2"
           onClick={() => {
             uiModel.updateModalContent(<ProfileEditor />);
@@ -28,7 +29,15 @@ function ProfileOverview() {
             name={"FaEdit"}
             className="rounded bg-gray-100 p-2 hover:scale-105 dark:bg-black"
           />
-        </button>
+        </button> */}
+        <Dialog onCl trigger={
+          <Icon onClick={() => {meModel.editorProfile = { ...profile };}}
+              name={"FaEdit"}
+              className="rounded bg-gray-100 p-2 hover:scale-105 dark:bg-black"
+          />
+        }>
+            <ProfileEditor />
+        </Dialog>
       </div>
       <div className="grid grid-cols-1 gap-10 rounded-xl p-8 px-4 lg:px-10 xl:grid-cols-2">
         {/* name + image */}
