@@ -1,8 +1,9 @@
+"use client";
+import { useStores } from "@providers/StoreProvider";
 import { observer } from "mobx-react";
 import Image from "next/image";
 import Link from "next/link";
 import { FaUser } from "react-icons/fa";
-import { useStores } from "@providers/StoreProvider";
 
 function User() {
   const { uiModel, meModel } = useStores();

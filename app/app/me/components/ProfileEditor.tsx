@@ -1,11 +1,12 @@
-import { observer } from "mobx-react";
-import Image from "next/image";
-import { useRouter } from "next/router";
-import { useState } from "react";
+"use client";
 import Input from "@components/Input";
 import Select from "@components/Select";
 import Textarea from "@components/Textarea";
 import { useStores } from "@providers/StoreProvider";
+import { observer } from "mobx-react";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 const newJobExperience = {
   employer: "",

@@ -1,6 +1,7 @@
+"use client";
+import useOutsideAlerter from "@hooks/useOutsideAlerter";
 import React, { useRef, useState } from "react";
 import Icon from "./Icon";
-import useOutsideAlerter from "@hooks/useOutsideAlerter";
 
 interface Props {
   selectedItem: { key: string; value: string };

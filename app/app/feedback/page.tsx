@@ -1,6 +1,6 @@
-import Script from "next/script";
-import ProtectedItem from "@components/ProtectedItem";
 import Page from "@components/Page";
+import ProtectedItem from "@components/ProtectedItem";
+import Script from "next/script";
 
 export default function Feedback() {
   return (
@@ -21,14 +21,7 @@ export default function Feedback() {
               height="427"
               title="TUM.ai space feedback"
             ></iframe>
-            <Script
-              id="tally-js"
-              src="https://tally.so/widgets/embed.js"
-              onReady={() => {
-                // @ts-ignore
-                Tally.loadEmbeds();
-              }}
-            />
+            <Script id="tally-js" src="https://tally.so/widgets/embed.js" />
           </div>
         </div>
       </Page>

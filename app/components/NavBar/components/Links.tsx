@@ -1,7 +1,8 @@
-import Link from "next/link";
-import { useRouter } from "next/router";
-import ProtectedItem from "../../ProtectedItem";
+"use client";
 import { useStores } from "@providers/StoreProvider";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import ProtectedItem from "../../ProtectedItem";
 
 function Links() {
   const router = useRouter();
@@ -27,13 +28,13 @@ function Links() {
       roles: ["invite_members"],
     },
     {
-      path: "/create-certificate",
+      path: "/certificate",
       text: "Certificate",
       protected: true,
       roles: ["create_certificate"],
     },
     {
-      path: "/review-tool",
+      path: "/review",
       text: "Review Tool",
       protected: true,
       roles: ["submit_reviews"],

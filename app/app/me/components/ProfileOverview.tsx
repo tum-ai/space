@@ -1,8 +1,9 @@
+"use client";
+import Icon from "@components/Icon";
+import { useStores } from "@providers/StoreProvider";
 import { observer } from "mobx-react";
 import Image from "next/image";
 import ProfileEditor from "./ProfileEditor";
-import Icon from "@components/Icon";
-import { useStores } from "@providers/StoreProvider";
 
 function ProfileOverview() {
   const { meModel, uiModel } = useStores();

@@ -1,11 +1,10 @@
-"use client";
-import { useRouter } from "next/navigation";
-import React, { useState } from "react";
-import { useStores } from "../providers/StoreProvider";
 import Input from "@components/Input";
 import Page from "@components/Page";
+import { useRouter } from "next/router";
+import { useState } from "react";
+import { useStores } from "../providers/StoreProvider";
 
-function Auth() {
+export default function Auth() {
   const { meModel } = useStores();
   const [data, setData] = useState({
     email: "",
@@ -70,5 +69,3 @@ function Auth() {
     </Page>
   );
 }
-
-export default Auth;

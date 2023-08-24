@@ -1,12 +1,13 @@
+"use client";
 import Icon from "@components/Icon";
 import Input from "@components/Input";
 import Page from "@components/Page";
+import ProtectedItem from "@components/ProtectedItem";
 import Tabs from "@components/Tabs";
 import Tooltip from "@components/Tooltip";
 import { useStores } from "@providers/StoreProvider";
 import { observer } from "mobx-react";
 import Image from "next/image";
-import ProtectedItem from "../components/ProtectedItem";
 
 const ReviewTool = observer(() => {
   const { reviewToolModel } = useStores();

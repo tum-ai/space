@@ -1,8 +1,9 @@
+"use client";
 import Icon from "@components/Icon";
 import { useStores } from "@providers/StoreProvider";
 import { observer } from "mobx-react";
 import Image from "next/image";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
 function ProfileOverview() {
