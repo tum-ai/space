@@ -9,7 +9,7 @@ import User from "./User";
 function NavBarMobile() {
   const { uiModel } = useStores();
   return (
-    <div className="fixed top-0 z-20 flex w-full flex-col items-center bg-white p-4 shadow-md dark:bg-black lg:hidden lg:p-6">
+    <div className="sticky top-0 z-20 flex w-full flex-col items-center bg-white p-4 shadow-md dark:bg-black lg:hidden lg:p-6">
       <div className="flex w-full justify-between">
         <Logo />
         <button
@@ -18,8 +18,9 @@ function NavBarMobile() {
           }}
         >
           <Icon
+          size={30}
             name={"FaBars"}
-            className="rounded bg-gray-100 hover:scale-105 dark:bg-black"
+            className="rounded-lg bg-gray-100 hover:scale-105 dark:bg-black"
           />
         </button>
       </div>

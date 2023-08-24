@@ -53,7 +53,7 @@ function User() {
         <>
           <Link
             href={"/auth"}
-            className="rounded bg-white p-2 dark:bg-gray-700"
+            className="rounded-lg bg-white p-2 dark:bg-gray-700"
           >
             Login
           </Link>

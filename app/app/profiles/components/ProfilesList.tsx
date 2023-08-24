@@ -15,8 +15,8 @@ function ProfilesList() {
           Total {profilesModel.filteredProfiles.length} members
         </div>
         <div className="flex w-full">
-          <div className="m-auto flex w-full space-x-4 rounded bg-white p-2 dark:bg-gray-700 lg:w-1/2">
-            <Icon name={"FaSearch"} className="rounded p-2" />
+          <div className="m-auto flex w-full space-x-4 rounded-lg bg-white p-2 dark:bg-gray-700 lg:w-1/2">
+            <Icon name={"FaSearch"} className="rounded-lg p-2" />
             <input
               value={profilesModel.search}
               onChange={(e) => {

@@ -49,7 +49,7 @@ const ProfileRow = observer(({ profile }) => {
 							>
 								<Icon
 									name={'FaEdit'}
-									className='rounded bg-gray-100 p-2 hover:scale-105 dark:bg-black'
+									className='rounded-lg bg-gray-100 p-2 hover:scale-105 dark:bg-black'
 								/>
 							</button>
 						</div>
@@ -58,7 +58,7 @@ const ProfileRow = observer(({ profile }) => {
 						<Link href={'/profiles/' + profile?.id}>
 							<Icon
 								name={'FaExternalLinkAlt'}
-								className='rounded bg-gray-100 p-2 hover:scale-105 dark:bg-black'
+								className='rounded-lg bg-gray-100 p-2 hover:scale-105 dark:bg-black'
 							/>
 						</Link>
 					</div>

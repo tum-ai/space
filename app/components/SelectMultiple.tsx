@@ -35,7 +35,7 @@ export default function SelectMultiple({
       style={{ maxWidth: "500px" }}
     >
       {label && <label className="font-light">{label}</label>}
-      <div className="relative rounded border border-gray-300">
+      <div className="relative rounded-lg border border-gray-300">
         <button
           className={
             "selectMultiple trans flex h-8 w-full items-center justify-between space-x-1 px-3 pr-0 focus:outline-none " +
@@ -75,7 +75,7 @@ export default function SelectMultiple({
         </button>
         <div
           className={
-            "selectMultiple trans absolute z-40 mt-2 flex max-h-64 w-full origin-bottom-left flex-col overflow-auto rounded bg-white shadow dark:bg-gray-700 " +
+            "selectMultiple trans absolute z-40 mt-2 flex max-h-64 w-full origin-bottom-left flex-col overflow-auto rounded-lg bg-white shadow dark:bg-gray-700 " +
             (active
               ? "visible scale-100 opacity-100"
               : "hidden scale-75 opacity-0") +
@@ -124,7 +124,7 @@ function Item({ selected, ...props }) {
 
 function Selected({ item, onDelete }) {
   return (
-    <div className="text-h5 flex space-x-2 whitespace-nowrap rounded bg-gray-300 px-1 dark:bg-gray-500">
+    <div className="text-h5 flex space-x-2 whitespace-nowrap rounded-lg bg-gray-300 px-1 dark:bg-gray-500">
       {item.key}
       <div className="inline-flex cursor-pointer items-center px-3 ">
         <Icon name={"FaTimes"} onClick={onDelete} />
