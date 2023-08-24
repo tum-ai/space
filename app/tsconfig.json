@@ -21,6 +21,9 @@
     "noUncheckedIndexedAccess": true,
     "baseUrl": ".",
     "paths": {
+      "@libs/*": [
+        "./libs/*"
+      ],
       "@styles/*": [
         "./styles/*"
       ],
@@ -57,7 +60,8 @@
     "**/*.tsx",
     "**/*.cjs",
     "**/*.mjs",
-    "build/types/**/*.ts"
+    "build/types/**/*.ts",
+    ".next/types/**/*.ts"
   ],
   "exclude": [
     "node_modules"

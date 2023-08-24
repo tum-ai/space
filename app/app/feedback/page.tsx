@@ -1,11 +1,11 @@
-import Page from "@components/Page";
 import ProtectedItem from "@components/ProtectedItem";
+import { Section } from "@components/section";
 import Script from "next/script";
 
 export default function Feedback() {
   return (
     <ProtectedItem showNotFound>
-      <Page>
+      <Section>
         <div className="text-6xl font-thin">Feedback</div>
         <br />
         <div className="">
@@ -24,7 +24,7 @@ export default function Feedback() {
             <Script id="tally-js" src="https://tally.so/widgets/embed.js" />
           </div>
         </div>
-      </Page>
+      </Section>
     </ProtectedItem>
   );
 }

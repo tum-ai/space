@@ -1,6 +1,6 @@
 'use client';
 import Input from '@components/Input';
-import Page from '@components/Page';
+import { Section } from '@components/section';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { useStores } from '../../providers/StoreProvider';
@@ -27,7 +27,7 @@ export default function Auth() {
 	};
 
 	return (
-		<Page>
+		<Section>
 			<form
 				onSubmit={handleLogin}
 				className='m-auto flex max-w-[500px] flex-col gap-4'
@@ -67,6 +67,6 @@ export default function Auth() {
 					<div>Log in</div>
 				</button>
 			</form>
-		</Page>
+		</Section>
 	);
 }

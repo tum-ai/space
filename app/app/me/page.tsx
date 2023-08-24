@@ -1,10 +1,10 @@
-import Page from '@components/Page';
+import { Section } from '@components/section';
 import ProfileOverview from './components/ProfileOverview';
 
 export default function Me() {
 	return (
-		<Page>
+		<Section>
 			<ProfileOverview />
-		</Page>
+		</Section>
 	);
 }

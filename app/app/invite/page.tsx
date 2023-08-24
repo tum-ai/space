@@ -1,7 +1,8 @@
 "use client";
-import Page from "@components/Page";
+import { Button } from "@components/Button";
 import ProtectedItem from "@components/ProtectedItem";
 import Textarea from "@components/Textarea";
+import { Section } from "@components/section";
 import { useStores } from "@providers/StoreProvider";
 import { observer } from "mobx-react";
 
@@ -13,19 +14,32 @@ const Invite = observer(() => {
   }
   return (
     <ProtectedItem roles={["invite_members"]}>
-      <Page>
-        <div className="text-6xl font-thin">Invite Members</div>
-        <br />
+    <Section>
+      <div className="text-6xl font-thin">Invite Members</div>
+    </Section>
+      <Section>
         <form
           onSubmit={async (e) => {
             e.preventDefault();
             await inviteModel.invite();
           }}
-          className="flex w-full flex-col items-start space-y-8 lg:w-1/2"
-        >
+          className="grid grid-cols-1 items-end gap-4 lg:gap-8 rounded-lg p-8 bg-gray-200 dark:bg-gray-600"
+          >
+          <h2 className="text-2xl">Create Certificate</h2>
+          <p>
+            Use the following format to invite members:
+            <br />
+            <br />
+            <code>email,first_name,last_name,department_handle,department_position</code>
+            <br />
+            <br />
+            <code><b>department_handle:</b> DEV,MARKETING,INDUSTRY,MAKEATHON,COMMUNITY,PNS,LNF,VENTURE,EDUCATION,RND</code>
+            <br />
+            <code><b>department_position:</b> teamlead,president,member,alumni</code>
+          </p>
           <Textarea
             label="New members"
-            placeholder="email,first_name,last_name,department_handle,department_position"
+            placeholder="email@example.com,John,Doe,DEV,teamlead"
             type="text"
             id="description"
             name="description"
@@ -33,14 +47,13 @@ const Invite = observer(() => {
             onChange={handleChange}
             required={true}
           />
-          <button
+          <Button
             type="submit"
-            className="w-1/2 rounded-lg bg-gray-200 p-4 px-8 py-1 text-black"
           >
-            <div>invite</div>
-          </button>
+            invite
+          </Button>
         </form>
-      </Page>
+      </Section>
     </ProtectedItem>
   );
 });

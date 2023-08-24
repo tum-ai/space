@@ -1,12 +1,13 @@
 "use client";
 import { Avatar } from "@components/Avatar";
+import { Button } from "@components/Button";
 import Dialog from "@components/Dialog";
 import Icon from "@components/Icon";
 import Input from "@components/Input";
-import Page from "@components/Page";
 import ProtectedItem from "@components/ProtectedItem";
 import Tabs from "@components/Tabs";
 import Tooltip from "@components/Tooltip";
+import { Section } from "@components/section";
 import { useStores } from "@providers/StoreProvider";
 import { observer } from "mobx-react";
 
@@ -15,7 +16,7 @@ const ReviewTool = observer(() => {
 
   return (
     <ProtectedItem showNotFound roles={["submit_reviews"]}>
-      <Page>
+      <Section>
         <Tabs
           tabs={{
             Applications: <Applications />,
@@ -26,7 +27,7 @@ const ReviewTool = observer(() => {
             reviewToolModel.setOpenTab(tab);
           }}
         />
-      </Page>
+      </Section>
     </ProtectedItem>
   );
 });
@@ -335,12 +336,11 @@ const ReviewForm = observer(() => {
         onChange={handleChange}
         required={false}
       />
-      <button
-        className="w-full rounded-lg bg-gray-200 p-4 px-8 py-1 text-black"
+      <Button className="row-start-1 col-span-2"
         type="submit"
       >
         Submit review
-      </button>
+      </Button>
       <button
         type="button"
         onClick={() => {

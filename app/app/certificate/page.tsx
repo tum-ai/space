@@ -1,7 +1,8 @@
 "use client";
+import { Button } from "@components/Button";
 import Input from "@components/Input";
-import Page from "@components/Page";
 import ProtectedItem from "@components/ProtectedItem";
+import { Section } from "@components/Section";
 import Select from "@components/Select";
 import { useStores } from "@providers/StoreProvider";
 import { observer } from "mobx-react";
@@ -34,20 +35,19 @@ function Certificate() {
   // TODO choose member's name from member profiles directly and fill in information accordingly
   return (
     <ProtectedItem showNotFound roles={["create_certificate"]}>
-      <Page>
+      <Section>
         <div className="text-6xl font-thin">Member Certificate</div>
-        <div className="mt-8 flex w-full flex-col space-y-6 rounded-lg bg-white p-6 dark:bg-transparent">
-          <div className="font-light">
-            Fill out the form and a PDF will be automatically downloaded
-          </div>
+      </Section>
+      <Section className="">
           <form
             onSubmit={async (e) => {
               e.preventDefault();
               console.log("form");
               await certificateModel.generateCertificate();
             }}
-            className="grid grid-cols-1 items-end gap-4 lg:grid-cols-2 lg:gap-8"
+            className="grid grid-cols-1 items-end gap-4 lg:grid-cols-2 lg:gap-8 rounded-lg p-8 bg-gray-200 dark:bg-gray-600"
           >
+            <h2 className="text-2xl lg:col-span-2">Create Certificate</h2>
             <Select
               className="w-full bg-white dark:bg-gray-700"
               placeholder={"Department"}
@@ -167,15 +167,14 @@ function Certificate() {
               required={true}
               value={certificate["CONTRIB_3"]}
             />
-            <button
+            <Button
+            className="lg:col-span-2"
               type="submit"
-              className="col-span-1 rounded-lg bg-gray-200 p-4 px-8 py-1 text-black lg:col-span-2"
             >
               save
-            </button>
+            </Button>
           </form>
-        </div>
-      </Page>
+      </Section>
     </ProtectedItem>
     // TODO download button for cert
   );
