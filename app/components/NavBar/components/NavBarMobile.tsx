@@ -1,6 +1,6 @@
 "use client";
-import Icon from "@components/Icon";
-import { useStores } from "@providers/StoreProvider";
+import Icon from "@/components/Icon";
+import { useStores } from "@/providers/StoreProvider";
 import { observer } from "mobx-react";
 import Links from "./Links";
 import Logo from "./Logo";

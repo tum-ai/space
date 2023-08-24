@@ -1,5 +1,5 @@
 "use client";
-import { useStores } from "@providers/StoreProvider";
+import { useStores } from "@/providers/StoreProvider";
 import { observer } from "mobx-react";
 import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";

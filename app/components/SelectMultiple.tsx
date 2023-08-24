@@ -1,5 +1,5 @@
 "use client";
-import useOutsideAlerter from "@hooks/useOutsideAlerter";
+import useOutsideAlerter from "@/hooks/useOutsideAlerter";
 import { useRef, useState } from "react";
 import Icon from "./Icon";
 
