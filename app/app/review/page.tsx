@@ -1,4 +1,6 @@
 "use client";
+import { Avatar } from "@components/Avatar";
+import Dialog from "@components/Dialog";
 import Icon from "@components/Icon";
 import Input from "@components/Input";
 import Page from "@components/Page";
@@ -7,7 +9,6 @@ import Tabs from "@components/Tabs";
 import Tooltip from "@components/Tooltip";
 import { useStores } from "@providers/StoreProvider";
 import { observer } from "mobx-react";
-import Image from "next/image";
 
 const ReviewTool = observer(() => {
   const { reviewToolModel } = useStores();
@@ -73,50 +74,40 @@ function Application({ data }) {
     return finalscore + review.finalscore;
   }, 0);
   return (
-    <div className="grid grid-cols-3 rounded bg-white p-6 shadow dark:bg-gray-700 md:grid-cols-5">
+    <div className="grid grid-cols-3 items-center rounded bg-white p-6 shadow dark:bg-gray-700 md:grid-cols-5">
       <div>{data.id}</div>
       <div>{data.submission?.data?.formName}</div>
       <div className="flex">
         {data.reviews?.map((review, i) => {
           const profile = review.reviewer;
           return (
-            <Tooltip
-              key={i}
-              trigger={
-                <div
-                  key={review.reviewer_id + review.reviewee_id}
-                  className="relative flex space-x-[-5]"
-                  onClick={() => {
-                    reviewToolModel.setViewReview(review);
-                    reviewToolModel.setViewApplication(data);
-                    uiModel.updateModalContent(<ViewReview />);
-                    uiModel.toggleModal();
-                  }}
+                <Dialog
+                  key={i} 
+                  trigger={
+                    <span>
+                    <Tooltip
+                      trigger={
+                          <div className="cursor-pointer" onClick={() => {
+                          reviewToolModel.setViewReview(review);
+                          reviewToolModel.setViewApplication(data);
+                        }}>
+                          <Avatar variant={Avatar.variant.Circle} src={profile.profile_picture} initials={("" + profile.first_name[0] + profile.last_name[0]).toUpperCase()} />
+                        </div>
+                      }>
+                        <div>
+                          {profile.first_name +
+                            " " +
+                            profile.last_name +
+                            " - final score: " +
+                            review.finalscore}
+                        </div>
+                    </Tooltip>
+                        </span>
+                  }
                 >
-                  {profile.profile_picture ? (
-                    <Image
-                      className="m-auto h-8 w-8 cursor-pointer rounded-full border object-cover drop-shadow-lg"
-                      src={profile.profile_picture}
-                      width={100}
-                      height={100}
-                      alt=""
-                    />
-                  ) : (
-                    <div className="m-auto flex h-8 w-8 cursor-pointer rounded-full bg-gray-300 p-2 text-center drop-shadow-lg dark:bg-gray-800">
-                      <Icon name={"FaUser"} className="m-auto text-white" />
-                    </div>
-                  )}
-                </div>
-              }
-            >
-              <div>
-                {profile.first_name +
-                  " " +
-                  profile.last_name +
-                  " - final score: " +
-                  review.finalscore}
-              </div>
-            </Tooltip>
+                  <ViewReview />
+                </Dialog>
+            
           );
         })}
       </div>
@@ -162,6 +153,7 @@ function ApplicationOverview({ data }) {
   return (
     <div className="space-y-4 overflow-scroll">
       <div className="col-span-2 text-2xl">Application</div>
+      <hr className="border-2" />
       <div className="grid gap-4 lg:grid-cols-2">
         <div>
           <span className="font-thin">ID: </span>
@@ -177,7 +169,6 @@ function ApplicationOverview({ data }) {
             new Date(data.submission?.data?.createdAt).toDateString()}
         </div>
       </div>
-      <hr className="border-2" />
       <div className="grid gap-4 lg:grid-cols-2">
         {data.submission?.data?.fields?.map((field) => {
           return (
@@ -210,6 +201,7 @@ function ReviewOverview({ review }) {
         <span>Reviewer: </span>
         {review.reviewer?.first_name + " " + review.reviewer?.last_name}
       </div>
+      <hr className="border-2 col-span-2" />
       {Object.entries(review)
         .filter(([_, value]) => {
           return typeof value == "string" || typeof value == "number";
