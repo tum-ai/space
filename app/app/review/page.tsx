@@ -143,7 +143,7 @@ const ViewReview = observer(() => {
 
 function Review() {
   return (
-    <div className="grid gap-4 p-4 md:grid-cols-2">
+    <div className="grid gap-4 md:grid-cols-2">
       <ReviewForm />
       <ApplicationToReview />
     </div>
@@ -231,12 +231,13 @@ const ReviewForm = observer(() => {
 
   return (
     <form
-      className="sticky top-24 grid gap-4 lg:grid-cols-2"
+      className="sticky top-24 z-0 grid grid-cols-1 items-end gap-4 lg:grid-cols-2 lg:gap-8 rounded-lg p-8 bg-gray-200 dark:bg-gray-600"
       onSubmit={async (e) => {
         e.preventDefault();
         await reviewToolModel.submitReview();
       }}
     >
+    <h2 className="text-2xl lg:col-span-2">Submit Review</h2>
       <Input
         label="Motivation"
         type="number"
@@ -336,7 +337,7 @@ const ReviewForm = observer(() => {
         onChange={handleChange}
         required={false}
       />
-      <Button className="row-start-1 col-span-2"
+      <Button className="lg:col-span-2"
         type="submit"
       >
         Submit review
