@@ -1,5 +1,5 @@
-import Modal from '@/components/Modal';
-import { useStores } from '@/providers/StoreProvider';
+import Modal from '@components/Modal';
+import { useStores } from '@providers/StoreProvider';
 import { observer } from 'mobx-react';
 
 function GlobalModal() {

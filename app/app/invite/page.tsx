@@ -1,8 +1,8 @@
 "use client";
-import Page from "@/components/Page";
-import ProtectedItem from "@/components/ProtectedItem";
-import Textarea from "@/components/Textarea";
-import { useStores } from "@/providers/StoreProvider";
+import Page from "@components/Page";
+import ProtectedItem from "@components/ProtectedItem";
+import Textarea from "@components/Textarea";
+import { useStores } from "@providers/StoreProvider";
 import { observer } from "mobx-react";
 
 const Invite = observer(() => {

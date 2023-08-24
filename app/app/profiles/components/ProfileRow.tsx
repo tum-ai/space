@@ -1,7 +1,7 @@
-import Icon from '@/components/Icon';
-import ProtectedItem from '@/components/ProtectedItem';
-import SelectMultiple from '@/components/SelectMultiple';
-import { useStores } from '@/providers/StoreProvider';
+import Icon from '@components/Icon';
+import ProtectedItem from '@components/ProtectedItem';
+import SelectMultiple from '@components/SelectMultiple';
+import { useStores } from '@providers/StoreProvider';
 import { observer } from 'mobx-react';
 import Image from 'next/image';
 import Link from 'next/link';

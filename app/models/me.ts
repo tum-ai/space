@@ -1,10 +1,10 @@
 // @ts-nocheck
-import { auth } from '@/config/firebase';
+import { auth } from '@config/firebase';
 import axios from 'axios';
 import {
-	createUserWithEmailAndPassword,
-	signInWithEmailAndPassword,
-	signOut,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
 } from 'firebase/auth';
 import { makeAutoObservable } from 'mobx';
 

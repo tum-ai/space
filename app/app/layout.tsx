@@ -1,6 +1,6 @@
 "use client";
-import NavBar from "@/components/NavBar";
-import "@/styles/globals.css";
+import NavBar from "@components/NavBar";
+import "@styles/globals.css";
 import axios from "axios";
 import { createContext } from "react";
 import { useStores } from "../providers/StoreProvider";

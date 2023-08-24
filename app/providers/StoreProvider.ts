@@ -1,5 +1,5 @@
 "use client";
-import { RootModel } from "@/models/root";
+import { RootModel } from "@models/root";
 import { enableStaticRendering } from "mobx-react";
 
 // Only enable static render on server

@@ -1,7 +1,7 @@
-import Input from '@/components/Input';
-import ProtectedItem from '@/components/ProtectedItem';
-import Select from '@/components/Select';
-import { useStores } from '@/providers/StoreProvider';
+import Input from '@components/Input';
+import ProtectedItem from '@components/ProtectedItem';
+import Select from '@components/Select';
+import { useStores } from '@providers/StoreProvider';
 import { observer } from 'mobx-react';
 
 const positionTypes = [

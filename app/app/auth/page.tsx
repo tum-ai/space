@@ -1,6 +1,6 @@
 'use client';
-import Input from '@/components/Input';
-import Page from '@/components/Page';
+import Input from '@components/Input';
+import Page from '@components/Page';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { useStores } from '../../providers/StoreProvider';

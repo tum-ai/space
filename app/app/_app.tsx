@@ -1,4 +1,4 @@
-import NavBar from '@/components/NavBar/index';
+import NavBar from '@components/NavBar/index';
 import axios from 'axios';
 import { createContext } from 'react';
 import GlobalModal from '../components/globalModal';

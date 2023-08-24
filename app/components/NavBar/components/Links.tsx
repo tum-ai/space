@@ -1,5 +1,5 @@
 "use client";
-import { useStores } from "@/providers/StoreProvider";
+import { useStores } from "@providers/StoreProvider";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import ProtectedItem from "../../ProtectedItem";
