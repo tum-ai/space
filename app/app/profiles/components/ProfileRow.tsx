@@ -1,6 +1,5 @@
 import { Avatar } from "@components/Avatar";
 import { Button } from "@components/Button";
-import Dialog from "@components/Dialog";
 import ProtectedItem from "@components/ProtectedItem";
 import SelectMultiple from "@components/SelectMultiple";
 import { useStores } from "@providers/StoreProvider";
@@ -9,9 +8,7 @@ import Link from "next/link";
 import DepartmentMembershipEditor from "./DepartmentMembershipEditor";
 
 const ProfileRow = observer(({ profile }) => {
-  const { rolesModel, meModel } = useStores();
-  const user = meModel.user;
-  const user_profile = user?.profile;
+  const { rolesModel } = useStores();
   const roleHolderships = rolesModel.roleHolderships[profile?.id] || [];
 
   return (
@@ -28,11 +25,10 @@ const ProfileRow = observer(({ profile }) => {
           ).toUpperCase()}
         />
         <div className="w-full justify-end space-x-2">
-          <ProtectedItem roles={["admin"]}>
-            <Dialog trigger={<Button>edit membership</Button>}>
-              <DepartmentMembershipEditor profile_id={profile?.id} />
-            </Dialog>
-          </ProtectedItem>
+          <DepartmentMembershipEditor
+            trigger={<Button>edit membership</Button>}
+            profile_id={profile?.id}
+          />
           <Link href={"/profile?id=" + profile?.id}>
             <Button variant={"secondary"}>view</Button>
           </Link>

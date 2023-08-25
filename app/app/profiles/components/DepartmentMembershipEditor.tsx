@@ -1,4 +1,5 @@
 import { Button } from "@components/Button";
+import Dialog from "@components/Dialog";
 import Input from "@components/Input";
 import ProtectedItem from "@components/ProtectedItem";
 import Select from "@components/Select";
@@ -72,67 +73,69 @@ const departmentTypes = [
   },
 ];
 
-function DepartmentMembershipEditor({ profile_id }) {
+function DepartmentMembershipEditor({ trigger, profile_id }) {
   const { uiModel, departmentMembershipsModel } = useStores();
   const departments = departmentMembershipsModel.departments;
 
   return (
     <ProtectedItem roles={["admin"]}>
-      <div className="flex w-full flex-col space-y-6">
-        <DialogRadix.Title className="flex items-center justify-between">
-          <h1 className="text-3xl">Edit Membership</h1>
-          <div className="col-span-2 flex space-x-2">
-            <DialogRadix.Close>
-              <Button
-                onClick={async (e) => {
-                  await departmentMembershipsModel.saveDepartments();
-                }}
-              >
-                save
-              </Button>
-            </DialogRadix.Close>
-            <DialogRadix.Close>
-              <Button variant={"secondary"}>cancel</Button>
-            </DialogRadix.Close>
-          </div>
-        </DialogRadix.Title>
-        {/* DepartmentMembership Editor for Administrators */}
-        <div className="col-span-2 w-full space-y-4">
-          <div className="col-span-2 font-light text-black">
-            Attention: You are editing the department memberships of this user
-            as an administrator.
-          </div>
-          {departments &&
-            departments.map((departmentMembership, index) => {
-              if (profile_id !== departmentMembership.profile_id) {
-                return null;
+      <Dialog trigger={trigger}>
+        <div className="flex w-full flex-col space-y-6">
+          <DialogRadix.Title className="flex items-center justify-between">
+            <h1 className="text-3xl">Edit Membership</h1>
+            <div className="col-span-2 flex space-x-2">
+              <DialogRadix.Close>
+                <Button
+                  onClick={async (e) => {
+                    await departmentMembershipsModel.saveDepartments();
+                  }}
+                >
+                  save
+                </Button>
+              </DialogRadix.Close>
+              <DialogRadix.Close>
+                <Button variant={"secondary"}>cancel</Button>
+              </DialogRadix.Close>
+            </div>
+          </DialogRadix.Title>
+          {/* DepartmentMembership Editor for Administrators */}
+          <div className="col-span-2 w-full space-y-4">
+            <div className="col-span-2 font-light text-black">
+              Attention: You are editing the department memberships of this user
+              as an administrator.
+            </div>
+            {departments &&
+              departments.map((departmentMembership, index) => {
+                if (profile_id !== departmentMembership.profile_id) {
+                  return null;
+                }
+                if (departmentMembership.new) {
+                  return (
+                    <DepartmentMembershipNew
+                      key={index}
+                      departmentMembership={departmentMembership}
+                      index={index}
+                    />
+                  );
+                } else {
+                  return (
+                    <DepartmentMembership
+                      key={index}
+                      departmentMembership={departmentMembership}
+                    />
+                  );
+                }
+              })}
+            <Button
+              onClick={() =>
+                departmentMembershipsModel.handleAddDepartment(profile_id)
               }
-              if (departmentMembership.new) {
-                return (
-                  <DepartmentMembershipNew
-                    key={index}
-                    departmentMembership={departmentMembership}
-                    index={index}
-                  />
-                );
-              } else {
-                return (
-                  <DepartmentMembership
-                    key={index}
-                    departmentMembership={departmentMembership}
-                  />
-                );
-              }
-            })}
-          <Button
-            onClick={() =>
-              departmentMembershipsModel.handleAddDepartment(profile_id)
-            }
-          >
-            Add Membership
-          </Button>
+            >
+              Add Membership
+            </Button>
+          </div>
         </div>
-      </div>
+      </Dialog>
     </ProtectedItem>
   );
 }
