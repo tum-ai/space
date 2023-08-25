@@ -16,11 +16,19 @@ function ProfileOverview() {
     return <div>Profile not found.</div>;
   }
   return (
-    <div className="m-auto max-w-3xl bg-gray-100 dark:bg-gray-700 relative">
+    <div className="relative m-auto max-w-3xl bg-gray-100 dark:bg-gray-700">
       <div className="absolute top-0 flex w-full justify-end p-4">
-        <Dialog trigger={
-          <Button onClick={() => { meModel.editorProfile = { ...profile } }}>Edit</Button>
-        }>
+        <Dialog
+          trigger={
+            <Button
+              onClick={() => {
+                meModel.editorProfile = { ...profile };
+              }}
+            >
+              Edit
+            </Button>
+          }
+        >
           <ProfileEditor />
         </Dialog>
       </div>

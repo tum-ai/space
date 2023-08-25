@@ -8,9 +8,9 @@ import { useEffect } from "react";
 
 function ProfileOverview() {
   const { profileModel } = useStores();
-  const searchParams = useSearchParams()
-  const id = searchParams.get('id')
-  
+  const searchParams = useSearchParams();
+  const id = searchParams.get("id");
+
   useEffect(() => {
     if (id) {
       profileModel.getProfile(typeof id === "string" ? id : id[0]);
@@ -25,7 +25,7 @@ function ProfileOverview() {
   if (!profile) {
     return <div>Profile not found.</div>;
   }
-  
+
   return (
     <div className="m-auto max-w-3xl bg-gray-100 dark:bg-gray-700">
       <div className="grid grid-cols-1 gap-10 rounded-xl p-8 px-4 lg:px-10 xl:grid-cols-2">

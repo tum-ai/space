@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import ProtectedItem from "../../ProtectedItem";
 
 function Links() {
-  const pathname = usePathname()
+  const pathname = usePathname();
   const { uiModel } = useStores();
   const links = [
     {
@@ -53,9 +53,10 @@ function Links() {
             href={link.path}
             className={
               "hover:text-black dark:hover:text-white " +
-              ((pathname.includes(link.path) &&
-                (link.path == "/" ? pathname == link.path : true)) ?
-                "text-black" : "text-gray-500")
+              (pathname.includes(link.path) &&
+              (link.path == "/" ? pathname == link.path : true)
+                ? "text-black"
+                : "text-gray-500")
             }
           >
             {link.text}

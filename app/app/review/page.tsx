@@ -17,7 +17,7 @@ const ReviewTool = observer(() => {
   return (
     <ProtectedItem showNotFound roles={["submit_reviews"]}>
       <Section>
-				<div className='text-6xl font-thin'>Review Tool</div>
+        <div className="text-6xl font-thin">Review Tool</div>
       </Section>
       <Section>
         <Tabs
@@ -39,7 +39,7 @@ const Applications = observer(() => {
   const { reviewToolModel } = useStores();
   return (
     <div className="flex flex-col space-y-4 pt-4">
-      <div className="flex space-x-4 rounded-lg bg-gray-200 p-2 dark:bg-gray-700 w-full md:w-fit">
+      <div className="flex w-full space-x-4 rounded-lg bg-gray-200 p-2 dark:bg-gray-700 md:w-fit">
         <Icon name={"FaSearch"} className="rounded-lg p-2" />
         <input
           value={reviewToolModel.search}
@@ -78,40 +78,51 @@ function Application({ data }) {
     return finalscore + review.finalscore;
   }, 0);
   return (
-    <div className="grid grid-cols-3 items-center rounded-lg p-6 shadow bg-gray-200 dark:bg-gray-700 md:grid-cols-5">
+    <div className="grid grid-cols-3 items-center rounded-lg bg-gray-200 p-6 shadow dark:bg-gray-700 md:grid-cols-5">
       <div>{data.id}</div>
       <div>{data.submission?.data?.formName}</div>
       <div className="flex">
         {data.reviews?.map((review, i) => {
           const profile = review.reviewer;
           return (
-                <Dialog
-                  key={i} 
-                  trigger={
-                    <span>
-                    <Tooltip
-                      trigger={
-                          <div className="cursor-pointer" onClick={() => {
+            <Dialog
+              key={i}
+              trigger={
+                <span>
+                  <Tooltip
+                    trigger={
+                      <div
+                        className="cursor-pointer"
+                        onClick={() => {
                           reviewToolModel.setViewReview(review);
                           reviewToolModel.setViewApplication(data);
-                        }}>
-                          <Avatar variant={Avatar.variant.Circle} src={profile.profile_picture} initials={("" + profile.first_name[0] + profile.last_name[0]).toUpperCase()} />
-                        </div>
-                      }>
-                        <div>
-                          {profile.first_name +
-                            " " +
-                            profile.last_name +
-                            " - final score: " +
-                            review.finalscore}
-                        </div>
-                    </Tooltip>
-                        </span>
-                  }
-                >
-                  <ViewReview />
-                </Dialog>
-            
+                        }}
+                      >
+                        <Avatar
+                          variant={Avatar.variant.Circle}
+                          src={profile.profile_picture}
+                          initials={(
+                            "" +
+                            profile.first_name[0] +
+                            profile.last_name[0]
+                          ).toUpperCase()}
+                        />
+                      </div>
+                    }
+                  >
+                    <div>
+                      {profile.first_name +
+                        " " +
+                        profile.last_name +
+                        " - final score: " +
+                        review.finalscore}
+                    </div>
+                  </Tooltip>
+                </span>
+              }
+            >
+              <ViewReview />
+            </Dialog>
           );
         })}
       </div>
@@ -199,8 +210,8 @@ const ApplicationToReview = observer(() => {
 
 function ReviewOverview({ review }) {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 overflow-scroll">
-      <div className="md:col-span-2 text-2xl">
+    <div className="grid grid-cols-1 gap-4 overflow-scroll md:grid-cols-2">
+      <div className="text-2xl md:col-span-2">
         <span>Reviewer: </span>
         {review.reviewer?.first_name + " " + review.reviewer?.last_name}
       </div>
@@ -233,13 +244,13 @@ const ReviewForm = observer(() => {
 
   return (
     <form
-      className="sticky top-24 z-0 grid grid-cols-1 items-end gap-4 lg:grid-cols-2 lg:gap-8 rounded-lg p-8 bg-gray-200 dark:bg-gray-600"
+      className="sticky top-24 z-0 grid grid-cols-1 items-end gap-4 rounded-lg bg-gray-200 p-8 dark:bg-gray-600 lg:grid-cols-2 lg:gap-8"
       onSubmit={async (e) => {
         e.preventDefault();
         await reviewToolModel.submitReview();
       }}
     >
-    <h2 className="text-2xl lg:col-span-2">Submit Review</h2>
+      <h2 className="text-2xl lg:col-span-2">Submit Review</h2>
       <Input
         label="Motivation"
         type="number"
@@ -339,9 +350,7 @@ const ReviewForm = observer(() => {
         onChange={handleChange}
         required={false}
       />
-      <Button className="lg:col-span-2"
-        type="submit"
-      >
+      <Button className="lg:col-span-2" type="submit">
         Submit review
       </Button>
       <button

@@ -14,31 +14,38 @@ const Invite = observer(() => {
   }
   return (
     <ProtectedItem roles={["invite_members"]}>
-    <Section>
-      <div className="text-6xl font-thin">Invite Members</div>
-    </Section>
+      <Section>
+        <div className="text-6xl font-thin">Invite Members</div>
+      </Section>
       <Section>
         <form
           onSubmit={async (e) => {
             e.preventDefault();
             await inviteModel.invite();
           }}
-          className="grid grid-cols-1 items-end gap-4 lg:gap-8 rounded-lg p-8 bg-gray-200 dark:bg-gray-600"
-          >
+          className="grid grid-cols-1 items-end gap-4 rounded-lg bg-gray-200 p-8 dark:bg-gray-600 lg:gap-8"
+        >
           <h2 className="text-2xl">Create Invitations</h2>
           <p>
-            Write each invite in one line like as below. 
-            After submitting the invitations, 
-            the invited emails will receive a welcome email 
-            and a link to reset their password. 
-            Use the following format to invite members:
+            Write each invite in one line like as below. After submitting the
+            invitations, the invited emails will receive a welcome email and a
+            link to reset their password. Use the following format to invite
+            members:
             <br />
             <br />
-            <p>email, first_name, last_name, department_handle, department_position</p>
+            <p>
+              email, first_name, last_name, department_handle,
+              department_position
+            </p>
             <br />
-            <p><b>department_handle:</b> DEV, MARKETING, INDUSTRY, MAKEATHON, COMMUNITY, PNS, LNF, VENTURE, EDUCATION, RND</p>
+            <p>
+              <b>department_handle:</b> DEV, MARKETING, INDUSTRY, MAKEATHON,
+              COMMUNITY, PNS, LNF, VENTURE, EDUCATION, RND
+            </p>
             <br />
-            <p><b>department_position:</b> teamlead,president,member,alumni</p>
+            <p>
+              <b>department_position:</b> teamlead,president,member,alumni
+            </p>
           </p>
           <Textarea
             label="New members"
@@ -50,11 +57,7 @@ const Invite = observer(() => {
             onChange={handleChange}
             required={true}
           />
-          <Button
-            type="submit"
-          >
-            invite
-          </Button>
+          <Button type="submit">invite</Button>
         </form>
       </Section>
     </ProtectedItem>

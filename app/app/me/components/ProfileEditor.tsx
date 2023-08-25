@@ -4,7 +4,7 @@ import Input from "@components/Input";
 import Select from "@components/Select";
 import Textarea from "@components/Textarea";
 import { useStores } from "@providers/StoreProvider";
-import * as DialogRadix from '@radix-ui/react-dialog';
+import * as DialogRadix from "@radix-ui/react-dialog";
 import { observer } from "mobx-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -60,22 +60,26 @@ function ProfileEditor({ isSignUpForm = false }) {
 
   return (
     <div className="flex w-full flex-col space-y-6">
-      <DialogRadix.Title className="flex items-center justify-between"><h1 className="text-3xl">Edit Profile</h1>
+      <DialogRadix.Title className="flex items-center justify-between">
+        <h1 className="text-3xl">Edit Profile</h1>
         <div className="col-span-2 flex space-x-2">
           <DialogRadix.Close>
-          <Button onClick={async (e) => {
-              await meModel.editProfile();
-              meModel.getProfile();
-          }}>save</Button>
+            <Button
+              onClick={async (e) => {
+                await meModel.editProfile();
+                meModel.getProfile();
+              }}
+            >
+              save
+            </Button>
           </DialogRadix.Close>
           <DialogRadix.Close>
             <Button variant="secondary">cancel</Button>
           </DialogRadix.Close>
-        </div></DialogRadix.Title>
-      <form
-        className="flex flex-col gap-4 lg:grid lg:grid-cols-2 lg:gap-8 lg:space-y-0"
-      >
-        <div className="flex items-center space-x-4 col-span-2">
+        </div>
+      </DialogRadix.Title>
+      <form className="flex flex-col gap-4 lg:grid lg:grid-cols-2 lg:gap-8 lg:space-y-0">
+        <div className="col-span-2 flex items-center space-x-4">
           {editorProfile.profile_picture ? (
             <div className="flex flex-col items-center">
               <Image

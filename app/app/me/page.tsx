@@ -1,10 +1,10 @@
-import { Section } from '@components/Section';
-import ProfileOverview from './components/ProfileOverview';
+import { Section } from "@components/Section";
+import ProfileOverview from "./components/ProfileOverview";
 
 export default function Me() {
-	return (
-		<Section>
-			<ProfileOverview />
-		</Section>
-	);
+  return (
+    <Section>
+      <ProfileOverview />
+    </Section>
+  );
 }
