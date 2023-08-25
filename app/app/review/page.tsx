@@ -117,15 +117,14 @@ function Application({ data }) {
       </div>
       <div>{Math.round(finalScoreSum / data.reviews?.length) || "-"}</div>
       <div className="flex w-full justify-end">
-        <button
+        <Button
           className="flex items-center space-x-2"
           onClick={() => {
             reviewToolModel.reviewApplication(data.id);
           }}
         >
-          <p>review</p>
-          <Icon name="FaExternalLinkAlt" />
-        </button>
+          review
+        </Button>
       </div>
     </div>
   );
