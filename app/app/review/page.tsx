@@ -167,7 +167,7 @@ function ApplicationOverview({ data }) {
   return (
     <div className="space-y-4 overflow-scroll">
       <div className="col-span-2 text-2xl">Application</div>
-      <hr className="border-2" />
+      <hr className="border-2 border-black dark:border-white" />
       <div className="grid gap-4 lg:grid-cols-2">
         <div>
           <span className="font-thin">ID: </span>
@@ -215,7 +215,7 @@ function ReviewOverview({ review }) {
         <span>Reviewer: </span>
         {review.reviewer?.first_name + " " + review.reviewer?.last_name}
       </div>
-      <hr className="border-2 md:col-span-2" />
+      <hr className="border-2 border-black dark:border-white md:col-span-2" />
       {Object.entries(review)
         .filter(([_, value]) => {
           return typeof value == "string" || typeof value == "number";
