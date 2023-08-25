@@ -3,13 +3,14 @@ import Icon from "@components/Icon";
 import { useStores } from "@providers/StoreProvider";
 import { observer } from "mobx-react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 
 function ProfileOverview() {
   const { profileModel } = useStores();
-  const router = useRouter();
-  const { id } = router.query;
+  const searchParams = useSearchParams()
+  const id = searchParams.get('id')
+  
   useEffect(() => {
     if (id) {
       profileModel.getProfile(typeof id === "string" ? id : id[0]);
@@ -24,9 +25,9 @@ function ProfileOverview() {
   if (!profile) {
     return <div>Profile not found.</div>;
   }
-
+  
   return (
-    <div className="m-auto max-w-3xl bg-white dark:bg-gray-700">
+    <div className="m-auto max-w-3xl bg-gray-100 dark:bg-gray-700">
       <div className="grid grid-cols-1 gap-10 rounded-xl p-8 px-4 lg:px-10 xl:grid-cols-2">
         {/* name + image */}
         <div className=" max-w-90 flex flex-col items-start space-y-6 xl:col-span-2">

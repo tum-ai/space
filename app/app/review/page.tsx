@@ -36,8 +36,8 @@ const Applications = observer(() => {
   const { reviewToolModel } = useStores();
   return (
     <div className="flex flex-col space-y-4 pt-4">
-      <div className="m-auto flex w-full space-x-4 rounded-lgbg-white p-2 dark:bg-gray-700 lg:mr-0 lg:w-[400px]">
-        <Icon name={"FaSearch"} className="rounded-lgp-2" />
+      <div className="flex space-x-4 rounded-lg bg-gray-200 p-2 dark:bg-gray-700 w-full md:w-fit">
+        <Icon name={"FaSearch"} className="rounded-lg p-2" />
         <input
           value={reviewToolModel.search}
           onChange={(e) => {
@@ -70,12 +70,12 @@ const Applications = observer(() => {
 });
 
 function Application({ data }) {
-  const { reviewToolModel, uiModel } = useStores();
+  const { reviewToolModel } = useStores();
   const finalScoreSum = data.reviews?.reduce((finalscore, review) => {
     return finalscore + review.finalscore;
   }, 0);
   return (
-    <div className="grid grid-cols-3 items-center rounded-lgbg-white p-6 shadow dark:bg-gray-700 md:grid-cols-5">
+    <div className="grid grid-cols-3 items-center rounded-lg p-6 shadow bg-gray-200 dark:bg-gray-700 md:grid-cols-5">
       <div>{data.id}</div>
       <div>{data.submission?.data?.formName}</div>
       <div className="flex">

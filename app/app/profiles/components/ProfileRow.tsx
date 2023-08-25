@@ -29,7 +29,7 @@ const ProfileRow = observer(({ profile }) => {
 							/>
 						</Dialog>
 					</ProtectedItem>
-					<Link href={'/profiles/' + profile?.id}>
+					<Link href={'/profile?id=' + profile?.id}>
 						<Button variant={'secondary'}>view</Button>
 					</Link>
 				</div>
