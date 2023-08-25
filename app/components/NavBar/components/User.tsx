@@ -1,8 +1,9 @@
+"use client";
+import { useStores } from "@providers/StoreProvider";
 import { observer } from "mobx-react";
 import Image from "next/image";
 import Link from "next/link";
 import { FaUser } from "react-icons/fa";
-import { useStores } from "@providers/StoreProvider";
 
 function User() {
   const { uiModel, meModel } = useStores();
@@ -52,7 +53,7 @@ function User() {
         <>
           <Link
             href={"/auth"}
-            className="rounded bg-white p-2 dark:bg-gray-700"
+            className="rounded-lg bg-white p-2 dark:bg-gray-700"
           >
             Login
           </Link>
