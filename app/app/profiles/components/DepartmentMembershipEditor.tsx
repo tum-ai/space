@@ -1,72 +1,74 @@
+import { Button } from '@components/Button';
 import Input from '@components/Input';
 import ProtectedItem from '@components/ProtectedItem';
 import Select from '@components/Select';
 import { useStores } from '@providers/StoreProvider';
+import * as DialogRadix from '@radix-ui/react-dialog';
 import { observer } from 'mobx-react';
 
 const positionTypes = [
 	{
-		key: 'TEAMLEAD',
-		value: 'Teamlead',
+		key: 'Teamlead',
+		value: 'teamlead',
 	},
 	{
-		key: 'PRESIDENT',
-		value: 'President',
+		key: 'President',
+		value: 'president',
 	},
 	{
-		key: 'MEMBER',
-		value: 'Member',
+		key: 'Member',
+		value: 'member',
 	},
 	{
-		key: 'ALUMNI',
-		value: 'Alumni',
+		key: 'Alumni',
+		value: 'alumni',
 	},
 	{
-		key: 'APPLICANT',
-		value: 'Applicant',
+		key: 'Applicant',
+		value: 'applicant',
 	},
 ];
 
 const departmentTypes = [
 	{
-		key: 'DEV',
-		value: 'Software Development',
+		key: 'Software Development',
+		value: 'DEV',
 	},
 	{
-		key: 'MARKETING',
-		value: 'Marketing',
+		key: 'Marketing',
+		value: 'MARKETING',
 	},
 	{
-		key: 'INDUSTRY',
-		value: 'Industry',
+		key: 'Industry',
+		value: 'INDUSTRY',
 	},
 	{
-		key: 'MAKEATHON',
-		value: 'Makeathon',
+		key: 'Makeathon',
+		value: 'MAKEATHON',
 	},
 	{
-		key: 'COMMUNITY',
-		value: 'Community',
+		key: 'Community',
+		value: 'COMMUNITY',
 	},
 	{
-		key: 'PNS',
-		value: 'Partners & Sponsors',
+		key: 'Partners & Sponsors',
+		value: 'PNS',
 	},
 	{
-		key: 'LNF',
-		value: 'Legal & Finance',
+		key: 'Legal & Finance',
+		value: 'LNF',
 	},
 	{
-		key: 'VENTURE',
-		value: 'Venture',
+		key: 'Venture',
+		value: 'VENTURE',
 	},
 	{
-		key: 'EDUCATION',
-		value: 'Education',
+		key: 'Education',
+		value: 'EDUCATION',
 	},
 	{
-		key: 'RND',
-		value: 'Research & Development',
+		key: 'Research & Development',
+		value: 'RND',
 	},
 ];
 
@@ -76,16 +78,30 @@ function DepartmentMembershipEditor({ profile_id }) {
 
 	return (
 		<ProtectedItem roles={['admin']}>
-			<div className='flex w-full flex-col space-y-6 rounded-lg bg-white p-6 dark:bg-gray-700'>
-				<div className='text-2xl font-light'>
-					Department Membership Editor
-				</div>
-				<hr className='col-span-2' />
+			<div className='flex w-full flex-col space-y-6'>
+				<DialogRadix.Title className="flex items-center justify-between">
+					<h1 className="text-3xl">Edit Membership</h1>
+					<div className="col-span-2 flex space-x-2">
+					<DialogRadix.Close>
+						<Button
+							onClick={async (e) => {
+								await departmentMembershipsModel.saveDepartments();
+							}}
+						>
+							save
+						</Button>
+					</DialogRadix.Close>
+					<DialogRadix.Close>
+						<Button
+							variant={'secondary'}
+						>
+							cancel
+						</Button>
+					</DialogRadix.Close>
+					</div>
+				</DialogRadix.Title>
 				{/* DepartmentMembership Editor for Administrators */}
 				<div className='col-span-2 w-full space-y-4'>
-					<div className='col-span-2 text-xl font-light'>
-						Department Memberships
-					</div>
 					<div className='col-span-2 font-light text-black'>
 						Attention: You are editing the department memberships of
 						this user as an administrator.
@@ -118,8 +134,7 @@ function DepartmentMembershipEditor({ profile_id }) {
 								);
 							}
 						})}
-					<button
-						className='mt-4 rounded-lg bg-gray-200 p-2 hover:text-black hover:underline dark:bg-gray-700 dark:hover:text-white'
+					<Button
 						onClick={() =>
 							departmentMembershipsModel.handleAddDepartment(
 								profile_id
@@ -127,31 +142,7 @@ function DepartmentMembershipEditor({ profile_id }) {
 						}
 					>
 						Add Membership
-					</button>
-				</div>
-				<hr className='col-span-2' />
-				<div className='col-span-2 flex space-x-2'>
-					<button
-						type='submit'
-						className='w-1/2 rounded-lg bg-gray-200 p-4 px-8 py-1 text-black'
-						onClick={async (e) => {
-							e.preventDefault();
-							console.log([
-								...departmentMembershipsModel.departments,
-							]);
-							await departmentMembershipsModel.saveDepartments();
-						}}
-					>
-						<div>save</div>
-					</button>
-					<button
-						onClick={() => {
-							uiModel.toggleModal();
-						}}
-						className='w-1/2 rounded-lg border-2 p-4 px-8 py-1'
-					>
-						<div>cancel</div>
-					</button>
+					</Button>
 				</div>
 			</div>
 		</ProtectedItem>
@@ -161,7 +152,7 @@ function DepartmentMembershipEditor({ profile_id }) {
 function DepartmentMembership({ departmentMembership }) {
 	const { departmentMembershipsModel } = useStores();
 	return (
-		<div className='rounded-2xl border-2 border-gray-100 p-4'>
+		<div className='w-fit flex items-center space-x-4 rounded-2xl border-2 bg-white p-4'>
 			<div>{departmentMembership.department_handle}</div>
 			<div>{departmentMembership.position}</div>
 			<div>
@@ -174,8 +165,8 @@ function DepartmentMembership({ departmentMembership }) {
 					? new Date(departmentMembership.time_to).toDateString()
 					: '-'}
 			</div>
-			<button
-				type='button'
+			<Button
+				variant={'secondary'}
 				onClick={async () => {
 					await departmentMembershipsModel.deleteDepartmentMembership(
 						departmentMembership.id
@@ -186,7 +177,7 @@ function DepartmentMembership({ departmentMembership }) {
 				}}
 			>
 				Remove
-			</button>
+			</Button>
 		</div>
 	);
 }

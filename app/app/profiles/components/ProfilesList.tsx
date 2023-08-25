@@ -84,7 +84,7 @@ function ProfilesList() {
           </div>
         </div>
       </div>
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-3 lg:grid-cols-5">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         {profilesModel.filteredProfiles.map((profile, i) => (
           <ProfileRow key={i} profile={profile} />
         ))}

@@ -1,9 +1,10 @@
-import Icon from '@components/Icon';
+import { Avatar } from '@components/Avatar';
+import { Button } from '@components/Button';
+import Dialog from '@components/Dialog';
 import ProtectedItem from '@components/ProtectedItem';
 import SelectMultiple from '@components/SelectMultiple';
 import { useStores } from '@providers/StoreProvider';
 import { observer } from 'mobx-react';
-import Image from 'next/image';
 import Link from 'next/link';
 import DepartmentMembershipEditor from './DepartmentMembershipEditor';
 
@@ -17,51 +18,20 @@ const ProfileRow = observer(({ profile }) => {
 		<div className='flex justify-between space-x-10 rounded-xl bg-white p-4 shadow dark:bg-gray-700'>
 			<div className='grid w-full grid-cols-2 gap-2'>
 				{/* profile picture */}
-				{profile?.profile_picture ? (
-					<Image
-						className='h-14 w-14 rounded-full border object-cover'
-						src={profile.profile_picture}
-						width={100}
-						height={100}
-						alt=''
-					/>
-				) : (
-					<div className='flex h-14 w-14 rounded-full bg-gray-300 text-center drop-shadow-lg dark:bg-gray-800'>
-						<Icon
-							name={'FaUser'}
-							className='m-auto text-xl text-white'
-						/>
-					</div>
-				)}
-				<div className='flex flex-col gap-y-1'>
+				<Avatar variant={Avatar.variant.Circle} src={profile.profile_picture} initials={("" + profile.first_name[0] + profile.last_name[0]).toUpperCase()} />
+				<div className='space-x-2 w-full justify-end'>
 					<ProtectedItem roles={['admin']}>
-						<div className='flex w-auto items-center justify-end'>
-							<button
-								onClick={() => {
-									uiModel.updateModalContent(
-										<DepartmentMembershipEditor
-											profile_id={profile?.id}
-										/>
-									);
-									uiModel.toggleModal();
-									meModel.editorProfile = { ...user_profile };
-								}}
-							>
-								<Icon
-									name={'FaEdit'}
-									className='rounded-lg bg-gray-100 p-2 hover:scale-105 dark:bg-black'
-								/>
-							</button>
-						</div>
-					</ProtectedItem>
-					<div className='flex w-auto items-center justify-end'>
-						<Link href={'/profiles/' + profile?.id}>
-							<Icon
-								name={'FaExternalLinkAlt'}
-								className='rounded-lg bg-gray-100 p-2 hover:scale-105 dark:bg-black'
+						<Dialog trigger={
+							<Button>edit membership</Button>
+						}>
+							<DepartmentMembershipEditor
+								profile_id={profile?.id}
 							/>
-						</Link>
-					</div>
+						</Dialog>
+					</ProtectedItem>
+					<Link href={'/profiles/' + profile?.id}>
+						<Button variant={'secondary'}>view</Button>
+					</Link>
 				</div>
 				{/* profile name and department */}
 				<div className='col-span-2 flex flex-col'>

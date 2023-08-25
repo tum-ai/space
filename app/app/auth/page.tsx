@@ -1,7 +1,7 @@
 'use client';
 import Input from '@components/Input';
 import { Section } from '@components/Section';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useStores } from '../../providers/StoreProvider';
 

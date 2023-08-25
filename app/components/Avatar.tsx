@@ -59,7 +59,14 @@ const Avatar = ({
         )}
         delayMs={600}
         >
-        <span className="text-sm font-medium uppercase text-gray-700 dark:text-gray-400">
+        <span
+        className={clsx(
+            "flex h-full w-full items-center justify-center bg-gray-200 dark:bg-gray-800",
+            {
+            [Variant.Circle]: "rounded-full",
+            [Variant.Rounded]: "rounded",
+            }[variant]
+        )}>
             {initials}
         </span>
         </AvatarPrimitive.Fallback>
