@@ -1,11 +1,11 @@
 "use client";
 import { useStores } from "@providers/StoreProvider";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import ProtectedItem from "../../ProtectedItem";
 
 function Links() {
-  const router = useRouter();
+  const pathname = usePathname()
   const { uiModel } = useStores();
   const links = [
     {
@@ -52,10 +52,10 @@ function Links() {
             }}
             href={link.path}
             className={
-              "text-gray-500 hover:text-black dark:hover:text-white " +
-              (router.asPath?.includes(link.path) &&
-                (link.path == "/" ? router.asPath == link.path : true) &&
-                "underline")
+              "hover:text-black dark:hover:text-white " +
+              ((pathname.includes(link.path) &&
+                (link.path == "/" ? pathname == link.path : true)) ?
+                "text-black" : "text-gray-500")
             }
           >
             {link.text}
