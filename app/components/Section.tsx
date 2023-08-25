@@ -6,7 +6,7 @@ export interface SectionProps
   extends React.InputHTMLAttributes<HTMLInputElement>,
     VariantProps<typeof sectionVariants> {}
 
-const sectionVariants = cva("p-8 lg:p-12 py-6 lg:py-6", {
+const sectionVariants = cva("p-8 lg:p-12 py-6 lg:py-6 container m-auto", {
   variants: {
     variant: {
       default: "",
