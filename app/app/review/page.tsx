@@ -36,8 +36,8 @@ const Applications = observer(() => {
   const { reviewToolModel } = useStores();
   return (
     <div className="flex flex-col space-y-4 pt-4">
-      <div className="m-auto flex w-full space-x-4 rounded-lg bg-white p-2 dark:bg-gray-700 lg:mr-0 lg:w-[400px]">
-        <Icon name={"FaSearch"} className="rounded-lg p-2" />
+      <div className="m-auto flex w-full space-x-4 rounded-lgbg-white p-2 dark:bg-gray-700 lg:mr-0 lg:w-[400px]">
+        <Icon name={"FaSearch"} className="rounded-lgp-2" />
         <input
           value={reviewToolModel.search}
           onChange={(e) => {
@@ -75,7 +75,7 @@ function Application({ data }) {
     return finalscore + review.finalscore;
   }, 0);
   return (
-    <div className="grid grid-cols-3 items-center rounded-lg bg-white p-6 shadow dark:bg-gray-700 md:grid-cols-5">
+    <div className="grid grid-cols-3 items-center rounded-lgbg-white p-6 shadow dark:bg-gray-700 md:grid-cols-5">
       <div>{data.id}</div>
       <div>{data.submission?.data?.formName}</div>
       <div className="flex">
@@ -197,19 +197,19 @@ const ApplicationToReview = observer(() => {
 
 function ReviewOverview({ review }) {
   return (
-    <div className="grid grid-cols-2 gap-4 overflow-scroll">
-      <div className="col-span-2 text-2xl">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 overflow-scroll">
+      <div className="md:col-span-2 text-2xl">
         <span>Reviewer: </span>
         {review.reviewer?.first_name + " " + review.reviewer?.last_name}
       </div>
-      <hr className="border-2 col-span-2" />
+      <hr className="border-2 md:col-span-2" />
       {Object.entries(review)
         .filter(([_, value]) => {
           return typeof value == "string" || typeof value == "number";
         })
         .map(([key, value]: any, i) => {
           return (
-            <div key={key}>
+            <div key={key} className="border-b pb-2">
               <div className="font-thin">{key}</div>
               <div>{value}</div>
             </div>
