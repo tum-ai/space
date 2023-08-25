@@ -55,7 +55,7 @@ function Links() {
               "hover:text-black dark:hover:text-white " +
               (pathname.includes(link.path) &&
               (link.path == "/" ? pathname == link.path : true)
-                ? "text-black"
+                ? "text-black dark:text-white"
                 : "text-gray-500")
             }
           >
