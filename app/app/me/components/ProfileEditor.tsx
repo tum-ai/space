@@ -1,5 +1,6 @@
 "use client";
 import { Button } from "@components/Button";
+import Dialog from "@components/Dialog";
 import Input from "@components/Input";
 import Select from "@components/Select";
 import Textarea from "@components/Textarea";
@@ -7,7 +8,6 @@ import { useStores } from "@providers/StoreProvider";
 import * as DialogRadix from "@radix-ui/react-dialog";
 import { observer } from "mobx-react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 const newJobExperience = {
@@ -29,10 +29,9 @@ const socialNetworksTypes = [
   { key: "Other", value: "Other" },
 ];
 
-function ProfileEditor({ isSignUpForm = false }) {
+function ProfileEditor({ trigger }) {
   const { meModel } = useStores();
   const editorProfile = meModel.editorProfile;
-  const router = useRouter();
 
   function convertImageToBase64(file) {
     return new Promise((resolve, reject) => {
@@ -59,147 +58,149 @@ function ProfileEditor({ isSignUpForm = false }) {
   }
 
   return (
-    <div className="flex w-full flex-col space-y-6">
-      <DialogRadix.Title className="flex items-center justify-between">
-        <h1 className="text-3xl">Edit Profile</h1>
-        <div className="col-span-2 flex space-x-2">
-          <DialogRadix.Close>
-            <Button
-              onClick={async (e) => {
-                await meModel.editProfile();
-                meModel.getProfile();
-              }}
-            >
-              save
-            </Button>
-          </DialogRadix.Close>
-          <DialogRadix.Close>
-            <Button variant="secondary">cancel</Button>
-          </DialogRadix.Close>
-        </div>
-      </DialogRadix.Title>
-      <form className="flex flex-col gap-4 lg:grid lg:grid-cols-2 lg:gap-8 lg:space-y-0">
-        <div className="col-span-2 flex items-center space-x-4">
-          {editorProfile.profile_picture ? (
-            <div className="flex flex-col items-center">
-              <Image
-                className="h-28 w-28 rounded-full border object-cover drop-shadow-lg"
-                src={editorProfile.profile_picture}
-                width={100}
-                height={100}
-                alt=""
-              />
-              <button
-                onClick={() => {
-                  meModel.updateEditorProfile({
-                    ["profile_picture"]: null,
-                  });
+    <Dialog trigger={trigger || <Button>edit</Button>}>
+      <div className="flex w-full flex-col space-y-6">
+        <DialogRadix.Title className="flex items-center justify-between">
+          <h1 className="text-3xl">Edit Profile</h1>
+          <div className="col-span-2 flex space-x-2">
+            <DialogRadix.Close>
+              <Button
+                onClick={async (e) => {
+                  await meModel.editProfile();
+                  meModel.getProfile();
                 }}
               >
-                remove
-              </button>
-            </div>
-          ) : (
-            <Input
-              label="Profile Image"
-              type="file"
-              accept="image/*"
-              id="profile_picture"
-              name="profile_picture"
-              onChange={handleChange}
-            />
-          )}
-        </div>
-        <Input
-          label="First name"
-          type="text"
-          id="first_name"
-          name="first_name"
-          value={editorProfile.first_name}
-          onChange={handleChange}
-          required={true}
-        />
-        <Input
-          label="Last name"
-          type="text"
-          id="last_name"
-          name="last_name"
-          value={editorProfile.last_name}
-          onChange={handleChange}
-          required={true}
-        />
-        <Input
-          label="Nationality"
-          type="text"
-          id="nationality"
-          name="nationality"
-          value={editorProfile.nationality}
-          onChange={handleChange}
-          required={true}
-        />
-        <Input
-          label="University"
-          type="text"
-          id="university"
-          name="university"
-          value={editorProfile.university}
-          onChange={handleChange}
-          required={true}
-        />
-        <Input
-          label="Degree level"
-          type="text"
-          id="degree_level"
-          name="degree_level"
-          value={editorProfile.degree_level}
-          onChange={handleChange}
-          required={true}
-        />
-        <Input
-          label="Degree name"
-          type="text"
-          id="degree_name"
-          name="degree_name"
-          value={editorProfile.degree_name}
-          onChange={handleChange}
-          required={true}
-        />
-        <Input
-          label="Semester"
-          type="number"
-          id="degree_semester"
-          name="degree_semester"
-          value={editorProfile.degree_semester}
-          onChange={handleChange}
-          required={true}
-        />
-        <Input
-          label="Current job"
-          type="text"
-          id="currentJob"
-          name="currentJob"
-          value={editorProfile.currentJob}
-          onChange={handleChange}
-        />
-        <div className="col-span-2">
-          <Textarea
-            label="Description"
+                save
+              </Button>
+            </DialogRadix.Close>
+            <DialogRadix.Close>
+              <Button variant="secondary">cancel</Button>
+            </DialogRadix.Close>
+          </div>
+        </DialogRadix.Title>
+        <form className="flex flex-col gap-4 lg:grid lg:grid-cols-2 lg:gap-8 lg:space-y-0">
+          <div className="col-span-2 flex items-center space-x-4">
+            {editorProfile.profile_picture ? (
+              <div className="flex flex-col items-center">
+                <Image
+                  className="h-28 w-28 rounded-full border object-cover drop-shadow-lg"
+                  src={editorProfile.profile_picture}
+                  width={100}
+                  height={100}
+                  alt=""
+                />
+                <button
+                  onClick={() => {
+                    meModel.updateEditorProfile({
+                      ["profile_picture"]: null,
+                    });
+                  }}
+                >
+                  remove
+                </button>
+              </div>
+            ) : (
+              <Input
+                label="Profile Image"
+                type="file"
+                accept="image/*"
+                id="profile_picture"
+                name="profile_picture"
+                onChange={handleChange}
+              />
+            )}
+          </div>
+          <Input
+            label="First name"
             type="text"
-            id="description"
-            name="description"
-            value={editorProfile.description}
+            id="first_name"
+            name="first_name"
+            value={editorProfile.first_name}
             onChange={handleChange}
-            required={false}
+            required={true}
           />
-        </div>
-        <hr className="col-span-2" />
-        {/* Job Experience Editor */}
-        <JobExperience />
-        <hr className="col-span-2" />
-        {/* Social Networks Editor */}
-        <SocialNetworks />
-      </form>
-    </div>
+          <Input
+            label="Last name"
+            type="text"
+            id="last_name"
+            name="last_name"
+            value={editorProfile.last_name}
+            onChange={handleChange}
+            required={true}
+          />
+          <Input
+            label="Nationality"
+            type="text"
+            id="nationality"
+            name="nationality"
+            value={editorProfile.nationality}
+            onChange={handleChange}
+            required={true}
+          />
+          <Input
+            label="University"
+            type="text"
+            id="university"
+            name="university"
+            value={editorProfile.university}
+            onChange={handleChange}
+            required={true}
+          />
+          <Input
+            label="Degree level"
+            type="text"
+            id="degree_level"
+            name="degree_level"
+            value={editorProfile.degree_level}
+            onChange={handleChange}
+            required={true}
+          />
+          <Input
+            label="Degree name"
+            type="text"
+            id="degree_name"
+            name="degree_name"
+            value={editorProfile.degree_name}
+            onChange={handleChange}
+            required={true}
+          />
+          <Input
+            label="Semester"
+            type="number"
+            id="degree_semester"
+            name="degree_semester"
+            value={editorProfile.degree_semester}
+            onChange={handleChange}
+            required={true}
+          />
+          <Input
+            label="Current job"
+            type="text"
+            id="currentJob"
+            name="currentJob"
+            value={editorProfile.currentJob}
+            onChange={handleChange}
+          />
+          <div className="col-span-2">
+            <Textarea
+              label="Description"
+              type="text"
+              id="description"
+              name="description"
+              value={editorProfile.description}
+              onChange={handleChange}
+              required={false}
+            />
+          </div>
+          <hr className="col-span-2" />
+          {/* Job Experience Editor */}
+          <JobExperience />
+          <hr className="col-span-2" />
+          {/* Social Networks Editor */}
+          <SocialNetworks />
+        </form>
+      </div>
+    </Dialog>
   );
 }
 

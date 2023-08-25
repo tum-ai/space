@@ -1,6 +1,5 @@
 "use client";
 import { Button } from "@components/Button";
-import Dialog from "@components/Dialog";
 import Icon from "@components/Icon";
 import { useStores } from "@providers/StoreProvider";
 import { observer } from "mobx-react";
@@ -18,7 +17,7 @@ function ProfileOverview() {
   return (
     <div className="relative m-auto max-w-3xl bg-gray-100 dark:bg-gray-700">
       <div className="absolute top-0 flex w-full justify-end p-4">
-        <Dialog
+        <ProfileEditor
           trigger={
             <Button
               onClick={() => {
@@ -28,9 +27,7 @@ function ProfileOverview() {
               Edit
             </Button>
           }
-        >
-          <ProfileEditor />
-        </Dialog>
+        />
       </div>
       <div className="grid grid-cols-1 gap-10 rounded-xl p-8 px-4 lg:px-10 xl:grid-cols-2">
         {/* name + image */}
