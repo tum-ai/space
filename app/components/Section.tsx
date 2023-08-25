@@ -1,7 +1,6 @@
 import * as React from "react";
 
 import { VariantProps, cva } from "class-variance-authority";
-import { cn } from "libs/utils";
 
 export interface SectionProps
   extends React.InputHTMLAttributes<HTMLInputElement>,
@@ -22,7 +21,7 @@ const sectionVariants = cva("p-8 lg:p-12 py-6 lg:py-6", {
 const Section = React.forwardRef<HTMLInputElement, SectionProps>(
   ({ children, variant, className }, ref) => {
     return (
-      <section className={cn(sectionVariants({ variant, className }))}>
+      <section className={sectionVariants({ variant, className })}>
         {children}
       </section>
     );

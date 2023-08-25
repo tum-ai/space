@@ -9,7 +9,7 @@ import Link from "next/link";
 import DepartmentMembershipEditor from "./DepartmentMembershipEditor";
 
 const ProfileRow = observer(({ profile }) => {
-  const { rolesModel, meModel, uiModel } = useStores();
+  const { rolesModel, meModel } = useStores();
   const user = meModel.user;
   const user_profile = user?.profile;
   const roleHolderships = rolesModel.roleHolderships[profile?.id] || [];

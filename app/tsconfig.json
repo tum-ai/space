@@ -17,7 +17,6 @@
     "noUncheckedIndexedAccess": true,
     "baseUrl": ".",
     "paths": {
-      "@libs/*": ["./libs/*"],
       "@styles/*": ["./styles/*"],
       "@components/*": ["./components/*"],
       "@models/*": ["./models/*"],
