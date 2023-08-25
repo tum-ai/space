@@ -17,6 +17,9 @@ const ReviewTool = observer(() => {
   return (
     <ProtectedItem showNotFound roles={["submit_reviews"]}>
       <Section>
+				<div className='text-6xl font-thin'>Review Tool</div>
+      </Section>
+      <Section>
         <Tabs
           tabs={{
             Applications: <Applications />,

@@ -3,7 +3,7 @@ import * as RadixTabs from "@radix-ui/react-tabs";
 export default function Tabs({ tabs, ...props }) {
   return (
     <RadixTabs.Root {...props}>
-      <RadixTabs.List className="grid grid-cols-2 text-xl mb-12">
+      <RadixTabs.List className="grid grid-cols-2 text-xl mb-8">
         {Object.keys(tabs).map((tabName) => (
           <RadixTabs.Trigger
             key={tabName}
