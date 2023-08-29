@@ -11,6 +11,7 @@ export class ReviewToolModel {
   openTab = "Applications";
   viewApplication = undefined;
   viewReview = undefined;
+  myreviews = [];
 
   constructor(root) {
     this.root = root;
@@ -75,6 +76,11 @@ export class ReviewToolModel {
     this.applications = applications;
     this.filteredApplications = applications;
     this.sortApplications();
+  }
+
+  async fetchMyreviews() {
+    const myreviews = await this.root.GET("/review_tool/myreviews/");
+    this.myreviews = myreviews;
   }
 
   async submitReview() {

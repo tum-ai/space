@@ -19,6 +19,7 @@ from .api_models import (
     ApplicationReviewIn,
     ApplicationReviewOut,
     ApplicationReviewUpdate,
+    MyApplicationReviewOut,
 )
 from .response_models import (
     ResponseApplicationReview,
@@ -94,8 +95,8 @@ def get_application_reviews_for_reviewer(request: Request) -> dict:
     db_applications = retrieve_db_application_all_reviews_for_reviewer(
         request.app.state.sql_engine, request.state.profile.id
     )
-    out_applications: list[ApplicationReviewOut] = [
-        ApplicationReviewOut.from_db_model(p)
+    out_applications: list[MyApplicationReviewOut] = [
+        MyApplicationReviewOut.from_db_model(p)
         for p in db_applications
     ]
     return {

@@ -34,6 +34,7 @@ export class MeModel {
         this.root.rolesModel.getRoleHolderships();
         this.root.departmentMembershipsModel.fetchDepartments();
         this.root.reviewToolModel.fetchApplications();
+        this.root.reviewToolModel.fetchMyreviews();
       } else {
         this.setUser(null);
       }
