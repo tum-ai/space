@@ -46,7 +46,7 @@ export class RolesModel {
       .patch("/role/holderships", {
         data: roles,
       })
-      .then((res) => res.data);
+      .then((res) => res.data.data);
 
     this.profile = { ...this.profile, ...data };
   }

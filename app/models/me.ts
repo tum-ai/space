@@ -90,7 +90,7 @@ export class MeModel {
       .patch("me", {
         data: this.editorProfile,
       })
-      .then((res) => res.data);
+      .then((res) => res.data.data);
 
     this.profile = { ...this.profile, ...data };
   }

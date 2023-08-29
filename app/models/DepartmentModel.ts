@@ -33,7 +33,7 @@ export class DepartmentModel {
       .patch("department", {
         data: this.editorProfile,
       })
-      .then((data) => data.data)
+      .then((res) => res.data.data)
       .catch((err) => toast.error(err));
     if (data) {
       this.profile = { ...this.profile, ...data };
