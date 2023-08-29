@@ -23,7 +23,7 @@ const MyReviews = observer(() => {
         </Link>
       </Section>
       <Section className="flex overflow-auto">
-        <table className="mx-auto w-full min-w-[500px] table-auto text-center">
+        <table className="mx-auto w-full min-w-[800px] table-auto text-center">
           <thead>
             <tr className="border-b">
               <th className="p-4">Application ID</th>
@@ -40,7 +40,7 @@ const MyReviews = observer(() => {
               >
                 <td>{myreview.application.id}</td>
                 <td>{myreview.application.submission?.data?.formName}</td>
-                <td className="flex justify-center p-4">
+                <td className="flex items-center justify-center p-4">
                   {myreview.application.reviews.map((review) => {
                     const profile = review.reviewer;
                     return (
