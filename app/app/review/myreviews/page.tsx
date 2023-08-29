@@ -12,7 +12,6 @@ import { ViewReview } from "../page";
 const MyReviews = observer(() => {
   const { reviewToolModel, meModel } = useStores();
   const myreviews = reviewToolModel.myreviews;
-  console.log(myreviews);
 
   return (
     <ProtectedItem showNotFound roles={["submit_reviews"]}>
@@ -45,6 +44,7 @@ const MyReviews = observer(() => {
                     const profile = review.reviewer;
                     return (
                       <ViewReview
+                        key={review.id}
                         trigger={
                           <span>
                             <Tooltip
