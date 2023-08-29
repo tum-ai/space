@@ -86,9 +86,12 @@ export class MeModel {
   }
 
   async editProfile() {
-    const data = await this.root.PATCH("me", this.editorProfile);
-    if (data) {
-      this.profile = { ...this.profile, ...data };
-    }
+    const data = await axios
+      .patch("me", {
+        data: this.editorProfile,
+      })
+      .then((res) => res.data);
+
+    this.profile = { ...this.profile, ...data };
   }
 }

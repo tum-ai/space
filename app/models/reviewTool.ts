@@ -75,7 +75,7 @@ export class ReviewToolModel {
   async fetchApplications() {
     const applications = await axios
       .get("/applications/")
-      .then((res) => res.data)
+      .then((res) => res.data.data)
       .catch((err) => {
         console.error(err);
         toast.error(err);

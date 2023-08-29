@@ -1,4 +1,6 @@
+import axios from "axios";
 import { makeAutoObservable } from "mobx";
+import toast from "react-hot-toast";
 
 export class RolesModel {
   root;
@@ -16,7 +18,10 @@ export class RolesModel {
   }
 
   async getRoleHolderships() {
-    const roleHolderships = await this.root.GET("/role/holderships");
+    const roleHolderships = await axios
+      .get("/role/holderships")
+      .then((res) => res.data.data);
+
     if (!roleHolderships) return;
     let rolesObject = [];
     for (let i = 0; i < roleHolderships.length; i++) {
@@ -32,14 +37,17 @@ export class RolesModel {
   }
 
   async getRoles() {
-    const roles = await this.root.GET("/roles");
+    const roles = await axios.get("/roles").then((res) => res.data.data);
     this.roles = roles;
   }
 
   async updateRoles(roles) {
-    const data = await this.root.PATCH("/role/holderships", roles);
-    if (data) {
-      this.profile = { ...this.profile, ...data };
-    }
+    const data = await axios
+      .patch("/role/holderships", {
+        data: roles,
+      })
+      .then((res) => res.data);
+
+    this.profile = { ...this.profile, ...data };
   }
 }

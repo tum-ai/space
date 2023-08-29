@@ -13,7 +13,7 @@ export class ProfileModel {
   }
 
   async getProfile(id: string) {
-    const profile = await axios.get("/profile/", { data: { data: id } });
+    const profile = await axios.get(`/profile/${id}`);
     this.profile = profile;
     this.loading = false;
   }
