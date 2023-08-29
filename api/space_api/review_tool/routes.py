@@ -173,7 +173,7 @@ def update_review(
 
 
 @router.delete(
-    "/review_tool/delete_review/{reviewee_id}/",
+    "/review_tool/delete_review/",
     response_description="Delete a review of a membership application.",
     response_model=ResponseDeleteReview,
 )

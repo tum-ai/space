@@ -27,7 +27,8 @@ const MyReviews = observer(() => {
           <thead>
             <tr className="border-b">
               <th className="p-4">Application ID</th>
-              <th>Reviewers</th>
+              <th className="p-4">Application Form</th>
+              <th className="p-4">Reviewers</th>
               <th className="p-4">Actions</th>
             </tr>
           </thead>
@@ -38,6 +39,7 @@ const MyReviews = observer(() => {
                 key={myreview.id}
               >
                 <td>{myreview.application.id}</td>
+                <td>{myreview.application.submission?.data?.formName}</td>
                 <td className="flex items-center justify-center">
                   {myreview.application.reviews.map((review) => {
                     const profile = review.reviewer;
@@ -83,7 +85,17 @@ const MyReviews = observer(() => {
                   })}
                 </td>
                 <td className="space-x-2 p-4">
-                  <Button>delete</Button>
+                  <Button
+                    onClick={() => {
+                      if (
+                        confirm("Are you sure you want to delete this review?")
+                      ) {
+                        reviewToolModel.deleteReview(myreview.application.id);
+                      }
+                    }}
+                  >
+                    delete
+                  </Button>
                   <ViewReview
                     trigger={
                       <Button

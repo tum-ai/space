@@ -83,6 +83,14 @@ export class ReviewToolModel {
     this.myreviews = myreviews;
   }
 
+  async deleteReview(application_id) {
+    await this.root.DELETE(
+      "/review_tool/delete_review/?reviewee_id=" + application_id,
+    );
+    this.fetchMyreviews();
+    this.fetchApplications();
+  }
+
   async submitReview() {
     const data = await this.root.POST("/review_tool/application_review", {
       ...this.editorReview,
@@ -96,5 +104,7 @@ export class ReviewToolModel {
       this.openTab = "Applications";
     }
     this.applicationOnReview = {};
+    this.fetchMyreviews();
+    this.fetchApplications();
   }
 }
