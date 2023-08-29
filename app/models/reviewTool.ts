@@ -6,7 +6,7 @@ export class ReviewToolModel {
   applications: any[] = [];
   filteredApplications: any[] = [];
   search: string = "";
-  editorReview = {};
+  editorReview: any = {};
   applicationOnReview: { id?: string };
   openTab: "Applications" | "Review" = "Applications";
   myreviews: any[] = [];
