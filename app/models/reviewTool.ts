@@ -16,14 +16,6 @@ export class ReviewToolModel {
     makeAutoObservable(this);
   }
 
-  setViewApplication(viewApplication) {
-    this.viewApplication = viewApplication;
-  }
-
-  setViewReview(viewReview) {
-    this.viewReview = viewReview;
-  }
-
   setOpenTab(tab) {
     this.openTab = tab;
   }
