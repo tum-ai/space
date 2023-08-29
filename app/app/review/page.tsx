@@ -1,7 +1,6 @@
 "use client";
 import { Avatar } from "@components/Avatar";
 import { Button } from "@components/Button";
-import Dialog from "@components/Dialog";
 import Icon from "@components/Icon";
 import Input from "@components/Input";
 import ProtectedItem from "@components/ProtectedItem";
@@ -11,6 +10,7 @@ import Tooltip from "@components/Tooltip";
 import { useStores } from "@providers/StoreProvider";
 import { observer } from "mobx-react";
 import Link from "next/link";
+import { ApplicationOverview, ViewReview } from "./components";
 
 const ReviewTool = observer(() => {
   const { reviewToolModel } = useStores();
@@ -100,18 +100,14 @@ function Application({ application }) {
           const profile = review.reviewer;
           return (
             <ViewReview
+              applicationToView={application}
+              viewReview={review}
               key={i}
               trigger={
                 <span>
                   <Tooltip
                     trigger={
-                      <div
-                        className="cursor-pointer"
-                        onClick={() => {
-                          reviewToolModel.setViewReview(review);
-                          reviewToolModel.setViewApplication(application);
-                        }}
-                      >
+                      <div className="cursor-pointer">
                         <Avatar
                           variant={Avatar.variant.Circle}
                           src={profile.profile_picture}
@@ -153,60 +149,11 @@ function Application({ application }) {
   );
 }
 
-export const ViewReview = observer(({ trigger }) => {
-  const { reviewToolModel } = useStores();
-  const applicationToView = reviewToolModel.viewApplication;
-  const viewReview = reviewToolModel.viewReview;
-
-  return (
-    <Dialog trigger={trigger}>
-      <div className="grid gap-4 p-4 md:grid-cols-2">
-        <ReviewOverview review={viewReview} />
-        <ApplicationOverview data={applicationToView} />
-      </div>
-    </Dialog>
-  );
-});
-
 function Review() {
   return (
     <div className="grid gap-4 md:grid-cols-2">
       <ReviewForm />
       <ApplicationToReview />
-    </div>
-  );
-}
-
-function ApplicationOverview({ data }) {
-  return (
-    <div className="space-y-4 overflow-scroll">
-      <div className="col-span-2 text-2xl">Application</div>
-      <hr className="border-2 border-black dark:border-white" />
-      <div className="grid gap-4 lg:grid-cols-2">
-        <div>
-          <span className="font-thin">ID: </span>
-          {data.id}
-        </div>
-        <div>
-          <span className="font-thin">From: </span>
-          {data.submission?.data?.formName}
-        </div>
-        <div>
-          <span className="font-thin">Created at: </span>
-          {data.submission?.data?.createdAt &&
-            new Date(data.submission?.data?.createdAt).toDateString()}
-        </div>
-      </div>
-      <div className="grid gap-4 lg:grid-cols-2">
-        {data.submission?.data?.fields?.map((field) => {
-          return (
-            <div key={field.label}>
-              <div className="font-thin">{field.label}</div>
-              <div>{JSON.stringify(field.value)}</div>
-            </div>
-          );
-        })}
-      </div>
     </div>
   );
 }
@@ -221,30 +168,6 @@ const ApplicationToReview = observer(() => {
 
   return <ApplicationOverview data={applicationOnReview} />;
 });
-
-function ReviewOverview({ review }) {
-  return (
-    <div className="sticky top-0 grid h-fit grid-cols-1 gap-4 overflow-scroll md:grid-cols-2">
-      <div className="text-2xl md:col-span-2">
-        <span>Reviewer: </span>
-        {review.reviewer?.first_name + " " + review.reviewer?.last_name}
-      </div>
-      <hr className="border-2 border-black dark:border-white md:col-span-2" />
-      {Object.entries(review)
-        .filter(([_, value]) => {
-          return typeof value == "string" || typeof value == "number";
-        })
-        .map(([key, value]: any, i) => {
-          return (
-            <div key={key} className="border-b pb-2">
-              <div className="font-thin">{key}</div>
-              <div>{value}</div>
-            </div>
-          );
-        })}
-    </div>
-  );
-}
 
 const ReviewForm = observer(() => {
   const { reviewToolModel } = useStores();

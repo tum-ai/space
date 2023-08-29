@@ -7,7 +7,7 @@ import Tooltip from "@components/Tooltip";
 import { useStores } from "@providers/StoreProvider";
 import { observer } from "mobx-react";
 import Link from "next/link";
-import { ViewReview } from "../page";
+import { ViewReview } from "../components";
 
 const MyReviews = observer(() => {
   const { reviewToolModel, meModel } = useStores();
@@ -44,20 +44,14 @@ const MyReviews = observer(() => {
                     const profile = review.reviewer;
                     return (
                       <ViewReview
+                        applicationToView={myreview.application}
+                        viewReview={review}
                         key={review.id}
                         trigger={
                           <span>
                             <Tooltip
                               trigger={
-                                <div
-                                  className="cursor-pointer"
-                                  onClick={() => {
-                                    reviewToolModel.setViewReview(review);
-                                    reviewToolModel.setViewApplication(
-                                      myreview.application,
-                                    );
-                                  }}
-                                >
+                                <div className="cursor-pointer">
                                   <Avatar
                                     variant={Avatar.variant.Circle}
                                     src={profile.profile_picture}
@@ -97,21 +91,12 @@ const MyReviews = observer(() => {
                     delete
                   </Button>
                   <ViewReview
-                    trigger={
-                      <Button
-                        onClick={() => {
-                          reviewToolModel.setViewReview({
-                            ...myreview,
-                            reviewer: meModel.user.profile,
-                          });
-                          reviewToolModel.setViewApplication(
-                            myreview.application,
-                          );
-                        }}
-                      >
-                        view
-                      </Button>
-                    }
+                    applicationToView={myreview.application}
+                    viewReview={{
+                      ...myreview,
+                      reviewer: meModel.user.profile,
+                    }}
+                    trigger={<Button>view</Button>}
                   />
                 </td>
               </tr>

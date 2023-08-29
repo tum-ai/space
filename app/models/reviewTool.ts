@@ -9,8 +9,6 @@ export class ReviewToolModel {
   editorReview = {};
   applicationOnReview: { id?: string };
   openTab: "Applications" | "Review" = "Applications";
-  viewApplication = undefined;
-  viewReview = undefined;
   myreviews: any[] = [];
 
   constructor(root) {
