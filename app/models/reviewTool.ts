@@ -3,15 +3,15 @@ import { RootModel } from "./root";
 
 export class ReviewToolModel {
   root: RootModel;
-  applications: [] = [];
-  filteredApplications: [] = [];
+  applications: any[] = [];
+  filteredApplications: any[] = [];
   search: string = "";
   editorReview = {};
   applicationOnReview: { id?: string };
   openTab: "Applications" | "Review" = "Applications";
   viewApplication = undefined;
   viewReview = undefined;
-  myreviews: [] = [];
+  myreviews: any[] = [];
 
   constructor(root) {
     this.root = root;
