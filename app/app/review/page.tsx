@@ -42,7 +42,7 @@ const ReviewTool = observer(() => {
 const Applications = observer(() => {
   const { reviewToolModel } = useStores();
   return (
-    <div className="flex flex-col space-y-4 pt-4">
+    <div className="flex flex-col space-y-4 overflow-auto pt-4">
       <div className="flex w-full space-x-4 rounded-lg bg-gray-200 p-2 dark:bg-gray-700 md:w-fit">
         <Icon name={"FaSearch"} className="rounded-lg p-2" />
         <input
@@ -63,7 +63,7 @@ const Applications = observer(() => {
           </button>
         )}
       </div>
-      <table className="mx-auto w-full min-w-[500px] table-auto text-center">
+      <table className="mx-auto w-full min-w-[800px] table-auto text-center">
         <thead>
           <tr className="border-b">
             <th className="p-4">ID</th>
@@ -95,7 +95,7 @@ function Application({ application }) {
     >
       <td>{application.id}</td>
       <td>{application.submission?.data?.formName}</td>
-      <td className="flex justify-center p-4">
+      <td className="flex items-center justify-center p-4">
         {application.reviews?.map((review, i) => {
           const profile = review.reviewer;
           return (
@@ -258,7 +258,7 @@ const ReviewForm = observer(() => {
 
   return (
     <form
-      className="sticky top-28 z-0 grid h-fit grid-cols-1 items-end gap-4 rounded-lg bg-gray-200 p-8 dark:bg-gray-600 lg:grid-cols-2 lg:gap-8"
+      className="top-28 z-0 grid h-fit grid-cols-1 items-end gap-4 rounded-lg bg-gray-200 p-8 dark:bg-gray-600 md:sticky lg:grid-cols-2 lg:gap-8"
       onSubmit={async (e) => {
         e.preventDefault();
         await reviewToolModel.submitReview();
