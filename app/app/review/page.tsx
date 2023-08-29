@@ -10,14 +10,18 @@ import Tabs from "@components/Tabs";
 import Tooltip from "@components/Tooltip";
 import { useStores } from "@providers/StoreProvider";
 import { observer } from "mobx-react";
+import Link from "next/link";
 
 const ReviewTool = observer(() => {
   const { reviewToolModel } = useStores();
 
   return (
     <ProtectedItem showNotFound roles={["submit_reviews"]}>
-      <Section>
+      <Section className="flex items-center justify-between">
         <div className="text-6xl font-thin">Review Tool</div>
+        <Link href={"/review/myreviews"}>
+          <Button>My reviews</Button>
+        </Link>
       </Section>
       <Section>
         <Tabs
@@ -85,7 +89,7 @@ function Application({ data }) {
         {data.reviews?.map((review, i) => {
           const profile = review.reviewer;
           return (
-            <Dialog
+            <ViewReview
               key={i}
               trigger={
                 <span>
@@ -120,9 +124,7 @@ function Application({ data }) {
                   </Tooltip>
                 </span>
               }
-            >
-              <ViewReview />
-            </Dialog>
+            />
           );
         })}
       </div>
@@ -141,16 +143,18 @@ function Application({ data }) {
   );
 }
 
-const ViewReview = observer(() => {
+export const ViewReview = observer(({ trigger }) => {
   const { reviewToolModel } = useStores();
   const applicationToView = reviewToolModel.viewApplication;
   const viewReview = reviewToolModel.viewReview;
 
   return (
-    <div className="grid gap-4 p-4 md:grid-cols-2">
-      <ReviewOverview review={viewReview} />
-      <ApplicationOverview data={applicationToView} />
-    </div>
+    <Dialog trigger={trigger}>
+      <div className="grid gap-4 p-4 md:grid-cols-2">
+        <ReviewOverview review={viewReview} />
+        <ApplicationOverview data={applicationToView} />
+      </div>
+    </Dialog>
   );
 });
 
@@ -210,7 +214,7 @@ const ApplicationToReview = observer(() => {
 
 function ReviewOverview({ review }) {
   return (
-    <div className="grid grid-cols-1 gap-4 overflow-scroll md:grid-cols-2">
+    <div className="sticky top-0 grid h-fit grid-cols-1 gap-4 overflow-scroll md:grid-cols-2">
       <div className="text-2xl md:col-span-2">
         <span>Reviewer: </span>
         {review.reviewer?.first_name + " " + review.reviewer?.last_name}
@@ -244,7 +248,7 @@ const ReviewForm = observer(() => {
 
   return (
     <form
-      className="sticky top-24 z-0 grid grid-cols-1 items-end gap-4 rounded-lg bg-gray-200 p-8 dark:bg-gray-600 lg:grid-cols-2 lg:gap-8"
+      className="sticky top-28 z-0 grid h-fit grid-cols-1 items-end gap-4 rounded-lg bg-gray-200 p-8 dark:bg-gray-600 lg:grid-cols-2 lg:gap-8"
       onSubmit={async (e) => {
         e.preventDefault();
         await reviewToolModel.submitReview();
