@@ -1,3 +1,4 @@
+"use client";
 import { RootModel } from "@models/root";
 import { enableStaticRendering } from "mobx-react";
 

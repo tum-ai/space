@@ -1,6 +1,7 @@
+"use client";
+import useOutsideAlerter from "@hooks/useOutsideAlerter";
 import React, { useRef, useState } from "react";
 import Icon from "./Icon";
-import useOutsideAlerter from "@hooks/useOutsideAlerter";
 
 interface Props {
   selectedItem: { key: string; value: string };
@@ -33,7 +34,7 @@ function Select({
     <div
       ref={wrapperRef}
       className={
-        "flex cursor-pointer flex-col justify-between space-y-1 rounded " +
+        "flex cursor-pointer flex-col justify-between space-y-1 rounded-lg " +
         className
       }
       style={{ maxWidth: "600px" }}
@@ -89,7 +90,7 @@ function Select({
         )}
         <div
           className={
-            "selectSingle trans absolute z-40 mt-2 flex max-h-32 w-auto origin-bottom-left flex-col overflow-auto rounded border bg-white dark:bg-gray-700 " +
+            "selectSingle trans absolute z-40 mt-2 flex max-h-32 w-auto origin-bottom-left flex-col overflow-auto rounded-lg border bg-white dark:bg-gray-700 " +
             (active
               ? "visible scale-100 opacity-100"
               : "hidden scale-75 opacity-0")

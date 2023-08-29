@@ -1,6 +1,7 @@
+"use client";
 import { useStores } from "@providers/StoreProvider";
 import { observer } from "mobx-react";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";
 
 interface Props {
