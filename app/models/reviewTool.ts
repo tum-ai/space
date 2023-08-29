@@ -1,5 +1,7 @@
 import { makeAutoObservable } from "mobx";
 import { RootModel } from "./root";
+import axios from "axios";
+import toast from "react-hot-toast";
 
 export class ReviewToolModel {
   root: RootModel;
@@ -78,17 +80,25 @@ export class ReviewToolModel {
   }
 
   async submitReview() {
-    const data = await this.root.POST("/review_tool/application_review", {
-      ...this.editorReview,
-      reviewee_id: this.applicationOnReview?.id,
-    });
+    const data = await axios
+      .post("/review_tool/application_review", {
+        data: {
+          data: {
+            ...this.editorReview,
+            reviewee_id: this.applicationOnReview?.id,
+          },
+        },
+      })
+      .catch((err) => {
+        toast.error("Failed");
+        console.error(err);
+      });
+
     if (!data) return;
-    if (data?.response_type == "success") {
-      // TODO: toast
-      this.editorReview = {};
-      this.applicationOnReview = {};
-      this.openTab = "Applications";
-    }
+
+    toast.success("Submitted review");
+    this.editorReview = {};
     this.applicationOnReview = {};
+    this.openTab = "Applications";
   }
 }

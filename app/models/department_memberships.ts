@@ -1,5 +1,7 @@
 import { makeAutoObservable } from "mobx";
 import { RootModel } from "./root";
+import toast from "react-hot-toast";
+import axios from "axios";
 
 export class DepartmentMembershipsModel {
   root: RootModel;
@@ -65,23 +67,38 @@ export class DepartmentMembershipsModel {
     }
   }
 
-  async saveDepartments() {
-    const data = await this.root.POST(
-      "/department-memberships",
-      this.departments
-        .filter((department) => department["new"])
-        .map((department) => ({
-          ...department,
-          new: null,
-        })),
-    );
-    if (data) {
-      this.departments = this.departments.map((department) => ({
-        ...department,
-        new: null,
-      }));
-      this.root.uiModel.toggleModal();
+  /**
+   * Updates the departments on the server with the current ones in the model
+   * @returns whether the departments were updated
+   */
+  async saveDepartments(): Promise<boolean> {
+    const data = await axios
+      .post("/department-memberships", {
+        data: {
+          data: this.departments
+            .filter((department) => department["new"])
+            .map((department) => ({
+              ...department,
+              new: null,
+            })),
+        },
+      })
+      .catch((err) => toast.error(err));
+
+    if (!data) {
+      toast.error("received no data");
+      return false;
     }
+
+    this.departments = this.departments.map((department) => ({
+      ...department,
+      new: null,
+    }));
+
+    // TODO: this modal state should be handled where this function is called depending on this functions return value
+    this.root.uiModel.toggleModal();
+
+    return true;
   }
 
   async deleteDepartmentMembership(id) {

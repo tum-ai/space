@@ -8,6 +8,7 @@ import { ProfilesModel } from "./profiles";
 import { ReviewToolModel } from "./reviewTool";
 import { RolesModel } from "./roles";
 import { UiModel } from "./ui";
+import toast from "react-hot-toast";
 
 export class RootModel {
   profileModel: ProfileModel;
@@ -32,6 +33,9 @@ export class RootModel {
     this.reviewToolModel = new ReviewToolModel(this);
   }
 
+  /**
+   * @deprecated use axios.get
+   */
   async GET(path: string) {
     try {
       const response = await axios(path);
@@ -41,6 +45,9 @@ export class RootModel {
     }
   }
 
+  /**
+   * @deprecated use axios.patch
+   */
   async PATCH(path: string, data: any) {
     try {
       const response = await axios(path, {
@@ -53,6 +60,9 @@ export class RootModel {
     }
   }
 
+  /**
+   * @deprecated use axios.delete
+   */
   async DELETE(path: string, data: any) {
     try {
       const response = await axios(path, {
@@ -65,6 +75,9 @@ export class RootModel {
     }
   }
 
+  /**
+   * @deprecated use axios.post
+   */
   async POST(
     path: string,
     data: any,
@@ -83,6 +96,7 @@ export class RootModel {
       return response?.data;
     } catch (error) {
       console.log(error);
+      toast.error(error);
     }
   }
 }

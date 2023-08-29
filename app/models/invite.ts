@@ -1,5 +1,7 @@
 import { makeAutoObservable } from "mobx";
 import { RootModel } from "./root";
+import axios from "axios";
+import toast from "react-hot-toast";
 
 export class InviteModel {
   root: RootModel;
@@ -31,11 +33,19 @@ export class InviteModel {
 
   async invite() {
     const formatedText = this.formatText();
-    const data = await this.root.POST("/profiles/invite/members", formatedText);
-    if (!data) return;
-    if (data.failed?.length > 0) {
-      // TODO: Toast
-      this.text = "";
-    }
+    axios
+      .post("/profiles/invite/members", {
+        data: formatedText,
+      })
+      .then((data) => {
+        // TODO: Check if this console log is necessary
+        console.log(data);
+        toast.success("Invite sent out successfully");
+      })
+      .catch((err) => {
+        console.error(err);
+        toast.error("Failed to invite");
+        this.text = "";
+      });
   }
 }
