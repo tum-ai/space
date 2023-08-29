@@ -35,12 +35,12 @@ const MyReviews = observer(() => {
           <tbody>
             {myreviews.map((myreview) => (
               <tr
-                className="border-b bg-gray-100 dark:bg-gray-700"
+                className="border-b bg-gray-100 dark:border-gray-500 dark:bg-gray-700"
                 key={myreview.id}
               >
                 <td>{myreview.application.id}</td>
                 <td>{myreview.application.submission?.data?.formName}</td>
-                <td className="flex items-center justify-center">
+                <td className="flex justify-center p-4">
                   {myreview.application.reviews.map((review) => {
                     const profile = review.reviewer;
                     return (

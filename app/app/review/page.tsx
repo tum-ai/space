@@ -63,30 +63,40 @@ const Applications = observer(() => {
           </button>
         )}
       </div>
-      <div className="grid grid-cols-3 px-6 md:grid-cols-5">
-        <div>ID</div>
-        <div>Form Name</div>
-        <div>Reviewed By</div>
-        <div>Avg. Final Score</div>
-      </div>
-      {reviewToolModel.filteredApplications?.map((application) => (
-        <Application key={application.id} data={application} />
-      ))}
+      <table className="mx-auto w-full min-w-[500px] table-auto text-center">
+        <thead>
+          <tr className="border-b">
+            <th className="p-4">ID</th>
+            <th className="p-4">Form Name</th>
+            <th className="p-4">Reviewers</th>
+            <th className="p-4">Avg. Final Score</th>
+            <th className="p-4">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {reviewToolModel.filteredApplications?.map((application) => (
+            <Application key={application.id} application={application} />
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 });
 
-function Application({ data }) {
+function Application({ application }) {
   const { reviewToolModel } = useStores();
-  const finalScoreSum = data.reviews?.reduce((finalscore, review) => {
+  const finalScoreSum = application.reviews?.reduce((finalscore, review) => {
     return finalscore + review.finalscore;
   }, 0);
   return (
-    <div className="grid grid-cols-3 items-center rounded-lg bg-gray-200 p-6 shadow dark:bg-gray-700 md:grid-cols-5">
-      <div>{data.id}</div>
-      <div>{data.submission?.data?.formName}</div>
-      <div className="flex">
-        {data.reviews?.map((review, i) => {
+    <tr
+      className="border-b bg-gray-100 dark:border-gray-500 dark:bg-gray-700"
+      key={application.id}
+    >
+      <td>{application.id}</td>
+      <td>{application.submission?.data?.formName}</td>
+      <td className="flex justify-center p-4">
+        {application.reviews?.map((review, i) => {
           const profile = review.reviewer;
           return (
             <ViewReview
@@ -99,7 +109,7 @@ function Application({ data }) {
                         className="cursor-pointer"
                         onClick={() => {
                           reviewToolModel.setViewReview(review);
-                          reviewToolModel.setViewApplication(data);
+                          reviewToolModel.setViewApplication(application);
                         }}
                       >
                         <Avatar
@@ -127,19 +137,19 @@ function Application({ data }) {
             />
           );
         })}
-      </div>
-      <div>{Math.round(finalScoreSum / data.reviews?.length) || "-"}</div>
-      <div className="flex w-full justify-end">
+      </td>
+      <td>{Math.round(finalScoreSum / application.reviews?.length) || "-"}</td>
+      <td className="space-x-2 p-4">
         <Button
           className="flex items-center space-x-2"
           onClick={() => {
-            reviewToolModel.reviewApplication(data.id);
+            reviewToolModel.reviewApplication(application.id);
           }}
         >
           review
         </Button>
-      </div>
-    </div>
+      </td>
+    </tr>
   );
 }
 
