@@ -10,7 +10,7 @@ import Link from "next/link";
 import { ViewReview } from "../page";
 
 const MyReviews = observer(() => {
-  const { reviewToolModel } = useStores();
+  const { reviewToolModel, meModel } = useStores();
   const myreviews = reviewToolModel.myreviews;
   console.log(myreviews);
 
@@ -84,7 +84,23 @@ const MyReviews = observer(() => {
                 </td>
                 <td className="space-x-2 p-4">
                   <Button>delete</Button>
-                  <Button>view</Button>
+                  <ViewReview
+                    trigger={
+                      <Button
+                        onClick={() => {
+                          reviewToolModel.setViewReview({
+                            ...myreview,
+                            reviewer: meModel.user.profile,
+                          });
+                          reviewToolModel.setViewApplication(
+                            myreview.application,
+                          );
+                        }}
+                      >
+                        view
+                      </Button>
+                    }
+                  />
                 </td>
               </tr>
             ))}
