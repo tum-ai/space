@@ -7,7 +7,7 @@ import { useStores } from "../providers/StoreProvider";
 
 axios.defaults.baseURL = process.env.NEXT_PUBLIC_API_URL;
 
-export const StoresContext = createContext(null);
+const StoresContext = createContext(null);
 
 export default function RootLayout({
   children,
