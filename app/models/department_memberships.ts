@@ -76,21 +76,25 @@ export class DepartmentMembershipsModel {
   }
 
   /**
+   * TODO: Update tsdoc here and explain what is happening
    * Updates the departments on the server with the current ones in the model
    * @returns whether the departments were updated
    */
   async saveDepartments(): Promise<boolean> {
+    const departments = this.departments
+      .filter((department) => department["new"])
+      .map((department) => ({
+        ...department,
+        new: null,
+      }));
+
     const data = await axios
       .post("/department-memberships", {
         data: {
-          data: this.departments
-            .filter((department) => department["new"])
-            .map((department) => ({
-              ...department,
-              new: null,
-            })),
+          data: departments,
         },
       })
+      .then((res) => res.data)
       .catch((err) => toast.error(err));
 
     if (!data) {

@@ -23,13 +23,8 @@ export class CertificateModel {
         data: { data: this.editorCertificate },
         responseType: "blob",
       })
+      .then((res) => res.data)
       .catch((err) => toast.error(err));
-
-    if (typeof response === "string") {
-      toast.error("response was not of requested shape");
-      console.error(response);
-      return;
-    }
 
     let fileName = `tumai-certificate-${this.editorCertificate["NAME"]}-${this.editorCertificate["LASTNAME"]}.pdf`;
     download(response.data, fileName, response.headers["content-type"]);

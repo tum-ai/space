@@ -37,9 +37,7 @@ export class InviteModel {
       .post("/profiles/invite/members", {
         data: formatedText,
       })
-      .then((data) => {
-        // TODO: Check if this console log is necessary
-        console.log(data);
+      .then(() => {
         toast.success("Invite sent out successfully");
       })
       .catch((err) => {
