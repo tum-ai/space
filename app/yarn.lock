@@ -922,6 +922,11 @@
   dependencies:
     tslib "^2.4.0"
 
+"@types/downloadjs@^1.4.3":
+  version "1.4.3"
+  resolved "https://registry.npmjs.org/@types/downloadjs/-/downloadjs-1.4.3.tgz"
+  integrity sha512-MjJepFle/tLtT2/jmDNth6ZnwWzEhm40L+olE5HKR70ISUCfgT55eqreeHldAzFLY2HDUGsn8zgyto8KygN0CA==
+
 "@types/eslint-scope@^3.7.3":
   version "3.7.4"
   resolved "https://registry.npmjs.org/@types/eslint-scope/-/eslint-scope-3.7.4.tgz"

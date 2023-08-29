@@ -11,7 +11,7 @@ export class ProfilesModel {
   search = "";
   sortBy = "";
 
-  constructor(root) {
+  constructor(root: RootModel) {
     this.root = root;
     makeAutoObservable(this);
 

@@ -39,6 +39,7 @@
     "typescript": "5.2.2"
   },
   "devDependencies": {
+    "@types/downloadjs": "^1.4.3",
     "@types/react": "18.2.21",
     "autoprefixer": "10.4.15",
     "env-cmd": "^10.1.0",

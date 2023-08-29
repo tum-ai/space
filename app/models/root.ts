@@ -1,4 +1,3 @@
-import axios from "axios";
 import { CertificateModel } from "./certificate";
 import { DepartmentMembershipsModel } from "./department_memberships";
 import { InviteModel } from "./invite";

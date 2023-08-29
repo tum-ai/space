@@ -14,7 +14,7 @@ export class ReviewToolModel {
   viewApplication = undefined;
   viewReview = undefined;
 
-  constructor(root) {
+  constructor(root: RootModel) {
     this.root = root;
     makeAutoObservable(this);
   }

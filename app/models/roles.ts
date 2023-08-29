@@ -1,14 +1,14 @@
 import axios from "axios";
 import { makeAutoObservable } from "mobx";
-import toast from "react-hot-toast";
+import { RootModel } from "./root";
 
 export class RolesModel {
-  root;
+  root: RootModel;
   roleHolderships = [];
   roles = [];
   profile;
 
-  constructor(root) {
+  constructor(root: RootModel) {
     this.root = root;
     makeAutoObservable(this);
   }
