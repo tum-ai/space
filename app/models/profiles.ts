@@ -97,7 +97,7 @@ export class ProfilesModel {
   async fetchProfiles() {
     const profiles = await axios
       .get("/profiles/")
-      .then((res) => res.data)
+      .then((res) => res.data.data)
       .catch((err) => {
         console.error(err);
         toast.error(err);

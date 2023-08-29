@@ -56,7 +56,7 @@ export class DepartmentMembershipsModel {
   async fetchDepartments() {
     const data = await axios
       .get("/department-memberships")
-      .then((res) => res.data)
+      .then((res) => res.data.data)
       .catch((err) => {
         toast.error(err);
       });
