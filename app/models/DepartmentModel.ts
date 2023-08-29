@@ -1,6 +1,7 @@
 import axios from "axios";
 import { makeAutoObservable } from "mobx";
 import { RootModel } from "./root";
+import toast from "react-hot-toast";
 
 export class DepartmentModel {
   root: RootModel;
@@ -28,7 +29,12 @@ export class DepartmentModel {
   }
 
   async editDepartments() {
-    const data = await this.root.PATCH("department", this.editorProfile);
+    const data = await axios
+      .patch("department", {
+        data: this.editorProfile,
+      })
+      .then((data) => data.data)
+      .catch((err) => toast.error(err));
     if (data) {
       this.profile = { ...this.profile, ...data };
     }

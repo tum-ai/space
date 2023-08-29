@@ -1,5 +1,7 @@
 import { makeAutoObservable } from "mobx";
 import { RootModel } from "./root";
+import axios from "axios";
+import toast from "react-hot-toast";
 
 export class ProfilesModel {
   root: RootModel;
@@ -93,7 +95,14 @@ export class ProfilesModel {
   }
 
   async fetchProfiles() {
-    const profiles = await this.root.GET("/profiles/");
+    const profiles = await axios
+      .get("/profiles/")
+      .then((res) => res.data)
+      .catch((err) => {
+        console.error(err);
+        toast.error(err);
+      });
+
     this.profiles = profiles;
     this.filteredProfiles = profiles;
   }

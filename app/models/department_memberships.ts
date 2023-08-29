@@ -54,17 +54,25 @@ export class DepartmentMembershipsModel {
   }
 
   async fetchDepartments() {
-    const data = await this.root.GET("/department-memberships");
-    if (data) {
-      data.map((item) => {
-        item.department_handle = item.department.handle;
-        item.position = item.position.replace("PositionType.", "");
-        item.profile_id = item.profile.id;
-        delete item.profile;
-        delete item.department;
+    const data = await axios
+      .get("/department-memberships")
+      .then((res) => res.data)
+      .catch((err) => {
+        toast.error(err);
       });
-      this.setDepartments(data);
-    }
+
+    if (!data) return;
+
+    // TODO: is this still doing what it is supposed to do?
+    data.forEach((item) => {
+      item.department_handle = item.department.handle;
+      item.position = item.position.replace("PositionType.", "");
+      item.profile_id = item.profile.id;
+      delete item.profile;
+      delete item.department;
+    });
+
+    this.setDepartments(data);
   }
 
   /**
@@ -102,6 +110,8 @@ export class DepartmentMembershipsModel {
   }
 
   async deleteDepartmentMembership(id) {
-    await this.root.DELETE("/department-memberships", [id]);
+    await axios.delete("/department-memberships", {
+      data: [id],
+    });
   }
 }

@@ -73,7 +73,14 @@ export class ReviewToolModel {
   }
 
   async fetchApplications() {
-    const applications = await this.root.GET("/applications/");
+    const applications = await axios
+      .get("/applications/")
+      .then((res) => res.data)
+      .catch((err) => {
+        console.error(err);
+        toast.error(err);
+      });
+
     this.applications = applications;
     this.filteredApplications = applications;
     this.sortApplications();
