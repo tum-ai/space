@@ -50,7 +50,7 @@ const ProfileRow = observer(({ profile }) => {
           >
             <div className="space-y-4">
               {rolesModel.roles.map((role) => (
-                <div key={role.handle} className="flex items-start gap-2">
+                <div key={role.handle} className="flex items-center gap-2">
                   <div>
                     <Checkbox
                       checked={roleHolderships.includes(role.handle)}
