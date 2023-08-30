@@ -1,29 +1,33 @@
 "use client";
 import Input from "@components/Input";
 import { Section } from "@components/Section";
+import { auth } from "@config/firebase";
+import { FirebaseError } from "firebase/app";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { observer } from "mobx-react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import toast from "react-hot-toast";
 import { useStores } from "../../providers/StoreProvider";
 
-export default function Auth() {
+const Auth = observer(() => {
   const { meModel } = useStores();
-  const [data, setData] = useState({
-    email: "",
-    password: "",
-  });
+  const credentials = meModel.credentials;
   const router = useRouter();
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    console.log(e);
-    console.log(data);
-    try {
-      await meModel.login(data.email, data.password);
-      router.push("/");
-    } catch (err) {
-      // TODO error handling and show in UI
-      console.log(err);
-    }
+    await signInWithEmailAndPassword(
+      auth,
+      credentials.email,
+      credentials.password,
+    )
+      .then(() => {
+        toast.success("logged in");
+        router.push("/");
+      })
+      .catch((err: FirebaseError) => {
+        toast.error(err.message);
+      });
   };
 
   return (
@@ -39,8 +43,8 @@ export default function Auth() {
           name="email"
           placeholder="example@tum-ai.com"
           onChange={(e) =>
-            setData({
-              ...data,
+            meModel.setCredentials({
+              ...credentials,
               email: e.target.value,
             })
           }
@@ -52,8 +56,8 @@ export default function Auth() {
           id="password"
           name="password"
           onChange={(e) =>
-            setData({
-              ...data,
+            meModel.setCredentials({
+              ...credentials,
               password: e.target.value,
             })
           }
@@ -69,4 +73,6 @@ export default function Auth() {
       </form>
     </Section>
   );
-}
+});
+
+export default Auth;

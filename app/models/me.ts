@@ -1,17 +1,17 @@
 // @ts-nocheck
 import { auth } from "@config/firebase";
 import axios from "axios";
-import {
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  signOut,
-} from "firebase/auth";
+import { createUserWithEmailAndPassword, signOut } from "firebase/auth";
 import { makeAutoObservable } from "mobx";
 
 export class MeModel {
   root: RootModel;
   editorProfile: any = {};
   user = undefined;
+  credentials: { email: string; password: string } = {
+    email: "",
+    password: "",
+  };
   constructor(root: RootModel) {
     this.root = root;
     makeAutoObservable(this);
@@ -40,6 +40,10 @@ export class MeModel {
     });
   }
 
+  setCredentials(credentials: { email: string; password: string }) {
+    this.credentials = credentials;
+  }
+
   updateEditorProfile(changes) {
     this.editorProfile = { ...this.editorProfile, ...changes };
   }
@@ -55,10 +59,6 @@ export class MeModel {
 
   signup(email, password) {
     return createUserWithEmailAndPassword(auth, email, password);
-  }
-
-  async login(email, password) {
-    return signInWithEmailAndPassword(auth, email, password);
   }
 
   async getProfile() {
