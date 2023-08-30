@@ -19,6 +19,7 @@ from .api_models import (
     ApplicationReviewIn,
     ApplicationReviewOut,
     ApplicationReviewUpdate,
+    MyApplicationReviewOut,
 )
 from .response_models import (
     ResponseApplicationReview,
@@ -94,8 +95,8 @@ def get_application_reviews_for_reviewer(request: Request) -> dict:
     db_applications = retrieve_db_application_all_reviews_for_reviewer(
         request.app.state.sql_engine, request.state.profile.id
     )
-    out_applications: list[ApplicationReviewOut] = [
-        ApplicationReviewOut.from_db_model(p)
+    out_applications: list[MyApplicationReviewOut] = [
+        MyApplicationReviewOut.from_db_model(p)
         for p in db_applications
     ]
     return {
@@ -172,7 +173,7 @@ def update_review(
 
 
 @router.delete(
-    "/review_tool/delete_review/{reviewee_id}/",
+    "/review_tool/delete_review/",
     response_description="Delete a review of a membership application.",
     response_model=ResponseDeleteReview,
 )

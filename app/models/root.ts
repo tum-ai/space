@@ -53,7 +53,7 @@ export class RootModel {
     }
   }
 
-  async DELETE(path: string, data: any) {
+  async DELETE(path: string, data: any = undefined) {
     try {
       const response = await axios(path, {
         data: data,

@@ -76,6 +76,7 @@ def retrieve_db_application_all_reviews_for_reviewer(
 
         for db_applications_review in db_applications_reviews:
             db_applications_review.force_load()
+            db_applications_review.application.force_load()
 
         return db_applications_reviews
 

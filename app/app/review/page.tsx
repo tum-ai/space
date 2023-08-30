@@ -1,7 +1,6 @@
 "use client";
 import { Avatar } from "@components/Avatar";
 import { Button } from "@components/Button";
-import Dialog from "@components/Dialog";
 import Icon from "@components/Icon";
 import Input from "@components/Input";
 import ProtectedItem from "@components/ProtectedItem";
@@ -10,14 +9,19 @@ import Tabs from "@components/Tabs";
 import Tooltip from "@components/Tooltip";
 import { useStores } from "@providers/StoreProvider";
 import { observer } from "mobx-react";
+import Link from "next/link";
+import { ApplicationOverview, ViewReview } from "./components";
 
 const ReviewTool = observer(() => {
   const { reviewToolModel } = useStores();
 
   return (
     <ProtectedItem showNotFound roles={["submit_reviews"]}>
-      <Section>
+      <Section className="flex items-center justify-between">
         <div className="text-6xl font-thin">Review Tool</div>
+        <Link href={"/review/myreviews"}>
+          <Button>My reviews</Button>
+        </Link>
       </Section>
       <Section>
         <Tabs
@@ -38,7 +42,7 @@ const ReviewTool = observer(() => {
 const Applications = observer(() => {
   const { reviewToolModel } = useStores();
   return (
-    <div className="flex flex-col space-y-4 pt-4">
+    <div className="flex flex-col space-y-4 overflow-auto pt-4">
       <div className="flex w-full space-x-4 rounded-lg bg-gray-200 p-2 dark:bg-gray-700 md:w-fit">
         <Icon name={"FaSearch"} className="rounded-lg p-2" />
         <input
@@ -59,45 +63,51 @@ const Applications = observer(() => {
           </button>
         )}
       </div>
-      <div className="grid grid-cols-3 px-6 md:grid-cols-5">
-        <div>ID</div>
-        <div>Form Name</div>
-        <div>Reviewed By</div>
-        <div>Avg. Final Score</div>
-      </div>
-      {reviewToolModel.filteredApplications?.map((application) => (
-        <Application key={application.id} data={application} />
-      ))}
+      <table className="mx-auto w-full min-w-[800px] table-auto text-center">
+        <thead>
+          <tr className="border-b">
+            <th className="p-4">ID</th>
+            <th className="p-4">Form Name</th>
+            <th className="p-4">Reviewers</th>
+            <th className="p-4">Avg. Final Score</th>
+            <th className="p-4">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {reviewToolModel.filteredApplications?.map((application) => (
+            <Application key={application.id} application={application} />
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 });
 
-function Application({ data }) {
+function Application({ application }) {
   const { reviewToolModel } = useStores();
-  const finalScoreSum = data.reviews?.reduce((finalscore, review) => {
+  const finalScoreSum = application.reviews?.reduce((finalscore, review) => {
     return finalscore + review.finalscore;
   }, 0);
   return (
-    <div className="grid grid-cols-3 items-center rounded-lg bg-gray-200 p-6 shadow dark:bg-gray-700 md:grid-cols-5">
-      <div>{data.id}</div>
-      <div>{data.submission?.data?.formName}</div>
-      <div className="flex">
-        {data.reviews?.map((review, i) => {
+    <tr
+      className="border-b bg-gray-100 dark:border-gray-500 dark:bg-gray-700"
+      key={application.id}
+    >
+      <td>{application.id}</td>
+      <td>{application.submission?.data?.formName}</td>
+      <td className="flex items-center justify-center p-4">
+        {application.reviews?.map((review, i) => {
           const profile = review.reviewer;
           return (
-            <Dialog
+            <ViewReview
+              applicationToView={application}
+              viewReview={review}
               key={i}
               trigger={
                 <span>
                   <Tooltip
                     trigger={
-                      <div
-                        className="cursor-pointer"
-                        onClick={() => {
-                          reviewToolModel.setViewReview(review);
-                          reviewToolModel.setViewApplication(data);
-                        }}
-                      >
+                      <div className="cursor-pointer">
                         <Avatar
                           variant={Avatar.variant.Circle}
                           src={profile.profile_picture}
@@ -120,79 +130,30 @@ function Application({ data }) {
                   </Tooltip>
                 </span>
               }
-            >
-              <ViewReview />
-            </Dialog>
+            />
           );
         })}
-      </div>
-      <div>{Math.round(finalScoreSum / data.reviews?.length) || "-"}</div>
-      <div className="flex w-full justify-end">
+      </td>
+      <td>{Math.round(finalScoreSum / application.reviews?.length) || "-"}</td>
+      <td className="space-x-2 p-4">
         <Button
           className="flex items-center space-x-2"
           onClick={() => {
-            reviewToolModel.reviewApplication(data.id);
+            reviewToolModel.reviewApplication(application.id);
           }}
         >
           review
         </Button>
-      </div>
-    </div>
+      </td>
+    </tr>
   );
 }
-
-const ViewReview = observer(() => {
-  const { reviewToolModel } = useStores();
-  const applicationToView = reviewToolModel.viewApplication;
-  const viewReview = reviewToolModel.viewReview;
-
-  return (
-    <div className="grid gap-4 p-4 md:grid-cols-2">
-      <ReviewOverview review={viewReview} />
-      <ApplicationOverview data={applicationToView} />
-    </div>
-  );
-});
 
 function Review() {
   return (
     <div className="grid gap-4 md:grid-cols-2">
       <ReviewForm />
       <ApplicationToReview />
-    </div>
-  );
-}
-
-function ApplicationOverview({ data }) {
-  return (
-    <div className="space-y-4 overflow-scroll">
-      <div className="col-span-2 text-2xl">Application</div>
-      <hr className="border-2 border-black dark:border-white" />
-      <div className="grid gap-4 lg:grid-cols-2">
-        <div>
-          <span className="font-thin">ID: </span>
-          {data.id}
-        </div>
-        <div>
-          <span className="font-thin">From: </span>
-          {data.submission?.data?.formName}
-        </div>
-        <div>
-          <span className="font-thin">Created at: </span>
-          {data.submission?.data?.createdAt &&
-            new Date(data.submission?.data?.createdAt).toDateString()}
-        </div>
-      </div>
-      <div className="grid gap-4 lg:grid-cols-2">
-        {data.submission?.data?.fields?.map((field) => {
-          return (
-            <div key={field.label}>
-              <div className="font-thin">{field.label}</div>
-              <div>{JSON.stringify(field.value)}</div>
-            </div>
-          );
-        })}
-      </div>
     </div>
   );
 }
@@ -208,30 +169,6 @@ const ApplicationToReview = observer(() => {
   return <ApplicationOverview data={applicationOnReview} />;
 });
 
-function ReviewOverview({ review }) {
-  return (
-    <div className="grid grid-cols-1 gap-4 overflow-scroll md:grid-cols-2">
-      <div className="text-2xl md:col-span-2">
-        <span>Reviewer: </span>
-        {review.reviewer?.first_name + " " + review.reviewer?.last_name}
-      </div>
-      <hr className="border-2 border-black dark:border-white md:col-span-2" />
-      {Object.entries(review)
-        .filter(([_, value]) => {
-          return typeof value == "string" || typeof value == "number";
-        })
-        .map(([key, value]: any, i) => {
-          return (
-            <div key={key} className="border-b pb-2">
-              <div className="font-thin">{key}</div>
-              <div>{value}</div>
-            </div>
-          );
-        })}
-    </div>
-  );
-}
-
 const ReviewForm = observer(() => {
   const { reviewToolModel } = useStores();
   const editorReview = reviewToolModel.editorReview;
@@ -244,7 +181,7 @@ const ReviewForm = observer(() => {
 
   return (
     <form
-      className="sticky top-24 z-0 grid grid-cols-1 items-end gap-4 rounded-lg bg-gray-200 p-8 dark:bg-gray-600 lg:grid-cols-2 lg:gap-8"
+      className="top-28 z-0 grid h-fit grid-cols-1 items-end gap-4 rounded-lg bg-gray-200 p-8 dark:bg-gray-600 md:sticky lg:grid-cols-2 lg:gap-8"
       onSubmit={async (e) => {
         e.preventDefault();
         await reviewToolModel.submitReview();

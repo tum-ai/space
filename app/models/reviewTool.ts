@@ -3,30 +3,26 @@ import { RootModel } from "./root";
 
 export class ReviewToolModel {
   root: RootModel;
-  applications = [];
-  filteredApplications = [];
-  search = "";
+  applications: any[] = [];
+  filteredApplications: any[] = [];
+  search: string = "";
   editorReview: any = {};
   applicationOnReview: { id?: string };
-  openTab = "Applications";
-  viewApplication = undefined;
-  viewReview = undefined;
+  openTab: "Applications" | "Review" = "Applications";
+  myreviews: any[] = [];
 
   constructor(root) {
     this.root = root;
     makeAutoObservable(this);
   }
 
-  setViewApplication(viewApplication) {
-    this.viewApplication = viewApplication;
-  }
-
-  setViewReview(viewReview) {
-    this.viewReview = viewReview;
-  }
-
   setOpenTab(tab) {
     this.openTab = tab;
+  }
+
+  setSearch(value) {
+    this.search = value;
+    this.filterApplications();
   }
 
   updateEditorReview(change) {
@@ -38,14 +34,11 @@ export class ReviewToolModel {
       (application) => application.id == id,
     );
     this.setOpenTab("Review");
-    console.log("setting");
   }
 
-  setSearch(value) {
-    this.search = value;
-    this.filterApplications();
-  }
-
+  /**
+   * Filters applications in the current state according to the filters and search states.
+   */
   filterApplications() {
     this.filteredApplications = this.applications.filter((application) => {
       return (
@@ -58,6 +51,9 @@ export class ReviewToolModel {
     this.sortApplications();
   }
 
+  /**
+   * Sorts applications stored in the current state according to their final score from highest to lowest.
+   */
   sortApplications() {
     this.filteredApplications = this.filteredApplications.sort((a, b): any => {
       const finalScoresA = a.reviews.map((review) => review.finalscore);
@@ -70,6 +66,11 @@ export class ReviewToolModel {
     });
   }
 
+  // API
+
+  /**
+   * Fetches applications from api and saves them in the state.
+   */
   async fetchApplications() {
     const applications = await this.root.GET("/applications/");
     this.applications = applications;
@@ -77,6 +78,30 @@ export class ReviewToolModel {
     this.sortApplications();
   }
 
+  /**
+   * Fetches the reviews of the current user and saves them in the state.
+   */
+  async fetchMyreviews() {
+    const myreviews = await this.root.GET("/review_tool/myreviews/");
+    this.myreviews = myreviews;
+  }
+
+  /**
+   * Deletes the review associated with the current user and the application_id.
+   *
+   * @param application_id - The ID of the application
+   */
+  async deleteReview(application_id) {
+    await this.root.DELETE(
+      "/review_tool/delete_review/?reviewee_id=" + application_id,
+    );
+    this.fetchMyreviews();
+    this.fetchApplications();
+  }
+
+  /**
+   * Submits a review stored in the current state (editorReview).
+   */
   async submitReview() {
     const data = await this.root.POST("/review_tool/application_review", {
       ...this.editorReview,
@@ -90,5 +115,7 @@ export class ReviewToolModel {
       this.openTab = "Applications";
     }
     this.applicationOnReview = {};
+    this.fetchMyreviews();
+    this.fetchApplications();
   }
 }
