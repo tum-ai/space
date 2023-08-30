@@ -91,7 +91,13 @@ export class ReviewToolModel {
    * Fetches the reviews of the current user and saves them in the state.
    */
   async fetchMyreviews() {
-    const myreviews = await this.root.GET("/review_tool/myreviews/");
+    const myreviews = await axios
+      .get("/review_tool/myreviews/")
+      .then((res) => res.data.data)
+      .catch((err) => {
+        console.error(err);
+        toast.error(err);
+      });
     this.myreviews = myreviews;
   }
 
@@ -101,7 +107,7 @@ export class ReviewToolModel {
    * @param application_id - The ID of the application
    */
   async deleteReview(application_id) {
-    await this.root.DELETE(
+    await axios.delete(
       "/review_tool/delete_review/?reviewee_id=" + application_id,
     );
     this.fetchMyreviews();
