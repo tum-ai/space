@@ -28,6 +28,7 @@ const MyReviews = observer(() => {
               <th className="p-4">Application ID</th>
               <th className="p-4">Application Form</th>
               <th className="p-4">Reviewers</th>
+              <th className="p-4">Avg. Final Score</th>
               <th className="p-4">Actions</th>
             </tr>
           </thead>
