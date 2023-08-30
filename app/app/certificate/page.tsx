@@ -49,7 +49,6 @@ function Certificate() {
         >
           <h2 className="text-2xl lg:col-span-2">Create Certificate</h2>
           <Select
-            className="w-full bg-white dark:bg-gray-700"
             placeholder={"Department"}
             data={[
               ...departments?.map((department) => ({
@@ -63,12 +62,11 @@ function Certificate() {
             }}
             setSelectedItem={(item) => {
               certificateModel.updateEditorCertificate({
-                DEPARTMENT: item?.value,
+                DEPARTMENT: item,
               });
             }}
           />
           <Select
-            className="w-full bg-white dark:bg-gray-700"
             placeholder={"Position"}
             data={[
               ...positions?.map((position) => ({
@@ -82,7 +80,7 @@ function Certificate() {
             }}
             setSelectedItem={(item) => {
               certificateModel.updateEditorCertificate({
-                TITLE: item?.value,
+                TITLE: item,
               });
             }}
           />
