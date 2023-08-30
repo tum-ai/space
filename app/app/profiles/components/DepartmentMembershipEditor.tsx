@@ -100,7 +100,7 @@ function DepartmentMembershipEditor({ trigger, profile_id }) {
           </DialogRadix.Title>
           {/* DepartmentMembership Editor for Administrators */}
           <div className="col-span-2 w-full space-y-4">
-            <div className="col-span-2 font-light text-black">
+            <div className="col-span-2 font-light">
               Attention: You are editing the department memberships of this user
               as an administrator.
             </div>
@@ -143,7 +143,7 @@ function DepartmentMembershipEditor({ trigger, profile_id }) {
 function DepartmentMembership({ departmentMembership }) {
   const { departmentMembershipsModel } = useStores();
   return (
-    <div className="flex w-fit items-center space-x-4 rounded-lg border-2 bg-white p-4">
+    <div className="flex w-fit items-center space-x-4 rounded-lg bg-white p-4 dark:bg-gray-900">
       <div>{departmentMembership.department_handle}</div>
       <div>{departmentMembership.position}</div>
       <div>
