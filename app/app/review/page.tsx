@@ -43,25 +43,27 @@ const Applications = observer(() => {
   const { reviewToolModel } = useStores();
   return (
     <div className="flex flex-col space-y-4 overflow-auto pt-4">
-      <div className="flex w-full space-x-4 rounded-lg bg-gray-200 p-2 dark:bg-gray-700 md:w-fit">
-        <Icon name={"FaSearch"} className="rounded-lg p-2" />
-        <input
-          value={reviewToolModel.search}
-          onChange={(e) => {
-            reviewToolModel.setSearch(e.target.value);
-          }}
-          placeholder="search.."
-          className="w-full bg-transparent outline-none"
-        />
-        {reviewToolModel.search && (
-          <button
-            onClick={(e) => {
-              reviewToolModel.setSearch("");
+      <div className="flex items-center justify-end">
+        <div className="flex w-full space-x-4 rounded-lg bg-gray-200 p-2 dark:bg-gray-700 md:w-fit">
+          <Icon name={"FaSearch"} className="rounded-lg p-2" />
+          <input
+            value={reviewToolModel.search}
+            onChange={(e) => {
+              reviewToolModel.setSearch(e.target.value);
             }}
-          >
-            clear
-          </button>
-        )}
+            placeholder="search.."
+            className="w-full bg-transparent outline-none"
+          />
+          {reviewToolModel.search && (
+            <button
+              onClick={(e) => {
+                reviewToolModel.setSearch("");
+              }}
+            >
+              clear
+            </button>
+          )}
+        </div>
       </div>
       <table className="mx-auto w-full min-w-[800px] table-auto text-center">
         <thead>
