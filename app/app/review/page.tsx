@@ -134,7 +134,10 @@ function Application({ application }) {
           );
         })}
       </td>
-      <td>{Math.round(finalScoreSum / application.reviews?.length) || "-"}</td>
+      <td>
+        {Math.round((finalScoreSum * 100) / application.reviews?.length) /
+          100 || "-"}
+      </td>
       <td className="space-x-2 p-4">
         <Button
           className="flex items-center space-x-2"
