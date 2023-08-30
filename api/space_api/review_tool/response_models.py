@@ -2,6 +2,7 @@ from pydantic import ConfigDict
 
 from space_api.review_tool.api_models import (
     ApplicationReviewOut,
+    MyApplicationReviewOut,
 )
 from space_api.utils.response import BaseResponse
 
@@ -17,7 +18,7 @@ class ResponseApplicationReview(BaseResponse):
 
 
 class ResponseApplicationReviewList(BaseResponse):
-    data: list[ApplicationReviewOut]
+    data: list[MyApplicationReviewOut]
 
     class Config:
         schema_extra = BaseResponse.schema_wrapper(ApplicationReviewOut.dummy())
