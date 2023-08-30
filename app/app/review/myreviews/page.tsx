@@ -24,7 +24,7 @@ const MyReviews = observer(() => {
       <Section className="flex overflow-auto">
         <table className="mx-auto w-full min-w-[800px] table-auto text-center">
           <thead>
-            <tr className="border-b">
+            <tr className="border-b border-b-gray-400 dark:border-b-white">
               <th className="p-4">Application ID</th>
               <th className="p-4">Application Form</th>
               <th className="p-4">Reviewers</th>
@@ -41,10 +41,7 @@ const MyReviews = observer(() => {
                 0,
               );
               return (
-                <tr
-                  className="border-b bg-gray-100 dark:border-gray-500 dark:bg-gray-700"
-                  key={myreview.id}
-                >
+                <tr className="border-b dark:border-gray-500" key={myreview.id}>
                   <td>{myreview.application.id}</td>
                   <td>{myreview.application.submission?.data?.formName}</td>
                   <td className="flex items-center justify-center p-4">

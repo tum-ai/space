@@ -67,7 +67,7 @@ const Applications = observer(() => {
       </div>
       <table className="mx-auto w-full min-w-[800px] table-auto text-center">
         <thead>
-          <tr className="border-b">
+          <tr className="border-b border-b-gray-400 dark:border-b-white">
             <th className="p-4">ID</th>
             <th className="p-4">Form Name</th>
             <th className="p-4">Reviewers</th>
@@ -91,10 +91,7 @@ function Application({ application }) {
     return finalscore + review.finalscore;
   }, 0);
   return (
-    <tr
-      className="border-b bg-gray-100 dark:border-gray-500 dark:bg-gray-700"
-      key={application.id}
-    >
+    <tr className="border-b dark:border-gray-500 " key={application.id}>
       <td>{application.id}</td>
       <td>{application.submission?.data?.formName}</td>
       <td className="flex items-center justify-center p-4">
