@@ -175,8 +175,6 @@ function DepartmentMembership({ departmentMembership }) {
 
 const DepartmentMembershipNew = observer(({ departmentMembership, index }) => {
   const { departmentMembershipsModel } = useStores();
-  console.log(departmentMembership.department_handle);
-
   return (
     <div
       key={index}

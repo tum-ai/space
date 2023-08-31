@@ -58,7 +58,7 @@ const MyReviews = observer(() => {
                                 trigger={
                                   <div className="cursor-pointer">
                                     <Avatar
-                                      variant={Avatar.variant.Circle}
+                                      variant={"circle"}
                                       src={profile.profile_picture}
                                       initials={(
                                         "" +

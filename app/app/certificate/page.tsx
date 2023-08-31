@@ -78,9 +78,9 @@ function Certificate() {
               key: certificate["TITLE"],
               value: certificate["TITLE"],
             }}
-            setSelectedItem={(item) => {
+            setSelectedItem={(position) => {
               certificateModel.updateEditorCertificate({
-                TITLE: item,
+                TITLE: position,
               });
             }}
           />

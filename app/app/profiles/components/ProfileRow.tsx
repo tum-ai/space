@@ -16,9 +16,9 @@ const ProfileRow = observer(({ profile }) => {
     <div className="flex justify-between space-x-10 rounded-xl bg-white p-4 shadow dark:bg-gray-700">
       <div className="grid w-full grid-cols-2 gap-2">
         {/* profile name and picture */}
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center gap-2">
           <Avatar
-            variant={Avatar.variant.Circle}
+            variant={"circle"}
             src={profile.profile_picture}
             initials={(
               "" +
