@@ -428,9 +428,8 @@ class ApplicationReferral(MixinAsDict, SaBaseModel):
     __tablename__ = "application_referral"
 
     # ---------------------------- USER CHANGEABLE FIELDS ---------------------------- #
-    applicant_first_name: Mapped[str] = mapped_column(String(50), nullable=False)
-    applicant_last_name: Mapped[str] = mapped_column(String(50), nullable=False)
-    points: Mapped[int] = mapped_column(Integer, nullable=False)
+    first_name: Mapped[str] = mapped_column(String(50), nullable=False)
+    last_name: Mapped[str] = mapped_column(String(50), nullable=False)
     comment: Mapped[str | None] = mapped_column(String, nullable=True)
     email: Mapped[str] = mapped_column(String, primary_key=True)
 
