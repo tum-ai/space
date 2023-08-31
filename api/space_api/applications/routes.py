@@ -6,17 +6,19 @@ from space_api.database.application_connector import (
     delete_db_referral,
     list_db_application,
     list_db_applications,
+    list_db_referrals,
 )
 from space_api.security.decorators import ensure_authenticated, ensure_authorization
 from space_api.utils.error_handlers import error_handlers
 from space_api.utils.paging import enable_paging
 from space_api.utils.response import ErrorResponse
 
-from .api_models import ApplicationOut, ApplicationReferralIn
+from .api_models import ApplicationOut, ApplicationReferralInOut
 from .response_models import (
     ResponseDeleteReferral,
     ResponseRetrieveApplication,
     ResponseRetrieveApplications,
+    ResponseRetrieveReferrals,
     ResponseSubmitApplication,
     ResponseSubmitReferral,
 )
@@ -89,6 +91,30 @@ def submit_application(
         "description": "Application submitted successfully",
     }
 
+@router.get(
+    "/applications/referrals/",
+    response_description="List all referrals",
+    response_model=ResponseRetrieveReferrals | ErrorResponse,
+)
+@enable_paging(max_page_size=100)
+@error_handlers
+@ensure_authenticated
+def list_referrals(request: Request, page: int = 1, page_size: int = 100) -> dict:
+    db_referrals = list_db_referrals(
+        request.app.state.sql_engine, request.state.profile.id, page, page_size
+    )
+    out_referrals: list[ApplicationReferralInOut] = [
+        ApplicationReferralInOut.from_db_model(p) for p in db_referrals
+    ]
+    return {
+        "status_code": 200,
+        "response_type": "success",
+        "description": "Referrals list successfully received",
+        "page": page,
+        "page_size": page_size,
+        "data": out_referrals,
+    }
+
 
 @router.post(
     "/application/referral/",
@@ -99,7 +125,7 @@ def submit_application(
 @ensure_authenticated
 def submit_referral(
     request: Request,
-    referral: ApplicationReferralIn
+    referral: ApplicationReferralInOut
 ) -> dict:
     create_db_referral(request.app.state.sql_engine, request.state.profile.id, referral)
 
