@@ -2,7 +2,7 @@ import * as CheckboxPrimitive from "@radix-ui/react-checkbox";
 import { CheckIcon } from "@radix-ui/react-icons";
 import { clsx } from "clsx";
 
-const Checkbox = ({ checked, onCheckedChange }) => {
+export const Checkbox = ({ checked, onCheckedChange }) => {
   return (
     <CheckboxPrimitive.Root
       checked={checked}
@@ -19,5 +19,3 @@ const Checkbox = ({ checked, onCheckedChange }) => {
     </CheckboxPrimitive.Root>
   );
 };
-
-export { Checkbox };

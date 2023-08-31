@@ -7,6 +7,20 @@ import * as SelectPrimitive from "@radix-ui/react-select";
 import clsx from "clsx";
 import { Button } from "./Button";
 
+interface Props {
+  setSelectedItem: (item: string) => void;
+  selectedItem: {
+    key: any;
+    value: string | number;
+  };
+  placeholder: string;
+  disabled?: boolean;
+  data: {
+    key: any;
+    value: string | number;
+  };
+}
+
 function Select({
   setSelectedItem,
   selectedItem,
