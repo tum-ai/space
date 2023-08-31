@@ -8,7 +8,7 @@ export default function Tabs({ tabs, ...props }) {
           <RadixTabs.Trigger
             key={tabName}
             value={tabName}
-            className="rounded-lg p-4 text-gray-400 data-[state=active]:border-[1px] data-[state=active]:border-gray-700 data-[state=active]:text-black dark:data-[state=active]:border-white dark:data-[state=active]:text-white"
+            className="p-4 text-gray-400 data-[state=active]:border-t-[1px] data-[state=active]:border-gray-700 data-[state=active]:text-black dark:data-[state=active]:border-white dark:data-[state=active]:text-white"
           >
             {tabName}
           </RadixTabs.Trigger>

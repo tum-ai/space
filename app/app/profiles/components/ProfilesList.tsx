@@ -16,7 +16,7 @@ function ProfilesList() {
             Total {profilesModel.filteredProfiles.length} members
           </div>
           <div className="flex flex-col items-start space-y-2 lg:flex-row lg:items-end lg:space-x-4">
-            <div className="flex items-center">
+            <div className="flex items-center space-x-4">
               <div className="space-x-2">
                 <span className="font-thin">filters: </span>
                 {Object.keys(profilesModel.filter).length > 0 && (
@@ -27,7 +27,6 @@ function ProfilesList() {
               </div>
               <ProtectedItem roles={["admin"]}>
                 <Select
-                  className="bg-white dark:bg-gray-700"
                   placeholder={"Role"}
                   data={[
                     { key: "all", value: null },
@@ -41,25 +40,10 @@ function ProfilesList() {
                     value: profilesModel.filter.role,
                   }}
                   setSelectedItem={(item) => {
-                    profilesModel.setFilter("role", item ? item.value : "");
+                    profilesModel.setFilter("role", item ? item : "");
                   }}
                 />
               </ProtectedItem>
-              <Select
-                className="bg-white dark:bg-gray-700"
-                placeholder={"Sort by"}
-                data={[
-                  { key: "none", value: null },
-                  { key: "name", value: "first_name" },
-                ]}
-                selectedItem={{
-                  key: profilesModel.sortBy,
-                  value: profilesModel.sortBy,
-                }}
-                setSelectedItem={(item) => {
-                  profilesModel.setSortBy(item?.value || "");
-                }}
-              />
             </div>
             <div className="flex w-full space-x-4 rounded-lg bg-gray-200 p-2 dark:bg-gray-700 md:w-fit">
               <Icon name={"FaSearch"} className="rounded-lg p-2" />

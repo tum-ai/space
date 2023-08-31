@@ -43,29 +43,31 @@ const Applications = observer(() => {
   const { reviewToolModel } = useStores();
   return (
     <div className="flex flex-col space-y-4 overflow-auto pt-4">
-      <div className="flex w-full space-x-4 rounded-lg bg-gray-200 p-2 dark:bg-gray-700 md:w-fit">
-        <Icon name={"FaSearch"} className="rounded-lg p-2" />
-        <input
-          value={reviewToolModel.search}
-          onChange={(e) => {
-            reviewToolModel.setSearch(e.target.value);
-          }}
-          placeholder="search.."
-          className="w-full bg-transparent outline-none"
-        />
-        {reviewToolModel.search && (
-          <button
-            onClick={(e) => {
-              reviewToolModel.setSearch("");
+      <div className="flex items-center justify-end">
+        <div className="flex w-full space-x-4 rounded-lg bg-gray-200 p-2 dark:bg-gray-700 md:w-fit">
+          <Icon name={"FaSearch"} className="rounded-lg p-2" />
+          <input
+            value={reviewToolModel.search}
+            onChange={(e) => {
+              reviewToolModel.setSearch(e.target.value);
             }}
-          >
-            clear
-          </button>
-        )}
+            placeholder="search.."
+            className="w-full bg-transparent outline-none"
+          />
+          {reviewToolModel.search && (
+            <button
+              onClick={(e) => {
+                reviewToolModel.setSearch("");
+              }}
+            >
+              clear
+            </button>
+          )}
+        </div>
       </div>
       <table className="mx-auto w-full min-w-[800px] table-auto text-center">
         <thead>
-          <tr className="border-b">
+          <tr className="border-b border-b-gray-400 dark:border-b-white">
             <th className="p-4">ID</th>
             <th className="p-4">Form Name</th>
             <th className="p-4">Reviewers</th>
@@ -89,10 +91,7 @@ function Application({ application }) {
     return finalscore + review.finalscore;
   }, 0);
   return (
-    <tr
-      className="border-b bg-gray-100 dark:border-gray-500 dark:bg-gray-700"
-      key={application.id}
-    >
+    <tr className="border-b dark:border-gray-500 " key={application.id}>
       <td>{application.id}</td>
       <td>{application.submission?.data?.formName}</td>
       <td className="flex items-center justify-center p-4">
@@ -109,7 +108,7 @@ function Application({ application }) {
                     trigger={
                       <div className="cursor-pointer">
                         <Avatar
-                          variant={Avatar.variant.Circle}
+                          variant={"circle"}
                           src={profile.profile_picture}
                           initials={(
                             "" +
@@ -134,7 +133,10 @@ function Application({ application }) {
           );
         })}
       </td>
-      <td>{Math.round(finalScoreSum / application.reviews?.length) || "-"}</td>
+      <td>
+        {Math.round((finalScoreSum * 100) / application.reviews?.length) /
+          100 || "-"}
+      </td>
       <td className="space-x-2 p-4">
         <Button
           className="flex items-center space-x-2"
