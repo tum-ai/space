@@ -75,7 +75,7 @@ const SubmitReferral = observer(() => {
           <h1 className="text-3xl">Submit Referral</h1>
           <div className="col-span-2 flex space-x-2">
             <DialogRadix.Close>
-              {/* Handle form correctly */}
+              {/* TODO: Handle form correctly */}
               <Button
                 onClick={async (e) => {
                   await referralsModel.submitRefrral();
