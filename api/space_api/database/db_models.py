@@ -443,6 +443,12 @@ class ApplicationReferral(MixinAsDict, SaBaseModel):
         foreign_keys="ApplicationReferral.referer_id",
     )
 
+    def force_load(self) -> None:
+        if not self.referer_id:
+            raise KeyError
+
+        self.referer.force_load()
+
     def __repr__(self) -> str:
         return f"ApplicationReferral(referer_id={self.referer_id}, \
             applicant_first_name={self.applicant_first_name}, \
