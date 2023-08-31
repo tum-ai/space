@@ -45,3 +45,25 @@ class ApplicationOut(BaseModel):
     def dummy(cls) -> "ApplicationOut":
         json = cast(dict[str, Any], cls.model_config.get("json_schema_extra"))
         return json["example"]
+
+class ApplicationReferralIn(BaseModel):
+    model_config = ConfigDict(
+        json_schema_extra={
+            "example": {
+                "email": 'john.doe@gmail.com',
+                "first_name": 'John',
+                "last_name": 'Doe',
+                "comment": 'Good guy, love to work with him.'
+            }
+        }
+    )
+
+    email: str
+    first_name: str
+    last_name: str
+    comment: str
+
+    @classmethod
+    def dummy(cls) -> "ApplicationReferralIn":
+        json = cast(dict[str, Any], cls.model_config.get("json_schema_extra"))
+        return json["example"]

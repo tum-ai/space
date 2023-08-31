@@ -2,19 +2,23 @@ from fastapi import APIRouter, Request
 
 from space_api.database.application_connector import (
     create_db_application,
+    create_db_referral,
+    delete_db_referral,
     list_db_application,
     list_db_applications,
 )
-from space_api.security.decorators import ensure_authorization
+from space_api.security.decorators import ensure_authenticated, ensure_authorization
 from space_api.utils.error_handlers import error_handlers
 from space_api.utils.paging import enable_paging
 from space_api.utils.response import ErrorResponse
 
-from .api_models import ApplicationOut
+from .api_models import ApplicationOut, ApplicationReferralIn
 from .response_models import (
+    ResponseDeleteReferral,
     ResponseRetrieveApplication,
     ResponseRetrieveApplications,
     ResponseSubmitApplication,
+    ResponseSubmitReferral,
 )
 
 router = APIRouter()
@@ -83,4 +87,44 @@ def submit_application(
         "status_code": 200,
         "response_type": "success",
         "description": "Application submitted successfully",
+    }
+
+
+@router.post(
+    "/application/referral/",
+    response_description="Submit referral.",
+    response_model=ResponseSubmitReferral,
+)
+@error_handlers
+@ensure_authenticated
+def submit_referral(
+    request: Request,
+    referral: ApplicationReferralIn
+) -> dict:
+    create_db_referral(request.app.state.sql_engine, request.state.profile.id, referral)
+
+    return {
+        "status_code": 200,
+        "response_type": "success",
+        "description": "Referral submitted successfully.",
+    }
+
+
+@router.delete(
+    "/application/referral/",
+    response_description="Delete referral.",
+    response_model=ResponseDeleteReferral,
+)
+@error_handlers
+@ensure_authenticated
+def delete_referral(
+    request: Request,
+    email: str
+) -> dict:
+    delete_db_referral(request.app.state.sql_engine, request.state.profile.id, email)
+
+    return {
+        "status_code": 200,
+        "response_type": "success",
+        "description": "Referral deleted successfully.",
     }
