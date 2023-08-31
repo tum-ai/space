@@ -2,7 +2,7 @@ from typing import Any, cast
 
 from pydantic import BaseModel, ConfigDict
 
-from space_api.database.db_models import Application
+from space_api.database.db_models import Application, ApplicationReferral
 from space_api.review_tool.api_models import ApplicationReviewOut
 
 
@@ -46,7 +46,7 @@ class ApplicationOut(BaseModel):
         json = cast(dict[str, Any], cls.model_config.get("json_schema_extra"))
         return json["example"]
 
-class ApplicationReferralIn(BaseModel):
+class ApplicationReferralInOut(BaseModel):
     model_config = ConfigDict(
         json_schema_extra={
             "example": {
@@ -64,6 +64,15 @@ class ApplicationReferralIn(BaseModel):
     comment: str
 
     @classmethod
-    def dummy(cls) -> "ApplicationReferralIn":
+    def from_db_model(cls, referral: ApplicationReferral) -> "ApplicationReferralInOut":
+        return ApplicationReferralInOut(
+            email=referral.email,
+            first_name=referral.first_name,
+            last_name=referral.last_name,
+            comment=referral.comment,
+        )
+
+    @classmethod
+    def dummy(cls) -> "ApplicationReferralInOut":
         json = cast(dict[str, Any], cls.model_config.get("json_schema_extra"))
         return json["example"]

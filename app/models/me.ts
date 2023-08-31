@@ -7,6 +7,7 @@ import {
   signOut,
 } from "firebase/auth";
 import { makeAutoObservable } from "mobx";
+import { RootModel } from "./root";
 
 export class MeModel {
   root: RootModel;
@@ -35,6 +36,7 @@ export class MeModel {
         this.root.departmentMembershipsModel.fetchDepartments();
         this.root.reviewToolModel.fetchApplications();
         this.root.reviewToolModel.fetchMyreviews();
+        this.root.referralsModel.fetchReferrals();
       } else {
         this.setUser(null);
       }

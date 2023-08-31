@@ -1,7 +1,7 @@
 import sqlalchemy as sa
 from sqlalchemy.orm import Session
 
-from space_api.applications.api_models import ApplicationReferralIn
+from space_api.applications.api_models import ApplicationReferralInOut
 
 from .db_models import Application, ApplicationReferral
 
@@ -21,6 +21,24 @@ def list_db_applications(
             db_application.force_load()
 
         return db_applications
+
+
+def list_db_referrals(
+    sql_engine: sa.Engine, referer_id: int, page: int, page_size: int
+) -> list[Application]:
+    with Session(sql_engine) as db_session:
+        db_referrals: list[ApplicationReferral] = (
+            db_session.query(Application)
+            .filter(ApplicationReferral.referer_id == referer_id)
+            .offset(page_size * (page - 1))
+            .limit(page_size)
+            .all()
+        )
+
+        for db_referral in db_referrals:
+            db_referral.force_load()
+
+        return db_referrals
 
 
 def list_db_application(sql_engine: sa.Engine, application_id: int) -> Application:
@@ -50,7 +68,7 @@ def create_db_application(
 def create_db_referral(
     sql_engine: sa.Engine,
     referer_id: int,
-    referral: ApplicationReferralIn,
+    referral: ApplicationReferralInOut,
 ) -> ApplicationReferral:
     with Session(sql_engine) as db_session:
         db_referral = ApplicationReferral(

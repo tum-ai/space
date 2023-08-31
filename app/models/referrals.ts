@@ -30,5 +30,24 @@ export class ReferralsModel {
 
   //   API
 
-  async submitRefrral() {}
+  /**
+   * Submits referral in current state
+   */
+  async submitRefrral() {
+    const data = await this.root.POST("/applications/referral/", {
+      ...this.referral,
+    });
+    if (!data) return;
+    if (data?.response_type == "success") {
+      // TODO: toast
+    }
+  }
+
+  /**
+   * Fetches referrals.
+   */
+  async fetchReferrals() {
+    const referrals = await this.root.GET("/applications/referrals/");
+    this.referrals = referrals;
+  }
 }
