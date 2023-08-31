@@ -1,4 +1,6 @@
-from fastapi import APIRouter, Request
+from typing import Annotated
+
+from fastapi import APIRouter, Body, Request
 
 from space_api.database.application_connector import (
     create_db_application,
@@ -91,8 +93,10 @@ def submit_application(
         "description": "Application submitted successfully",
     }
 
+# Referrals
+
 @router.get(
-    "/applications/referrals/",
+    "/application/referrals/",
     response_description="List all referrals",
     response_model=ResponseRetrieveReferrals | ErrorResponse,
 )
@@ -125,10 +129,9 @@ def list_referrals(request: Request, page: int = 1, page_size: int = 100) -> dic
 @ensure_authenticated
 def submit_referral(
     request: Request,
-    referral: ApplicationReferralInOut
+    data: Annotated[ApplicationReferralInOut, Body(embed=True)]
 ) -> dict:
-    create_db_referral(request.app.state.sql_engine, request.state.profile.id, referral)
-
+    create_db_referral(request.app.state.sql_engine, request.state.profile.id, data)
     return {
         "status_code": 200,
         "response_type": "success",

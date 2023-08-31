@@ -23,24 +23,6 @@ def list_db_applications(
         return db_applications
 
 
-def list_db_referrals(
-    sql_engine: sa.Engine, referer_id: int, page: int, page_size: int
-) -> list[Application]:
-    with Session(sql_engine) as db_session:
-        db_referrals: list[ApplicationReferral] = (
-            db_session.query(Application)
-            .filter(ApplicationReferral.referer_id == referer_id)
-            .offset(page_size * (page - 1))
-            .limit(page_size)
-            .all()
-        )
-
-        for db_referral in db_referrals:
-            db_referral.force_load()
-
-        return db_referrals
-
-
 def list_db_application(sql_engine: sa.Engine, application_id: int) -> Application:
     with Session(sql_engine) as db_session:
         db_model = db_session.query(Application).get(application_id)
@@ -63,6 +45,24 @@ def create_db_application(
         # db_membership_application_referral.force_load()
 
     return db_application
+
+
+def list_db_referrals(
+    sql_engine: sa.Engine, referer_id: int, page: int, page_size: int
+) -> list[ApplicationReferral]:
+    with Session(sql_engine) as db_session:
+        db_referrals: list[ApplicationReferral] = (
+            db_session.query(ApplicationReferral)
+            .filter(ApplicationReferral.referer_id == referer_id)
+            .offset(page_size * (page - 1))
+            .limit(page_size)
+            .all()
+        )
+
+        for db_referral in db_referrals:
+            db_referral.force_load()
+
+        return db_referrals
 
 
 def create_db_referral(
