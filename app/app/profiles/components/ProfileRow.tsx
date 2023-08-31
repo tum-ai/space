@@ -1,7 +1,8 @@
 import { Avatar } from "@components/Avatar";
 import { Button } from "@components/Button";
+import { Checkbox } from "@components/Checkbox";
+import { Popover } from "@components/Popover";
 import ProtectedItem from "@components/ProtectedItem";
-import SelectMultiple from "@components/SelectMultiple";
 import { useStores } from "@providers/StoreProvider";
 import { observer } from "mobx-react";
 import Link from "next/link";
@@ -14,71 +15,71 @@ const ProfileRow = observer(({ profile }) => {
   return (
     <div className="flex justify-between space-x-10 rounded-xl bg-white p-4 shadow dark:bg-gray-700">
       <div className="grid w-full grid-cols-2 gap-2">
-        {/* profile picture */}
-        <Avatar
-          variant={Avatar.variant.Circle}
-          src={profile.profile_picture}
-          initials={(
-            "" +
-            profile.first_name[0] +
-            profile.last_name[0]
-          ).toUpperCase()}
-        />
-        <div className="w-full justify-end space-x-2">
-          <DepartmentMembershipEditor
-            trigger={<Button>edit membership</Button>}
-            profile_id={profile?.id}
+        {/* profile name and picture */}
+        <div className="flex items-center gap-2">
+          <Avatar
+            variant={"circle"}
+            src={profile.profile_picture}
+            initials={(
+              "" +
+              profile.first_name[0] +
+              profile.last_name[0]
+            ).toUpperCase()}
           />
-          <Link href={"/profile?id=" + profile?.id}>
-            <Button variant={"secondary"}>view</Button>
-          </Link>
-        </div>
-        {/* profile name and department */}
-        <div className="col-span-2 flex flex-col">
           <div className="font-bold">
             {profile?.first_name + " " + profile?.last_name}
           </div>
         </div>
+        <div className="flex w-full justify-end">
+          <Link href={"/profile?id=" + profile?.id}>
+            <Button variant={"secondary"}>view</Button>
+          </Link>
+        </div>
         <ProtectedItem roles={["admin"]}>
-          <div className="col-span-2">
-            <SelectMultiple
-              className="bg-white dark:bg-gray-700"
-              placeholder={"Roles"}
-              data={
-                rolesModel.roles?.map((role) => ({
-                  key: (
-                    <div>
-                      <b>{role.handle}: </b>
-                      {role.description}
-                    </div>
-                  ),
-                  value: role.handle as string,
-                })) || []
-              }
-              selectedItems={roleHolderships.map((role) => ({
-                key: role,
-                value: role,
-              }))}
-              setSelectedItems={async (items) => {
-                items = items.map((item) => item["value"]);
-                const newRoles = items.filter(
-                  (item) => !roleHolderships.includes(item),
-                );
-                const deletedRoles = roleHolderships.filter(
-                  (role) => !items.includes(role),
-                );
-                const method = newRoles.length ? "create" : "delete";
-                let data = newRoles.length ? newRoles : deletedRoles;
-                data = data.map((item) => ({
-                  profile_id: profile?.id,
-                  role_handle: item,
-                  method: method,
-                }));
-                await rolesModel.updateRoles(data);
-                rolesModel.setProfileRoles(profile?.id, items);
-              }}
-            ></SelectMultiple>
-          </div>
+          <DepartmentMembershipEditor
+            trigger={<Button>edit membership</Button>}
+            profile_id={profile?.id}
+          />
+          <Popover
+            trigger={
+              <Button>
+                roles{" "}
+                {roleHolderships.length ? `(${roleHolderships.length})` : ""}
+              </Button>
+            }
+          >
+            <div className="space-y-4">
+              {rolesModel.roles.map((role) => (
+                <div key={role.handle} className="flex items-center gap-2">
+                  <div>
+                    <Checkbox
+                      checked={roleHolderships.includes(role.handle)}
+                      onCheckedChange={async (value) => {
+                        const newRoleHoldership = role.handle;
+                        const method = value ? "create" : "delete";
+
+                        const data = [
+                          {
+                            profile_id: profile?.id,
+                            role_handle: newRoleHoldership,
+                            method: method,
+                          },
+                        ];
+                        await rolesModel.updateRoles(data);
+                        await rolesModel.getRoleHolderships();
+                      }}
+                    />
+                  </div>
+
+                  <div>
+                    <p>
+                      <b>{role.handle}</b>: {role.description}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </Popover>
         </ProtectedItem>
       </div>
     </div>

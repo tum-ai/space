@@ -87,8 +87,6 @@ class ApplicationReviewIn(BaseModel):
                 "dept3_score": 7,
                 "maybegoodfit": "Yes, potentially",
                 "furthercomments": "Should keep an eye on progress",
-                "referral": 1,
-                "finalscore": 7.5,
                 "reviewee_id": 1,
             }
         }

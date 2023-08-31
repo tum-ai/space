@@ -24,83 +24,97 @@ const MyReviews = observer(() => {
       <Section className="flex overflow-auto">
         <table className="mx-auto w-full min-w-[800px] table-auto text-center">
           <thead>
-            <tr className="border-b">
+            <tr className="border-b border-b-gray-400 dark:border-b-white">
               <th className="p-4">Application ID</th>
               <th className="p-4">Application Form</th>
               <th className="p-4">Reviewers</th>
+              <th className="p-4">Avg. Final Score</th>
               <th className="p-4">Actions</th>
             </tr>
           </thead>
           <tbody>
-            {myreviews.map((myreview) => (
-              <tr
-                className="border-b bg-gray-100 dark:border-gray-500 dark:bg-gray-700"
-                key={myreview.id}
-              >
-                <td>{myreview.application.id}</td>
-                <td>{myreview.application.submission?.data?.formName}</td>
-                <td className="flex items-center justify-center p-4">
-                  {myreview.application.reviews.map((review) => {
-                    const profile = review.reviewer;
-                    return (
-                      <ViewReview
-                        applicationToView={myreview.application}
-                        viewReview={review}
-                        key={review.id}
-                        trigger={
-                          <span>
-                            <Tooltip
-                              trigger={
-                                <div className="cursor-pointer">
-                                  <Avatar
-                                    variant={Avatar.variant.Circle}
-                                    src={profile.profile_picture}
-                                    initials={(
-                                      "" +
-                                      profile.first_name[0] +
-                                      profile.last_name[0]
-                                    ).toUpperCase()}
-                                  />
+            {myreviews.map((myreview) => {
+              const finalScoreSum = myreview.application.reviews?.reduce(
+                (finalscore, review) => {
+                  return finalscore + review.finalscore;
+                },
+                0,
+              );
+              return (
+                <tr className="border-b dark:border-gray-500" key={myreview.id}>
+                  <td>{myreview.application.id}</td>
+                  <td>{myreview.application.submission?.data?.formName}</td>
+                  <td className="flex items-center justify-center p-4">
+                    {myreview.application.reviews.map((review) => {
+                      const profile = review.reviewer;
+                      return (
+                        <ViewReview
+                          applicationToView={myreview.application}
+                          viewReview={review}
+                          key={review.id}
+                          trigger={
+                            <span>
+                              <Tooltip
+                                trigger={
+                                  <div className="cursor-pointer">
+                                    <Avatar
+                                      variant={"circle"}
+                                      src={profile.profile_picture}
+                                      initials={(
+                                        "" +
+                                        profile.first_name[0] +
+                                        profile.last_name[0]
+                                      ).toUpperCase()}
+                                    />
+                                  </div>
+                                }
+                              >
+                                <div>
+                                  {profile.first_name +
+                                    " " +
+                                    profile.last_name +
+                                    " - final score: " +
+                                    review.finalscore}
                                 </div>
-                              }
-                            >
-                              <div>
-                                {profile.first_name +
-                                  " " +
-                                  profile.last_name +
-                                  " - final score: " +
-                                  review.finalscore}
-                              </div>
-                            </Tooltip>
-                          </span>
+                              </Tooltip>
+                            </span>
+                          }
+                        />
+                      );
+                    })}
+                  </td>
+                  <td>
+                    {Math.round(
+                      (finalScoreSum * 100) /
+                        myreview.application.reviews?.length,
+                    ) / 100 || "-"}
+                  </td>
+                  <td className="space-x-2 p-4">
+                    <Button
+                      onClick={() => {
+                        if (
+                          confirm(
+                            "Are you sure you want to delete this review?",
+                          )
+                        ) {
+                          reviewToolModel.deleteReview(myreview.application.id);
                         }
-                      />
-                    );
-                  })}
-                </td>
-                <td className="space-x-2 p-4">
-                  <Button
-                    onClick={() => {
-                      if (
-                        confirm("Are you sure you want to delete this review?")
-                      ) {
-                        reviewToolModel.deleteReview(myreview.application.id);
-                      }
-                    }}
-                  >
-                    delete
-                  </Button>
-                  <ViewReview
-                    applicationToView={myreview.application}
-                    viewReview={{
-                      ...myreview,
-                      reviewer: meModel.user.profile,
-                    }}
-                    trigger={<Button>view</Button>}
-                  />
-                </td>
-              </tr>
-            ))}
+                      }}
+                    >
+                      delete
+                    </Button>
+                    <ViewReview
+                      applicationToView={myreview.application}
+                      viewReview={{
+                        ...myreview,
+                        reviewer: meModel.user.profile,
+                      }}
+                      trigger={<Button>view</Button>}
+                    />
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </Section>

@@ -19,7 +19,14 @@ def create_db_application_review(
     new__application_review: ApplicationReviewIn,
 ) -> ApplicationReview:
     with Session(sql_engine) as db_session:
-        # TODO @munzerdw: calculate finalscore and referral these correctly
+        # TODO: get referral
+        referral = 0
+        final_score = (0.15 * new__application_review.motivation) + \
+        (0.15 * new__application_review.skill) + \
+        (0.15 * new__application_review.fit) + \
+        (0.55 * new__application_review.in_tumai) + \
+        (0.55 * new__application_review.in_tumai) + \
+        (0.15 * referral)
         db__application_review = ApplicationReview(
             motivation=new__application_review.motivation,
             skill=new__application_review.skill,
@@ -32,8 +39,8 @@ def create_db_application_review(
             dept3_score=new__application_review.dept3_score,
             maybegoodfit=new__application_review.maybegoodfit,
             furthercomments=new__application_review.furthercomments,
-            referral=1,
-            finalscore=1,
+            referral=referral,
+            finalscore=final_score,
             reviewer_id=reviewer_id,
             reviewee_id=new__application_review.reviewee_id,
         )
