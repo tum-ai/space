@@ -132,6 +132,7 @@ def submit_referral(
     data: Annotated[ApplicationReferralInOut, Body(embed=True)]
 ) -> dict:
     create_db_referral(request.app.state.sql_engine, request.state.profile.id, data)
+    # TODO: update all scores of the applications of the referral email
     return {
         "status_code": 200,
         "response_type": "success",
@@ -151,7 +152,7 @@ def delete_referral(
     email: str
 ) -> dict:
     delete_db_referral(request.app.state.sql_engine, request.state.profile.id, email)
-
+    # TODO: update all scores of the applications of the referral email
     return {
         "status_code": 200,
         "response_type": "success",
