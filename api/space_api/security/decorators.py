@@ -56,7 +56,7 @@ def __ensure_auth(func: Callable, request: Request, *args: Any, **kwargs: Any) -
         )
 
     if not succeeded:
-        return RESPONSE_UNAUTHORIZED
+        raise RESPONSE_UNAUTHORIZED
 
     return func(request, *args, **kwargs)
 
