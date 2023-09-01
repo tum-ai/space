@@ -1,16 +1,36 @@
 "use client";
+import { Button } from "@components/Button";
 import Icon from "@components/Icon";
+import { MeModel } from "@models/me";
 import { Profile } from "@models/profile";
+import ProfileEditor from "app/me/components/ProfileEditor";
 import { observer } from "mobx-react";
 import Image from "next/image";
 import Link from "next/link";
 
 interface Props {
   profile: Profile;
+  meModel?: MeModel;
 }
-function ProfileOverview({ profile }: Props) {
+function ProfileOverview({ profile, meModel }: Props) {
   return (
-    <div className="m-auto max-w-3xl">
+    <div className="relative m-auto max-w-3xl">
+      {meModel && (
+        <div className="absolute top-0 flex w-full justify-end p-4">
+          <ProfileEditor
+            trigger={
+              <Button
+                onClick={() => {
+                  meModel.editorProfile = { ...profile };
+                }}
+              >
+                Edit
+              </Button>
+            }
+          />
+        </div>
+      )}
+
       {profile.profile_picture && (
         <Image
           className="m-auto h-28 w-28 rounded-full border object-cover drop-shadow-lg"
