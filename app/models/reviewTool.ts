@@ -1,7 +1,7 @@
+import axios, { AxiosError } from "axios";
 import { makeAutoObservable } from "mobx";
-import { RootModel } from "./root";
-import axios from "axios";
 import toast from "react-hot-toast";
+import { RootModel } from "./root";
 
 export class ReviewToolModel {
   root: RootModel;
@@ -77,14 +77,15 @@ export class ReviewToolModel {
     const applications = await axios
       .get("/applications/")
       .then((res) => res.data.data)
-      .catch((err) => {
-        console.error(err);
-        toast.error(err);
+      .catch((err: AxiosError) => {
+        toast.error(`Failed to get applications: ${err.message}`);
       });
 
-    this.applications = applications;
-    this.filteredApplications = applications;
-    this.sortApplications();
+    if (applications) {
+      this.applications = applications;
+      this.filteredApplications = applications;
+      this.sortApplications();
+    }
   }
 
   /**
@@ -94,11 +95,12 @@ export class ReviewToolModel {
     const myreviews = await axios
       .get("/review_tool/myreviews/")
       .then((res) => res.data.data)
-      .catch((err) => {
-        console.error(err);
-        toast.error(err);
+      .catch((err: AxiosError) => {
+        toast.error(`Failed to get my reviews: ${err.message}`);
       });
-    this.myreviews = myreviews;
+    if (myreviews) {
+      this.myreviews = myreviews;
+    }
   }
 
   /**
@@ -107,38 +109,49 @@ export class ReviewToolModel {
    * @param application_id - The ID of the application
    */
   async deleteReview(application_id) {
-    await axios.delete(
-      "/review_tool/delete_review/?reviewee_id=" + application_id,
-    );
-    this.fetchMyreviews();
-    this.fetchApplications();
+    const value = await axios
+      .delete("/review_tool/delete_review/?reviewee_id=" + application_id)
+      .then((res) => {
+        return true;
+      })
+      .catch((err: AxiosError) => {
+        toast.error(
+          `Failed to delete review for application ${application_id}: ${err.message}`,
+        );
+      });
+    if (value) {
+      this.fetchMyreviews();
+      this.fetchApplications();
+    }
   }
 
   /**
    * Submits a review stored in the current state (editorReview).
    */
   async submitReview() {
-    const data = await axios
+    const value = await axios
       .post("/review_tool/application_review", {
         data: {
-          data: {
-            ...this.editorReview,
-            reviewee_id: this.applicationOnReview?.id,
-          },
+          ...this.editorReview,
+          reviewee_id: this.applicationOnReview?.id,
         },
       })
-      .catch((err) => {
-        toast.error("Failed");
-        console.error(err);
+      .then((res) => {
+        return true;
+      })
+      .catch((err: AxiosError) => {
+        toast.error(
+          `Failed to submit review for application ${this.applicationOnReview?.id}: ${err.message}`,
+        );
       });
 
-    if (!data) return;
-
-    toast.success("Submitted review");
-    this.editorReview = {};
-    this.applicationOnReview = {};
-    this.openTab = "Applications";
-    this.fetchMyreviews();
-    this.fetchApplications();
+    if (value) {
+      toast.success("Submitted review");
+      this.editorReview = {};
+      this.applicationOnReview = {};
+      this.openTab = "Applications";
+      this.fetchMyreviews();
+      this.fetchApplications();
+    }
   }
 }
