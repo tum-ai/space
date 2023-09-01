@@ -1,7 +1,7 @@
+import axios, { AxiosError } from "axios";
 import { makeAutoObservable } from "mobx";
-import { RootModel } from "./root";
 import toast from "react-hot-toast";
-import axios from "axios";
+import { RootModel } from "./root";
 
 export class DepartmentMembershipsModel {
   root: RootModel;
@@ -57,22 +57,21 @@ export class DepartmentMembershipsModel {
     const data = await axios
       .get("/department-memberships")
       .then((res) => res.data.data)
-      .catch((err) => {
-        toast.error(err);
+      .catch((err: AxiosError) => {
+        toast.error(`Failed to get department memberships: ${err.message}`);
       });
 
-    if (!data) return;
-
     // TODO: is this still doing what it is supposed to do?
-    data.forEach((item) => {
-      item.department_handle = item.department.handle;
-      item.position = item.position.replace("PositionType.", "");
-      item.profile_id = item.profile.id;
-      delete item.profile;
-      delete item.department;
-    });
-
-    this.setDepartments(data);
+    if (data) {
+      data.forEach((item) => {
+        item.department_handle = item.department.handle;
+        item.position = item.position.replace("PositionType.", "");
+        item.profile_id = item.profile.id;
+        delete item.profile;
+        delete item.department;
+      });
+      this.setDepartments(data);
+    }
   }
 
   /**
@@ -80,7 +79,7 @@ export class DepartmentMembershipsModel {
    * Updates the departments on the server with the current ones in the model
    * @returns whether the departments were updated
    */
-  async saveDepartments(): Promise<boolean> {
+  async saveDepartments() {
     const departments = this.departments
       .filter((department) => department["new"])
       .map((department) => ({
@@ -90,32 +89,36 @@ export class DepartmentMembershipsModel {
 
     const data = await axios
       .post("/department-memberships", {
-        data: {
-          data: departments,
-        },
+        data: departments,
       })
       .then((res) => res.data)
-      .catch((err) => toast.error(err));
+      .catch((err: AxiosError) => {
+        toast.error(`Failed to save department memberships: ${err.message}`);
+      });
 
-    if (!data) {
-      toast.error("received no data");
-      return false;
+    if (data) {
+      this.departments = this.departments.map((department) => ({
+        ...department,
+        new: null,
+      }));
+
+      // TODO: this modal state should be handled where this function is called depending on this functions return value
+      this.root.uiModel.toggleModal();
     }
-
-    this.departments = this.departments.map((department) => ({
-      ...department,
-      new: null,
-    }));
-
-    // TODO: this modal state should be handled where this function is called depending on this functions return value
-    this.root.uiModel.toggleModal();
-
-    return true;
   }
 
   async deleteDepartmentMembership(id) {
-    await axios.delete("/department-memberships", {
-      data: [id],
-    });
+    const value = await axios
+      .delete("/department-memberships", {
+        data: [id],
+      })
+      .then((res) => true)
+      .catch((err: AxiosError) => {
+        toast.error(`Failed to delete department memberships: ${err.message}`);
+      });
+
+    if (value) {
+      toast.success(`Deleted department membership with ID ${id}`);
+    }
   }
 }
