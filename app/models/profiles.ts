@@ -1,7 +1,7 @@
-import { makeAutoObservable } from "mobx";
-import { RootModel } from "./root";
 import axios from "axios";
+import { makeAutoObservable } from "mobx";
 import toast from "react-hot-toast";
+import { RootModel } from "./root";
 
 export class ProfilesModel {
   root: RootModel;
@@ -14,8 +14,6 @@ export class ProfilesModel {
   constructor(root: RootModel) {
     this.root = root;
     makeAutoObservable(this);
-
-    this.fetchProfiles();
   }
 
   getProfiles() {
@@ -99,12 +97,13 @@ export class ProfilesModel {
       .get("/profiles/")
       .then((res) => res.data.data)
       .catch((err) => {
-        console.error(err);
         toast.error(err);
       });
 
-    this.profiles = profiles;
-    this.filteredProfiles = profiles;
+    if (profiles) {
+      this.profiles = profiles;
+      this.filteredProfiles = profiles;
+    }
   }
 }
 

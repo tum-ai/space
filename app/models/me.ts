@@ -3,6 +3,7 @@ import { auth } from "@config/firebase";
 import axios, { AxiosError } from "axios";
 import { signOut } from "firebase/auth";
 import { makeAutoObservable } from "mobx";
+import { RootModel } from "./root";
 
 export class MeModel {
   root: RootModel;
@@ -48,6 +49,7 @@ export class MeModel {
       } else {
         this.setUser(null);
       }
+      this.root.profilesModel.fetchProfiles();
     });
   }
 
