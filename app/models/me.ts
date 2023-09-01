@@ -37,8 +37,6 @@ export class MeModel {
           this.root.rolesModel.getRoleHolderships();
           this.root.departmentMembershipsModel.fetchDepartments();
         }
-        console.log(profile["role_holderships"]);
-
         if (
           profile["role_holderships"].find(
             (role) => role["handle"] == "submit_reviews",
