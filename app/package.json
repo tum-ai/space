@@ -30,6 +30,7 @@
     "eslint": "8.47.0",
     "eslint-config-next": "13.4.19",
     "firebase": "^10.3.0",
+    "formik": "^2.4.3",
     "mobx": "^6.7.0",
     "mobx-react": "^7.6.0",
     "mobx-react-lite": "^4.0.3",
