@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { makeAutoObservable } from "mobx";
 import toast from "react-hot-toast";
 import { RootModel } from "./root";
@@ -96,8 +96,8 @@ export class ProfilesModel {
     const profiles = await axios
       .get("/profiles/")
       .then((res) => res.data.data)
-      .catch((err) => {
-        toast.error(err);
+      .catch((err: AxiosError) => {
+        toast.error(`Failed to get profiles: ${err.message}`);
       });
 
     if (profiles) {
