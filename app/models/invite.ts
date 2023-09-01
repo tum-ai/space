@@ -1,7 +1,7 @@
+import axios, { AxiosError } from "axios";
 import { makeAutoObservable } from "mobx";
-import { RootModel } from "./root";
-import axios from "axios";
 import toast from "react-hot-toast";
+import { RootModel } from "./root";
 
 export class InviteModel {
   root: RootModel;
@@ -37,13 +37,26 @@ export class InviteModel {
       .post("/profiles/invite/members", {
         data: formatedText,
       })
-      .then(() => {
-        toast.success("Invite sent out successfully");
+      .then((response) => {
+        const data = response.data;
+        if (data["failed"].length) {
+          const message = data["failed"].map(
+            (failedAccount) =>
+              `${failedAccount["data"]["email"]}: ${failedAccount["error"]}\n`,
+          );
+          toast.error(message);
+        } else {
+          this.text = "";
+        }
+        if (data["succeeded"].length) {
+          toast.success(
+            `${data["succeeded"].length} Users successfully invited`,
+          );
+        }
       })
-      .catch((err) => {
-        console.error(err);
-        toast.error("Failed to invite");
-        this.text = "";
+      .catch((err: AxiosError) => {
+        toast.error(`Failed to invite: ${err.message}`);
       });
   }
 }
+// example: munzerdwedari@gmail.com,Munzer,Dwedar,DEV,member
