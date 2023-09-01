@@ -1,5 +1,6 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { makeAutoObservable } from "mobx";
+import toast from "react-hot-toast";
 import { RootModel } from "./root";
 
 export class RolesModel {
@@ -20,25 +21,36 @@ export class RolesModel {
   async getRoleHolderships() {
     const roleHolderships = await axios
       .get("/role/holderships")
-      .then((res) => res.data.data);
+      .then((res) => res.data.data)
+      .catch((err: AxiosError) => {
+        toast.error(`Failed to get role holderships: ${err.message}`);
+      });
 
-    if (!roleHolderships) return;
-    let rolesObject = [];
-    for (let i = 0; i < roleHolderships.length; i++) {
-      const roleHoldership = roleHolderships[i];
-      if (!rolesObject[roleHoldership["profile"]["id"]]) {
-        rolesObject[roleHoldership["profile"]["id"]] = [];
+    if (roleHolderships) {
+      let rolesObject = [];
+      for (let i = 0; i < roleHolderships.length; i++) {
+        const roleHoldership = roleHolderships[i];
+        if (!rolesObject[roleHoldership["profile"]["id"]]) {
+          rolesObject[roleHoldership["profile"]["id"]] = [];
+        }
+        rolesObject[roleHoldership["profile"]["id"]].push(
+          roleHoldership["role"]["handle"],
+        );
       }
-      rolesObject[roleHoldership["profile"]["id"]].push(
-        roleHoldership["role"]["handle"],
-      );
+      this.roleHolderships = rolesObject;
     }
-    this.roleHolderships = rolesObject;
   }
 
   async getRoles() {
-    const roles = await axios.get("/roles").then((res) => res.data.data);
-    this.roles = roles;
+    const roles = await axios
+      .get("/roles")
+      .then((res) => res.data.data)
+      .catch((err: AxiosError) => {
+        toast.error(`Failed to get roles: ${err.message}`);
+      });
+    if (roles) {
+      this.roles = roles;
+    }
   }
 
   async updateRoles(roles) {
@@ -46,8 +58,12 @@ export class RolesModel {
       .patch("/role/holderships", {
         data: roles,
       })
-      .then((res) => res.data.data);
-
-    this.profile = { ...this.profile, ...data };
+      .then((res) => res.data.data)
+      .catch((err: AxiosError) => {
+        toast.error(`Failed to update roles: ${err.message}`);
+      });
+    if (data) {
+      this.profile = { ...this.profile, ...data };
+    }
   }
 }
