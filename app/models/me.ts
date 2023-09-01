@@ -3,6 +3,7 @@ import { auth } from "@config/firebase";
 import axios, { AxiosError } from "axios";
 import { signOut } from "firebase/auth";
 import { makeAutoObservable } from "mobx";
+import { toast } from "react-hot-toast";
 import { RootModel } from "./root";
 
 export class MeModel {
@@ -124,6 +125,9 @@ export class MeModel {
         toast.error(`Failed to edit: ${err.message}`);
       });
 
-    this.profile = { ...this.profile, ...data };
+    if (data) {
+      toast.success("Successfully edited profile.");
+      this.profile = { ...this.profile, ...data };
+    }
   }
 }
