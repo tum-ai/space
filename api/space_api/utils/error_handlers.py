@@ -2,13 +2,7 @@ from collections.abc import Callable
 from functools import wraps
 from typing import Any
 
-
-def response_error(code: int, description: str) -> dict:
-    return {
-        "status_code": code,
-        "response_type": "error",
-        "description": description,
-    }
+from space_api.utils.error import RESPONSE_NOT_FOUND
 
 
 def error_handlers(func: Callable) -> Any:
@@ -17,6 +11,6 @@ def error_handlers(func: Callable) -> Any:
         try:
             return func(*args, **kwargs)
         except KeyError:
-            return response_error(404, "Item not found")
+            raise RESPONSE_NOT_FOUND
 
     return wrapper

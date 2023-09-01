@@ -36,12 +36,14 @@
     "next": "13.4.19",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-hot-toast": "^2.4.1",
     "react-icons": "^4.7.1",
     "tailwind-merge": "^1.14.0",
     "tailwindcss-radix": "^2.8.0",
     "typescript": "5.2.2"
   },
   "devDependencies": {
+    "@types/downloadjs": "^1.4.3",
     "@types/react": "18.2.21",
     "autoprefixer": "10.4.15",
     "env-cmd": "^10.1.0",
