@@ -1,9 +1,9 @@
 "use client";
 import { Button } from "@components/Button";
+import * as Yup from "yup";
 import ProtectedItem from "@components/ProtectedItem";
 import { Section } from "@components/Section";
 import { Cross1Icon, PlusIcon } from "@radix-ui/react-icons";
-import axios from "axios";
 import {
   ErrorMessage,
   Field,
@@ -13,8 +13,21 @@ import {
   FormikValues,
 } from "formik";
 import toast from "react-hot-toast";
+import axios from "axios";
 
 const Invite = () => {
+  const schema = Yup.object().shape({
+    invitees: Yup.array().of(
+      Yup.object().shape({
+        email: Yup.string().email().required("Required"),
+        first_name: Yup.string().required(),
+        last_name: Yup.string().required(),
+        department_handle: Yup.string().required(),
+        department_position: Yup.string().required(),
+      }),
+    ),
+  });
+
   const initialValues = {
     invitees: [
       {
@@ -34,15 +47,16 @@ const Invite = () => {
 
         <Formik
           initialValues={initialValues}
+          validationSchema={schema}
           onSubmit={(values: FormikValues) => {
             toast.promise(
               axios.post("/profiles/invite/members", {
                 data: values.invitees,
               }),
               {
-                loading: "",
-                success: "",
-                error: "",
+                loading: "Inviting new members",
+                success: `Succesfully invited members`,
+                error: "Failed to invite members",
               },
             );
           }}
@@ -65,11 +79,7 @@ const Invite = () => {
                               placeholder="daniel.korth@tum.de"
                               type="text"
                             />
-                            <ErrorMessage
-                              name={`invitees.${index}.email`}
-                              component="div"
-                              className="field-error"
-                            />
+                            <ErrorMessage name={`invitees.${index}.email`} />
                           </div>
 
                           <div className="flex flex-col">
@@ -82,11 +92,7 @@ const Invite = () => {
                               placeholder="Daniel"
                               type="text"
                             />
-                            <ErrorMessage
-                              name={`invitees.${index}.first_name`}
-                              component="div"
-                              className="field-error"
-                            />
+                            <ErrorMessage name="First name" />
                           </div>
 
                           <div className="flex flex-col">
@@ -99,11 +105,7 @@ const Invite = () => {
                               placeholder="Korth"
                               type="text"
                             />
-                            <ErrorMessage
-                              name={`invitees.${index}.last_name`}
-                              component="div"
-                              className="field-error"
-                            />
+                            <ErrorMessage name="Last name" />
                           </div>
 
                           <div className="flex flex-col">
@@ -115,14 +117,24 @@ const Invite = () => {
                             <Field
                               className="p-2"
                               name={`invitees.${index}.department_handle`}
-                              placeholder="Makethon"
-                              type="text"
-                            />
-                            <ErrorMessage
-                              name={`invitees.${index}.department_handle`}
-                              component="div"
-                              className="field-error"
-                            />
+                              as="select"
+                            >
+                              <option selected value="DEV">
+                                Software Development
+                              </option>
+                              <option value="MARKETING">Marketing</option>
+                              <option value="INDUSTRY">Industry</option>
+                              <option value="MAKEATHON">Makeathon</option>
+                              <option value="COMMUNITY">Community</option>
+                              <option value="PNS">Partners and Sponsors</option>
+                              <option value="LNF">Legal and Finance</option>
+                              <option value="VENTURE">Venture</option>
+                              <option value="EDUCATION">Education</option>
+                              <option value="RND">
+                                Research and Development
+                              </option>
+                            </Field>
+                            <ErrorMessage name="Department handle" />
                           </div>
 
                           <div className="flex flex-col">
@@ -134,21 +146,29 @@ const Invite = () => {
                             <Field
                               className="p-2"
                               name={`invitees.${index}.department_position`}
-                              placeholder="Teamlead"
-                              type="text"
-                            />
+                              as="select"
+                            >
+                              <option selected value="member">
+                                Member
+                              </option>
+                              <option value="teamlead">Teamlead</option>
+                              <option value="president">President</option>
+                              <option value="alumni">Alumni</option>
+                            </Field>
                             <ErrorMessage
                               name={`invitees.${index}.department_position`}
-                              component="div"
-                              className="field-error"
                             />
                           </div>
 
-                          <div className="col">
-                            <button type="button" onClick={() => remove(index)}>
-                              <Cross1Icon className="mt-6 h-6 w-6" />
+                          {index !== 0 && (
+                            <button
+                              className="mt-4 p-2"
+                              type="button"
+                              onClick={() => remove(index)}
+                            >
+                              <Cross1Icon className="h-6 w-6" />
                             </button>
-                          </div>
+                          )}
                         </div>
                       ))}
 
