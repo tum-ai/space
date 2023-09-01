@@ -19,11 +19,13 @@ const Invite = () => {
   const schema = Yup.object().shape({
     invitees: Yup.array().of(
       Yup.object().shape({
-        email: Yup.string().email().required("Required"),
-        first_name: Yup.string().required(),
-        last_name: Yup.string().required(),
-        department_handle: Yup.string().required(),
-        department_position: Yup.string().required(),
+        email: Yup.string()
+          .email("Must be valid email")
+          .required("Cannot be empty"),
+        first_name: Yup.string().required("Cannot be empty"),
+        last_name: Yup.string().required("Cannot be empty"),
+        department_handle: Yup.string().required("Cannot be empty"),
+        department_position: Yup.string().required("Cannot be empty"),
       }),
     ),
   });
@@ -68,7 +70,7 @@ const Invite = () => {
                   <div className="space-y-4">
                     {values.invitees.length > 0 &&
                       values.invitees.map((invitee, index) => (
-                        <div className="flex gap-4" key={index}>
+                        <div className="flex items-start gap-4" key={index}>
                           <div className="flex flex-col">
                             <label htmlFor={`invitees.${index}.email`}>
                               Email
@@ -176,7 +178,15 @@ const Invite = () => {
                       <Button
                         type="button"
                         className="flex items-center gap-2"
-                        onClick={() => push({ name: "", email: "" })}
+                        onClick={() =>
+                          push({
+                            email: "",
+                            first_name: "",
+                            last_name: "",
+                            department_handle: "DEV",
+                            department_position: "member",
+                          })
+                        }
                       >
                         <PlusIcon /> Add Invitation
                       </Button>
