@@ -1,129 +1,91 @@
 "use client";
 import Icon from "@components/Icon";
-import { useStores } from "@providers/StoreProvider";
+import { Profile } from "@models/profile";
 import { observer } from "mobx-react";
 import Image from "next/image";
-import { useSearchParams } from "next/navigation";
-import { useEffect } from "react";
+import Link from "next/link";
 
-function ProfileOverview() {
-  const { profileModel } = useStores();
-  const searchParams = useSearchParams();
-  const id = searchParams.get("id");
-
-  useEffect(() => {
-    if (id) {
-      profileModel.getProfile(typeof id === "string" ? id : id[0]);
-    }
-  }, [profileModel, id]);
-  const profile = profileModel.profile;
-
-  if (profileModel.loading) {
-    return <div>Loading...</div>;
-  }
-
-  if (!profile) {
-    return <div>Profile not found.</div>;
-  }
-
+interface Props {
+  profile: Profile;
+}
+function ProfileOverview({ profile }: Props) {
   return (
-    <div className="m-auto max-w-3xl bg-gray-100 dark:bg-gray-700">
-      <div className="grid grid-cols-1 gap-10 rounded-xl p-8 px-4 lg:px-10 xl:grid-cols-2">
-        {/* name + image */}
-        <div className=" max-w-90 flex flex-col items-start space-y-6 xl:col-span-2">
-          {profile.profile_picture ? (
-            <Image
-              className="m-auto h-28 w-28 rounded-full border object-cover drop-shadow-lg"
-              src={profile.profile_picture}
-              width={100}
-              height={100}
-              alt=""
-            />
-          ) : (
-            <div className="m-auto flex h-28 w-28 rounded-full bg-gray-300 text-center drop-shadow-lg dark:bg-gray-800">
-              <Icon name={"FaUser"} className="m-auto text-4xl text-white" />
-            </div>
-          )}
-          <div className="flex flex-col space-y-4 lg:flex-row lg:items-end lg:space-x-4 lg:space-y-0">
-            <div className="text-6xl font-thin">
-              {profile.first_name + " " + profile.last_name}
-            </div>
-            {profile.socialNetworks &&
-              profile.socialNetworks.map((sn) => (
-                <a key={sn.link} href={sn.link}>
-                  {sn.type == "Other" ? (
-                    <Icon
-                      name={"FaGlobe"}
-                      className="rounded-full p-2 hover:scale-105"
-                    />
-                  ) : (
-                    <Icon
-                      name={("Fa" + sn.type) as any}
-                      className="rounded-full p-2 hover:scale-105"
-                    />
-                  )}
-                </a>
-              ))}
-          </div>
+    <div className="m-auto max-w-3xl">
+      {profile.profile_picture && (
+        <Image
+          className="m-auto h-28 w-28 rounded-full border object-cover drop-shadow-lg"
+          src={profile.profile_picture}
+          width={100}
+          height={100}
+          alt="Your profile picture"
+        />
+      )}
+      {!profile.profile_picture && (
+        <div className="m-auto flex h-28 w-28 rounded-full bg-gray-300 text-center drop-shadow-lg dark:bg-gray-800">
+          <Icon name={"FaUser"} className="m-auto text-4xl text-white" />
         </div>
-        {/* department */}
-        <div className="flex flex-col">
-          <div className="text-base font-light text-gray-400">DEPARTMENT</div>
-          <div className="text-base font-light">
-            {profile.department || "-"}
-          </div>
+      )}
+
+      <div className="mt-12">
+        <div className="max-w-90 flex flex-col items-start space-y-6 xl:col-span-2">
+          <h1 className="w-full text-center text-6xl font-thin">
+            {profile.first_name + " " + profile.last_name}
+          </h1>
+
+          {profile.socialNetworks &&
+            profile.socialNetworks.map((socialNetwork) => (
+              <Link key={socialNetwork.link} href={socialNetwork.link}>
+                <Icon
+                  name={
+                    socialNetwork.type === "Other"
+                      ? "FaGlobe"
+                      : (("Fa" + socialNetwork.type) as any)
+                  }
+                  className="rounded-full p-2 hover:scale-105"
+                />
+              </Link>
+            ))}
         </div>
-        {/* degree */}
-        <div className="flex flex-col">
-          <div className="text-base font-light text-gray-400">DEGREE</div>
-          <div className="text-base font-light">
-            {profile.degree_level + " "} {profile.degree_name}
+
+        <dl className="divide-y divide-gray-600">
+          <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+            <dt className="font-medium">Department</dt>
+            <dd>{profile.department}</dd>
           </div>
-        </div>
-        {/* semester */}
-        <div className="flex flex-col">
-          <div className="text-base font-light text-gray-400">SEMESTER</div>
-          <div className="text-base font-light">
-            {profile.degree_semester || "-"}
+          <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+            <dt className="font-medium">Degree</dt>
+            <dd>
+              {profile.degree_level} {profile.degree_name}
+            </dd>
           </div>
-        </div>
-        {/* university */}
-        <div className="flex flex-col">
-          <div className="text-base font-light text-gray-400">UNIVERSITY</div>
-          <div className="text-base font-light">{profile.university}</div>
-        </div>
-        {/* description  */}
-        <div className="flex flex-col">
-          <div className="text-base font-light text-gray-400">DESCRIPTION</div>
-          <div className="text-base font-light">
-            {profile.description || "-"}
+          <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+            <dt className="font-medium">Semester</dt>
+            <dd>{profile.degree_semester}</dd>
           </div>
-        </div>
-        {/* previous departments  */}
-        <div className="flex flex-col">
-          <div className="text-base font-light text-gray-400">
-            PREVIOUS DEPARTMENTS
+          <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+            <dt className="font-medium">University</dt>
+            <dd>{profile.university}</dd>
           </div>
-          <div className="text-base font-light">
-            {(profile.previousDepartments?.length &&
-              profile.previousDepartments.join(", ")) ||
-              "-"}
+          <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+            <dt className="font-medium">Description</dt>
+            <dd>{profile.description}</dd>
           </div>
-        </div>
-        {/* current job */}
-        <div className="flex flex-col">
-          <div className="text-base font-light text-gray-400">CURRENT JOB</div>
-          <div className="text-base font-light">
-            {profile.currentJob || "-"}
+          <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+            <dt className="font-medium">Previous Departments</dt>
+            <dd>
+              {profile.previousDepartments?.length &&
+                profile.previousDepartments.join(", ")}
+            </dd>
           </div>
-        </div>
-        {/* nationality */}
-        <div className="flex flex-col">
-          <div className="text-base font-light text-gray-400">NATIONALITY</div>
-          <div className="text-base font-light">
-            {profile.nationality || "-"}
+          <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+            <dt className="font-medium">Current Job</dt>
+            <dd>{profile.currentJob}</dd>
           </div>
-        </div>
+          <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+            <dt className="font-medium">Nationality</dt>
+            <dd>{profile.nationality}</dd>
+          </div>
+        </dl>
       </div>
     </div>
   );
