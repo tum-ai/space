@@ -280,9 +280,8 @@ function SocialNetworks() {
                 key: experience.type,
                 value: experience.type,
               }}
-              placeholder="Select an option"
+              placeholder="Select a type"
               data={socialNetworksTypes}
-              label="Type"
               disabled={false}
             />
             <Input

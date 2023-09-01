@@ -19,7 +19,7 @@ export class DepartmentMembershipsModel {
 
   handleSelect(item, index, type) {
     const updatedSelectedOptions = [...this.departments];
-    updatedSelectedOptions[index][type] = item.value;
+    updatedSelectedOptions[index][type] = item;
     this.setDepartments(updatedSelectedOptions);
   }
 

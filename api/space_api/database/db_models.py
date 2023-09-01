@@ -382,23 +382,23 @@ class ApplicationReview(MixinAsDict, SaBaseModel):
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
     # ---------------------------- USER CHANGEABLE FIELDS ---------------------------- #
-    motivation: Mapped[int] = mapped_column(Integer, nullable=False, default=1)
-    skill: Mapped[int] = mapped_column(Integer, nullable=False, default=1)
-    fit: Mapped[int] = mapped_column(Integer, nullable=False, default=1)
-    in_tumai: Mapped[int] = mapped_column(Integer, nullable=False, default=1)
+    motivation: Mapped[int] = mapped_column(Integer, nullable=False)
+    skill: Mapped[int] = mapped_column(Integer, nullable=False)
+    fit: Mapped[int] = mapped_column(Integer, nullable=False)
+    in_tumai: Mapped[int] = mapped_column(Integer, nullable=False)
 
     comment_fit_tumai: Mapped[str | None] = mapped_column(String, nullable=True)
     timecommit: Mapped[str | None] = mapped_column(String, nullable=True)
 
-    dept1_score: Mapped[int] = mapped_column(Integer, nullable=False, default=1)
-    dept2_score: Mapped[int] = mapped_column(Integer, nullable=False, default=1)
-    dept3_score: Mapped[int] = mapped_column(Integer, nullable=False, default=1)
+    dept1_score: Mapped[int] = mapped_column(Integer, nullable=False)
+    dept2_score: Mapped[int] = mapped_column(Integer, nullable=False)
+    dept3_score: Mapped[int] = mapped_column(Integer, nullable=False)
 
     maybegoodfit: Mapped[str | None] = mapped_column(String, nullable=True)
     furthercomments: Mapped[str | None] = mapped_column(String, nullable=True)
 
     referral: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
-    finalscore: Mapped[float] = mapped_column(Float, nullable=False, default=-1.0)
+    finalscore: Mapped[float] = mapped_column(Float, nullable=False)
 
     # ----------------------------- RELATIONAL FK FIELDS ----------------------------- #
     reviewer_id: Mapped[int] = mapped_column(
