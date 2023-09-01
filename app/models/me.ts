@@ -30,11 +30,23 @@ export class MeModel {
           profile: { ...profile },
         });
         // fetch stuff that you are authorized for
-        this.root.rolesModel.getRoles();
-        this.root.rolesModel.getRoleHolderships();
-        this.root.departmentMembershipsModel.fetchDepartments();
-        this.root.reviewToolModel.fetchApplications();
-        this.root.reviewToolModel.fetchMyreviews();
+        if (
+          profile["role_holderships"].find((role) => role["handle"] == "admin")
+        ) {
+          this.root.rolesModel.getRoles();
+          this.root.rolesModel.getRoleHolderships();
+          this.root.departmentMembershipsModel.fetchDepartments();
+        }
+        console.log(profile["role_holderships"]);
+
+        if (
+          profile["role_holderships"].find(
+            (role) => role["handle"] == "submit_reviews",
+          )
+        ) {
+          this.root.reviewToolModel.fetchApplications();
+          this.root.reviewToolModel.fetchMyreviews();
+        }
       } else {
         this.setUser(null);
       }
