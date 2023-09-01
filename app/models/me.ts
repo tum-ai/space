@@ -1,7 +1,7 @@
 // @ts-nocheck
 import { auth } from "@config/firebase";
-import axios from "axios";
-import { createUserWithEmailAndPassword, signOut } from "firebase/auth";
+import axios, { AxiosError } from "axios";
+import { signOut } from "firebase/auth";
 import { makeAutoObservable } from "mobx";
 
 export class MeModel {
@@ -63,27 +63,6 @@ export class MeModel {
     this.user = user;
   }
 
-  async logout() {
-    this.setUser(null);
-    await signOut(auth);
-  }
-
-  signup(email, password) {
-    return createUserWithEmailAndPassword(auth, email, password);
-  }
-
-  async getProfile() {
-    const profile = (await axios("/me")).data.data;
-    const roles = (await axios("/me/role/holderships")).data.data;
-    profile["role_holderships"] = roles.map((obj) => obj["role"]);
-    this.setUser({
-      uid: this.user.uid,
-      email: this.user.email,
-      displayName: this.user.displayName,
-      profile: { ...profile },
-    });
-  }
-
   hasRoles(user, roles) {
     if (roles?.length == 0 || !user) {
       return false;
@@ -96,12 +75,52 @@ export class MeModel {
     return intersection.length > 0;
   }
 
+  // Api
+
+  async logout() {
+    const value = await signOut(auth)
+      .then((res) => {
+        return true;
+      })
+      .catch((err: AxiosError) => {
+        toast.error(`Failed to get my roles: ${err.message}`);
+      });
+    if (value) {
+      this.setUser(null);
+    }
+  }
+
+  async getProfile() {
+    const profile = await axios("/me")
+      .then((res) => res.data.data)
+      .catch((err: AxiosError) => {
+        toast.error(`Failed to get my profile: ${err.message}`);
+      });
+    const roles = await axios("/me/role/holderships")
+      .then((res) => res.data.data)
+      .catch((err: AxiosError) => {
+        toast.error(`Failed to get my roles: ${err.message}`);
+      });
+    if (profile && roles) {
+      profile["role_holderships"] = roles.map((obj) => obj["role"]);
+      this.setUser({
+        uid: this.user.uid,
+        email: this.user.email,
+        displayName: this.user.displayName,
+        profile: { ...profile },
+      });
+    }
+  }
+
   async editProfile() {
     const data = await axios
       .patch("me", {
         data: this.editorProfile,
       })
-      .then((res) => res.data.data);
+      .then((res) => res.data.data)
+      .catch((err: AxiosError) => {
+        toast.error(`Failed to edit: ${err.message}`);
+      });
 
     this.profile = { ...this.profile, ...data };
   }
