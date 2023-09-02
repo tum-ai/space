@@ -2,8 +2,9 @@
 import { Section } from "@components/Section";
 import ProfileOverview from "../profile/components/ProfileOverview";
 import { useStores } from "@providers/StoreProvider";
+import { observer } from "mobx-react";
 
-export default function Me() {
+const Me = () => {
   const { meModel } = useStores();
 
   const user = meModel.user;
@@ -18,4 +19,6 @@ export default function Me() {
       <ProfileOverview profile={profile} meModel={meModel} />
     </Section>
   );
-}
+};
+
+export default observer(Me);
