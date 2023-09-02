@@ -9,31 +9,33 @@ import { Button } from "./Button";
 
 interface Props {
   setSelectedItem: (item: string) => void;
-  selectedItem: {
+  /**
+   * @deprecated use value instead
+   */
+  selectedItem?: {
     key: any;
-    value: string | number;
+    value: string;
   };
+  value?: string;
   placeholder: string;
   disabled?: boolean;
   label?: string;
-  data: {
-    key: any;
-    value: string | number;
-  };
+  data: { [key: string]: any }[];
 }
 
 function Select({
   setSelectedItem,
   selectedItem,
+  value,
   placeholder,
   disabled = false,
   label,
   data,
-}) {
+}: Props) {
   return (
     <SelectPrimitive.Root
       disabled={disabled}
-      value={selectedItem.value}
+      value={value || selectedItem.value}
       onValueChange={setSelectedItem}
     >
       {label && <label className="mb-2 text-sm font-thin">{label}</label>}
