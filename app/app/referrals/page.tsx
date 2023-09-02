@@ -6,7 +6,12 @@ import { Section } from "@components/Section";
 import Textarea from "@components/Textarea";
 import { useStores } from "@providers/StoreProvider";
 import * as DialogRadix from "@radix-ui/react-dialog";
+import axios, { AxiosError } from "axios";
+import { ErrorMessage, Field, Form, Formik, FormikValues } from "formik";
 import { observer } from "mobx-react";
+import { useState } from "react";
+import toast from "react-hot-toast";
+import * as Yup from "yup";
 
 const Referrals = observer(() => {
   const { referralsModel } = useStores();
@@ -60,22 +65,129 @@ const Referrals = observer(() => {
   );
 });
 
-const SubmitReferral = observer(() => {
+const SubmitReferral = () => {
   const { referralsModel } = useStores();
-  const referral = referralsModel.referral;
+  const [isOpen, setIsOpen] = useState(false);
 
-  function handleChange(e) {
-    referralsModel.setReferralAttribute(e.target.name, e.target.value);
-  }
+  const schema = Yup.object().shape({
+    email: Yup.string()
+      .email("Must be valid email")
+      .required("Cannot be empty"),
+    first_name: Yup.string().required("Cannot be empty"),
+    last_name: Yup.string().required("Cannot be empty"),
+    comment: Yup.string().required("Cannot be empty"),
+  });
+
+  const initialValues = {
+    email: "",
+    first_name: "",
+    last_name: "",
+    comment: "",
+  };
 
   return (
-    <Dialog trigger={<Button>submit referral</Button>}>
-      <form className="grid grid-cols-1 lg:grid-cols-2 lg:gap-8">
+    <Dialog
+      isOpenOutside={isOpen}
+      setIsOpenOutside={setIsOpen}
+      trigger={<Button>submit referral</Button>}
+    >
+      <Formik
+        initialValues={initialValues}
+        validationSchema={schema}
+        onSubmit={async (values: FormikValues) => {
+          const value = await axios
+            .post("/application/referral/", {
+              data: values,
+            })
+            .then((res) => true)
+            .catch((err: AxiosError) => {
+              toast.error(`Failed to submit referral: ${err.message}`);
+            });
+          if (value) {
+            setIsOpen(false);
+            referralsModel.fetchReferrals();
+          }
+        }}
+      >
+        {({}) => (
+          <Form>
+            <div className="space-y-4">
+              <DialogRadix.Title className="col-span-2 flex items-center justify-between">
+                <h1 className="text-3xl">Submit Referral</h1>
+                <div className="col-span-2 flex space-x-2">
+                  <Button type="submit">refer</Button>
+
+                  <DialogRadix.Close>
+                    <Button variant="secondary">cancel</Button>
+                  </DialogRadix.Close>
+                </div>
+              </DialogRadix.Title>
+              <div className="flex flex-col">
+                <Field
+                  as={Input}
+                  label="Email"
+                  name={`email`}
+                  placeholder="daniel.korth@tum.de"
+                  type="text"
+                />
+                <ErrorMessage
+                  component="p"
+                  className="text-red-500"
+                  name={`email`}
+                />
+              </div>
+              <div className="flex flex-col">
+                <Field
+                  as={Input}
+                  label="First name"
+                  name={`first_name`}
+                  placeholder="Daniel"
+                  type="text"
+                />
+                <ErrorMessage
+                  component="p"
+                  className="text-red-500"
+                  name={`first_name`}
+                />
+              </div>
+              <div className="flex flex-col">
+                <Field
+                  as={Input}
+                  label="Last name"
+                  name={`last_name`}
+                  placeholder="Korth"
+                  type="text"
+                />
+                <ErrorMessage
+                  component="p"
+                  className="text-red-500"
+                  name={`last_name`}
+                />
+              </div>
+              <div className="flex flex-col">
+                <Field
+                  as={Textarea}
+                  label="Comment"
+                  name={`comment`}
+                  placeholder="Why is this person a good fit?"
+                  type="text"
+                />
+                <ErrorMessage
+                  component="p"
+                  className="text-red-500"
+                  name={`comment`}
+                />
+              </div>
+            </div>
+          </Form>
+        )}
+      </Formik>
+
+      {/* <form className="grid grid-cols-1 lg:grid-cols-2 lg:gap-8">
         <DialogRadix.Title className="col-span-2 flex items-center justify-between">
           <h1 className="text-3xl">Submit Referral</h1>
           <div className="col-span-2 flex space-x-2">
             <DialogRadix.Close>
-              {/* TODO: Handle form correctly */}
               <Button
                 onClick={async (e) => {
                   await referralsModel.submitRefrral();
@@ -129,9 +241,9 @@ const SubmitReferral = observer(() => {
             required={true}
           />
         </div>
-      </form>
+      </form> */}
     </Dialog>
   );
-});
+};
 
 export default Referrals;
