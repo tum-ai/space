@@ -11,7 +11,7 @@ const Profile = () => {
 
   const profileQuery = useQuery({
     queryKey: [`profile-${id}`],
-    queryFn: () => axios.get(`/profile/${id}`),
+    queryFn: () => axios.get(`/profile/${id}`).then((res) => res.data),
   });
 
   if (profileQuery.isLoading) {
@@ -22,7 +22,7 @@ const Profile = () => {
     return <h1>Profile not found.</h1>;
   }
 
-  return <ProfileOverview profile={profileQuery.data.data.data} />;
+  return <ProfileOverview profile={profileQuery.data.data} />;
 };
 
 export default observer(Profile);
