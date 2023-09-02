@@ -101,9 +101,6 @@ export class DepartmentMembershipsModel {
         ...department,
         new: null,
       }));
-
-      // TODO: this modal state should be handled where this function is called depending on this functions return value
-      this.root.uiModel.toggleModal();
     }
   }
 
