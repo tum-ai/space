@@ -6,16 +6,11 @@ import Link from "next/link";
 import { FaUser } from "react-icons/fa";
 
 function User() {
-  const { uiModel, meModel } = useStores();
+  const { meModel } = useStores();
   const user = meModel.user;
 
   return (
-    <div
-      onClick={() => {
-        uiModel.setNavBarActive(false);
-      }}
-      className="flex space-x-4"
-    >
+    <div className="flex space-x-4">
       {user ? (
         <>
           <Link
