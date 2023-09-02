@@ -38,7 +38,7 @@ Also make sure to have [pre-commit](https://pre-commit.com) installed by running
 Create conda environment for the API:
 ```
 cd api
-conda env create -f environment.yaml
+conda env create -f environment.yml
 ```
 
 ### Running the project
