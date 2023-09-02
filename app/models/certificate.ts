@@ -1,5 +1,7 @@
+import axios, { AxiosError } from "axios";
 import download from "downloadjs";
 import { makeAutoObservable } from "mobx";
+import toast from "react-hot-toast";
 import { RootModel } from "./root";
 
 export class CertificateModel {
@@ -16,13 +18,19 @@ export class CertificateModel {
   }
 
   async generateCertificate() {
-    const response = await this.root.POST(
-      "/certificate/membership/",
-      this.editorCertificate,
-      { responseType: "blob" },
-      true,
-    );
-    let fileName = `tumai-certificate-${this.editorCertificate["NAME"]}-${this.editorCertificate["LASTNAME"]}.pdf`;
-    download(response.data, fileName, response.headers["content-type"]);
+    const response = await axios
+      .post("/certificate/membership/", {
+        data: { ...this.editorCertificate },
+        responseType: "blob",
+      })
+      .then((res) => res.data)
+      .catch((err: AxiosError) => {
+        toast.error(`Failed to generate certificate: ${err.message}`);
+      });
+
+    if (response) {
+      let fileName = `tumai-certificate-${this.editorCertificate["NAME"]}-${this.editorCertificate["LASTNAME"]}.pdf`;
+      download(response.data, fileName, response.headers["content-type"]);
+    }
   }
 }

@@ -18,7 +18,7 @@ const ReviewTool = observer(() => {
   return (
     <ProtectedItem showNotFound roles={["submit_reviews"]}>
       <Section className="flex items-center justify-between">
-        <div className="text-6xl font-thin">Review Tool</div>
+        <h1 className="text-6xl font-thin">Review Tool</h1>
         <Link href={"/review/myreviews"}>
           <Button>My reviews</Button>
         </Link>
