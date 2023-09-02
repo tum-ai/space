@@ -5,10 +5,12 @@ import axios from "axios";
 import { createContext } from "react";
 import { useStores } from "../providers/StoreProvider";
 import { Toaster } from "react-hot-toast";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 axios.defaults.baseURL = process.env.NEXT_PUBLIC_API_URL;
 
 const StoresContext = createContext(null);
+const queryClient = new QueryClient();
 
 export default function RootLayout({
   children,
@@ -19,11 +21,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <StoresContext.Provider value={stores}>
-          <NavBar />
-          <main>{children}</main>
-        </StoresContext.Provider>
-        <Toaster />
+        <QueryClientProvider client={queryClient}>
+          <StoresContext.Provider value={stores}>
+            <NavBar />
+            <main>{children}</main>
+            <Toaster />
+          </StoresContext.Provider>
+        </QueryClientProvider>
       </body>
     </html>
   );
