@@ -36,8 +36,8 @@ const Invite = () => {
         email: "",
         first_name: "",
         last_name: "",
-        department_handle: "",
-        department_position: "",
+        department_handle: "DEV",
+        department_position: "member",
       },
     ],
   };
