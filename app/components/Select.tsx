@@ -15,6 +15,7 @@ interface Props {
   };
   placeholder: string;
   disabled?: boolean;
+  label?: string;
   data: {
     key: any;
     value: string | number;
@@ -26,6 +27,7 @@ function Select({
   selectedItem,
   placeholder,
   disabled = false,
+  label,
   data,
 }) {
   return (
@@ -34,6 +36,7 @@ function Select({
       value={selectedItem.value}
       onValueChange={setSelectedItem}
     >
+      {label && <label className="mb-2 text-sm font-thin">{label}</label>}
       <SelectPrimitive.Trigger asChild aria-label="Food">
         <Button>
           {selectedItem.value ? <SelectPrimitive.Value /> : placeholder}
