@@ -1,5 +1,6 @@
 "use client";
 import { useStores } from "@providers/StoreProvider";
+import { EnterIcon, ExitIcon } from "@radix-ui/react-icons";
 import { observer } from "mobx-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -11,7 +12,7 @@ function User() {
 
   return (
     <div className="flex space-x-4">
-      {user ? (
+      {user && (
         <>
           <Link
             href="/me"
@@ -19,7 +20,7 @@ function User() {
               "flex items-center space-x-4 rounded-full bg-gray-200 p-2 px-4 hover:text-black dark:bg-gray-700 dark:hover:text-white"
             }
           >
-            {user.profile.profile_picture ? (
+            {user.profile.profile_picture && (
               <Image
                 className="h-8 w-8 rounded-full object-cover"
                 src={user.profile.profile_picture}
@@ -27,32 +28,33 @@ function User() {
                 height={100}
                 alt=""
               />
-            ) : (
+            )}
+            {!user.profile.profile_picture && (
               <div className="flex h-8 w-8 rounded-full bg-gray-300 text-center drop-shadow-lg dark:bg-gray-800">
                 <FaUser name={"FaUser"} className="m-auto text-xl text-white" />
               </div>
             )}
-            <div>
+            <p className="hidden sm:flex">
               {user.profile.first_name} {user.profile.last_name}
-            </div>
+            </p>
           </Link>
           <button
-            onClick={() => {
-              meModel.logout();
-            }}
+            onClick={() => meModel.logout()}
+            className="flex items-center gap-2"
           >
-            Logout
+            <ExitIcon />
+            <span className="hidden sm:inline">Logout</span>
           </button>
         </>
-      ) : (
-        <>
-          <Link
-            href={"/auth"}
-            className="rounded-lg bg-white p-2 dark:bg-gray-700"
-          >
-            Login
-          </Link>
-        </>
+      )}
+
+      {!user && (
+        <Link
+          href={"/auth"}
+          className="flex items-center gap-2 rounded-lg bg-white p-2 dark:bg-gray-700"
+        >
+          <EnterIcon /> Login
+        </Link>
       )}
     </div>
   );
