@@ -1,6 +1,5 @@
 "use client";
 
-import { Section } from "@components/Section";
 import ProfileOverview from "./components/ProfileOverview";
 import { observer } from "mobx-react";
 import axios from "axios";
@@ -23,11 +22,7 @@ const Profile = () => {
     return <h1>Profile not found.</h1>;
   }
 
-  return (
-    <Section>
-      <ProfileOverview profile={profileQuery.data.data.data} />
-    </Section>
-  );
+  return <ProfileOverview profile={profileQuery.data.data.data} />;
 };
 
 export default observer(Profile);
