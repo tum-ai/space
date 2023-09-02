@@ -31,7 +31,7 @@ const Referrals = observer(() => {
           </thead>
           <tbody>
             {referrals.map((referral) => (
-              <tr>
+              <tr key={referral.email}>
                 <td>{referral.email}</td>
                 <td>{referral.first_name}</td>
                 <td>{referral.last_name}</td>
