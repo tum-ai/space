@@ -42,7 +42,6 @@ function Certificate() {
         <form
           onSubmit={async (e) => {
             e.preventDefault();
-            console.log("form");
             await certificateModel.generateCertificate();
           }}
           className="grid grid-cols-1 items-end gap-4 rounded-lg bg-gray-200 p-8 dark:bg-gray-600 lg:grid-cols-2 lg:gap-8"
@@ -56,10 +55,7 @@ function Certificate() {
                 value: department,
               })),
             ]}
-            selectedItem={{
-              key: certificate["DEPARTMENT"],
-              value: certificate["DEPARTMENT"],
-            }}
+            value={certificate["DEPARTMENT"]}
             setSelectedItem={(item) => {
               certificateModel.updateEditorCertificate({
                 DEPARTMENT: item,
@@ -74,10 +70,7 @@ function Certificate() {
                 value: position,
               })),
             ]}
-            selectedItem={{
-              key: certificate["TITLE"],
-              value: certificate["TITLE"],
-            }}
+            value={certificate["TITLE"]}
             setSelectedItem={(position) => {
               certificateModel.updateEditorCertificate({
                 TITLE: position,

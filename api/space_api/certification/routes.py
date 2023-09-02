@@ -2,7 +2,7 @@ from io import BytesIO
 from typing import Annotated, Any
 
 import requests
-from fastapi import APIRouter, Body, Request
+from fastapi import APIRouter, Body, HTTPException, Request
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, ConfigDict
 
@@ -51,8 +51,4 @@ def generate_certificate(
             )
     except Exception:
         pass
-    return {
-        "status_code": 500,
-        "response_type": "error",
-        "description": "Error generating certificate",
-    }
+    raise HTTPException(status_code=500, detail="Error generating certificate")

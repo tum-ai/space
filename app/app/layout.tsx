@@ -4,6 +4,7 @@ import "@styles/globals.css";
 import axios from "axios";
 import { createContext } from "react";
 import { useStores } from "../providers/StoreProvider";
+import { Toaster } from "react-hot-toast";
 
 axios.defaults.baseURL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -22,6 +23,7 @@ export default function RootLayout({
           <NavBar />
           <main>{children}</main>
         </StoresContext.Provider>
+        <Toaster />
       </body>
     </html>
   );
