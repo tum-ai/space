@@ -1,4 +1,6 @@
+import axios, { AxiosError } from "axios";
 import { makeAutoObservable } from "mobx";
+import toast from "react-hot-toast";
 import { RootModel } from "./root";
 
 export class ReferralsModel {
@@ -39,11 +41,15 @@ export class ReferralsModel {
    * Submits referral in current state
    */
   async submitRefrral() {
-    const data = await this.root.POST("/application/referral/", {
-      ...this.referral,
-    });
-    if (!data) return;
-    if (data?.response_type == "success") {
+    const value = await axios
+      .post("/application/referral/", {
+        data: { ...this.referral },
+      })
+      .then((res) => true)
+      .catch((err: AxiosError) => {
+        toast.error(`Failed to submit referral: ${err.message}`);
+      });
+    if (value) {
       this.fetchReferrals();
       this.referral = {
         email: null,
@@ -58,8 +64,15 @@ export class ReferralsModel {
    * Fetches referrals.
    */
   async fetchReferrals() {
-    const referrals = await this.root.GET("/application/referrals/");
-    this.referrals = referrals;
+    const referrals = await axios
+      .get("/application/referrals/")
+      .then((res) => res.data.data)
+      .catch((err: AxiosError) => {
+        toast.error(`Failed to get referrals: ${err.message}`);
+      });
+    if (referrals) {
+      this.referrals = referrals;
+    }
   }
 
   /**
@@ -68,7 +81,14 @@ export class ReferralsModel {
    * @param email - The email of the person you referred.
    */
   async deleteReferral(email: string) {
-    await this.root.DELETE("/application/referral/?email=" + email);
-    this.fetchReferrals();
+    const value = await axios
+      .delete("/application/referral/?email=" + email)
+      .then((res) => true)
+      .catch((err: AxiosError) => {
+        toast.error(`Failed to delete referral for ${email}: ${err.message}`);
+      });
+    if (value) {
+      this.fetchReferrals();
+    }
   }
 }

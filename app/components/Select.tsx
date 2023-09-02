@@ -35,13 +35,13 @@ function Select({
   return (
     <SelectPrimitive.Root
       disabled={disabled}
-      value={value || selectedItem.value}
+      value={value || selectedItem?.value}
       onValueChange={setSelectedItem}
     >
       {label && <label className="mb-2 text-sm font-thin">{label}</label>}
       <SelectPrimitive.Trigger asChild aria-label="Food">
         <Button>
-          {selectedItem.value ? <SelectPrimitive.Value /> : placeholder}
+          {selectedItem?.value ? <SelectPrimitive.Value /> : placeholder}
           <SelectPrimitive.Icon className="ml-2">
             <ChevronDownIcon />
           </SelectPrimitive.Icon>
