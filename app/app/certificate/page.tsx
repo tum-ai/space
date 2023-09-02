@@ -55,10 +55,7 @@ function Certificate() {
                 value: department,
               })),
             ]}
-            selectedItem={{
-              key: certificate["DEPARTMENT"],
-              value: certificate["DEPARTMENT"],
-            }}
+            value={certificate["DEPARTMENT"]}
             setSelectedItem={(item) => {
               certificateModel.updateEditorCertificate({
                 DEPARTMENT: item,
@@ -73,10 +70,7 @@ function Certificate() {
                 value: position,
               })),
             ]}
-            selectedItem={{
-              key: certificate["TITLE"],
-              value: certificate["TITLE"],
-            }}
+            value={certificate["TITLE"]}
             setSelectedItem={(position) => {
               certificateModel.updateEditorCertificate({
                 TITLE: position,
