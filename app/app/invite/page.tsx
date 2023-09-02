@@ -123,114 +123,120 @@ const Invite = () => {
                   <Section className="space-y-4">
                     {values.invitees.length > 0 &&
                       values.invitees.map((invitee, index) => (
-                        <div className="flex items-start gap-4" key={index}>
-                          <div className="flex flex-col">
-                            <Field
-                              as={Input}
-                              label="Email"
-                              name={`invitees.${index}.email`}
-                              placeholder="daniel.korth@tum.de"
-                              type="text"
-                            />
-                            <ErrorMessage
-                              component="p"
-                              className="text-red-500"
-                              name={`invitees.${index}.email`}
-                            />
-                          </div>
+                        <div key={index} className="relative">
+                          <div className="mr-10 grid grid-cols-5 items-start gap-4">
+                            <div className="flex flex-col">
+                              <Field
+                                as={Input}
+                                label="Email"
+                                name={`invitees.${index}.email`}
+                                placeholder="daniel.korth@tum.de"
+                                type="text"
+                              />
+                              <ErrorMessage
+                                component="p"
+                                className="text-red-500"
+                                name={`invitees.${index}.email`}
+                              />
+                            </div>
 
-                          <div className="flex flex-col">
-                            <Field
-                              as={Input}
-                              label="First name"
-                              name={`invitees.${index}.first_name`}
-                              placeholder="Daniel"
-                              type="text"
-                            />
-                            <ErrorMessage
-                              component="p"
-                              className="text-red-500"
-                              name={`invitees.${index}.first_name`}
-                            />
-                          </div>
-                          <div className="flex flex-col">
-                            <Field
-                              as={Input}
-                              label="Last name"
-                              name={`invitees.${index}.last_name`}
-                              placeholder="Korth"
-                              type="text"
-                            />
-                            <ErrorMessage
-                              component="p"
-                              className="text-red-500"
-                              name={`invitees.${index}.last_name`}
-                            />
-                          </div>
+                            <div className="flex flex-col">
+                              <Field
+                                as={Input}
+                                label="First name"
+                                name={`invitees.${index}.first_name`}
+                                placeholder="Daniel"
+                                type="text"
+                              />
+                              <ErrorMessage
+                                component="p"
+                                className="text-red-500"
+                                name={`invitees.${index}.first_name`}
+                              />
+                            </div>
+                            <div className="flex flex-col">
+                              <Field
+                                as={Input}
+                                label="Last name"
+                                name={`invitees.${index}.last_name`}
+                                placeholder="Korth"
+                                type="text"
+                              />
+                              <ErrorMessage
+                                component="p"
+                                className="text-red-500"
+                                name={`invitees.${index}.last_name`}
+                              />
+                            </div>
 
-                          <div className="flex flex-col">
-                            <Field
-                              label="Department handle"
-                              name={`invitees.${index}.department_handle`}
-                              as={Select}
-                              placeholder={"Department"}
-                              data={Object.entries(departments).map(
-                                ([key, value]) => ({
-                                  key: key,
-                                  value: value,
-                                }),
-                              )}
-                              selectedItem={{
-                                key: departments[invitee["department_handle"]],
-                                value: invitee["department_handle"],
-                              }}
-                              setSelectedItem={(value) => {
-                                setFieldValue(
-                                  `invitees.${index}.department_handle`,
-                                  value,
-                                );
-                              }}
-                            />
-                            <ErrorMessage
-                              component="p"
-                              className="text-red-500"
-                              name={`invitees.${index}.department_handle`}
-                            />
-                          </div>
+                            <div className="flex flex-col">
+                              <Field
+                                label="Department handle"
+                                name={`invitees.${index}.department_handle`}
+                                as={Select}
+                                placeholder={"Department"}
+                                data={Object.entries(departments).map(
+                                  ([key, value]) => ({
+                                    key: key,
+                                    value: value,
+                                  }),
+                                )}
+                                selectedItem={{
+                                  key: departments[
+                                    invitee["department_handle"]
+                                  ],
+                                  value: invitee["department_handle"],
+                                }}
+                                setSelectedItem={(value) => {
+                                  setFieldValue(
+                                    `invitees.${index}.department_handle`,
+                                    value,
+                                  );
+                                }}
+                              />
+                              <ErrorMessage
+                                component="p"
+                                className="text-red-500"
+                                name={`invitees.${index}.department_handle`}
+                              />
+                            </div>
 
-                          <div className="flex flex-col">
-                            <Field
-                              label="Department position"
-                              name={`invitees.${index}.department_position`}
-                              as={Select}
-                              placeholder={"Position"}
-                              data={Object.entries(positions).map(
-                                ([key, value]) => ({
-                                  key: key,
-                                  value: value,
-                                }),
-                              )}
-                              selectedItem={{
-                                key: positions[invitee["department_position"]],
-                                value: invitee["department_position"],
-                              }}
-                              setSelectedItem={(value) => {
-                                setFieldValue(
-                                  `invitees.${index}.department_position`,
-                                  value,
-                                );
-                              }}
-                            />
-                            <ErrorMessage
-                              component="p"
-                              className="text-red-500"
-                              name={`invitees.${index}.department_position`}
-                            />
+                            <div className="flex flex-col">
+                              <Field
+                                label="Department position"
+                                name={`invitees.${index}.department_position`}
+                                as={Select}
+                                placeholder={"Position"}
+                                data={Object.entries(positions).map(
+                                  ([key, value]) => ({
+                                    key: key,
+                                    value: value,
+                                  }),
+                                )}
+                                selectedItem={{
+                                  key: positions[
+                                    invitee["department_position"]
+                                  ],
+                                  value: invitee["department_position"],
+                                }}
+                                setSelectedItem={(value) => {
+                                  setFieldValue(
+                                    `invitees.${index}.department_position`,
+                                    value,
+                                  );
+                                }}
+                              />
+                              <ErrorMessage
+                                component="p"
+                                className="text-red-500"
+                                name={`invitees.${index}.department_position`}
+                              />
+                            </div>
                           </div>
 
                           {index !== 0 && (
                             <button
-                              className="mt-4 p-2"
+                              className="absolute right-0 top-0 mt-8 p-2"
                               type="button"
                               onClick={() => remove(index)}
                             >
