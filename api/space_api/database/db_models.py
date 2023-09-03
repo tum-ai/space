@@ -1,4 +1,3 @@
-import enum
 from datetime import datetime
 from typing import Any, Literal, cast
 
@@ -338,13 +337,6 @@ class RoleHoldership(MixinAsDict, SaBaseModel):
         if not self.role_handle or not self.role.handle:
             raise KeyError
         self.profile.force_load()
-
-
-class Gender(enum.Enum):
-    MALE = "Male"
-    FEMALE = "Female"
-    NON_BINARY = "Non-Binary"
-    PREFER_NOT_TO_SAY = "Prefer not to say"
 
 
 class Application(MixinAsDict, SaBaseModel):
