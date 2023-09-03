@@ -430,7 +430,7 @@ class ApplicationReferral(MixinAsDict, SaBaseModel):
     # ---------------------------- USER CHANGEABLE FIELDS ---------------------------- #
     first_name: Mapped[str] = mapped_column(String(50), nullable=False)
     last_name: Mapped[str] = mapped_column(String(50), nullable=False)
-    comment: Mapped[str | None] = mapped_column(String, nullable=False)
+    comment: Mapped[str] = mapped_column(String, nullable=False)
     email: Mapped[str] = mapped_column(String, primary_key=True, nullable=False)
 
     # ----------------------------- RELATIONAL FK FIELDS ----------------------------- #
