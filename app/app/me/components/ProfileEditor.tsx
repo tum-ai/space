@@ -6,6 +6,7 @@ import Select from "@components/Select";
 import Textarea from "@components/Textarea";
 import { useStores } from "@providers/StoreProvider";
 import * as DialogRadix from "@radix-ui/react-dialog";
+import { useQueryClient } from "@tanstack/react-query";
 import { observer } from "mobx-react";
 import Image from "next/image";
 import { useState } from "react";
@@ -57,6 +58,8 @@ function ProfileEditor({ trigger }) {
     }
   }
 
+  const queryClient = useQueryClient();
+
   return (
     <Dialog trigger={trigger || <Button>edit</Button>}>
       <div className="flex w-full flex-col space-y-6">
@@ -67,7 +70,7 @@ function ProfileEditor({ trigger }) {
               <Button
                 onClick={async (e) => {
                   await meModel.editProfile();
-                  meModel.getProfile();
+                  queryClient.invalidateQueries({ queryKey: ["me"] });
                 }}
               >
                 save
