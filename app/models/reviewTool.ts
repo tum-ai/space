@@ -132,7 +132,8 @@ export class ReviewToolModel {
     const value = await axios
       .post("/review_tool/application_review", {
         data: {
-          ...review,
+          form: review,
+          review_type: "MEMBERSHIP",
           reviewee_id: this.applicationOnReview?.id,
         },
       })

@@ -9,13 +9,12 @@ import Select from "@components/Select";
 import Tabs from "@components/Tabs";
 import Tooltip from "@components/Tooltip";
 import { useStores } from "@providers/StoreProvider";
+import { ErrorMessage, Field, Form, Formik, FormikValues } from "formik";
 import { observer } from "mobx-react";
 import Link from "next/link";
 import { useState } from "react";
-import { ApplicationOverview, ViewReview } from "./components";
-import { ErrorMessage, Field, Form, Formik, FormikValues } from "formik";
 import * as Yup from "yup";
-import toast from "react-hot-toast";
+import { ApplicationOverview, ViewReview } from "./components";
 
 const ReviewTool = observer(() => {
   const { reviewToolModel } = useStores();
@@ -202,7 +201,7 @@ class ReviewForms {
   };
 }
 
-function ReviewForm() {
+function ReviewForm2() {
   const [formType, setFormType] = useState(undefined);
 
   return (
@@ -229,7 +228,7 @@ function ReviewForm() {
   );
 }
 
-const ReviewForm2 = observer(() => {
+const ReviewForm = observer(() => {
   const { reviewToolModel } = useStores();
 
   const initialValues = {
