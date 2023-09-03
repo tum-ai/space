@@ -1,10 +1,9 @@
 "use client";
+import { Avatar } from "@components/Avatar";
 import { useStores } from "@providers/StoreProvider";
 import { EnterIcon, ExitIcon } from "@radix-ui/react-icons";
 import { observer } from "mobx-react";
-import Image from "next/image";
 import Link from "next/link";
-import { FaUser } from "react-icons/fa";
 
 function User() {
   const { meModel } = useStores();
@@ -17,23 +16,14 @@ function User() {
           <Link
             href="/me"
             className={
-              "flex items-center space-x-4 rounded-full bg-gray-200 p-2 px-4 hover:text-black dark:bg-gray-700 dark:hover:text-white"
+              "flex items-center space-x-4 rounded-full hover:text-black dark:bg-gray-700 dark:hover:text-white sm:bg-gray-200 sm:p-2 sm:px-4"
             }
           >
-            {user.profile.profile_picture && (
-              <Image
-                className="h-8 w-8 rounded-full object-cover"
-                src={user.profile.profile_picture}
-                width={100}
-                height={100}
-                alt=""
-              />
-            )}
-            {!user.profile.profile_picture && (
-              <div className="flex h-8 w-8 rounded-full bg-gray-300 text-center drop-shadow-lg dark:bg-gray-800">
-                <FaUser name={"FaUser"} className="m-auto text-xl text-white" />
-              </div>
-            )}
+            <Avatar
+              variant="circle"
+              src={user.profile.profile_picture}
+              initials={`${user.profile.first_name[0]}${user.profile.last_name[0]}`}
+            />
             <p className="hidden sm:flex">
               {user.profile.first_name} {user.profile.last_name}
             </p>
