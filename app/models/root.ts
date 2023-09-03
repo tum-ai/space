@@ -6,12 +6,10 @@ import { ProfilesModel } from "./profiles";
 import { ReferralsModel } from "./referrals";
 import { ReviewToolModel } from "./reviewTool";
 import { RolesModel } from "./roles";
-import { UiModel } from "./ui";
 
 export class RootModel {
   profileModel: ProfileModel;
   profilesModel: ProfilesModel;
-  uiModel: UiModel;
   meModel: MeModel;
   rolesModel: RolesModel;
   certificateModel: CertificateModel;
@@ -22,7 +20,6 @@ export class RootModel {
   constructor() {
     this.profileModel = new ProfileModel(this);
     this.profilesModel = new ProfilesModel(this);
-    this.uiModel = new UiModel(this);
     this.meModel = new MeModel(this);
     this.rolesModel = new RolesModel(this);
     this.certificateModel = new CertificateModel(this);

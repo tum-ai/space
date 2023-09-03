@@ -74,7 +74,7 @@ const departmentTypes = [
 ];
 
 function DepartmentMembershipEditor({ trigger, profile_id }) {
-  const { uiModel, departmentMembershipsModel } = useStores();
+  const { departmentMembershipsModel } = useStores();
   const departments = departmentMembershipsModel.departments;
 
   return (
