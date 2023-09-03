@@ -1,24 +1,27 @@
 "use client";
-import { Section } from "@components/Section";
-import ProfileOverview from "../profile/components/ProfileOverview";
+
 import { useStores } from "@providers/StoreProvider";
-import { observer } from "mobx-react";
+import ProfileOverview from "../profile/components/ProfileOverview";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 
 const Me = () => {
   const { meModel } = useStores();
+  const profileQuery = useQuery({
+    queryKey: ["me"],
+    queryFn: () => axios("/me"),
+  });
 
-  const user = meModel.user;
-  const profile = user?.profile;
-
-  if (!profile) {
-    return <div>Profile not found.</div>;
+  if (profileQuery.isLoading) {
+    return <h1>Loading profile</h1>;
+  }
+  if (!profileQuery.data?.data?.data) {
+    return <h1>Profile not found.</h1>;
   }
 
   return (
-    <Section>
-      <ProfileOverview profile={profile} meModel={meModel} />
-    </Section>
+    <ProfileOverview profile={profileQuery.data.data.data} meModel={meModel} />
   );
 };
 
-export default observer(Me);
+export default Me;
