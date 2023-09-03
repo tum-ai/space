@@ -10,10 +10,6 @@ function NavBar() {
   const pathname = usePathname();
   const links = [
     {
-      path: "/",
-      text: "Home",
-    },
-    {
       path: "/profiles",
       text: "Team",
     },
