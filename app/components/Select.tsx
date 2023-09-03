@@ -38,15 +38,21 @@ function Select({
       value={value || selectedItem?.value}
       onValueChange={setSelectedItem}
     >
-      {label && <label className="mb-2 text-sm font-thin">{label}</label>}
-      <SelectPrimitive.Trigger asChild aria-label="Food">
-        <Button>
-          {selectedItem?.value ? <SelectPrimitive.Value /> : placeholder}
-          <SelectPrimitive.Icon className="ml-2">
-            <ChevronDownIcon />
-          </SelectPrimitive.Icon>
-        </Button>
-      </SelectPrimitive.Trigger>
+      <div className="flex flex-col gap-2">
+        {label && <label className="text-sm font-thin">{label}</label>}
+        <SelectPrimitive.Trigger asChild aria-label="Food">
+          <Button>
+            {selectedItem?.value || value ? (
+              <SelectPrimitive.Value />
+            ) : (
+              placeholder
+            )}
+            <SelectPrimitive.Icon className="ml-2">
+              <ChevronDownIcon />
+            </SelectPrimitive.Icon>
+          </Button>
+        </SelectPrimitive.Trigger>
+      </div>
       <SelectPrimitive.Content>
         <SelectPrimitive.ScrollUpButton className="flex items-center justify-center text-gray-700 dark:text-gray-300">
           <ChevronUpIcon />

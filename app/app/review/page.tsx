@@ -5,11 +5,13 @@ import Icon from "@components/Icon";
 import Input from "@components/Input";
 import ProtectedItem from "@components/ProtectedItem";
 import { Section } from "@components/Section";
+import Select from "@components/Select";
 import Tabs from "@components/Tabs";
 import Tooltip from "@components/Tooltip";
 import { useStores } from "@providers/StoreProvider";
 import { observer } from "mobx-react";
 import Link from "next/link";
+import { useState } from "react";
 import { ApplicationOverview, ViewReview } from "./components";
 
 const ReviewTool = observer(() => {
@@ -171,7 +173,60 @@ const ApplicationToReview = observer(() => {
   return <ApplicationOverview data={applicationOnReview} />;
 });
 
-const ReviewForm = observer(() => {
+class ReviewForms {
+  MEMBERSHIP: {
+    displayName: string;
+    form: {
+      motivation: number;
+      skill: number;
+      fit: number;
+      in_tumai: number;
+      comment_fit_tumai: string;
+      timecommit: string;
+      dept1_score: string;
+      dept2_score: string;
+      dept3_score: string;
+      maybegoodfit: string;
+      furthercomments: string;
+    };
+  };
+  VENTURE: {
+    displayName: "Venture";
+    form: {
+      motivation: number;
+      business_skills: number;
+    };
+  };
+}
+
+function ReviewForm() {
+  const [formType, setFormType] = useState(undefined);
+
+  return (
+    <div>
+      <Select
+        label="Choose review type"
+        placeholder="From Type"
+        data={[
+          {
+            key: "Membership review",
+            value: "MEMBERSHIP",
+          },
+          {
+            key: "Venture review",
+            value: "VENTURE",
+          },
+        ]}
+        value={formType}
+        setSelectedItem={(item) => {
+          setFormType(item);
+        }}
+      />
+    </div>
+  );
+}
+
+const ReviewForm2 = observer(() => {
   const { reviewToolModel } = useStores();
   const editorReview = reviewToolModel.editorReview;
 
