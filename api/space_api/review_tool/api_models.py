@@ -25,7 +25,7 @@ class ApplicationReviewOut(BaseModel):
         }
     )
 
-    form: dict
+    form: Any
     review_type: str
     referral: int
     finalscore: float
@@ -64,7 +64,7 @@ class ApplicationReviewIn(BaseModel):
         }
     )
 
-    form: dict
+    form: Any
     review_type: str
     reviewee_id: int
 
@@ -86,7 +86,7 @@ class ApplicationReviewUpdate(BaseModel):
         }
     )
 
-    form: dict
+    form: Any
 
     @classmethod
     def dummy(cls) -> "ApplicationReviewUpdate":
@@ -152,7 +152,7 @@ class MyApplicationReviewOut(BaseModel):
         }
     )
 
-    form: dict
+    form: Any
     review_type: str
     referral: int
     finalscore: float
