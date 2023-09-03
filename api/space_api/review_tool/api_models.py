@@ -11,36 +11,59 @@ class ApplicationReviewOut(BaseModel):
         json_schema_extra={
             "example": {
                 "id": 1,
-                "form": {
-                    "motivation": 1,
-                    "fit": 5,
-                    "comment": "good candidate"
-                },
-                "review_type": "MEMBERSHIP",
+                "motivation": 4,
+                "skill": 7,
+                "fit": 6,
+                "in_tumai": 2,
+                "comment_fit_tumai": "The fit seems good",
+                "timecommit": "10 hours per week",
+                "dept1_score": 8,
+                "dept2_score": 5,
+                "dept3_score": 7,
+                "maybegoodfit": "Yes, potentially",
+                "furthercomments": "Should keep an eye on progress",
                 "referral": 1,
                 "reviewer": ProfileOutPublic.dummy(),
                 "finalscore": 7.5,
-                "reviewee_id": 1,
+                "reviewee": 1,
             }
         }
     )
 
-    form: dict
-    review_type: str
+    motivation: int
+    skill: int
+    fit: int
+    in_tumai: int
+    comment_fit_tumai: str | None
+    timecommit: str | None
+    dept1_score: int
+    dept2_score: int
+    dept3_score: int
+    maybegoodfit: str | None
+    furthercomments: str | None
     referral: int
     finalscore: float
     reviewer: ProfileOutPublic
-    reviewee_id: int
+    reviewee: int
 
     @classmethod
     def from_db_model(cls, review: ApplicationReview) -> "ApplicationReviewOut":
         return ApplicationReviewOut(
-            form=review.form,
-            review_type=review.review_type,
+            motivation=review.motivation,
+            skill=review.skill,
+            fit=review.fit,
+            in_tumai=review.in_tumai,
+            comment_fit_tumai=review.comment_fit_tumai,
+            timecommit=review.timecommit,
+            dept1_score=review.dept1_score,
+            dept2_score=review.dept2_score,
+            dept3_score=review.dept3_score,
+            maybegoodfit=review.maybegoodfit,
+            furthercomments=review.furthercomments,
             referral=review.referral,
             finalscore=review.finalscore,
             reviewer=ProfileOutPublic.from_db_model(review.reviewer),
-            reviewee_id=review.reviewee_id,
+            reviewee=review.reviewee_id,
         )
 
     @classmethod
@@ -53,19 +76,33 @@ class ApplicationReviewIn(BaseModel):
     model_config = ConfigDict(
         json_schema_extra={
             "example": {
-                "form": {
-                    "motivation": 1,
-                    "fit": 5,
-                    "comment": "good candidate"
-                },
-                "review_type": "MEMBERSHIP",
+                "motivation": 4,
+                "skill": 7,
+                "fit": 6,
+                "in_tumai": 2,
+                "comment_fit_tumai": "The fit seems good",
+                "timecommit": "10 hours per week",
+                "dept1_score": 8,
+                "dept2_score": 5,
+                "dept3_score": 7,
+                "maybegoodfit": "Yes, potentially",
+                "furthercomments": "Should keep an eye on progress",
                 "reviewee_id": 1,
             }
         }
     )
 
-    form: dict
-    review_type: str
+    motivation: int
+    skill: int
+    fit: int
+    in_tumai: int
+    comment_fit_tumai: str | None
+    timecommit: str | None
+    dept1_score: int
+    dept2_score: int
+    dept3_score: int
+    maybegoodfit: str | None
+    furthercomments: str | None
     reviewee_id: int
 
     @classmethod
@@ -77,16 +114,32 @@ class ApplicationReviewUpdate(BaseModel):
     model_config = ConfigDict(
         json_schema_extra={
             "example": {
-                "form": {
-                    "motivation": 1,
-                    "fit": 5,
-                    "comment": "good candidate"
-                },
+                "motivation": 4,
+                "skill": 7,
+                "fit": 6,
+                "in_tumai": 2,
+                "comment_fit_tumai": "The fit seems good",
+                "timecommit": "10 hours per week",
+                "dept1_score": 8,
+                "dept2_score": 5,
+                "dept3_score": 7,
+                "maybegoodfit": "Yes, potentially",
+                "furthercomments": "Should keep an eye on progress",
             }
         }
     )
 
-    form: dict
+    motivation: int
+    skill: int
+    fit: int
+    in_tumai: int
+    comment_fit_tumai: str | None
+    timecommit: str | None
+    dept1_score: int
+    dept2_score: int
+    dept3_score: int
+    maybegoodfit: str | None
+    furthercomments: str | None
 
     @classmethod
     def dummy(cls) -> "ApplicationReviewUpdate":
@@ -139,12 +192,17 @@ class MyApplicationReviewOut(BaseModel):
         json_schema_extra={
             "example": {
                 "id": 1,
-                "form": {
-                    "motivation": 1,
-                    "fit": 5,
-                    "comment": "good candidate"
-                },
-                "review_type": "MEMBERSHIP",
+                "motivation": 4,
+                "skill": 7,
+                "fit": 6,
+                "in_tumai": 2,
+                "comment_fit_tumai": "The fit seems good",
+                "timecommit": "10 hours per week",
+                "dept1_score": 8,
+                "dept2_score": 5,
+                "dept3_score": 7,
+                "maybegoodfit": "Yes, potentially",
+                "furthercomments": "Should keep an eye on progress",
                 "referral": 1,
                 "application": ApplicationOut.dummy(),
                 "finalscore": 7.5,
@@ -152,8 +210,17 @@ class MyApplicationReviewOut(BaseModel):
         }
     )
 
-    form: dict
-    review_type: str
+    motivation: int
+    skill: int
+    fit: int
+    in_tumai: int
+    comment_fit_tumai: str | None
+    timecommit: str | None
+    dept1_score: int
+    dept2_score: int
+    dept3_score: int
+    maybegoodfit: str | None
+    furthercomments: str | None
     referral: int
     finalscore: float
     application: ApplicationOut
@@ -161,8 +228,17 @@ class MyApplicationReviewOut(BaseModel):
     @classmethod
     def from_db_model(cls, review: ApplicationReview) -> "MyApplicationReviewOut":
         return MyApplicationReviewOut(
-            form=review.form,
-            review_type=review.review_type,
+            motivation=review.motivation,
+            skill=review.skill,
+            fit=review.fit,
+            in_tumai=review.in_tumai,
+            comment_fit_tumai=review.comment_fit_tumai,
+            timecommit=review.timecommit,
+            dept1_score=review.dept1_score,
+            dept2_score=review.dept2_score,
+            dept3_score=review.dept3_score,
+            maybegoodfit=review.maybegoodfit,
+            furthercomments=review.furthercomments,
             referral=review.referral,
             finalscore=review.finalscore,
             application=ApplicationOut.from_db_model(review.application),

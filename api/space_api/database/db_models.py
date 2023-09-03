@@ -1,3 +1,4 @@
+import enum
 from datetime import datetime
 from typing import Any, Literal, cast
 
@@ -339,6 +340,13 @@ class RoleHoldership(MixinAsDict, SaBaseModel):
         self.profile.force_load()
 
 
+class Gender(enum.Enum):
+    MALE = "Male"
+    FEMALE = "Female"
+    NON_BINARY = "Non-Binary"
+    PREFER_NOT_TO_SAY = "Prefer not to say"
+
+
 class Application(MixinAsDict, SaBaseModel):
     """database relation"""
 
@@ -374,23 +382,20 @@ class ApplicationReview(MixinAsDict, SaBaseModel):
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
     # ---------------------------- USER CHANGEABLE FIELDS ---------------------------- #
+    motivation: Mapped[int] = mapped_column(Integer, nullable=False)
+    skill: Mapped[int] = mapped_column(Integer, nullable=False)
+    fit: Mapped[int] = mapped_column(Integer, nullable=False)
+    in_tumai: Mapped[int] = mapped_column(Integer, nullable=False)
 
-    review_type: Mapped[str] = mapped_column(String(50), nullable=False)
-    form: Mapped[str] = mapped_column(JSON, nullable=False)
-    # motivation: Mapped[int] = mapped_column(Integer, nullable=False)
-    # skill: Mapped[int] = mapped_column(Integer, nullable=False)
-    # fit: Mapped[int] = mapped_column(Integer, nullable=False)
-    # in_tumai: Mapped[int] = mapped_column(Integer, nullable=False)
+    comment_fit_tumai: Mapped[str | None] = mapped_column(String, nullable=True)
+    timecommit: Mapped[str | None] = mapped_column(String, nullable=True)
 
-    # comment_fit_tumai: Mapped[str | None] = mapped_column(String, nullable=True)
-    # timecommit: Mapped[str | None] = mapped_column(String, nullable=True)
+    dept1_score: Mapped[int] = mapped_column(Integer, nullable=False)
+    dept2_score: Mapped[int] = mapped_column(Integer, nullable=False)
+    dept3_score: Mapped[int] = mapped_column(Integer, nullable=False)
 
-    # dept1_score: Mapped[int] = mapped_column(Integer, nullable=False)
-    # dept2_score: Mapped[int] = mapped_column(Integer, nullable=False)
-    # dept3_score: Mapped[int] = mapped_column(Integer, nullable=False)
-
-    # maybegoodfit: Mapped[str | None] = mapped_column(String, nullable=True)
-    # furthercomments: Mapped[str | None] = mapped_column(String, nullable=True)
+    maybegoodfit: Mapped[str | None] = mapped_column(String, nullable=True)
+    furthercomments: Mapped[str | None] = mapped_column(String, nullable=True)
 
     referral: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     finalscore: Mapped[float] = mapped_column(Float, nullable=False)
