@@ -95,21 +95,20 @@ const SubmitReferral = () => {
         initialValues={initialValues}
         validationSchema={schema}
         onSubmit={async (values: FormikValues) => {
-          const value = await axios
+          await axios
             .post("/application/referral/", {
               data: values,
             })
-            .then((res) => true)
+            .then(() => {
+              setIsOpen(false);
+              referralsModel.fetchReferrals();
+            })
             .catch((err: AxiosError) => {
               toast.error(`Failed to submit referral: ${err.message}`);
             });
-          if (value) {
-            setIsOpen(false);
-            referralsModel.fetchReferrals();
-          }
         }}
       >
-        {({}) => (
+        {() => (
           <Form>
             <div className="space-y-4">
               <DialogRadix.Title className="col-span-2 flex items-center justify-between">
@@ -182,66 +181,6 @@ const SubmitReferral = () => {
           </Form>
         )}
       </Formik>
-
-      {/* <form className="grid grid-cols-1 lg:grid-cols-2 lg:gap-8">
-        <DialogRadix.Title className="col-span-2 flex items-center justify-between">
-          <h1 className="text-3xl">Submit Referral</h1>
-          <div className="col-span-2 flex space-x-2">
-            <DialogRadix.Close>
-              <Button
-                onClick={async (e) => {
-                  await referralsModel.submitRefrral();
-                }}
-              >
-                refer
-              </Button>
-            </DialogRadix.Close>
-
-            <DialogRadix.Close>
-              <Button variant="secondary">cancel</Button>
-            </DialogRadix.Close>
-          </div>
-        </DialogRadix.Title>
-        <Input
-          label="Email (must match application email)"
-          type="email"
-          id="email"
-          name="email"
-          value={referral.email}
-          onChange={handleChange}
-          required={true}
-        />
-        <Input
-          label="First Name"
-          type="first_name"
-          id="first_name"
-          name="first_name"
-          value={referral.first_name}
-          onChange={handleChange}
-          required={true}
-        />
-        <Input
-          label="Last Name"
-          type="last_name"
-          id="last_name"
-          name="last_name"
-          value={referral.last_name}
-          onChange={handleChange}
-          required={true}
-        />
-        <div className="col-start-1">
-          <Textarea
-            label="Comment"
-            placeholder="Why is this a good candidate?"
-            type="text"
-            id="comment"
-            name="comment"
-            value={referral.comment}
-            onChange={handleChange}
-            required={true}
-          />
-        </div>
-      </form> */}
     </Dialog>
   );
 };

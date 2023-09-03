@@ -41,23 +41,22 @@ export class ReferralsModel {
    * Submits referral in current state
    */
   async submitRefrral() {
-    const value = await axios
+    await axios
       .post("/application/referral/", {
         data: { ...this.referral },
       })
-      .then((res) => true)
+      .then(() => {
+        this.fetchReferrals();
+        this.referral = {
+          email: null,
+          first_name: null,
+          last_name: null,
+          comment: null,
+        };
+      })
       .catch((err: AxiosError) => {
         toast.error(`Failed to submit referral: ${err.message}`);
       });
-    if (value) {
-      this.fetchReferrals();
-      this.referral = {
-        email: null,
-        first_name: null,
-        last_name: null,
-        comment: null,
-      };
-    }
   }
 
   /**
@@ -66,13 +65,13 @@ export class ReferralsModel {
   async fetchReferrals() {
     const referrals = await axios
       .get("/application/referrals/")
-      .then((res) => res.data.data)
+      .then((res) => {
+        const referrals = res.data.data;
+        this.referrals = referrals;
+      })
       .catch((err: AxiosError) => {
         toast.error(`Failed to get referrals: ${err.message}`);
       });
-    if (referrals) {
-      this.referrals = referrals;
-    }
   }
 
   /**
