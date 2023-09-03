@@ -5,7 +5,7 @@ import { useState } from "react";
 interface Props {
   trigger: React.ReactNode;
   isOpenOutside?: boolean;
-  setIsOpenOutside?: (boolean) => void;
+  setIsOpenOutside?: (isOpen: boolean) => void;
   children: React.ReactNode;
 }
 
