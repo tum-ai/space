@@ -40,6 +40,10 @@ function NavBar() {
       protected: true,
       roles: ["submit_reviews"],
     },
+    {
+      path: "/referrals",
+      text: "Referrals",
+    },
   ];
   return (
     <NavigationMenu.Root className="relative w-full" orientation="vertical">
