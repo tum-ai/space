@@ -374,11 +374,6 @@ class ApplicationReview(MixinAsDict, SaBaseModel):
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
     # ---------------------------- USER CHANGEABLE FIELDS ---------------------------- #
-    motivation: Mapped[int] = mapped_column(Integer, nullable=False)
-    skill: Mapped[int] = mapped_column(Integer, nullable=False)
-    fit: Mapped[int] = mapped_column(Integer, nullable=False)
-    in_tumai: Mapped[int] = mapped_column(Integer, nullable=False)
-
     review_type: Mapped[str] = mapped_column(String(50), nullable=False)
     form: Mapped[str] = mapped_column(JSON, nullable=False)
 

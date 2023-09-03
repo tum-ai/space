@@ -21,6 +21,22 @@ from .firebase_auth import verify_id_token
 
 def __ensure_auth(func: Callable, request: Request, *args: Any, **kwargs: Any) -> Any:
     headers = request.headers
+    # ==========FOR TESTING USING THE FASTAPI DOCS WITHOUT AUTH===
+    # class dotdict(dict):
+    #     """dot.notation access to dictionary attributes"""
+    #     __getattr__ = dict.get
+    #     __setattr__ = dict.__setitem__
+    #     __delattr__ = dict.__delitem__
+
+    # mydict = {'val':'it works'}
+    # request.state.profile = {"id": 1}
+    # request.state.profile = dotdict(request.state.profile)
+    # kwargs.pop("any_of_roles", None)
+    # kwargs.pop(
+    #     "any_of_positions", None
+    # )
+    # return func(request, *args, **kwargs)
+    # ===========================================================
     jwt = headers.get("authorization")
     if jwt is None:
         raise RESPONSE_NO_AUTH_TOKEN
