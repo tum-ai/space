@@ -1,3 +1,4 @@
+import enum
 from datetime import datetime
 from typing import Any, Literal, cast
 
@@ -339,6 +340,13 @@ class RoleHoldership(MixinAsDict, SaBaseModel):
         self.profile.force_load()
 
 
+class Gender(enum.Enum):
+    MALE = "Male"
+    FEMALE = "Female"
+    NON_BINARY = "Non-Binary"
+    PREFER_NOT_TO_SAY = "Prefer not to say"
+
+
 class Application(MixinAsDict, SaBaseModel):
     """database relation"""
 
@@ -374,6 +382,10 @@ class ApplicationReview(MixinAsDict, SaBaseModel):
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
     # ---------------------------- USER CHANGEABLE FIELDS ---------------------------- #
+    motivation: Mapped[int] = mapped_column(Integer, nullable=False)
+    skill: Mapped[int] = mapped_column(Integer, nullable=False)
+    fit: Mapped[int] = mapped_column(Integer, nullable=False)
+    in_tumai: Mapped[int] = mapped_column(Integer, nullable=False)
 
     review_type: Mapped[str] = mapped_column(String(50), nullable=False)
     form: Mapped[str] = mapped_column(JSON, nullable=False)
