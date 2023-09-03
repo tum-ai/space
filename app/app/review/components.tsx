@@ -31,6 +31,18 @@ export function ReviewOverview({ review }) {
             </div>
           );
         })}
+      {Object.entries(review.form)
+        .filter(([_, value]) => {
+          return typeof value == "string" || typeof value == "number";
+        })
+        .map(([key, value]: any, i) => {
+          return (
+            <div key={key} className="border-b pb-2">
+              <div className="font-thin">{key}</div>
+              <div>{value}</div>
+            </div>
+          );
+        })}
     </div>
   );
 }
