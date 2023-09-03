@@ -1,3 +1,5 @@
+import { Checkbox } from "@components/Checkbox";
+import Link from "next/link";
 import Dialog from "../../components/Dialog";
 
 export function ViewReview({ trigger, viewReview, applicationToView }) {
@@ -67,15 +69,42 @@ export function ApplicationOverview({ data }) {
             new Date(data.submission?.data?.createdAt).toDateString()}
         </div>
       </div>
-      <div className="grid gap-4 lg:grid-cols-2">
-        {data.submission?.data?.fields?.map((field) => {
-          return (
-            <div key={field.label}>
-              <div className="font-thin">{field.label}</div>
-              <div>{JSON.stringify(field.value)}</div>
-            </div>
-          );
-        })}
+      <div className="grid gap-4 md:grid-cols-2">
+        {data.submission?.data?.fields
+          ?.sort((fieldA, fieldB) => {
+            if (typeof fieldA.value == "boolean") {
+              return -1;
+            }
+          })
+          .filter((field) => field.value != null && field.type != "CHECKBOXES")
+          .map((field) => {
+            return (
+              <div
+                key={field.label}
+                className={`${
+                  field.type == "TEXTAREA" ? "md:col-span-2" : ""
+                } border-b pb-2`}
+              >
+                <div className="font-thin">{field.label}</div>
+                {typeof field.value == "boolean" ? (
+                  <Checkbox checked={field.value} onCheckedChange={undefined} />
+                ) : (
+                  <div className="font-medium">
+                    {field.type == "FILE_UPLOAD" ? (
+                      <Link
+                        className="text-blue-500"
+                        href={field.value[0].url || ""}
+                      >
+                        link
+                      </Link>
+                    ) : (
+                      JSON.stringify(field.value)
+                    )}
+                  </div>
+                )}
+              </div>
+            );
+          })}
       </div>
     </div>
   );

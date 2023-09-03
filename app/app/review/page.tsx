@@ -287,7 +287,7 @@ const VentureReviewForm = observer(() => {
       }}
     >
       {({ values, setFieldValue }) => (
-        <Form className="top-0 z-0 grid h-fit grid-cols-2 gap-4 rounded-lg bg-gray-200 p-8 dark:bg-gray-600 md:sticky">
+        <Form className="top-0 z-0 grid h-fit gap-4 rounded-lg bg-gray-200 p-8 dark:bg-gray-600 md:sticky md:grid-cols-2">
           <h2 className="text-2xl lg:col-span-2">Submit Review</h2>
           <div>
             <Field
@@ -469,7 +469,7 @@ const MembershipReviewForm = observer(() => {
         reviewToolModel.submitReview(values);
       }}
     >
-      <Form className="top-0 grid h-fit grid-cols-2 gap-4 rounded-lg bg-gray-200 p-8 dark:bg-gray-600 md:sticky">
+      <Form className="top-0 grid h-fit gap-4 rounded-lg bg-gray-200 p-8 dark:bg-gray-600 md:sticky md:grid-cols-2">
         <h2 className="text-2xl lg:col-span-2">Submit Review</h2>
         <div>
           <Field
@@ -509,7 +509,7 @@ const MembershipReviewForm = observer(() => {
           />
         </div>
 
-        <div className="col-span-2">
+        <div className="md:col-span-2">
           <Field
             as={Input}
             label="Tum.ai fit comment"
@@ -579,7 +579,7 @@ const MembershipReviewForm = observer(() => {
           />
         </div>
 
-        <div className="col-span-2">
+        <div className="md:col-span-2">
           <Field as={Input} label="Good fit?" type="text" name="maybegoodfit" />
           <ErrorMessage
             component="p"
@@ -588,7 +588,7 @@ const MembershipReviewForm = observer(() => {
           />
         </div>
 
-        <div className="col-span-2">
+        <div className="md:col-span-2">
           <Field
             as={Input}
             label="Further comments"
