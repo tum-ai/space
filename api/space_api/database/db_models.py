@@ -428,11 +428,10 @@ class ApplicationReferral(MixinAsDict, SaBaseModel):
     __tablename__ = "application_referral"
 
     # ---------------------------- USER CHANGEABLE FIELDS ---------------------------- #
-    applicant_first_name: Mapped[str] = mapped_column(String(50), nullable=False)
-    applicant_last_name: Mapped[str] = mapped_column(String(50), nullable=False)
-    points: Mapped[int] = mapped_column(Integer, nullable=False)
-    comment: Mapped[str | None] = mapped_column(String, nullable=True)
-    email: Mapped[str] = mapped_column(String, primary_key=True)
+    first_name: Mapped[str] = mapped_column(String(50), nullable=False)
+    last_name: Mapped[str] = mapped_column(String(50), nullable=False)
+    comment: Mapped[str] = mapped_column(String, nullable=False)
+    email: Mapped[str] = mapped_column(String, primary_key=True, nullable=False)
 
     # ----------------------------- RELATIONAL FK FIELDS ----------------------------- #
     referer_id: Mapped[int] = mapped_column(
@@ -444,7 +443,13 @@ class ApplicationReferral(MixinAsDict, SaBaseModel):
         foreign_keys="ApplicationReferral.referer_id",
     )
 
+    def force_load(self) -> None:
+        if not self.referer_id:
+            raise KeyError
+
+        self.referer.force_load()
+
     def __repr__(self) -> str:
         return f"ApplicationReferral(referer_id={self.referer_id}, \
-            applicant_first_name={self.applicant_first_name}, \
-            applicant_last_name={self.applicant_last_name})"
+            email={self.email},first_name={self.first_name}, \
+            last_name={self.last_name})"
