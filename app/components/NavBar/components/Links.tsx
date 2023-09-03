@@ -39,6 +39,10 @@ function Links() {
       protected: true,
       roles: ["submit_reviews"],
     },
+    {
+      path: "/referrals",
+      text: "Referrals",
+    },
   ];
 
   return (
