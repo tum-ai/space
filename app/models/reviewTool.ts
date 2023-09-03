@@ -128,11 +128,11 @@ export class ReviewToolModel {
   /**
    * Submits a review stored in the current state (editorReview).
    */
-  async submitReview() {
+  async submitReview(review: any) {
     const value = await axios
       .post("/review_tool/application_review", {
         data: {
-          ...this.editorReview,
+          ...review,
           reviewee_id: this.applicationOnReview?.id,
         },
       })

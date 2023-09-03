@@ -13,6 +13,9 @@ import { observer } from "mobx-react";
 import Link from "next/link";
 import { useState } from "react";
 import { ApplicationOverview, ViewReview } from "./components";
+import { ErrorMessage, Field, Form, Formik, FormikValues } from "formik";
+import * as Yup from "yup";
+import toast from "react-hot-toast";
 
 const ReviewTool = observer(() => {
   const { reviewToolModel } = useStores();
@@ -228,146 +231,173 @@ function ReviewForm() {
 
 const ReviewForm2 = observer(() => {
   const { reviewToolModel } = useStores();
-  const editorReview = reviewToolModel.editorReview;
 
-  function handleChange(e) {
-    reviewToolModel.updateEditorReview({
-      [e.target.name]: e.target.value,
-    });
-  }
+  const initialValues = {
+    motivation: null,
+  };
+
+  const schema = Yup.object().shape({
+    motivation: Yup.number().required(),
+    skill: Yup.number().required(),
+    fit: Yup.number().required(),
+    in_tumai: Yup.number().required("fit in tumai is required"),
+    comment_fit_tumai: Yup.string(),
+    timecommit: Yup.string().required(),
+    dept1_score: Yup.number().required("Add a score for department 1"),
+    dept2_score: Yup.number().required("Add a score for department 2"),
+    dept3_score: Yup.number().required("Add a score for department 3"),
+    maybegoodfit: Yup.string().required(
+      "Comment on whether the applicant might be a good fit",
+    ),
+    furthercomments: Yup.string(),
+  });
 
   return (
-    <form
-      className="top-28 z-0 grid h-fit grid-cols-1 items-end gap-4 rounded-lg bg-gray-200 p-8 dark:bg-gray-600 md:sticky lg:grid-cols-2 lg:gap-8"
-      onSubmit={async (e) => {
-        e.preventDefault();
-        await reviewToolModel.submitReview();
+    <Formik
+      initialValues={initialValues}
+      validationSchema={schema}
+      onSubmit={(values: FormikValues) => {
+        reviewToolModel.submitReview(values);
       }}
     >
-      <h2 className="text-2xl lg:col-span-2">Submit Review</h2>
-      <Input
-        label="Motivation"
-        type="number"
-        id="motivation"
-        name="motivation"
-        value={editorReview?.motivation}
-        onChange={handleChange}
-        required={true}
-      />
-      <Input
-        label="Skill"
-        type="number"
-        id="skill"
-        name="skill"
-        value={editorReview?.skill}
-        onChange={handleChange}
-        required={true}
-      />
-      <Input
-        label="Overall fit"
-        type="number"
-        id="fit"
-        name="fit"
-        value={editorReview?.fit}
-        onChange={handleChange}
-        required={true}
-      />
-      <Input
-        label="Fit in Tum.ai"
-        type="number"
-        id="in_tumai"
-        name="in_tumai"
-        value={editorReview?.in_tumai}
-        onChange={handleChange}
-        required={true}
-      />
-      <Input
-        label="Tum.ai fit comment"
-        type="text"
-        id="comment_fit_tumai"
-        name="comment_fit_tumai"
-        value={editorReview?.comment_fit_tumai}
-        onChange={handleChange}
-        required={false}
-      />
-      <Input
-        label="Time commitment"
-        type="text"
-        id="timecommit"
-        name="timecommit"
-        value={editorReview?.timecommit}
-        onChange={handleChange}
-        required={false}
-      />
-      <Input
-        label="Department 1 score"
-        type="number"
-        id="dept1_score"
-        name="dept1_score"
-        value={editorReview?.dept1_score}
-        onChange={handleChange}
-        required={true}
-      />
-      <Input
-        label="Department 2 score"
-        type="number"
-        id="dept2_score"
-        name="dept2_score"
-        value={editorReview?.dept2_score}
-        onChange={handleChange}
-        required={true}
-      />
-      <Input
-        label="Department 3 score"
-        type="number"
-        id="dept3_score"
-        name="dept3_score"
-        value={editorReview?.dept3_score}
-        onChange={handleChange}
-        required={true}
-      />
-      <Input
-        label="Good fit?"
-        type="text"
-        id="maybegoodfit"
-        name="maybegoodfit"
-        value={editorReview?.maybegoodfit}
-        onChange={handleChange}
-        required={false}
-      />
-      <Input
-        label="Further comments"
-        type="text"
-        id="furthercomments"
-        name="furthercomments"
-        value={editorReview?.furthercomments}
-        onChange={handleChange}
-        required={false}
-      />
-      <Button className="lg:col-span-2" type="submit">
-        Submit review
-      </Button>
-      <button
-        type="button"
-        onClick={() => {
-          reviewToolModel.updateEditorReview({
-            motivation: 4,
-            skill: 7,
-            fit: 6,
-            in_tumai: 2,
-            comment_fit_tumai: "The fit seems good",
-            timecommit: "10 hours per week",
-            dept1_score: 8,
-            dept2_score: 5,
-            dept3_score: 7,
-            maybegoodfit: "Yes, potentially",
-            furthercomments: "Should keep an eye on progress",
-          });
-        }}
-      >
-        test
-      </button>
-    </form>
+      <Form className="grid h-fit grid-cols-2 gap-4 rounded-lg bg-gray-200 p-8 dark:bg-gray-600">
+        <h2 className="text-2xl lg:col-span-2">Submit Review</h2>
+        <div>
+          <Field
+            as={Input}
+            label="Motivation"
+            type="number"
+            name="motivation"
+          />
+          <ErrorMessage
+            component="p"
+            className="text-red-500"
+            name="motivation"
+          />
+        </div>
+
+        <div>
+          <Field as={Input} label="Skill" type="number" name="skill" />
+          <ErrorMessage component="p" className="text-red-500" name="skill" />
+        </div>
+
+        <div>
+          <Field as={Input} label="Overall fit" type="number" name="fit" />
+          <ErrorMessage component="p" className="text-red-500" name="fit" />
+        </div>
+
+        <div>
+          <Field
+            as={Input}
+            label="Fit in Tum.ai"
+            type="number"
+            name="in_tumai"
+          />
+          <ErrorMessage
+            component="p"
+            className="text-red-500"
+            name="in_tumai"
+          />
+        </div>
+
+        <div className="col-span-2">
+          <Field
+            as={Input}
+            label="Tum.ai fit comment"
+            type="text"
+            name="comment_fit_tumai"
+          />
+          <ErrorMessage
+            component="p"
+            className="text-red-500"
+            name="comment_fit_tumai"
+          />
+        </div>
+
+        <div>
+          <Field
+            as={Input}
+            label="Time commitment"
+            type="text"
+            name="timecommit"
+          />
+          <ErrorMessage
+            component="p"
+            className="text-red-500"
+            name="timecommit"
+          />
+        </div>
+
+        <div>
+          <Field
+            as={Input}
+            label="Department 1 score"
+            type="number"
+            name="dept1_score"
+          />
+          <ErrorMessage
+            component="p"
+            className="text-red-500"
+            name="dept1_score"
+          />
+        </div>
+
+        <div>
+          <Field
+            as={Input}
+            label="Department 2 score"
+            type="number"
+            name="dept2_score"
+          />
+          <ErrorMessage
+            component="p"
+            className="text-red-500"
+            name="dept2_score"
+          />
+        </div>
+
+        <div>
+          <Field
+            as={Input}
+            label="Department 3 score"
+            type="number"
+            name="dept3_score"
+          />
+          <ErrorMessage
+            component="p"
+            className="text-red-500"
+            name="dept3_score"
+          />
+        </div>
+
+        <div className="col-span-2">
+          <Field as={Input} label="Good fit?" type="text" name="maybegoodfit" />
+          <ErrorMessage
+            component="p"
+            className="text-red-500"
+            name="maybegoodfit"
+          />
+        </div>
+
+        <div className="col-span-2">
+          <Field
+            as={Input}
+            label="Further comments"
+            type="text"
+            name="furthercomments"
+          />
+          <ErrorMessage
+            component="p"
+            className="text-red-500"
+            name="furthercomments"
+          />
+        </div>
+
+        <Button className="lg:col-span-2" type="submit">
+          Submit review
+        </Button>
+      </Form>
+    </Formik>
   );
 });
 
