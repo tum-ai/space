@@ -66,7 +66,7 @@ function NavBar() {
                         (pathname.includes(link.path) &&
                         link.path === "/" &&
                         pathname == link.path
-                          ? "text-white"
+                          ? "text-black dark:text-white"
                           : "text-gray-500")
                       }
                     >
