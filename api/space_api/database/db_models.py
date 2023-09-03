@@ -377,20 +377,6 @@ class ApplicationReview(MixinAsDict, SaBaseModel):
 
     review_type: Mapped[str] = mapped_column(String(50), nullable=False)
     form: Mapped[str] = mapped_column(JSON, nullable=False)
-    # motivation: Mapped[int] = mapped_column(Integer, nullable=False)
-    # skill: Mapped[int] = mapped_column(Integer, nullable=False)
-    # fit: Mapped[int] = mapped_column(Integer, nullable=False)
-    # in_tumai: Mapped[int] = mapped_column(Integer, nullable=False)
-
-    # comment_fit_tumai: Mapped[str | None] = mapped_column(String, nullable=True)
-    # timecommit: Mapped[str | None] = mapped_column(String, nullable=True)
-
-    # dept1_score: Mapped[int] = mapped_column(Integer, nullable=False)
-    # dept2_score: Mapped[int] = mapped_column(Integer, nullable=False)
-    # dept3_score: Mapped[int] = mapped_column(Integer, nullable=False)
-
-    # maybegoodfit: Mapped[str | None] = mapped_column(String, nullable=True)
-    # furthercomments: Mapped[str | None] = mapped_column(String, nullable=True)
 
     referral: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     finalscore: Mapped[float] = mapped_column(Float, nullable=False)
