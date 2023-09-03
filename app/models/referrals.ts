@@ -63,7 +63,7 @@ export class ReferralsModel {
    * Fetches referrals.
    */
   async fetchReferrals() {
-    const referrals = await axios
+    await axios
       .get("/application/referrals/")
       .then((res) => {
         const referrals = res.data.data;
