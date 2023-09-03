@@ -2,17 +2,19 @@ import * as DialogRadix from "@radix-ui/react-dialog";
 import { clsx } from "clsx";
 import { useState } from "react";
 
-function Dialog({
-  trigger,
-  isOpenOutside = undefined,
-  setIsOpenOutside = undefined,
-  children,
-}) {
+interface Props {
+  trigger: React.ReactNode;
+  isOpenOutside?: boolean;
+  setIsOpenOutside?: (boolean) => void;
+  children: React.ReactNode;
+}
+
+function Dialog({ trigger, isOpenOutside, setIsOpenOutside, children }: Props) {
   let [isOpen, setIsOpen] = useState(false);
   return (
     <DialogRadix.Root
-      open={isOpenOutside == undefined ? isOpen : isOpenOutside}
-      onOpenChange={isOpenOutside == undefined ? setIsOpen : setIsOpenOutside}
+      open={isOpenOutside || isOpen}
+      onOpenChange={setIsOpenOutside ?? setIsOpen}
     >
       <DialogRadix.Trigger asChild>{trigger}</DialogRadix.Trigger>
       <DialogRadix.Portal>
