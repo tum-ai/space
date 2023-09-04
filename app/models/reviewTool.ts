@@ -155,4 +155,26 @@ export class ReviewToolModel {
       this.fetchApplications();
     }
   }
+
+  /**
+   * Deletes the application associated with the id.
+   *
+   * @param id - The ID of the application
+   */
+  async deleteApplication(id) {
+    const value = await axios
+      .delete("/applications/delete_application/?id=" + id)
+      .then(() => {
+        return true;
+      })
+      .catch((err: AxiosError) => {
+        toast.error(
+          `Failed to delete review for application ${id}: ${err.message}`,
+        );
+      });
+    if (value) {
+      this.fetchMyreviews();
+      this.fetchApplications();
+    }
+  }
 }

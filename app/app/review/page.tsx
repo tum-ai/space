@@ -15,8 +15,8 @@ import { observer } from "mobx-react";
 import Link from "next/link";
 import { useState } from "react";
 import * as Yup from "yup";
-import { ViewReview } from "./_components/viewReview";
 import { ApplicationOverview } from "./_components/applicationOverview";
+import { ViewReview } from "./_components/viewReview";
 
 const ReviewTool = observer(() => {
   const { reviewToolModel } = useStores();
@@ -152,6 +152,15 @@ function Application({ application }) {
         >
           review
         </Button>
+        <ProtectedItem roles={["admin"]}>
+          <Button
+            onClick={async () => {
+              await reviewToolModel.deleteApplication(application.id);
+            }}
+          >
+            delete
+          </Button>
+        </ProtectedItem>
       </td>
     </tr>
   );
