@@ -7,6 +7,7 @@ import { FirebaseError } from "firebase/app";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { observer } from "mobx-react";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 import toast from "react-hot-toast";
 import { useStores } from "../../providers/StoreProvider";
 
@@ -30,6 +31,12 @@ const Auth = observer(() => {
         toast.error(err.message);
       });
   };
+
+  useEffect(() => {
+    if (meModel.user) {
+      router.push("/");
+    }
+  }, [meModel.user]);
 
   return (
     <>
