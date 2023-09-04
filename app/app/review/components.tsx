@@ -101,7 +101,9 @@ export function ApplicationOverview({ data }) {
                       <Link
                         target="_blank"
                         className="text-blue-500"
-                        href={`//${field.value[0].url || field.value || null}`}
+                        href={`${field.type != "FILE_UPLOAD" ? "//" : ""}${
+                          field.value[0].url || field.value || null
+                        }`}
                       >
                         {field.value[0].url || field.value || null ? (
                           <p>link</p>
