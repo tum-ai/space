@@ -19,10 +19,11 @@ export class CertificateModel {
 
   async generateCertificate() {
     const response = await axios
-      .post("/certificate/membership/", {
-        data: { ...this.editorCertificate },
-        responseType: "blob",
-      })
+      .post(
+        "/certificate/membership/",
+        { data: { ...this.editorCertificate } },
+        { responseType: "blob" },
+      )
       .then((res) => res)
       .catch((err: AxiosError) => {
         toast.error(`Failed to generate certificate: ${err.message}`);
