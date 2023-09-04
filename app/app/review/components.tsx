@@ -27,7 +27,10 @@ export function ReviewOverview({ review }) {
         })
         .map(([key, value]: any, i) => {
           return (
-            <div key={key} className="border-b pb-2">
+            <div
+              key={key}
+              className="border-b border-black pb-2 dark:border-white"
+            >
               <div className="font-thin">{key}</div>
               <div>{value}</div>
             </div>
@@ -39,7 +42,10 @@ export function ReviewOverview({ review }) {
         })
         .map(([key, value]: any, i) => {
           return (
-            <div key={key} className="border-b pb-2">
+            <div
+              key={key}
+              className="border-b border-black pb-2 dark:border-white"
+            >
               <div className="font-thin">{key}</div>
               <div>{value}</div>
             </div>
@@ -83,22 +89,43 @@ export function ApplicationOverview({ data }) {
                 key={field.label}
                 className={`${
                   field.type == "TEXTAREA" ? "md:col-span-2" : ""
-                } border-b pb-2`}
+                } border-b border-black pb-2 dark:border-white`}
               >
                 <div className="font-thin">{field.label}</div>
                 {typeof field.value == "boolean" ? (
                   <Checkbox checked={field.value} onCheckedChange={undefined} />
                 ) : (
                   <div className="font-medium">
-                    {field.type == "FILE_UPLOAD" ? (
+                    {field.type == "FILE_UPLOAD" ||
+                    field.type == "INPUT_LINK" ? (
                       <Link
+                        target="_blank"
                         className="text-blue-500"
-                        href={field.value[0].url || ""}
+                        href={`//${field.value[0].url || field.value || null}`}
                       >
-                        link
+                        {field.value[0].url || field.value || null ? (
+                          <p>link</p>
+                        ) : (
+                          <p>-</p>
+                        )}
                       </Link>
+                    ) : field.type == "CHECKBOXES" ||
+                      field.type == "DROPDOWN" ||
+                      field.type == "MULTIPLE_CHOICE" ? (
+                      <div>
+                        {field.value.map((choicId) => {
+                          const choice = field.options.find(
+                            (option) => option.id == choicId,
+                          );
+                          if (choice) {
+                            return choice.value || choice.text;
+                          } else {
+                            return "UNKNOWN";
+                          }
+                        })}
+                      </div>
                     ) : (
-                      JSON.stringify(field.value)
+                      JSON.stringify(field.value).replaceAll('"', "")
                     )}
                   </div>
                 )}
