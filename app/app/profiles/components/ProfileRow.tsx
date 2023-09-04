@@ -26,8 +26,11 @@ const ProfileRow = observer(({ profile }) => {
               profile.last_name[0]
             ).toUpperCase()}
           />
-          <div className="font-bold">
-            {profile?.first_name + " " + profile?.last_name}
+          <div className="flex flex-col">
+            <p className="font-bold">
+              {profile?.first_name + " " + profile?.last_name}
+            </p>
+            <p>{profile.email}</p>
           </div>
         </div>
         <div className="flex w-full justify-end">

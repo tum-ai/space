@@ -16,7 +16,7 @@ function User() {
           <Link
             href="/me"
             className={
-              "flex items-center space-x-4 rounded-full hover:text-black dark:bg-gray-700 dark:hover:text-white sm:bg-gray-200 sm:p-2 sm:px-4"
+              "flex items-center space-x-4 rounded-full hover:text-black dark:bg-gray-700 dark:hover:text-white sm:bg-gray-100 sm:p-2 sm:px-4"
             }
           >
             <Avatar

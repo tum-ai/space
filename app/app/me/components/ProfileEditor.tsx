@@ -10,6 +10,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { observer } from "mobx-react";
 import Image from "next/image";
 import { useState } from "react";
+import toast from "react-hot-toast";
 
 const newJobExperience = {
   employer: "",
@@ -47,10 +48,15 @@ function ProfileEditor({ trigger }) {
     // profile picture handling
     if (e.target.name === "profile_picture") {
       const file = e.target.files[0];
-      const base64 = await convertImageToBase64(file);
-      meModel.updateEditorProfile({
-        ["profile_picture"]: base64,
-      });
+      const MB = 1048576;
+      if (file.size > 0.2 * MB) {
+        toast.error("File is too big! Max size is 200 KB.");
+      } else {
+        const base64 = await convertImageToBase64(file);
+        meModel.updateEditorProfile({
+          ["profile_picture"]: base64,
+        });
+      }
     } else {
       meModel.updateEditorProfile({
         [e.target.name]: e.target.value,
@@ -103,14 +109,21 @@ function ProfileEditor({ trigger }) {
                 </button>
               </div>
             ) : (
-              <Input
-                label="Profile Image"
-                type="file"
-                accept="image/*"
-                id="profile_picture"
-                name="profile_picture"
-                onChange={handleChange}
-              />
+              <Button
+                type="button"
+                onClick={() => {
+                  document.getElementById("profile_picture").click();
+                }}
+              >
+                <Input
+                  label="Upload picture"
+                  type="file"
+                  accept="image/*"
+                  id="profile_picture"
+                  name="profile_picture"
+                  onChange={handleChange}
+                />
+              </Button>
             )}
           </div>
           <Input
