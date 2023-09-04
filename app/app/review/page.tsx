@@ -15,7 +15,8 @@ import { observer } from "mobx-react";
 import Link from "next/link";
 import { useState } from "react";
 import * as Yup from "yup";
-import { ApplicationOverview, ViewReview } from "./components";
+import { ViewReview } from "./_components/viewReview";
+import { ApplicationOverview } from "./_components/applicationOverview";
 
 const ReviewTool = observer(() => {
   const { reviewToolModel } = useStores();
