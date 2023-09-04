@@ -14,6 +14,9 @@ export class MeModel {
     email: "",
     password: "",
   };
+  resetEmail: string = "";
+  openResetPassword: boolean = false;
+
   constructor(root: RootModel) {
     this.root = root;
     makeAutoObservable(this);
@@ -59,12 +62,20 @@ export class MeModel {
     this.credentials = credentials;
   }
 
+  setResetEmail(resetEmail: string) {
+    this.resetEmail = resetEmail;
+  }
+
   updateEditorProfile(changes) {
     this.editorProfile = { ...this.editorProfile, ...changes };
   }
 
   setUser(user) {
     this.user = user;
+  }
+
+  toggleResetPassword() {
+    this.openResetPassword = !this.openResetPassword;
   }
 
   hasRoles(user, roles) {
@@ -80,6 +91,17 @@ export class MeModel {
   }
 
   // Api
+
+  async sendPasswordResetLink() {
+    await axios
+      .post("/resetPassword?email=" + this.resetEmail)
+      .then(() => {
+        toast.success(`Password reset link sent.`);
+      })
+      .catch((err: AxiosError) => {
+        toast.error(`Failed to get my profile: ${err.message}`);
+      });
+  }
 
   async logout() {
     const value = await signOut(auth)
