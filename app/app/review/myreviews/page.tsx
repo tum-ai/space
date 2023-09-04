@@ -7,7 +7,7 @@ import Tooltip from "@components/Tooltip";
 import { useStores } from "@providers/StoreProvider";
 import { observer } from "mobx-react";
 import Link from "next/link";
-import { ViewReview } from "../components";
+import { ViewReview } from "../_components/viewReview";
 
 const MyReviews = observer(() => {
   const { reviewToolModel, meModel } = useStores();

@@ -11,8 +11,9 @@ import Link from "next/link";
 interface Props {
   profile: Profile;
   meModel?: MeModel;
+  publicView?: boolean;
 }
-function ProfileOverview({ profile, meModel }: Props) {
+function ProfileOverview({ profile, meModel, publicView }: Props) {
   return (
     <div className="relative m-auto max-w-3xl">
       {meModel && (
@@ -46,7 +47,7 @@ function ProfileOverview({ profile, meModel }: Props) {
         </div>
       )}
 
-      <div className="mt-12">
+      <div className="mt-12 space-y-12">
         <div className="max-w-90 flex flex-col items-start space-y-6 xl:col-span-2">
           <h1 className="w-full text-center text-6xl font-thin">
             {profile.first_name + " " + profile.last_name}
@@ -69,10 +70,6 @@ function ProfileOverview({ profile, meModel }: Props) {
 
         <dl className="divide-y divide-gray-600">
           <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-            <dt className="font-medium">Department</dt>
-            <dd>{profile.department}</dd>
-          </div>
-          <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
             <dt className="font-medium">Degree</dt>
             <dd>
               {profile.degree_level} {profile.degree_name}
@@ -90,21 +87,12 @@ function ProfileOverview({ profile, meModel }: Props) {
             <dt className="font-medium">Description</dt>
             <dd>{profile.description}</dd>
           </div>
-          <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-            <dt className="font-medium">Previous Departments</dt>
-            <dd>
-              {profile.previousDepartments?.length &&
-                profile.previousDepartments.join(", ")}
-            </dd>
-          </div>
-          <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-            <dt className="font-medium">Current Job</dt>
-            <dd>{profile.currentJob}</dd>
-          </div>
-          <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-            <dt className="font-medium">Nationality</dt>
-            <dd>{profile.nationality}</dd>
-          </div>
+          {!publicView && (
+            <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+              <dt className="font-medium">Nationality</dt>
+              <dd>{profile.nationality}</dd>
+            </div>
+          )}
         </dl>
       </div>
     </div>

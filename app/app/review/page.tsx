@@ -5,12 +5,18 @@ import Icon from "@components/Icon";
 import Input from "@components/Input";
 import ProtectedItem from "@components/ProtectedItem";
 import { Section } from "@components/Section";
+import Select from "@components/Select";
 import Tabs from "@components/Tabs";
+import Textarea from "@components/Textarea";
 import Tooltip from "@components/Tooltip";
 import { useStores } from "@providers/StoreProvider";
+import { ErrorMessage, Field, Form, Formik, FormikValues } from "formik";
 import { observer } from "mobx-react";
 import Link from "next/link";
-import { ApplicationOverview, ViewReview } from "./components";
+import { useState } from "react";
+import * as Yup from "yup";
+import { ViewReview } from "./_components/viewReview";
+import { ApplicationOverview } from "./_components/applicationOverview";
 
 const ReviewTool = observer(() => {
   const { reviewToolModel } = useStores();
@@ -171,148 +177,437 @@ const ApplicationToReview = observer(() => {
   return <ApplicationOverview data={applicationOnReview} />;
 });
 
-const ReviewForm = observer(() => {
-  const { reviewToolModel } = useStores();
-  const editorReview = reviewToolModel.editorReview;
+class ReviewForms {
+  MEMBERSHIP: {
+    displayName: string;
+    form: {
+      motivation: number;
+      skill: number;
+      fit: number;
+      in_tumai: number;
+      comment_fit_tumai: string;
+      timecommit: string;
+      dept1_score: string;
+      dept2_score: string;
+      dept3_score: string;
+      maybegoodfit: string;
+      furthercomments: string;
+    };
+  };
+  VENTURE: {
+    displayName: "Venture";
+    form: {
+      motivation: number;
+      business_skills: number;
+    };
+  };
+}
 
-  function handleChange(e) {
-    reviewToolModel.updateEditorReview({
-      [e.target.name]: e.target.value,
-    });
+function ReviewForm() {
+  const [formType, setFormType] = useState("MEMBERSHIP");
+
+  let reviewFormComponent = <p>No form type selected.</p>;
+  if (formType == "MEMBERSHIP") {
+    reviewFormComponent = <MembershipReviewForm />;
+  }
+  if (formType == "VENTURE") {
+    reviewFormComponent = <VentureReviewForm />;
   }
 
   return (
-    <form
-      className="top-28 z-0 grid h-fit grid-cols-1 items-end gap-4 rounded-lg bg-gray-200 p-8 dark:bg-gray-600 md:sticky lg:grid-cols-2 lg:gap-8"
-      onSubmit={async (e) => {
-        e.preventDefault();
-        await reviewToolModel.submitReview();
+    <div className="flex flex-col gap-2">
+      <Select
+        label="Choose review type"
+        placeholder="From Type"
+        data={[
+          {
+            key: "Membership review",
+            value: "MEMBERSHIP",
+          },
+          {
+            key: "Venture review",
+            value: "VENTURE",
+          },
+        ]}
+        value={formType}
+        setSelectedItem={(item) => {
+          setFormType(item);
+        }}
+      />
+      {reviewFormComponent}
+    </div>
+  );
+}
+
+const VentureReviewForm = observer(() => {
+  const { reviewToolModel } = useStores();
+
+  const initialValues = {
+    relevance_ai: null,
+    skills: null,
+    profile_category: null,
+    motivation: null,
+    vision: null,
+    personality: null,
+    like_to_see: null,
+    doubts: null,
+    furthercomments: null,
+  };
+
+  const schema = Yup.object().shape({
+    relevance_ai: Yup.number().required(),
+    skills: Yup.number().required(),
+    profile_category: Yup.string().required(),
+    motivation: Yup.number().required(),
+    vision: Yup.number().required(),
+    personality: Yup.number().required(),
+    like_to_see: Yup.string().required(),
+    doubts: Yup.string(),
+    furthercomments: Yup.string(),
+  });
+
+  const profileCategories = {
+    "The Technologist": "TECHNOLOGIST",
+    "The Business Mind": "BUSINESSMIND",
+    "The Domain Expert": "DOMAINEXPERT",
+    "The Creative Thinker": "CREATIVETHINKER",
+  };
+
+  const likeToSee = {
+    Yes: "YES",
+    Maybe: "MAYBE",
+    No: "NO",
+  };
+
+  return (
+    <Formik
+      initialValues={initialValues}
+      validationSchema={schema}
+      onSubmit={(values: FormikValues) => {
+        reviewToolModel.submitReview(values);
       }}
     >
-      <h2 className="text-2xl lg:col-span-2">Submit Review</h2>
-      <Input
-        label="Motivation"
-        type="number"
-        id="motivation"
-        name="motivation"
-        value={editorReview?.motivation}
-        onChange={handleChange}
-        required={true}
-      />
-      <Input
-        label="Skill"
-        type="number"
-        id="skill"
-        name="skill"
-        value={editorReview?.skill}
-        onChange={handleChange}
-        required={true}
-      />
-      <Input
-        label="Overall fit"
-        type="number"
-        id="fit"
-        name="fit"
-        value={editorReview?.fit}
-        onChange={handleChange}
-        required={true}
-      />
-      <Input
-        label="Fit in Tum.ai"
-        type="number"
-        id="in_tumai"
-        name="in_tumai"
-        value={editorReview?.in_tumai}
-        onChange={handleChange}
-        required={true}
-      />
-      <Input
-        label="Tum.ai fit comment"
-        type="text"
-        id="comment_fit_tumai"
-        name="comment_fit_tumai"
-        value={editorReview?.comment_fit_tumai}
-        onChange={handleChange}
-        required={false}
-      />
-      <Input
-        label="Time commitment"
-        type="text"
-        id="timecommit"
-        name="timecommit"
-        value={editorReview?.timecommit}
-        onChange={handleChange}
-        required={false}
-      />
-      <Input
-        label="Department 1 score"
-        type="number"
-        id="dept1_score"
-        name="dept1_score"
-        value={editorReview?.dept1_score}
-        onChange={handleChange}
-        required={true}
-      />
-      <Input
-        label="Department 2 score"
-        type="number"
-        id="dept2_score"
-        name="dept2_score"
-        value={editorReview?.dept2_score}
-        onChange={handleChange}
-        required={true}
-      />
-      <Input
-        label="Department 3 score"
-        type="number"
-        id="dept3_score"
-        name="dept3_score"
-        value={editorReview?.dept3_score}
-        onChange={handleChange}
-        required={true}
-      />
-      <Input
-        label="Good fit?"
-        type="text"
-        id="maybegoodfit"
-        name="maybegoodfit"
-        value={editorReview?.maybegoodfit}
-        onChange={handleChange}
-        required={false}
-      />
-      <Input
-        label="Further comments"
-        type="text"
-        id="furthercomments"
-        name="furthercomments"
-        value={editorReview?.furthercomments}
-        onChange={handleChange}
-        required={false}
-      />
-      <Button className="lg:col-span-2" type="submit">
-        Submit review
-      </Button>
-      <button
-        type="button"
-        onClick={() => {
-          reviewToolModel.updateEditorReview({
-            motivation: 4,
-            skill: 7,
-            fit: 6,
-            in_tumai: 2,
-            comment_fit_tumai: "The fit seems good",
-            timecommit: "10 hours per week",
-            dept1_score: 8,
-            dept2_score: 5,
-            dept3_score: 7,
-            maybegoodfit: "Yes, potentially",
-            furthercomments: "Should keep an eye on progress",
-          });
-        }}
-      >
-        test
-      </button>
-    </form>
+      {({ values, setFieldValue }) => (
+        <Form className="top-0 z-0 grid h-fit gap-4 rounded-lg bg-gray-200 p-8 dark:bg-gray-600 md:sticky md:grid-cols-2">
+          <h2 className="text-2xl lg:col-span-2">Submit Review</h2>
+          <div>
+            <Field
+              as={Input}
+              label="Relevance to AI or tech-related fields"
+              type="number"
+              name="relevance_ai"
+            />
+            <ErrorMessage
+              component="p"
+              className="text-red-500"
+              name="relevance_ai"
+            />
+          </div>
+          <div>
+            <Field
+              as={Input}
+              label="Skills & notable experiences"
+              type="number"
+              name="skills"
+            />
+            <ErrorMessage
+              component="p"
+              className="text-red-500"
+              name="skills"
+            />
+          </div>
+          <div className="flex flex-col">
+            <Field
+              label={"Profile category"}
+              name={`profile_category`}
+              as={Select}
+              placeholder={"Profile category"}
+              data={Object.entries(profileCategories).map(([key, value]) => ({
+                key: key,
+                value: value,
+              }))}
+              selectedItem={{
+                key: profileCategories[values["profile_category"]],
+                value: values["profile_category"],
+              }}
+              setSelectedItem={(value) => {
+                setFieldValue(`profile_category`, value);
+              }}
+            />
+            <ErrorMessage
+              component="p"
+              className="text-red-500"
+              name={`profile_category`}
+            />
+          </div>
+          <div>
+            <Field
+              as={Input}
+              label="Motivation"
+              type="number"
+              name="motivation"
+            />
+            <ErrorMessage
+              component="p"
+              className="text-red-500"
+              name="motivation"
+            />
+          </div>
+          <div>
+            <Field
+              as={Input}
+              label="Vision & Entrepreneurial Spirit"
+              type="number"
+              name="vision"
+            />
+            <ErrorMessage
+              component="p"
+              className="text-red-500"
+              name="vision"
+            />
+          </div>
+          <div>
+            <Field
+              as={Input}
+              label="Personality"
+              type="number"
+              name="personality"
+            />
+            <ErrorMessage
+              component="p"
+              className="text-red-500"
+              name="personality"
+            />
+          </div>
+          <div className="flex flex-col">
+            <Field
+              label={"Would you like to see this person at AI E-Lab?"}
+              name={`like_to_see`}
+              as={Select}
+              placeholder={"select"}
+              data={Object.entries(likeToSee).map(([key, value]) => ({
+                key: key,
+                value: value,
+              }))}
+              selectedItem={{
+                key: likeToSee[values["like_to_see"]],
+                value: values["like_to_see"],
+              }}
+              setSelectedItem={(value) => {
+                setFieldValue(`like_to_see`, value);
+              }}
+            />
+            <ErrorMessage
+              component="p"
+              className="text-red-500"
+              name={`like_to_see`}
+            />
+          </div>
+          <div className="col-start-1 md:col-span-2">
+            <Field
+              as={Textarea}
+              label="Do you have any doubts about this person’s commitment to AI E-Lab?"
+              type="number"
+              name="doubts"
+            />
+            <ErrorMessage
+              component="p"
+              className="text-red-500"
+              name="doubts"
+            />
+          </div>
+          <div className="col-start-1 md:col-span-2">
+            <Field
+              as={Textarea}
+              label="Comments for interviewing"
+              type="number"
+              name="furthercomments"
+            />
+            <ErrorMessage
+              component="p"
+              className="text-red-500"
+              name="furthercomments"
+            />
+          </div>
+
+          <Button className="lg:col-span-2" type="submit">
+            Submit review
+          </Button>
+        </Form>
+      )}
+    </Formik>
+  );
+});
+
+const MembershipReviewForm = observer(() => {
+  const { reviewToolModel } = useStores();
+
+  const initialValues = {
+    motivation: null,
+  };
+
+  const schema = Yup.object().shape({
+    motivation: Yup.number().required(),
+    skill: Yup.number().required(),
+    fit: Yup.number().required(),
+    in_tumai: Yup.number().required("fit in tumai is required"),
+    comment_fit_tumai: Yup.string(),
+    timecommit: Yup.string().required(),
+    dept1_score: Yup.number().required("Add a score for department 1"),
+    dept2_score: Yup.number().required("Add a score for department 2"),
+    dept3_score: Yup.number().required("Add a score for department 3"),
+    maybegoodfit: Yup.string().required(
+      "Comment on whether the applicant might be a good fit",
+    ),
+    furthercomments: Yup.string(),
+  });
+
+  return (
+    <Formik
+      initialValues={initialValues}
+      validationSchema={schema}
+      onSubmit={(values: FormikValues) => {
+        reviewToolModel.submitReview(values);
+      }}
+    >
+      <Form className="top-0 grid h-fit gap-4 rounded-lg bg-gray-200 p-8 dark:bg-gray-600 md:sticky md:grid-cols-2">
+        <h2 className="text-2xl lg:col-span-2">Submit Review</h2>
+        <div>
+          <Field
+            as={Input}
+            label="Motivation"
+            type="number"
+            name="motivation"
+          />
+          <ErrorMessage
+            component="p"
+            className="text-red-500"
+            name="motivation"
+          />
+        </div>
+
+        <div>
+          <Field as={Input} label="Skill" type="number" name="skill" />
+          <ErrorMessage component="p" className="text-red-500" name="skill" />
+        </div>
+
+        <div>
+          <Field as={Input} label="Overall fit" type="number" name="fit" />
+          <ErrorMessage component="p" className="text-red-500" name="fit" />
+        </div>
+
+        <div>
+          <Field
+            as={Input}
+            label="Fit in Tum.ai"
+            type="number"
+            name="in_tumai"
+          />
+          <ErrorMessage
+            component="p"
+            className="text-red-500"
+            name="in_tumai"
+          />
+        </div>
+
+        <div className="md:col-span-2">
+          <Field
+            as={Input}
+            label="Tum.ai fit comment"
+            type="text"
+            name="comment_fit_tumai"
+          />
+          <ErrorMessage
+            component="p"
+            className="text-red-500"
+            name="comment_fit_tumai"
+          />
+        </div>
+
+        <div>
+          <Field
+            as={Input}
+            label="Time commitment"
+            type="text"
+            name="timecommit"
+          />
+          <ErrorMessage
+            component="p"
+            className="text-red-500"
+            name="timecommit"
+          />
+        </div>
+
+        <div>
+          <Field
+            as={Input}
+            label="Department 1 score"
+            type="number"
+            name="dept1_score"
+          />
+          <ErrorMessage
+            component="p"
+            className="text-red-500"
+            name="dept1_score"
+          />
+        </div>
+
+        <div>
+          <Field
+            as={Input}
+            label="Department 2 score"
+            type="number"
+            name="dept2_score"
+          />
+          <ErrorMessage
+            component="p"
+            className="text-red-500"
+            name="dept2_score"
+          />
+        </div>
+
+        <div>
+          <Field
+            as={Input}
+            label="Department 3 score"
+            type="number"
+            name="dept3_score"
+          />
+          <ErrorMessage
+            component="p"
+            className="text-red-500"
+            name="dept3_score"
+          />
+        </div>
+
+        <div className="md:col-span-2">
+          <Field as={Input} label="Good fit?" type="text" name="maybegoodfit" />
+          <ErrorMessage
+            component="p"
+            className="text-red-500"
+            name="maybegoodfit"
+          />
+        </div>
+
+        <div className="md:col-span-2">
+          <Field
+            as={Input}
+            label="Further comments"
+            type="text"
+            name="furthercomments"
+          />
+          <ErrorMessage
+            component="p"
+            className="text-red-500"
+            name="furthercomments"
+          />
+        </div>
+
+        <Button className="lg:col-span-2" type="submit">
+          Submit review
+        </Button>
+      </Form>
+    </Formik>
   );
 });
 
