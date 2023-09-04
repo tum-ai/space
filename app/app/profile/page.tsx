@@ -1,10 +1,10 @@
 "use client";
 
-import ProfileOverview from "./components/ProfileOverview";
-import { observer } from "mobx-react";
-import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
+import { observer } from "mobx-react";
 import { useSearchParams } from "next/navigation";
+import ProfileOverview from "./components/ProfileOverview";
 
 const Profile = () => {
   const id = useSearchParams().get("id");
@@ -22,7 +22,7 @@ const Profile = () => {
     return <h1>Profile not found.</h1>;
   }
 
-  return <ProfileOverview profile={profileQuery.data.data} />;
+  return <ProfileOverview profile={profileQuery.data.data} publicView={true} />;
 };
 
 export default observer(Profile);

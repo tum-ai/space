@@ -98,3 +98,9 @@ a {
   height: calc(var(--vh, 1vh) * 100);
 }
 
+::-webkit-file-upload-button {
+  display: none;
+}
+input[type="file"] {
+  display: none;
+}
