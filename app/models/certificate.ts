@@ -23,7 +23,7 @@ export class CertificateModel {
         data: { ...this.editorCertificate },
         responseType: "blob",
       })
-      .then((res) => res.data)
+      .then((res) => res)
       .catch((err: AxiosError) => {
         toast.error(`Failed to generate certificate: ${err.message}`);
       });
