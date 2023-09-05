@@ -179,7 +179,7 @@ export class ReviewToolModel {
       .post("/review_tool/application_review", {
         data: {
           form: review,
-          review_type: "MEMBERSHIP",
+          review_type: this.formType,
           reviewee_id: this.applicationOnReview?.id,
         },
       })

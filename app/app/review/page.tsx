@@ -262,8 +262,8 @@ const VentureReviewForm = observer(() => {
     vision: null,
     personality: null,
     like_to_see: null,
-    doubts: null,
-    furthercomments: null,
+    doubts: "",
+    furthercomments: "",
   };
 
   const schema = Yup.object().shape({
@@ -300,7 +300,7 @@ const VentureReviewForm = observer(() => {
       }}
     >
       {({ values, setFieldValue }) => (
-        <Form className="top-0 z-0 grid h-fit gap-4 rounded-lg bg-gray-200 p-8 dark:bg-gray-600 md:sticky md:grid-cols-2">
+        <Form className="z-0 grid h-fit gap-4 rounded-lg bg-gray-200 p-8 dark:bg-gray-600 md:grid-cols-2">
           <h2 className="text-2xl lg:col-span-2">Submit Review</h2>
           <div>
             <Field
@@ -507,7 +507,7 @@ const MembershipReviewForm = observer(() => {
       }}
     >
       {({ values, setFieldValue }) => (
-        <Form className="top-0 grid h-fit gap-4 rounded-lg bg-gray-200 p-8 dark:bg-gray-600 md:grid-cols-2">
+        <Form className="grid h-fit gap-4 rounded-lg bg-gray-200 p-8 dark:bg-gray-600 md:grid-cols-2">
           <h2 className="text-2xl lg:col-span-2">Submit Review</h2>
           <div>
             <Field
