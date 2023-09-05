@@ -12,6 +12,7 @@ export class ReviewToolModel {
   applicationOnReview: { id?: string };
   openTab: "Applications" | "Review" = "Applications";
   myreviews: any[] = [];
+  filter: { [key: string]: any } = {};
 
   constructor(root: RootModel) {
     this.root = root;
@@ -38,11 +39,51 @@ export class ReviewToolModel {
     this.setOpenTab("Review");
   }
 
+  #findProp(obj, prop, defval) {
+    if (typeof defval == "undefined") defval = null;
+    prop = prop.split(".");
+    for (var i = 0; i < prop.length; i++) {
+      if (typeof obj[prop[i]] == "undefined") return defval;
+      obj = obj[prop[i]];
+    }
+    return obj;
+  }
+
+  setFilter(key, value) {
+    if (!value) {
+      delete this.filter[key];
+    } else {
+      this.filter[key] = value;
+    }
+    this.filterApplications();
+  }
+
+  resetFilters() {
+    this.filter = {};
+    this.filterApplications();
+  }
+
+  getFormNames() {
+    return this.applications.map((application) => {
+      return application.submission?.data?.formName;
+    });
+  }
+
+  // Api
+
   /**
    * Filters applications in the current state according to the filters and search states.
    */
   filterApplications() {
     this.filteredApplications = this.applications.filter((application) => {
+      for (const key in this.filter) {
+        if (
+          this.filter[key] &&
+          this.#findProp(application, key, "") != this.filter[key]
+        ) {
+          return false;
+        }
+      }
       return (
         !this.search ||
         JSON.stringify({ ...application, _id: "" })
