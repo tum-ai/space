@@ -37,7 +37,7 @@ const Auth = observer(() => {
     if (meModel.user) {
       router.push("/");
     }
-  }, [meModel.user]);
+  }, [meModel.user, router]);
 
   return (
     <>
