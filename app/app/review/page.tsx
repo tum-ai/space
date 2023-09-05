@@ -215,32 +215,6 @@ const ApplicationToReview = observer(() => {
   return <ApplicationOverview data={applicationOnReview} />;
 });
 
-class ReviewForms {
-  MEMBERSHIP: {
-    displayName: string;
-    form: {
-      motivation: number;
-      skill: number;
-      fit: number;
-      in_tumai: number;
-      comment_fit_tumai: string;
-      timecommit: string;
-      dept1_score: string;
-      dept2_score: string;
-      dept3_score: string;
-      maybegoodfit: string;
-      furthercomments: string;
-    };
-  };
-  VENTURE: {
-    displayName: "Venture";
-    form: {
-      motivation: number;
-      business_skills: number;
-    };
-  };
-}
-
 function ReviewForm() {
   const [formType, setFormType] = useState("MEMBERSHIP");
 
@@ -253,7 +227,7 @@ function ReviewForm() {
   }
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-8">
       <Select
         label="Choose review type"
         placeholder="From Type"
@@ -293,12 +267,12 @@ const VentureReviewForm = observer(() => {
   };
 
   const schema = Yup.object().shape({
-    relevance_ai: Yup.number().required(),
-    skills: Yup.number().required(),
+    relevance_ai: Yup.number().min(1).max(10).required(),
+    skills: Yup.number().min(1).max(10).required(),
     profile_category: Yup.string().required(),
-    motivation: Yup.number().required(),
-    vision: Yup.number().required(),
-    personality: Yup.number().required(),
+    motivation: Yup.number().min(1).max(10).required(),
+    vision: Yup.number().min(1).max(10).required(),
+    personality: Yup.number().min(1).max(10).required(),
     like_to_see: Yup.string().required(),
     doubts: Yup.string(),
     furthercomments: Yup.string(),
@@ -482,21 +456,38 @@ const MembershipReviewForm = observer(() => {
 
   const initialValues = {
     motivation: null,
+    skill: null,
+    fit: null,
+    in_tumai: null,
+    comment_fit_tumai: "",
+    timecommit: "",
+    dept1_score: null,
+    dept2_score: null,
+    dept3_score: null,
+    maybegoodfit: "",
+    furthercomments: "",
   };
 
   const schema = Yup.object().shape({
-    motivation: Yup.number().required(),
-    skill: Yup.number().required(),
-    fit: Yup.number().required(),
-    in_tumai: Yup.number().required("fit in tumai is required"),
+    motivation: Yup.number().min(1).max(5).required(),
+    skill: Yup.number().min(1).max(5).required(),
+    fit: Yup.number().min(1).max(5).required(),
+    in_tumai: Yup.number().min(1).max(5).required("fit in tumai is required"),
     comment_fit_tumai: Yup.string(),
-    timecommit: Yup.string().required(),
-    dept1_score: Yup.number().required("Add a score for department 1"),
-    dept2_score: Yup.number().required("Add a score for department 2"),
-    dept3_score: Yup.number().required("Add a score for department 3"),
-    maybegoodfit: Yup.string().required(
-      "Comment on whether the applicant might be a good fit",
-    ),
+    timecommit: Yup.string(),
+    dept1_score: Yup.number()
+      .min(1)
+      .max(5)
+      .required("Add a score for department 1"),
+    dept2_score: Yup.number()
+      .min(1)
+      .max(5)
+      .required("Add a score for department 2"),
+    dept3_score: Yup.number()
+      .min(1)
+      .max(5)
+      .required("Add a score for department 3"),
+    maybegoodfit: Yup.string(),
     furthercomments: Yup.string(),
   });
 
