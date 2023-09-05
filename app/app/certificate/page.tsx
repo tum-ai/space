@@ -4,19 +4,13 @@ import Input from "@components/Input";
 import ProtectedItem from "@components/ProtectedItem";
 import { Section } from "@components/Section";
 import Select from "@components/Select";
-import { useStores } from "@providers/StoreProvider";
+import axios, { AxiosError } from "axios";
+import download from "downloadjs";
+import { Field, Form, Formik, FormikValues } from "formik";
 import { observer } from "mobx-react";
+import toast from "react-hot-toast";
 
 function Certificate() {
-  const { certificateModel } = useStores();
-  const certificate = certificateModel.editorCertificate;
-
-  function handleChange(e) {
-    certificateModel.updateEditorCertificate({
-      [e.target.name]: e.target.value,
-    });
-  }
-
   const departments = [
     "Software Development (DEV)",
     "Marketing",
@@ -32,136 +26,126 @@ function Certificate() {
 
   const positions = ["member", "teamlead", "advisor"];
 
+
   // TODO choose member's name from member profiles directly and fill in information accordingly
+  const initialValues = {
+    DEPARTMNENT: "",
+    TITLE: "",
+    NAME: "",
+    LASTNAME: "",
+    DATENOW: "",
+    DATEJOINED: "",
+    PRONOUNPOS: "",
+    SIGNED_ON: "",
+    CONTRIB_1: "",
+    CONTRIB_2: "",
+    CONTRIB_3: "",
+  };
+
   return (
     <ProtectedItem showNotFound roles={["create_certificate"]}>
       <Section>
         <div className="text-6xl font-thin">Member Certificate</div>
       </Section>
       <Section className="">
-        <form
-          onSubmit={async (e) => {
-            e.preventDefault();
-            await certificateModel.generateCertificate();
+        <Formik
+          initialValues={initialValues}
+          onSubmit={async (values: FormikValues) => {
+            const response = await axios
+              .post(
+                "/certificate/membership/",
+                { data: values },
+                { responseType: "blob" },
+              )
+              .then((res) => res)
+              .catch((err: AxiosError) => {
+                toast.error(`Failed to generate certificate: ${err.message}`);
+              });
+
+            if (response) {
+              let fileName = `tumai-certificate-${this.editorCertificate["NAME"]}-${this.editorCertificate["LASTNAME"]}.pdf`;
+              download(
+                response.data,
+                fileName,
+                response.headers["content-type"],
+              );
+            }
           }}
-          className="grid grid-cols-1 items-end gap-4 rounded-lg bg-gray-200 p-8 dark:bg-gray-600 lg:grid-cols-2 lg:gap-8"
         >
-          <h2 className="text-2xl lg:col-span-2">Create Certificate</h2>
-          <Select
-            placeholder={"Department"}
-            data={[
-              ...departments?.map((department) => ({
-                key: department,
-                value: department,
-              })),
-            ]}
-            value={certificate["DEPARTMENT"]}
-            setSelectedItem={(item) => {
-              certificateModel.updateEditorCertificate({
-                DEPARTMENT: item,
-              });
-            }}
-          />
-          <Select
-            placeholder={"Position"}
-            data={[
-              ...positions?.map((position) => ({
-                key: position,
-                value: position,
-              })),
-            ]}
-            value={certificate["TITLE"]}
-            setSelectedItem={(position) => {
-              certificateModel.updateEditorCertificate({
-                TITLE: position,
-              });
-            }}
-          />
-          <Input
-            label="First Name"
-            type="text"
-            id="first_name"
-            name="NAME"
-            onChange={handleChange}
-            required={true}
-            value={certificate["NAME"]}
-          />
-          <Input
-            label="Last Name"
-            type="text"
-            id="first_name"
-            name="LASTNAME"
-            onChange={handleChange}
-            required={true}
-            value={certificate["LASTNAME"]}
-          />
-          <Input
-            label="Date Now"
-            type="text"
-            id="first_name"
-            name="DATENOW"
-            onChange={handleChange}
-            required={true}
-            value={certificate["DATENOW"]}
-          />
-          <Input
-            label="Date Joined"
-            type="text"
-            id="first_name"
-            name="DATEJOINED"
-            onChange={handleChange}
-            required={true}
-            value={certificate["DATEJOINED"]}
-          />
-          <Input
-            label="Pronoun (his/her)"
-            type="text"
-            id="first_name"
-            name="PRONOUNPOS"
-            onChange={handleChange}
-            required={true}
-            value={certificate["PRONOUNPOS"]}
-          />
-          <Input
-            label="Date Signed On"
-            type="text"
-            id="first_name"
-            name="SIGNED_ON"
-            onChange={handleChange}
-            required={true}
-            value={certificate["SIGNED_ON"]}
-          />
-          <Input
-            label="Contribution 1"
-            type="text"
-            id="first_name"
-            name="CONTRIB_1"
-            onChange={handleChange}
-            required={true}
-            value={certificate["CONTRIB_1"]}
-          />
-          <Input
-            label="Contribution 2"
-            type="text"
-            id="first_name"
-            name="CONTRIB_2"
-            onChange={handleChange}
-            required={true}
-            value={certificate["CONTRIB_2"]}
-          />
-          <Input
-            label="Contribution 3"
-            type="text"
-            id="first_name"
-            name="CONTRIB_3"
-            onChange={handleChange}
-            required={true}
-            value={certificate["CONTRIB_3"]}
-          />
-          <Button className="lg:col-span-2" type="submit">
-            save
-          </Button>
-        </form>
+          {({ setFieldValue }) => (
+            <Form className="grid-cols2 grid gap-4">
+              <h2 className="text-2xl lg:col-span-2">Create Certificate</h2>
+              <Field
+                as={Select}
+                placeholder={"Department"}
+                data={[
+                  ...departments?.map((department) => ({
+                    key: department,
+                    value: department,
+                  })),
+                ]}
+                setSelectedItem={(item: string) => {
+                  setFieldValue("DEPARTMENT", item);
+                }}
+              />
+              <Field
+                as={Select}
+                placeholder={"Position"}
+                data={[
+                  ...positions?.map((position) => ({
+                    key: position,
+                    value: position,
+                  })),
+                ]}
+                setSelectedItem={(position: string) => {
+                  setFieldValue("TITLE", position);
+                }}
+              />
+              <Field as={Input} label="First Name" type="text" name="NAME" />
+              <Field as={Input} label="Last Name" type="text" name="LASTNAME" />
+              <Field as={Input} label="Date Now" type="text" name="DATENOW" />
+              <Field
+                as={Input}
+                label="Date Joined"
+                type="text"
+                name="DATEJOINED"
+              />
+              <Field
+                as={Input}
+                label="Pronoun (his/her)"
+                type="text"
+                name="PRONOUNPOS"
+              />
+              <Field
+                as={Input}
+                label="Date Signed On"
+                type="text"
+                name="SIGNED_ON"
+              />
+              <Field
+                as={Input}
+                label="Contribution 1"
+                type="text"
+                name="CONTRIB_1"
+              />
+              <Field
+                as={Input}
+                label="Contribution 2"
+                type="text"
+                name="CONTRIB_2"
+              />
+              <Field
+                as={Input}
+                label="Contribution 3"
+                type="text"
+                name="CONTRIB_3"
+              />
+              <Button className="lg:col-span-2" type="submit">
+                save
+              </Button>
+            </Form>
+          )}
+        </Formik>
       </Section>
     </ProtectedItem>
     // TODO download button for cert
