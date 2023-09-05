@@ -15,7 +15,6 @@ export class MeModel {
     password: "",
   };
   resetEmail: string = "";
-  openResetPassword: boolean = false;
 
   constructor(root: RootModel) {
     this.root = root;
@@ -72,10 +71,6 @@ export class MeModel {
 
   setUser(user) {
     this.user = user;
-  }
-
-  toggleResetPassword() {
-    this.openResetPassword = !this.openResetPassword;
   }
 
   hasRoles(user, roles) {

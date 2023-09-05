@@ -7,7 +7,7 @@ import { FirebaseError } from "firebase/app";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { observer } from "mobx-react";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useStores } from "../../providers/StoreProvider";
 
@@ -15,6 +15,7 @@ const Auth = observer(() => {
   const { meModel } = useStores();
   const credentials = meModel.credentials;
   const router = useRouter();
+  const [openResetPassword, setOpenResetPassword] = useState(false);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -40,7 +41,7 @@ const Auth = observer(() => {
 
   return (
     <>
-      {!meModel.openResetPassword && (
+      {!openResetPassword && (
         <Section>
           <form
             onSubmit={handleLogin}
@@ -78,7 +79,7 @@ const Auth = observer(() => {
             <button
               type="button"
               onClick={() => {
-                meModel.toggleResetPassword();
+                setOpenResetPassword(true);
               }}
             >
               Forgot password?
@@ -86,7 +87,7 @@ const Auth = observer(() => {
           </form>
         </Section>
       )}
-      {meModel.openResetPassword && (
+      {openResetPassword && (
         <Section>
           <form
             onSubmit={(e) => {
@@ -109,7 +110,7 @@ const Auth = observer(() => {
             <button
               type="button"
               onClick={() => {
-                meModel.toggleResetPassword();
+                setOpenResetPassword(false);
               }}
             >
               Back to login
