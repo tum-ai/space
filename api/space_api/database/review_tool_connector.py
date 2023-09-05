@@ -16,14 +16,20 @@ from .db_models import (
 def get_scores(application: ApplicationReviewIn) -> tuple[int, int]:
     referral = 0
     final_score = 0
-    print(application)
+
+    # referral
+    try:
+        pass
+    except Exception:
+        referral = 0
+
     # final score
     try:
         if application.review_type == "MEMBERSHIP":
             final_score = (0.15 * application.form["motivation"]) + \
             (0.15 * application.form["skill"]) + \
             (0.15 * application.form["fit"]) + \
-            (0.55 * application.form["in_tumai"]) + \
+            (0.55 * application.form["fit"]) + \
             (0.15 * referral)
         if application.review_type == "VENTURE":
             like_to_see = 0
@@ -38,14 +44,6 @@ def get_scores(application: ApplicationReviewIn) -> tuple[int, int]:
     except Exception as e:
         print(e)
         final_score = 0
-
-    print(application.form)
-    print(final_score)
-    # referral
-    try:
-        pass
-    except Exception:
-        referral = 0
 
     return final_score, referral
 

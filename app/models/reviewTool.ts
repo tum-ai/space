@@ -13,6 +13,7 @@ export class ReviewToolModel {
   openTab: "Applications" | "Review" = "Applications";
   myreviews: any[] = [];
   filter: { [key: string]: any } = {};
+  formType: "MEMBERSHIP" | "VENTURE" = "MEMBERSHIP";
 
   constructor(root: RootModel) {
     this.root = root;
@@ -67,6 +68,10 @@ export class ReviewToolModel {
     return this.applications.map((application) => {
       return application.submission?.data?.formName;
     });
+  }
+
+  setFormType(formType: string) {
+    this.formType = formType as any;
   }
 
   // Api
