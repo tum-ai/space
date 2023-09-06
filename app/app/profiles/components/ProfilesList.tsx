@@ -5,22 +5,48 @@ import { useStores } from "@providers/StoreProvider";
 import { observer } from "mobx-react";
 import ProtectedItem from "../../../components/ProtectedItem";
 import ProfileRow from "./ProfileRow";
+import axios from "axios";
+import { useQuery } from "@tanstack/react-query";
+import { Profile } from "@models/profile";
+import { useState } from "react";
+
+const useProfiles = () => {
+  const [search, setSearch] = useState("");
+  const profilesQuery = useQuery({
+    queryKey: [""],
+    queryFn: () =>
+      axios.get("/profiles/").then((res) => res.data.data as Profile[]),
+  });
+
+  return {
+    search,
+    setSearch,
+    profiles: profilesQuery.data || [],
+    hasFilters: false, // TODO
+  };
+};
 
 function ProfilesList() {
-  const { profilesModel, rolesModel } = useStores();
+  const { rolesModel } = useStores();
+  const profilesModel = useProfiles();
+
   return (
     <div className="flex flex-col space-y-4">
       <div className="flex flex-col justify-end space-y-10">
         <div className="flex flex-col justify-between md:flex-row md:items-center">
           <div className="mt-2 font-light text-gray-500">
-            Total {profilesModel.filteredProfiles.length} members
+            Total {profilesModel.profiles.length} members
           </div>
           <div className="flex flex-col items-start space-y-2 lg:flex-row lg:items-end lg:space-x-4">
             <div className="flex items-center space-x-4">
               <div className="space-x-2">
                 <span className="font-thin">filters: </span>
-                {Object.keys(profilesModel.filter).length > 0 && (
-                  <button onClick={() => profilesModel.resetFilters()}>
+                {profilesModel.hasFilters && (
+                  <button
+                    onClick={() => {
+                      throw new Error("TODO not implemented");
+                    }}
+                  >
                     reset
                   </button>
                 )}
@@ -30,17 +56,13 @@ function ProfilesList() {
                   placeholder={"Role"}
                   data={[
                     { key: "all", value: null },
-                    ...(rolesModel.roles?.map((role) => ({
+                    ...rolesModel.roles?.map((role) => ({
                       key: role["handle"],
                       value: role["handle"],
-                    })) || []),
+                    })),
                   ]}
-                  selectedItem={{
-                    key: profilesModel.filter.role,
-                    value: profilesModel.filter.role,
-                  }}
                   setSelectedItem={(item) => {
-                    profilesModel.setFilter("role", item ? item : "");
+                    // TODO select filters
                   }}
                 />
               </ProtectedItem>
@@ -56,11 +78,7 @@ function ProfilesList() {
                 className="w-full bg-transparent outline-none"
               />
               {profilesModel.search && (
-                <button
-                  onClick={(e) => {
-                    profilesModel.setSearch("");
-                  }}
-                >
+                <button onClick={() => profilesModel.setSearch("")}>
                   clear
                 </button>
               )}
@@ -69,7 +87,7 @@ function ProfilesList() {
         </div>
       </div>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-        {profilesModel.filteredProfiles.map((profile, i) => (
+        {profilesModel.profiles.map((profile, i) => (
           <ProfileRow key={i} profile={profile} />
         ))}
       </div>
