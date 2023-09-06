@@ -4,8 +4,10 @@ import Dialog from "@components/Dialog";
 import Input from "@components/Input";
 import { Section } from "@components/Section";
 import Textarea from "@components/Textarea";
+import { Referral } from "@models/referrals";
 import { useStores } from "@providers/StoreProvider";
 import * as DialogRadix from "@radix-ui/react-dialog";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import axios, { AxiosError } from "axios";
 import { ErrorMessage, Field, Form, Formik, FormikValues } from "formik";
 import { observer } from "mobx-react";
@@ -13,9 +15,15 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import * as Yup from "yup";
 
-const Referrals = observer(() => {
-  const { referralsModel } = useStores();
-  const referrals = referralsModel.referrals;
+const ReferralsPage = observer(() => {
+  const queryClient = useQueryClient();
+  const referralsQuery = useQuery({
+    queryKey: ["referral"],
+    queryFn: () =>
+      axios
+        .get("/application/referrals/")
+        .then((res) => res.data.data as Referral[]),
+  });
 
   return (
     <>
@@ -35,7 +43,7 @@ const Referrals = observer(() => {
             </tr>
           </thead>
           <tbody>
-            {referrals.map((referral) => (
+            {referralsQuery.data.map((referral) => (
               <tr key={referral.email}>
                 <td>{referral.email}</td>
                 <td>{referral.first_name}</td>
@@ -49,7 +57,23 @@ const Referrals = observer(() => {
                           "Are you sure you want to delete this referral?",
                         )
                       ) {
-                        referralsModel.deleteReferral(referral.email);
+                        axios
+                          .delete(
+                            `/application/referral/?email=${referral.email}`,
+                          )
+                          .then(() => {
+                            queryClient.invalidateQueries({
+                              queryKey: ["referrals"],
+                            });
+                            toast.success(
+                              `Deleted referral for ${referral.email}`,
+                            );
+                          })
+                          .catch((err: AxiosError) => {
+                            toast.error(
+                              `Failed to delete referral for ${referral.email}: ${err.message}`,
+                            );
+                          });
                       }
                     }}
                   >
@@ -66,7 +90,6 @@ const Referrals = observer(() => {
 });
 
 const SubmitReferral = () => {
-  const { referralsModel } = useStores();
   const [isOpen, setIsOpen] = useState(false);
 
   const schema = Yup.object().shape({
@@ -101,7 +124,6 @@ const SubmitReferral = () => {
             })
             .then(() => {
               setIsOpen(false);
-              referralsModel.fetchReferrals();
             })
             .catch((err: AxiosError) => {
               toast.error(`Failed to submit referral: ${err.message}`);
@@ -185,4 +207,4 @@ const SubmitReferral = () => {
   );
 };
 
-export default Referrals;
+export default ReferralsPage;
