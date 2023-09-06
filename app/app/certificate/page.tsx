@@ -26,10 +26,9 @@ function Certificate() {
 
   const positions = ["member", "teamlead", "advisor"];
 
-
   // TODO choose member's name from member profiles directly and fill in information accordingly
   const initialValues = {
-    DEPARTMNENT: "",
+    DEPARTMENT: "",
     TITLE: "",
     NAME: "",
     LASTNAME: "",
@@ -63,7 +62,7 @@ function Certificate() {
               });
 
             if (response) {
-              let fileName = `tumai-certificate-${this.editorCertificate["NAME"]}-${this.editorCertificate["LASTNAME"]}.pdf`;
+              let fileName = `tumai-certificate-${values.NAME}-${values.LASTNAME}.pdf`;
               download(
                 response.data,
                 fileName,
@@ -78,12 +77,10 @@ function Certificate() {
               <Field
                 as={Select}
                 placeholder={"Department"}
-                data={[
-                  ...departments?.map((department) => ({
-                    key: department,
-                    value: department,
-                  })),
-                ]}
+                data={departments.map((department) => ({
+                  key: department,
+                  value: department,
+                }))}
                 setSelectedItem={(item: string) => {
                   setFieldValue("DEPARTMENT", item);
                 }}
@@ -91,12 +88,10 @@ function Certificate() {
               <Field
                 as={Select}
                 placeholder={"Position"}
-                data={[
-                  ...positions?.map((position) => ({
-                    key: position,
-                    value: position,
-                  })),
-                ]}
+                data={positions.map((position) => ({
+                  key: position,
+                  value: position,
+                }))}
                 setSelectedItem={(position: string) => {
                   setFieldValue("TITLE", position);
                 }}
@@ -148,7 +143,6 @@ function Certificate() {
         </Formik>
       </Section>
     </ProtectedItem>
-    // TODO download button for cert
   );
 }
 
