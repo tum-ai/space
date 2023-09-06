@@ -51,7 +51,6 @@ export class MeModel {
       } else {
         this.setUser(null);
       }
-      this.root.profilesModel.fetchProfiles();
     });
   }
 
