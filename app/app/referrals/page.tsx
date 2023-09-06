@@ -5,7 +5,6 @@ import Input from "@components/Input";
 import { Section } from "@components/Section";
 import Textarea from "@components/Textarea";
 import { Referral } from "@models/referrals";
-import { useStores } from "@providers/StoreProvider";
 import * as DialogRadix from "@radix-ui/react-dialog";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import axios, { AxiosError } from "axios";
@@ -21,7 +20,7 @@ const ReferralsPage = observer(() => {
     queryKey: ["referral"],
     queryFn: () =>
       axios
-        .get("/application/referrals/")
+        .get("/application/referrals/", { params: { page: 1, page_size: 100 } })
         .then((res) => res.data.data as Referral[]),
   });
 
@@ -43,7 +42,7 @@ const ReferralsPage = observer(() => {
             </tr>
           </thead>
           <tbody>
-            {referralsQuery.data.map((referral) => (
+            {referralsQuery.data?.map((referral) => (
               <tr key={referral.email}>
                 <td>{referral.email}</td>
                 <td>{referral.first_name}</td>
