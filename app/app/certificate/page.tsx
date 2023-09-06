@@ -8,6 +8,7 @@ import axios, { AxiosError } from "axios";
 import download from "downloadjs";
 import { Field, Form, Formik, FormikValues } from "formik";
 import { observer } from "mobx-react";
+import * as Yup from "yup";
 import toast from "react-hot-toast";
 
 function Certificate() {
@@ -25,6 +26,20 @@ function Certificate() {
   ];
 
   const positions = ["member", "teamlead", "advisor"];
+
+  const validationSchema = Yup.object().shape({
+    DEPARTMENT: Yup.string().required(),
+    TITLE: Yup.string().required(),
+    NAME: Yup.string().required(),
+    LASTNAME: Yup.string().required(),
+    DATENOW: Yup.string().required(),
+    DATEJOINED: Yup.string().required(),
+    PRONOUNPOS: Yup.string().required(),
+    SIGNED_ON: Yup.string().required(),
+    CONTRIB_1: Yup.string().required(),
+    CONTRIB_2: Yup.string().required(),
+    CONTRIB_3: Yup.string().required(),
+  });
 
   // TODO choose member's name from member profiles directly and fill in information accordingly
   const initialValues = {
@@ -49,6 +64,7 @@ function Certificate() {
       <Section className="">
         <Formik
           initialValues={initialValues}
+          validationSchema={validationSchema}
           onSubmit={async (values: FormikValues) => {
             const response = await axios
               .post(
@@ -76,6 +92,8 @@ function Certificate() {
               <h2 className="text-2xl lg:col-span-2">Create Certificate</h2>
               <Field
                 as={Select}
+                label="Department"
+                name="DEPARTMENT"
                 placeholder={"Department"}
                 data={departments.map((department) => ({
                   key: department,
@@ -87,6 +105,8 @@ function Certificate() {
               />
               <Field
                 as={Select}
+                label="Position"
+                name="TITLE"
                 placeholder={"Position"}
                 data={positions.map((position) => ({
                   key: position,
