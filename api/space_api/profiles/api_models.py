@@ -376,6 +376,7 @@ class ProfileOutPublic(BaseModel):
 
     first_name: str
     last_name: str
+    email: str
     description: str | None = Field(None)
 
     profile_picture: str | None = Field(None)
@@ -398,6 +399,7 @@ class ProfileOutPublic(BaseModel):
             id=profile.id,
             first_name=profile.first_name,
             last_name=profile.last_name,
+            email=profile.email,
             description=profile.description,
             activity_status=profile.activity_status,
             degree_level=profile.degree_level,

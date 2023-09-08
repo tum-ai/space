@@ -1,143 +1,87 @@
-"use client";
-import useOutsideAlerter from "@hooks/useOutsideAlerter";
-import React, { useRef, useState } from "react";
-import Icon from "./Icon";
+import {
+  CheckIcon,
+  ChevronDownIcon,
+  ChevronUpIcon,
+} from "@radix-ui/react-icons";
+import * as SelectPrimitive from "@radix-ui/react-select";
+import clsx from "clsx";
+import { Button } from "./Button";
 
 interface Props {
-  selectedItem: { key: string; value: string };
-  setSelectedItem: (item: any) => void;
+  setSelectedItem: (item: string) => void;
+  /**
+   * @deprecated use value instead
+   */
+  selectedItem?: {
+    key: any;
+    value: string;
+  };
+  value?: string;
   placeholder: string;
-  data: { key: string; value: string }[];
-  className?: string;
-  label?: string;
   disabled?: boolean;
-  trigger?: any;
+  label?: string;
+  data: { [key: string]: any }[];
 }
 
 function Select({
   setSelectedItem,
   selectedItem,
+  value,
   placeholder,
-  data,
-  className,
-  trigger,
+  disabled = false,
   label,
-  disabled,
+  data,
 }: Props) {
-  const [active, setActive] = useState(false);
-  const wrapperRef = useRef(null);
-  useOutsideAlerter(wrapperRef, () => {
-    setActive(false);
-  });
-
   return (
-    <div
-      ref={wrapperRef}
-      className={
-        "flex cursor-pointer flex-col justify-between space-y-1 rounded-lg " +
-        className
-      }
-      style={{ maxWidth: "600px" }}
+    <SelectPrimitive.Root
+      disabled={disabled}
+      value={value || selectedItem?.value}
+      onValueChange={setSelectedItem}
     >
-      {label && <label className="font-light">{label}</label>}
-
-      <div className="relative rounded">
-        {React.cloneElement(
-          trigger ? (
-            trigger
-          ) : (
-            <button
-              className={
-                "selectSingle trans flex w-full items-center justify-between space-x-2 p-1 px-3 pr-0 focus:outline-none " +
-                (!disabled ? "cursor-pointer" : "cursor-default")
-              }
-              disabled={disabled}
-              onClick={(e) => {
-                e.stopPropagation();
-                e.preventDefault();
-                setActive(!active);
-              }}
-              type="button"
-            >
-              <div
-                className={
-                  "selectSingle truncate font-light " +
-                  (!disabled ? "cursor-pointer" : "cursor-default")
-                }
-              >
-                {(selectedItem && selectedItem.key) || placeholder}
-              </div>
-              <div
-                className={
-                  "selectSingle inline-flex items-center px-3 " +
-                  (!disabled ? "cursor-pointer" : "cursor-default")
-                }
-              >
-                {!disabled && (
-                  <Icon
-                    className="pointer-events-none"
-                    name={active ? "FaAngleUp" : "FaAngleDown"}
-                  />
-                )}
-              </div>
-            </button>
-          ),
-          {
-            onClick: () => {
-              setActive(!active);
-            },
-          },
-        )}
-        <div
-          className={
-            "selectSingle trans absolute z-40 mt-2 flex max-h-32 w-auto origin-bottom-left flex-col overflow-auto rounded-lg border bg-white dark:bg-gray-700 " +
-            (active
-              ? "visible scale-100 opacity-100"
-              : "hidden scale-75 opacity-0")
-          }
-          style={{
-            width: "max-content",
-          }}
-        >
-          {data.map((item, i) => {
-            const selected =
-              (selectedItem && selectedItem.value) === item.value;
-            return (
-              <Item
-                key={i}
-                onClick={() => {
-                  if (!selected) {
-                    setSelectedItem(item);
-                    setActive(false);
-                  } else {
-                    setSelectedItem(undefined);
-                    setActive(false);
-                  }
-                }}
-                selected={selected}
-              >
-                {item.key}
-              </Item>
-            );
-          })}
-        </div>
+      <div className="flex flex-col gap-2">
+        {label && <label className="text-sm font-thin">{label}</label>}
+        <SelectPrimitive.Trigger asChild aria-label="Food">
+          <Button>
+            {selectedItem?.value || value ? (
+              <SelectPrimitive.Value />
+            ) : (
+              placeholder
+            )}
+            <SelectPrimitive.Icon className="ml-2">
+              <ChevronDownIcon />
+            </SelectPrimitive.Icon>
+          </Button>
+        </SelectPrimitive.Trigger>
       </div>
-    </div>
+      <SelectPrimitive.Content>
+        <SelectPrimitive.ScrollUpButton className="flex items-center justify-center text-gray-700 dark:text-gray-300">
+          <ChevronUpIcon />
+        </SelectPrimitive.ScrollUpButton>
+        <SelectPrimitive.Viewport className="rounded-lg bg-white p-2 shadow-lg dark:bg-gray-800">
+          <SelectPrimitive.Group>
+            {data.map((f, i) => (
+              <SelectPrimitive.Item
+                key={`${f["key"]}`}
+                value={f["value"]}
+                className={clsx(
+                  "relative flex items-center rounded-md px-8 py-2 text-sm font-medium text-gray-700 focus:bg-gray-100 dark:text-gray-300 dark:focus:bg-gray-900",
+                  "radix-disabled:opacity-50",
+                  "select-none focus:outline-none",
+                )}
+              >
+                <SelectPrimitive.ItemText>{f["key"]}</SelectPrimitive.ItemText>
+                <SelectPrimitive.ItemIndicator className="absolute left-2 inline-flex items-center">
+                  <CheckIcon />
+                </SelectPrimitive.ItemIndicator>
+              </SelectPrimitive.Item>
+            ))}
+          </SelectPrimitive.Group>
+        </SelectPrimitive.Viewport>
+        <SelectPrimitive.ScrollDownButton className="flex items-center justify-center text-gray-700 dark:text-gray-300">
+          <ChevronDownIcon />
+        </SelectPrimitive.ScrollDownButton>
+      </SelectPrimitive.Content>
+    </SelectPrimitive.Root>
   );
 }
-
-function Item({ selected, ...props }) {
-  return (
-    <div
-      className={
-        "selectSingle trans hover:bg-secondary-100 cursor-pointer px-3 py-2 font-light " +
-        (selected && "bg-secondary-50 opacity-50")
-      }
-      {...props}
-    >
-      {props.children}
-    </div>
-  );
-}
-
 export default Select;

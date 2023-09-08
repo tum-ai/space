@@ -26,7 +26,7 @@ def create_sqla_engine() -> Engine:
     )
     engine: Engine = create_engine(
         conn_str,
-        echo=True,
+        echo=False,
     )
     return engine
 

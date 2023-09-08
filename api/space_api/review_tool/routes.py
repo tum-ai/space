@@ -1,6 +1,6 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Body, Request
+from fastapi import APIRouter, Body, HTTPException, Request
 
 from space_api.database.review_tool_connector import (
     create_db_application_review,
@@ -19,11 +19,13 @@ from .api_models import (
     ApplicationReviewIn,
     ApplicationReviewOut,
     ApplicationReviewUpdate,
+    MyApplicationReviewOut,
 )
 from .response_models import (
     ResponseApplicationReview,
     ResponseApplicationReviewList,
     ResponseDeleteReview,
+    ResponseMyApplicationReviewList,
     ResponseSubmitReview,
 )
 
@@ -43,6 +45,7 @@ def submit_review(
     request: Request,
     data: Annotated[ApplicationReviewIn, Body(embed=True)],
 ) -> dict:
+    print(data)
     create_db_application_review(
         request.app.state.sql_engine, request.state.profile.id, data
     )
@@ -55,7 +58,7 @@ def submit_review(
 
 
 @router.get(
-    "/review_tool/review/{review_id}/",
+    "/review_tool/review/{application_id}/",
     response_description="Get user review by review_id.",
     response_model=ResponseApplicationReview | ErrorResponse,
 )
@@ -63,28 +66,27 @@ def submit_review(
 @ensure_authorization(
     any_of_roles=["submit_reviews"],
 )
-def get_application(request: Request, review_id: int) -> dict:
-    db_model = retrieve_db_application_review(
-        request.app.state.sql_engine, review_id
-    )
-    if db_model is None:
+def get_application(request: Request, application_id: int) -> dict:
+    try:
+        db_model = retrieve_db_application_review(
+            request.app.state.sql_engine, application_id)
         return {
-            "status_code": 404,
-            "response_type": "error",
-            "description": "Review not found",
+            "status_code": 200,
+            "response_type": "success",
+            "description": "Retrieved application successfully",
+            "data": ApplicationReviewOut.from_db_model(db_model),
         }
-    return {
-        "status_code": 200,
-        "response_type": "success",
-        "description": "Retrieved application successfully",
-        "data": ApplicationReviewOut.from_db_model(db_model),
-    }
+    except Exception:
+        raise HTTPException(
+            status_code=404,
+            detail=f"Review for application {str(application_id)} not found.",
+        )
 
 
 @router.get(
     "/review_tool/myreviews/",
     response_description="Get user review by review_id.",
-    response_model=ResponseApplicationReviewList | ErrorResponse,
+    response_model=ResponseMyApplicationReviewList | ErrorResponse,
 )
 @error_handlers
 @ensure_authorization(
@@ -94,9 +96,8 @@ def get_application_reviews_for_reviewer(request: Request) -> dict:
     db_applications = retrieve_db_application_all_reviews_for_reviewer(
         request.app.state.sql_engine, request.state.profile.id
     )
-    out_applications: list[ApplicationReviewOut] = [
-        ApplicationReviewOut.from_db_model(p)
-        for p in db_applications
+    out_applications: list[MyApplicationReviewOut] = [
+        MyApplicationReviewOut.from_db_model(p) for p in db_applications
     ]
     return {
         "status_code": 200,
@@ -109,7 +110,7 @@ def get_application_reviews_for_reviewer(request: Request) -> dict:
 @router.get(
     "/review_tool/reviews/",
     response_description="List all membership applications reviews, pagging support",
-    response_model=ResponseApplicationReviewList |  ErrorResponse,
+    response_model=ResponseApplicationReviewList | ErrorResponse,
 )
 @enable_paging(max_page_size=100)
 @error_handlers
@@ -117,15 +118,13 @@ def get_application_reviews_for_reviewer(request: Request) -> dict:
     any_of_roles=["submit_reviews"],
 )
 def get_application_reviews(
-    request: Request,
-    page: int = 1,
-    page_size: int = 100) -> dict:
+    request: Request, page: int = 1, page_size: int = 100
+) -> dict:
     db_applications = retrieve_db_application_all_reviews(
         request.app.state.sql_engine, page, page_size
     )
     out_applications: list[ApplicationReviewOut] = [
-        ApplicationReviewOut.from_db_model(p)
-        for p in db_applications
+        ApplicationReviewOut.from_db_model(p) for p in db_applications
     ]
     return {
         "status_code": 200,
@@ -138,8 +137,8 @@ def get_application_reviews(
 
 
 @router.patch(
-    "/review_tool/update_review/{review_id}/",
-    response_description="Update a review of a membership application.",
+    "/review_tool/update_review/{application_id}/",
+    response_description="Update a review of an application.",
     response_model=ResponseSubmitReview,
 )
 @error_handlers
@@ -148,19 +147,18 @@ def get_application_reviews(
 )
 def update_review(
     request: Request,
-    review_id: int,
+    application_id: int,
     data: Annotated[ApplicationReviewUpdate, Body(embed=True)],
 ) -> dict:
     updated_review_model = update_db_application_review(
-        request.app.state.sql_engine, request.state.profile.id, review_id, data
+        request.app.state.sql_engine, request.state.profile.id, application_id, data
     )
     if updated_review_model is None:
-        return {
-            "status_code": 403,
-            "response_type": "error",
-            "description": "You are not reviewer of \
-            this review or review does not exist.",
-        }
+        raise HTTPException(
+            status_code=403,
+            detail="You are not reviewer of \
+            this review or review does not exist."
+        )
     updated_review = ApplicationReviewOut.from_db_model(updated_review_model)
 
     return {
@@ -172,7 +170,7 @@ def update_review(
 
 
 @router.delete(
-    "/review_tool/delete_review/{reviewee_id}/",
+    "/review_tool/delete_review/",
     response_description="Delete a review of a membership application.",
     response_model=ResponseDeleteReview,
 )
@@ -182,9 +180,8 @@ def update_review(
 )
 def delete_review(request: Request, reviewee_id: int) -> dict:
     review_deleted = delete_db_application_review(
-        request.app.state.sql_engine,
-        request.state.profile.id,
-        reviewee_id)
+        request.app.state.sql_engine, request.state.profile.id, reviewee_id
+    )
 
     if review_deleted:
         return {
@@ -193,10 +190,9 @@ def delete_review(request: Request, reviewee_id: int) -> dict:
             "description": "Review deleted successfully",
         }
 
-    return {
-        "status_code": 403,
-        "response_type": "error",
-        "description": """
+    raise HTTPException(
+        status_code=403,
+        detail="""
             You are not authorized to delete this review or review does not exist.
-        """,
-    }
+        """
+    )

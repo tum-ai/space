@@ -1,19 +1,19 @@
+import axios, { AxiosError } from "axios";
 import { makeAutoObservable } from "mobx";
+import toast from "react-hot-toast";
 import { RootModel } from "./root";
 
 export class ProfilesModel {
   root: RootModel;
   profiles = [];
   filteredProfiles = [];
-  filter: any = {};
+  filter: { [key: string]: any } = {};
   search = "";
   sortBy = "";
 
-  constructor(root) {
+  constructor(root: RootModel) {
     this.root = root;
     makeAutoObservable(this);
-
-    this.fetchProfiles();
   }
 
   getProfiles() {
@@ -93,149 +93,16 @@ export class ProfilesModel {
   }
 
   async fetchProfiles() {
-    const profiles = await this.root.GET("/profiles/");
-    this.profiles = profiles;
-    this.filteredProfiles = profiles;
+    const profiles = await axios
+      .get("/profiles/")
+      .then((res) => res.data.data)
+      .catch((err: AxiosError) => {
+        toast.error(`Failed to get profiles: ${err.message}`);
+      });
+
+    if (profiles) {
+      this.profiles = profiles;
+      this.filteredProfiles = profiles;
+    }
   }
 }
-
-// var mockData =
-// [
-// 	{
-// 		  "name": "Max Mustermann",
-// 		  "picture":
-// 			  "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg",
-// 		  "department": "Industry",
-// 		  "role": "Profile",
-// 		  "description": "",
-// 		  "degreeName": "Information Systems",
-// 		  "degreeLevel": "M.Sc.",
-// 		  "degreeSemester": "4",
-// 		  "university": "TUM",
-// 		  "joinedBatch": "2022-01-01T00:00:00",
-// 		  "nationality": "International",
-// 		  "currentJob": "",
-// 		  "involvedProjects": [],
-// 		  "previousDepartments": [],
-// 		  "socialNetworks": []
-// 	  },
-// 	  {
-// 		  "name": "John Smith",
-// 		  "picture": "",
-// 		  "department": "Marketing",
-// 		  "role": "Profile",
-// 		  "description": "",
-// 		  "degreeName": "Computer Science",
-// 		  "degreeLevel": "B.Sc.",
-// 		  "degreeSemester": "1",
-// 		  "university": "TUM",
-// 		  "joinedBatch": "2022-01-01T00:00:00",
-// 		  "nationality": "International",
-// 		  "currentJob": "",
-// 		  "involvedProjects": [],
-// 		  "previousDepartments": [],
-// 		  "socialNetworks": []
-// 	  },
-// 	  {
-// 		  "name": "Thomas Schmidt",
-// 		  "picture": "",
-// 		  "department": "Software Development",
-// 		  "role": "Profile",
-// 		  "description": "",
-// 		  "degreeName": "Information Systems",
-// 		  "degreeLevel": "M.Sc.",
-// 		  "degreeSemester": "3",
-// 		  "university": "TUM",
-// 		  "joinedBatch": "2022-01-01T00:00:00",
-// 		  "nationality": "International",
-// 		  "currentJob": "",
-// 		  "involvedProjects": [],
-// 		  "previousDepartments": [],
-// 		  "socialNetworks": []
-// 	  },
-// 	  {
-// 		  "name": "Thomas Schmidt",
-// 		  "picture": "",
-// 		  "department": "Makeathon",
-// 		  "role": "Teamlead",
-// 		  "description": "",
-// 		  "degreeName": "Management & Technology",
-// 		  "degreeLevel": "M.Sc.",
-// 		  "degreeSemester": "1",
-// 		  "university": "LMU",
-// 		  "joinedBatch": "2022-01-01T00:00:00",
-// 		  "nationality": "International",
-// 		  "currentJob": "",
-// 		  "involvedProjects": [],
-// 		  "previousDepartments": [],
-// 		  "socialNetworks": []
-// 	  },
-// 	  {
-// 		  "name": "Jakob",
-// 		  "picture": "",
-// 		  "department": "Marketing",
-// 		  "role": "Profile",
-// 		  "description": "",
-// 		  "degreeName": "Data Engineering and Analytics",
-// 		  "degreeLevel": "M.Sc.",
-// 		  "degreeSemester": "3",
-// 		  "university": "TUM",
-// 		  "joinedBatch": "2022-01-01T00:00:00",
-// 		  "nationality": "International",
-// 		  "currentJob": "",
-// 		  "involvedProjects": [],
-// 		  "previousDepartments": [],
-// 		  "socialNetworks": []
-// 	  },
-// 	  {
-// 		  "name": "Matthias Müller",
-// 		  "picture": "",
-// 		  "department": "Community",
-// 		  "role": "Teamlead",
-// 		  "description": "",
-// 		  "degreeName": "Information Systems",
-// 		  "degreeLevel": "B.Sc.",
-// 		  "degreeSemester": "3",
-// 		  "university": "TUM",
-// 		  "joinedBatch": "2022-01-01T00:00:00",
-// 		  "nationality": "International",
-// 		  "currentJob": "",
-// 		  "involvedProjects": [],
-// 		  "previousDepartments": [],
-// 		  "socialNetworks": []
-// 	  },
-// 	  {
-// 		  "name": "Lukas Zimmermann",
-// 		  "picture": "",
-// 		  "department": "Software Development",
-// 		  "role": "Profile",
-// 		  "description": "",
-// 		  "degreeName": "Information Systems",
-// 		  "degreeLevel": "M.Sc.",
-// 		  "degreeSemester": "3",
-// 		  "university": "TUM",
-// 		  "joinedBatch": "2022-01-01T00:00:00",
-// 		  "nationality": "International",
-// 		  "currentJob": "",
-// 		  "involvedProjects": [],
-// 		  "previousDepartments": [],
-// 		  "socialNetworks": []
-// 	  },
-// 	  {
-// 		  "name": "Mo Salah",
-// 		  "picture": "",
-// 		  "department": "Software Development",
-// 		  "role": "Profile",
-// 		  "description": "",
-// 		  "degreeName": "Information Systems",
-// 		  "degreeLevel": "M.Sc.",
-// 		  "degreeSemester": "3",
-// 		  "university": "TUM",
-// 		  "joinedBatch": "2022-01-01T00:00:00",
-// 		  "nationality": "International",
-// 		  "currentJob": "",
-// 		  "involvedProjects": [],
-// 		  "previousDepartments": [],
-// 		  "socialNetworks": []
-// 	  }
-//   ]

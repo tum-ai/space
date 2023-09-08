@@ -1,63 +1,50 @@
 "use client";
+import { Avatar } from "@components/Avatar";
 import { useStores } from "@providers/StoreProvider";
+import { EnterIcon, ExitIcon } from "@radix-ui/react-icons";
 import { observer } from "mobx-react";
-import Image from "next/image";
 import Link from "next/link";
-import { FaUser } from "react-icons/fa";
 
 function User() {
-  const { uiModel, meModel } = useStores();
+  const { meModel } = useStores();
   const user = meModel.user;
 
   return (
-    <div
-      onClick={() => {
-        uiModel.setNavBarActive(false);
-      }}
-      className="flex space-x-4"
-    >
-      {user ? (
+    <div className="flex space-x-4">
+      {user && (
         <>
           <Link
             href="/me"
             className={
-              "flex items-center space-x-4 rounded-full bg-gray-200 p-2 px-4 hover:text-black dark:bg-gray-700 dark:hover:text-white"
+              "flex items-center space-x-4 rounded-full hover:text-black dark:bg-gray-700 dark:hover:text-white sm:bg-gray-100 sm:p-2 sm:px-4"
             }
           >
-            {user.profile.profile_picture ? (
-              <Image
-                className="h-8 w-8 rounded-full object-cover"
-                src={user.profile.profile_picture}
-                width={100}
-                height={100}
-                alt=""
-              />
-            ) : (
-              <div className="flex h-8 w-8 rounded-full bg-gray-300 text-center drop-shadow-lg dark:bg-gray-800">
-                <FaUser name={"FaUser"} className="m-auto text-xl text-white" />
-              </div>
-            )}
-            <div>
+            <Avatar
+              variant="circle"
+              src={user.profile.profile_picture}
+              initials={`${user.profile.first_name[0]}${user.profile.last_name[0]}`}
+            />
+            <p className="hidden sm:flex">
               {user.profile.first_name} {user.profile.last_name}
-            </div>
+            </p>
           </Link>
           <button
-            onClick={() => {
-              meModel.logout();
-            }}
+            onClick={() => meModel.logout()}
+            className="flex items-center gap-2"
           >
-            Logout
+            <ExitIcon />
+            <span className="hidden sm:inline">Logout</span>
           </button>
         </>
-      ) : (
-        <>
-          <Link
-            href={"/auth"}
-            className="rounded-lg bg-white p-2 dark:bg-gray-700"
-          >
-            Login
-          </Link>
-        </>
+      )}
+
+      {!user && (
+        <Link
+          href={"/auth"}
+          className="flex items-center gap-2 rounded-lg bg-white p-2 dark:bg-gray-700"
+        >
+          <EnterIcon /> Login
+        </Link>
       )}
     </div>
   );

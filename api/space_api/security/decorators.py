@@ -10,41 +10,46 @@ from space_api.database.profiles_connector import (
     profile_has_one_of_roles,
     retrieve_or_create_db_profile_by_firebase_uid,
 )
+from space_api.utils.error import (
+    RESPONSE_AUTH_FAILED,
+    RESPONSE_NO_AUTH_TOKEN,
+    RESPONSE_UNAUTHORIZED,
+)
 
 from .firebase_auth import verify_id_token
-
-RESPONSE_NO_AUTH_TOKEN = {
-    "status_code": 401,
-    "response_type": "error",
-    "description": "No auth token supplied!",
-}
-RESPONSE_AUTH_FAILED = {
-    "status_code": 401,
-    "response_type": "error",
-    "description": "Auth test: failed!",
-}
-RESPONSE_UNAUTHORIZED = {
-    "status_code": 401,
-    "response_type": "error",
-    "description": "You are not authorized to access this resource!",
-}
 
 
 def __ensure_auth(func: Callable, request: Request, *args: Any, **kwargs: Any) -> Any:
     headers = request.headers
+    # ==========FOR TESTING USING THE FASTAPI DOCS WITHOUT AUTH===
+    # class dotdict(dict):
+    #     """dot.notation access to dictionary attributes"""
+    #     __getattr__ = dict.get
+    #     __setattr__ = dict.__setitem__
+    #     __delattr__ = dict.__delitem__
+
+    # mydict = {'val':'it works'}
+    # request.state.profile = {"id": 1}
+    # request.state.profile = dotdict(request.state.profile)
+    # kwargs.pop("any_of_roles", None)
+    # kwargs.pop(
+    #     "any_of_positions", None
+    # )
+    # return func(request, *args, **kwargs)
+    # ===========================================================
     jwt = headers.get("authorization")
     if jwt is None:
-        return RESPONSE_NO_AUTH_TOKEN
+        raise RESPONSE_NO_AUTH_TOKEN
     jwt = jwt.replace("bearer ", "")
     fb_user = verify_id_token(jwt)
     if fb_user is None:
-        return RESPONSE_AUTH_FAILED
+        raise RESPONSE_AUTH_FAILED
 
     profile = retrieve_or_create_db_profile_by_firebase_uid(
         request.app.state.sql_engine, fb_user
     )
     if profile is None:
-        return RESPONSE_AUTH_FAILED
+        raise RESPONSE_AUTH_FAILED
 
     request.state.fb_user = fb_user
     request.state.profile = profile
@@ -67,7 +72,7 @@ def __ensure_auth(func: Callable, request: Request, *args: Any, **kwargs: Any) -
         )
 
     if not succeeded:
-        return RESPONSE_UNAUTHORIZED
+        raise RESPONSE_UNAUTHORIZED
 
     return func(request, *args, **kwargs)
 

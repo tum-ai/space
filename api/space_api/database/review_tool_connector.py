@@ -13,27 +13,53 @@ from .db_models import (
 )
 
 
+def get_scores(application: ApplicationReviewIn) -> tuple[int, int]:
+    referral = 0
+    final_score = 0
+
+    # referral
+    try:
+        pass
+    except Exception:
+        referral = 0
+
+    # final score
+    try:
+        if application.review_type == "MEMBERSHIP":
+            final_score = (0.15 * application.form["motivation"]) + \
+            (0.15 * application.form["skill"]) + \
+            (0.15 * application.form["fit"]) + \
+            (0.55 * application.form["fit"]) + \
+            (0.15 * referral)
+        if application.review_type == "VENTURE":
+            like_to_see = 0
+            if application.form["like_to_see"] == "YES":
+                like_to_see = 10
+            elif application.form["like_to_see"] == "MAYBE":
+                like_to_see = 5
+            final_score = (0.25 * (application.form["relevance_ai"] + \
+                                   application.form["skills"])) + \
+            (0.5 * (application.form["motivation"] + application.form["vision"])) + \
+            (0.25 * (application.form["personality"] + like_to_see))
+    except Exception as e:
+        print(e)
+        final_score = 0
+
+    return final_score, referral
+
+
 def create_db_application_review(
     sql_engine: sa.Engine,
     reviewer_id: int,
     new__application_review: ApplicationReviewIn,
 ) -> ApplicationReview:
     with Session(sql_engine) as db_session:
-        # TODO @munzerdw: calculate finalscore and referral these correctly
+        final_score, referral = get_scores(new__application_review)
         db__application_review = ApplicationReview(
-            motivation=new__application_review.motivation,
-            skill=new__application_review.skill,
-            fit=new__application_review.fit,
-            in_tumai=new__application_review.in_tumai,
-            comment_fit_tumai=new__application_review.comment_fit_tumai,
-            timecommit=new__application_review.timecommit,
-            dept1_score=new__application_review.dept1_score,
-            dept2_score=new__application_review.dept2_score,
-            dept3_score=new__application_review.dept3_score,
-            maybegoodfit=new__application_review.maybegoodfit,
-            furthercomments=new__application_review.furthercomments,
-            referral=1,
-            finalscore=1,
+            form=new__application_review.form,
+            review_type=new__application_review.review_type,
+            referral=referral,
+            finalscore=final_score,
             reviewer_id=reviewer_id,
             reviewee_id=new__application_review.reviewee_id,
         )
@@ -48,11 +74,12 @@ def create_db_application_review(
 
 
 def retrieve_db_application_review(
-    sql_engine: sa.Engine, review_id: int
+    sql_engine: sa.Engine, application_id: int
 ) -> ApplicationReview:
     with Session(sql_engine) as db_session:
         db_model = (
             db_session.query(ApplicationReview)
+            .filter(ApplicationReview.reviewee_id == application_id)
             .first()
         )
 
@@ -76,6 +103,7 @@ def retrieve_db_application_all_reviews_for_reviewer(
 
         for db_applications_review in db_applications_reviews:
             db_applications_review.force_load()
+            db_applications_review.application.force_load()
 
         return db_applications_reviews
 
@@ -93,57 +121,38 @@ def retrieve_db_application_all_reviews(
 
         for db_applications_review in db_applications_reviews:
             db_applications_review.force_load()
+            db_applications_review.application.force_load()
 
         return db_applications_reviews
 
 
 def update_db_application_review(
     sql_engine: sa.Engine,
-    profile_id: int,
-    review_id: int,
+    reviewer_id: int,
+    applicant_id: int,
     updated_application_review: ApplicationReviewUpdate,
 ) -> ApplicationReview:
     with Session(sql_engine) as db_session:
-        db_model = (
+        application_review = (
             db_session.query(ApplicationReview)
-            .filter(ApplicationReview.reviewer_id == profile_id)
+            .filter(sa.and_(ApplicationReview.reviewee_id == applicant_id,
+                             ApplicationReview.reviewer_id == reviewer_id))
             .first()
         )
 
-        assert db_model
+        assert application_review
 
-        if updated_application_review.motivation:
-            db_model.motivation = updated_application_review.motivation
-        if updated_application_review.skill:
-            db_model.skill = updated_application_review.skill
-        if updated_application_review.fit:
-            db_model.fit = updated_application_review.fit
-        if updated_application_review.in_tumai:
-            db_model.in_tumai = updated_application_review.in_tumai
-        if updated_application_review.comment_fit_tumai:
-            db_model.comment_fit_tumai = (updated_application_review
-                                        .comment_fit_tumai)
-        if updated_application_review.timecommit:
-            db_model.timecommit = updated_application_review.timecommit
-        if updated_application_review.dept1_score:
-            db_model.dept1_score = updated_application_review.dept1_score
-        if updated_application_review.dept2_score:
-            db_model.dept2_score = updated_application_review.dept2_score
-        if updated_application_review.dept3_score:
-            db_model.dept3_score = updated_application_review.dept3_score
-        if updated_application_review.maybegoodfit:
-            db_model.maybegoodfit = updated_application_review.maybegoodfit
-        if updated_application_review.furthercomments:
-            db_model.furthercomments = (updated_application_review.furthercomments)
+        if updated_application_review.form:
+            application_review.form = updated_application_review.form
 
-        db_session.add(db_model)
+        db_session.add(application_review)
         db_session.flush()
         db_session.commit()
 
         # asserts presence of id, triggers a db refresh
-        db_model.force_load()
+        application_review.force_load()
 
-        return db_model
+        return application_review
 
 def delete_db_application_review(
     sql_engine: sa.Engine,

@@ -42,14 +42,12 @@ function Certificate() {
         <form
           onSubmit={async (e) => {
             e.preventDefault();
-            console.log("form");
             await certificateModel.generateCertificate();
           }}
           className="grid grid-cols-1 items-end gap-4 rounded-lg bg-gray-200 p-8 dark:bg-gray-600 lg:grid-cols-2 lg:gap-8"
         >
           <h2 className="text-2xl lg:col-span-2">Create Certificate</h2>
           <Select
-            className="w-full bg-white dark:bg-gray-700"
             placeholder={"Department"}
             data={[
               ...departments?.map((department) => ({
@@ -57,18 +55,14 @@ function Certificate() {
                 value: department,
               })),
             ]}
-            selectedItem={{
-              key: certificate["DEPARTMENT"],
-              value: certificate["DEPARTMENT"],
-            }}
+            value={certificate["DEPARTMENT"]}
             setSelectedItem={(item) => {
               certificateModel.updateEditorCertificate({
-                DEPARTMENT: item?.value,
+                DEPARTMENT: item,
               });
             }}
           />
           <Select
-            className="w-full bg-white dark:bg-gray-700"
             placeholder={"Position"}
             data={[
               ...positions?.map((position) => ({
@@ -76,13 +70,10 @@ function Certificate() {
                 value: position,
               })),
             ]}
-            selectedItem={{
-              key: certificate["TITLE"],
-              value: certificate["TITLE"],
-            }}
-            setSelectedItem={(item) => {
+            value={certificate["TITLE"]}
+            setSelectedItem={(position) => {
               certificateModel.updateEditorCertificate({
-                TITLE: item?.value,
+                TITLE: position,
               });
             }}
           />

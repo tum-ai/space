@@ -74,7 +74,7 @@ const departmentTypes = [
 ];
 
 function DepartmentMembershipEditor({ trigger, profile_id }) {
-  const { uiModel, departmentMembershipsModel } = useStores();
+  const { departmentMembershipsModel } = useStores();
   const departments = departmentMembershipsModel.departments;
 
   return (
@@ -100,7 +100,7 @@ function DepartmentMembershipEditor({ trigger, profile_id }) {
           </DialogRadix.Title>
           {/* DepartmentMembership Editor for Administrators */}
           <div className="col-span-2 w-full space-y-4">
-            <div className="col-span-2 font-light text-black">
+            <div className="col-span-2 font-light">
               Attention: You are editing the department memberships of this user
               as an administrator.
             </div>
@@ -143,7 +143,7 @@ function DepartmentMembershipEditor({ trigger, profile_id }) {
 function DepartmentMembership({ departmentMembership }) {
   const { departmentMembershipsModel } = useStores();
   return (
-    <div className="flex w-fit items-center space-x-4 rounded-2xl border-2 bg-white p-4">
+    <div className="flex w-fit items-center space-x-4 rounded-lg bg-white p-4 dark:bg-gray-900">
       <div>{departmentMembership.department_handle}</div>
       <div>{departmentMembership.position}</div>
       <div>
@@ -176,37 +176,39 @@ function DepartmentMembership({ departmentMembership }) {
 const DepartmentMembershipNew = observer(({ departmentMembership, index }) => {
   const { departmentMembershipsModel } = useStores();
   return (
-    <div key={index} className="rounded-2xl border-2 border-gray-100 p-4">
-      <Select
-        setSelectedItem={(item) =>
-          departmentMembershipsModel.handleSelect(
-            item,
-            index,
-            "department_handle",
-          )
-        }
-        selectedItem={{
-          key: departmentMembership.department_handle,
-          value: departmentMembership.department_handle,
-        }}
-        placeholder="Select an option"
-        data={departmentTypes}
-        label="Department"
-        disabled={false}
-      />
-      <Select
-        setSelectedItem={(item) =>
-          departmentMembershipsModel.handleSelect(item, index, "position")
-        }
-        selectedItem={{
-          key: departmentMembership.position,
-          value: departmentMembership.position,
-        }}
-        placeholder="Select an option"
-        data={positionTypes}
-        label="Position"
-        disabled={false}
-      />
+    <div
+      key={index}
+      className="space-y-4 rounded-lg border-2 border-gray-100 p-4"
+    >
+      <div className="inline-flex space-x-4">
+        <Select
+          setSelectedItem={(item) =>
+            departmentMembershipsModel.handleSelect(
+              item,
+              index,
+              "department_handle",
+            )
+          }
+          selectedItem={{
+            key: departmentMembership.department_handle,
+            value: departmentMembership.department_handle,
+          }}
+          placeholder="Select department"
+          data={departmentTypes}
+        />
+        <Select
+          setSelectedItem={(item) =>
+            departmentMembershipsModel.handleSelect(item, index, "position")
+          }
+          selectedItem={{
+            key: departmentMembership.position,
+            value: departmentMembership.position,
+          }}
+          placeholder="Select position"
+          data={positionTypes}
+          disabled={false}
+        />
+      </div>
       <Input
         label="Time from"
         type="datetime-local"
@@ -228,7 +230,8 @@ const DepartmentMembershipNew = observer(({ departmentMembership, index }) => {
         }
       />
 
-      <button
+      <Button
+        variant={"secondary"}
         type="button"
         onClick={async () => {
           await departmentMembershipsModel.deleteDepartmentMembership(
@@ -240,7 +243,7 @@ const DepartmentMembershipNew = observer(({ departmentMembership, index }) => {
         }}
       >
         Remove
-      </button>
+      </Button>
     </div>
   );
 });
