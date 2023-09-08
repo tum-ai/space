@@ -1,10 +1,10 @@
 import ProtectedItem from "@components/ProtectedItem";
+import { Section } from "@components/Section";
 import * as NavigationMenu from "@radix-ui/react-navigation-menu";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import User from "./components/User";
 import Logo from "./components/Logo";
-import { Section } from "@components/Section";
+import User from "./components/User";
 
 function NavBar() {
   const pathname = usePathname();
@@ -39,6 +39,7 @@ function NavBar() {
     {
       path: "/referrals",
       text: "Referrals",
+      protected: true,
     },
   ];
   return (

@@ -65,9 +65,13 @@ export class ReviewToolModel {
   }
 
   getFormNames() {
-    return this.applications.map((application) => {
-      return application.submission?.data?.formName;
-    });
+    return [
+      ...new Set(
+        this.applications.map((application) => {
+          return application.submission?.data?.formName;
+        }),
+      ),
+    ];
   }
 
   setFormType(formType: string) {
