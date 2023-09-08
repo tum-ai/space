@@ -347,7 +347,7 @@ const VentureReviewForm = observer(() => {
               name="skills"
             />
           </div>
-          <div className="flex flex-col">
+          <div>
             <Field
               label={"Profile category"}
               name={`profile_category`}
@@ -410,7 +410,7 @@ const VentureReviewForm = observer(() => {
               name="personality"
             />
           </div>
-          <div className="flex flex-col">
+          <div>
             <Field
               label={"Would you like to see this person at AI E-Lab?"}
               name={`like_to_see`}
