@@ -48,53 +48,72 @@ const Applications = observer(() => {
   const { reviewToolModel } = useStores();
   return (
     <>
-      <div className="flex flex-col justify-end gap-2 md:flex-row md:items-center">
-        <div className="flex items-center space-x-4">
-          <div className="space-x-2">
-            <span className="font-thin">filters: </span>
-            {Object.keys(reviewToolModel.filter).length > 0 && (
-              <button onClick={() => reviewToolModel.resetFilters()}>
-                reset
+      <div className="flex flex-col justify-between gap-2 md:flex-row md:items-center">
+        <div className="mt-2 font-light text-gray-500">
+          {`Total ${reviewToolModel.filteredApplications.length} applications `}
+          {`| ${reviewToolModel.filteredApplications
+            .map((application) => application.reviews.length)
+            .reduce((prev, current) => prev + current, 0)} reviews `}
+        </div>
+        <div className="flex gap-2">
+          <div className="flex items-center gap-2">
+            <div className="space-x-2">
+              <span className="font-thin">filters: </span>
+              {Object.keys(reviewToolModel.filter).length > 0 && (
+                <button onClick={() => reviewToolModel.resetFilters()}>
+                  reset
+                </button>
+              )}
+            </div>
+            <Select
+              placeholder={"Form"}
+              data={[
+                { key: "all", value: null },
+                ...(reviewToolModel.getFormNames()?.map((formName) => ({
+                  key: formName,
+                  value: formName,
+                })) || []),
+              ]}
+              value={reviewToolModel.filter["submission.data.formName"]}
+              setSelectedItem={(item) => {
+                reviewToolModel.setFilter(
+                  "submission.data.formName",
+                  item ? item : null,
+                );
+              }}
+            />
+            <Button
+              onClick={() => {
+                navigator.clipboard.writeText(
+                  reviewToolModel.filteredApplications
+                    .map((application) => `${application.id}`)
+                    .join("\n"),
+                );
+              }}
+            >
+              copy IDs
+            </Button>
+          </div>
+          <div className="flex w-full space-x-4 rounded-lg bg-gray-200 p-2 dark:bg-gray-700 md:w-fit">
+            <Icon name={"FaSearch"} className="rounded-lg p-2" />
+            <input
+              value={reviewToolModel.search}
+              onChange={(e) => {
+                reviewToolModel.setSearch(e.target.value);
+              }}
+              placeholder="search.."
+              className="w-full bg-transparent outline-none"
+            />
+            {reviewToolModel.search && (
+              <button
+                onClick={(e) => {
+                  reviewToolModel.setSearch("");
+                }}
+              >
+                clear
               </button>
             )}
           </div>
-          <Select
-            placeholder={"Form"}
-            data={[
-              { key: "all", value: null },
-              ...(reviewToolModel.getFormNames()?.map((formName) => ({
-                key: formName,
-                value: formName,
-              })) || []),
-            ]}
-            value={reviewToolModel.filter["submission.data.formName"]}
-            setSelectedItem={(item) => {
-              reviewToolModel.setFilter(
-                "submission.data.formName",
-                item ? item : null,
-              );
-            }}
-          />
-        </div>
-        <div className="flex w-full space-x-4 rounded-lg bg-gray-200 p-2 dark:bg-gray-700 md:w-fit">
-          <Icon name={"FaSearch"} className="rounded-lg p-2" />
-          <input
-            value={reviewToolModel.search}
-            onChange={(e) => {
-              reviewToolModel.setSearch(e.target.value);
-            }}
-            placeholder="search.."
-            className="w-full bg-transparent outline-none"
-          />
-          {reviewToolModel.search && (
-            <button
-              onClick={(e) => {
-                reviewToolModel.setSearch("");
-              }}
-            >
-              clear
-            </button>
-          )}
         </div>
       </div>
       <div className="flex flex-col space-y-4 overflow-auto pt-4">
@@ -128,7 +147,7 @@ function Application({ application }) {
     <tr className="border-b dark:border-gray-500 " key={application.id}>
       <td>{application.id}</td>
       <td>{application.submission?.data?.formName}</td>
-      <td className="flex items-center justify-center p-4">
+      <td className="flex items-center justify-center gap-1 p-4">
         {application.reviews?.map((review, i) => {
           const profile = review.reviewer;
           return (
@@ -328,7 +347,7 @@ const VentureReviewForm = observer(() => {
               name="skills"
             />
           </div>
-          <div className="flex flex-col">
+          <div>
             <Field
               label={"Profile category"}
               name={`profile_category`}
@@ -391,7 +410,7 @@ const VentureReviewForm = observer(() => {
               name="personality"
             />
           </div>
-          <div className="flex flex-col">
+          <div>
             <Field
               label={"Would you like to see this person at AI E-Lab?"}
               name={`like_to_see`}
