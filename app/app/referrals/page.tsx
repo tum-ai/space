@@ -5,26 +5,19 @@ import Input from "@components/Input";
 import ProtectedItem from "@components/ProtectedItem";
 import { Section } from "@components/Section";
 import Textarea from "@components/Textarea";
-import { Referral } from "@models/referrals";
 import * as DialogRadix from "@radix-ui/react-dialog";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import axios, { AxiosError } from "axios";
 import { ErrorMessage, Field, Form, Formik, FormikValues } from "formik";
 import { observer } from "mobx-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import * as Yup from "yup";
+import { useReferrals } from "./useReferrals";
 
 const ReferralsPage = observer(() => {
   const queryClient = useQueryClient();
-  const referralsQuery = useQuery({
-    queryKey: ["referrals"],
-    queryFn: () =>
-      axios
-        .get("/application/referrals/", { params: { page: 1, page_size: 100 } })
-        .then((res) => res.data.data as Referral[]),
-  });
-
+  const { referrals } = useReferrals();
   return (
     <ProtectedItem showNotFound>
       <Section className="flex items-center justify-between">
@@ -43,7 +36,7 @@ const ReferralsPage = observer(() => {
             </tr>
           </thead>
           <tbody>
-            {referralsQuery.data?.map((referral) => (
+            {referrals?.map((referral) => (
               <tr
                 key={referral.email}
                 className="border-b dark:border-gray-500"
