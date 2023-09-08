@@ -1,9 +1,10 @@
+import Loading from "@components/Loading";
 import { Section } from "@components/Section";
 
-export default function Loading() {
+export default function LoadingPage() {
   return (
     <Section>
-      <p>loading...</p>
+      <Loading />
     </Section>
   );
 }
