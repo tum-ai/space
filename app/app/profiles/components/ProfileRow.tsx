@@ -56,7 +56,6 @@ const ProfileRow = observer(({ profile }) => {
                 <div key={role.handle} className="flex items-center gap-2">
                   <div>
                     <Checkbox
-                      loading
                       checked={roleHolderships.includes(role.handle)}
                       onCheckedChange={async (value) => {
                         const newRoleHoldership = role.handle;
