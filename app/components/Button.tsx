@@ -34,6 +34,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 
     if (loading) {
       props.children = <LoadingWheel size={"small"} color={"inverted"} />;
+      props.onClick = null;
     }
 
     return (

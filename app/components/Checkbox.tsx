@@ -7,7 +7,7 @@ export const Checkbox = ({ checked, onCheckedChange, loading = false }) => {
   return (
     <CheckboxPrimitive.Root
       checked={checked}
-      onCheckedChange={onCheckedChange}
+      onCheckedChange={loading ? null : onCheckedChange}
       className={clsx(
         "flex h-6 w-6 items-center rounded",
         "radix-state-checked:bg-purple-600 radix-state-unchecked:bg-gray-100 dark:radix-state-unchecked:bg-gray-900",
