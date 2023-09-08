@@ -2,12 +2,12 @@
 import { Button } from "@components/Button";
 import Dialog from "@components/Dialog";
 import Input from "@components/Input";
-import Loading from "@components/Loading";
 import ProtectedItem from "@components/ProtectedItem";
 import { Section } from "@components/Section";
 import Textarea from "@components/Textarea";
 import * as DialogRadix from "@radix-ui/react-dialog";
 import { useQueryClient } from "@tanstack/react-query";
+import Loading from "app/loading";
 import axios, { AxiosError } from "axios";
 import { ErrorMessage, Field, Form, Formik, FormikValues } from "formik";
 import { observer } from "mobx-react";
