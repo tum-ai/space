@@ -139,7 +139,7 @@ function Application({ application }) {
     <tr className="border-b dark:border-gray-500 " key={application.id}>
       <td>{application.id}</td>
       <td>{application.submission?.data?.formName}</td>
-      <td className="flex items-center justify-center p-4">
+      <td className="flex items-center justify-center gap-1 p-4">
         {application.reviews?.map((review, i) => {
           const profile = review.reviewer;
           return (
