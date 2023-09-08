@@ -202,7 +202,13 @@ function Application({ application }) {
         <ProtectedItem roles={["admin"]}>
           <Button
             onClick={async () => {
-              await reviewToolModel.deleteApplication(application.id);
+              if (
+                confirm(
+                  "Are you sure you want to delete this application and all its associated reviews?",
+                )
+              ) {
+                await reviewToolModel.deleteApplication(application.id);
+              }
             }}
           >
             delete
