@@ -351,7 +351,7 @@ class Application(MixinAsDict, SaBaseModel):
     # ----------------------------- RELATIONAL FK FIELDS ----------------------------- #
     # back reference from ApplicationReview
     reviews: Mapped[list["ApplicationReview"]] = relationship(
-        "ApplicationReview", back_populates="application"
+        "ApplicationReview", back_populates="application", cascade="all, delete"
     )
 
     def __repr__(self) -> str:

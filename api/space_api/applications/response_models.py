@@ -32,3 +32,6 @@ class ResponseRetrieveApplications(BaseResponse):
     model_config = ConfigDict(json_schema_extra=BaseResponse.schema_wrapper([]))
 
     data: list[ApplicationOut]
+
+class ResponseDeleteApplication(BaseResponse):
+    model_config = ConfigDict(json_schema_extra={"example": []})

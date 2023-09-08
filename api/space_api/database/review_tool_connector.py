@@ -13,22 +13,48 @@ from .db_models import (
 )
 
 
+def get_scores(application: ApplicationReviewIn) -> tuple[int, int]:
+    referral = 0
+    final_score = 0
+
+    # referral
+    try:
+        pass
+    except Exception:
+        referral = 0
+
+    # final score
+    try:
+        if application.review_type == "MEMBERSHIP":
+            final_score = (0.15 * application.form["motivation"]) + \
+            (0.15 * application.form["skill"]) + \
+            (0.15 * application.form["fit"]) + \
+            (0.55 * application.form["fit"]) + \
+            (0.15 * referral)
+        if application.review_type == "VENTURE":
+            like_to_see = 0
+            if application.form["like_to_see"] == "YES":
+                like_to_see = 10
+            elif application.form["like_to_see"] == "MAYBE":
+                like_to_see = 5
+            final_score = (0.25 * (application.form["relevance_ai"] + \
+                                   application.form["skills"])) + \
+            (0.5 * (application.form["motivation"] + application.form["vision"])) + \
+            (0.25 * (application.form["personality"] + like_to_see))
+    except Exception as e:
+        print(e)
+        final_score = 0
+
+    return final_score, referral
+
+
 def create_db_application_review(
     sql_engine: sa.Engine,
     reviewer_id: int,
     new__application_review: ApplicationReviewIn,
 ) -> ApplicationReview:
     with Session(sql_engine) as db_session:
-        # TODO: get referral
-        referral = 0
-        # TODO: get final_score
-        final_score = 0
-        # final_score = (0.15 * new__application_review.motivation) + \
-        # (0.15 * new__application_review.skill) + \
-        # (0.15 * new__application_review.fit) + \
-        # (0.55 * new__application_review.in_tumai) + \
-        # (0.55 * new__application_review.in_tumai) + \
-        # (0.15 * referral)
+        final_score, referral = get_scores(new__application_review)
         db__application_review = ApplicationReview(
             form=new__application_review.form,
             review_type=new__application_review.review_type,

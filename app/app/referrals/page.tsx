@@ -2,6 +2,7 @@
 import { Button } from "@components/Button";
 import Dialog from "@components/Dialog";
 import Input from "@components/Input";
+import ProtectedItem from "@components/ProtectedItem";
 import { Section } from "@components/Section";
 import Textarea from "@components/Textarea";
 import { Referral } from "@models/referrals";
@@ -25,7 +26,7 @@ const ReferralsPage = observer(() => {
   });
 
   return (
-    <>
+    <ProtectedItem showNotFound>
       <Section className="flex items-center justify-between">
         <div className="text-6xl font-thin">Referrals</div>
         <SubmitReferral />
@@ -43,7 +44,7 @@ const ReferralsPage = observer(() => {
           </thead>
           <tbody>
             {referralsQuery.data?.map((referral) => (
-              <tr key={referral.email}>
+              <tr key={referral.email} className="border-b dark:border-gray-500">
                 <td>{referral.email}</td>
                 <td>{referral.first_name}</td>
                 <td>{referral.last_name}</td>
@@ -84,7 +85,7 @@ const ReferralsPage = observer(() => {
           </tbody>
         </table>
       </Section>
-    </>
+    </ProtectedItem>
   );
 });
 
