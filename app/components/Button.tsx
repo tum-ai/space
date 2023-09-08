@@ -33,7 +33,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     const Comp = asChild ? Slot : "button";
 
     if (loading) {
-      props.children = <LoadingWheel variant={"invertedSmall"} />;
+      props.children = <LoadingWheel size={"small"} color={"inverted"} />;
     }
 
     return (
