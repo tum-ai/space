@@ -49,7 +49,6 @@ export class MeModel {
           this.root.reviewToolModel.fetchApplications();
           this.root.reviewToolModel.fetchMyreviews();
         }
-        this.root.referralsModel.fetchReferrals();
       } else {
         this.setUser(null);
       }
