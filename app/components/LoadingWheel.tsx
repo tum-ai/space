@@ -2,7 +2,7 @@ import { cva } from "class-variance-authority";
 import React from "react";
 
 const loadingWheelVariants = cva(
-  "m-auto animate-spin rounded-full border-l-2 mx-3",
+  "m-auto animate-spin rounded-full border-l-2",
   {
     variants: {
       variant: {
