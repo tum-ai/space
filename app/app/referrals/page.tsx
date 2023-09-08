@@ -2,6 +2,7 @@
 import { Button } from "@components/Button";
 import Dialog from "@components/Dialog";
 import Input from "@components/Input";
+import Loading from "@components/Loading";
 import ProtectedItem from "@components/ProtectedItem";
 import { Section } from "@components/Section";
 import Textarea from "@components/Textarea";
@@ -17,70 +18,74 @@ import { useReferrals } from "./useReferrals";
 
 const ReferralsPage = observer(() => {
   const queryClient = useQueryClient();
-  const { referrals } = useReferrals();
+  const { referrals, isLoading } = useReferrals();
   return (
     <ProtectedItem showNotFound>
       <Section className="flex items-center justify-between">
         <div className="text-6xl font-thin">Referrals</div>
         <SubmitReferral />
       </Section>
-      <Section className="flex overflow-auto">
-        <table className="mx-auto w-full min-w-[800px] table-auto text-center">
-          <thead>
-            <tr className="border-b border-b-gray-400 dark:border-b-white">
-              <th className="p-4">Email</th>
-              <th className="p-4">First Name</th>
-              <th className="p-4">Last Name</th>
-              <th className="p-4">Comment</th>
-              <th className="p-4">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {referrals?.map((referral) => (
-              <tr
-                key={referral.email}
-                className="border-b dark:border-gray-500"
-              >
-                <td>{referral.email}</td>
-                <td>{referral.first_name}</td>
-                <td>{referral.last_name}</td>
-                <td>{referral.comment}</td>
-                <td className="p-4">
-                  <Button
-                    onClick={() => {
-                      if (
-                        confirm(
-                          "Are you sure you want to delete this referral?",
-                        )
-                      ) {
-                        axios
-                          .delete(
-                            `/application/referral/?email=${referral.email}`,
-                          )
-                          .then(() => {
-                            queryClient.invalidateQueries({
-                              queryKey: ["referrals"],
-                            });
-                            toast.success(
-                              `Deleted referral for ${referral.email}`,
-                            );
-                          })
-                          .catch((err: AxiosError) => {
-                            toast.error(
-                              `Failed to delete referral for ${referral.email}: ${err.message}`,
-                            );
-                          });
-                      }
-                    }}
-                  >
-                    delete
-                  </Button>
-                </td>
+      {isLoading ? (
+        <Loading />
+      ) : (
+        <Section className="flex overflow-auto">
+          <table className="mx-auto w-full min-w-[800px] table-auto text-center">
+            <thead>
+              <tr className="border-b border-b-gray-400 dark:border-b-white">
+                <th className="p-4">Email</th>
+                <th className="p-4">First Name</th>
+                <th className="p-4">Last Name</th>
+                <th className="p-4">Comment</th>
+                <th className="p-4">Actions</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </Section>
+            </thead>
+            <tbody>
+              {referrals?.map((referral) => (
+                <tr
+                  key={referral.email}
+                  className="border-b dark:border-gray-500"
+                >
+                  <td>{referral.email}</td>
+                  <td>{referral.first_name}</td>
+                  <td>{referral.last_name}</td>
+                  <td>{referral.comment}</td>
+                  <td className="p-4">
+                    <Button
+                      onClick={() => {
+                        if (
+                          confirm(
+                            "Are you sure you want to delete this referral?",
+                          )
+                        ) {
+                          axios
+                            .delete(
+                              `/application/referral/?email=${referral.email}`,
+                            )
+                            .then(() => {
+                              queryClient.invalidateQueries({
+                                queryKey: ["referrals"],
+                              });
+                              toast.success(
+                                `Deleted referral for ${referral.email}`,
+                              );
+                            })
+                            .catch((err: AxiosError) => {
+                              toast.error(
+                                `Failed to delete referral for ${referral.email}: ${err.message}`,
+                              );
+                            });
+                        }
+                      }}
+                    >
+                      delete
+                    </Button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </Section>
+      )}
     </ProtectedItem>
   );
 });

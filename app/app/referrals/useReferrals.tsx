@@ -11,7 +11,7 @@ import { useState } from "react";
  */
 export const useReferrals = (page_size = 100) => {
   const [page, setPage] = useState(1);
-  const query = useQuery({
+  const { isLoading, data } = useQuery({
     queryKey: ["referrals", page],
     queryFn: () =>
       axios
@@ -24,7 +24,8 @@ export const useReferrals = (page_size = 100) => {
   const decreasePage = () => setPage((old) => Math.max(old - 1, 1));
 
   return {
-    referrals: query.data,
+    isLoading,
+    referrals: data,
     page,
     increasePage,
     decreasePage,
