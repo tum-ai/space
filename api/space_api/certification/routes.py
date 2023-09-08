@@ -39,7 +39,7 @@ def generate_certificate(
     try:
         response = requests.post(
             # Using Docker name resolution
-            "http://cert/create-certificate/membership",
+            "http://localhost:3009/create-certificate/membership",
             headers={"content_type": "application/json"},
             data=data,
             timeout=150,

@@ -49,7 +49,7 @@ const Applications = observer(() => {
   return (
     <>
       <div className="flex flex-col justify-end gap-2 md:flex-row md:items-center">
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center space-x-2">
           <div className="space-x-2">
             <span className="font-thin">filters: </span>
             {Object.keys(reviewToolModel.filter).length > 0 && (
@@ -75,6 +75,17 @@ const Applications = observer(() => {
               );
             }}
           />
+          <Button
+            onClick={() => {
+              navigator.clipboard.writeText(
+                reviewToolModel.filteredApplications
+                  .map((application) => `${application.id}`)
+                  .join("\n"),
+              );
+            }}
+          >
+            copy IDs
+          </Button>
         </div>
         <div className="flex w-full space-x-4 rounded-lg bg-gray-200 p-2 dark:bg-gray-700 md:w-fit">
           <Icon name={"FaSearch"} className="rounded-lg p-2" />
