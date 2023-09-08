@@ -36,7 +36,10 @@ const Referrals = observer(() => {
           </thead>
           <tbody>
             {referrals.map((referral) => (
-              <tr key={referral.email}>
+              <tr
+                key={referral.email}
+                className="border-b dark:border-gray-500"
+              >
                 <td>{referral.email}</td>
                 <td>{referral.first_name}</td>
                 <td>{referral.last_name}</td>

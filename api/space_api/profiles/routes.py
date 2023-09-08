@@ -1,7 +1,7 @@
 import datetime
 from typing import Annotated
 
-from fastapi import APIRouter, Body, Request
+from fastapi import APIRouter, Body, HTTPException, Request
 
 from space_api.database.profiles_connector import (
     create_db_department_memberships,
@@ -53,6 +53,7 @@ from .response_models import (
     ResponseProfileList,
     ResponsePublicProfile,
     ResponsePublicProfileList,
+    ResponseResetPassword,
     ResponseRoleHoldershipList,
     ResponseRoleHoldershipUpdateList,
     ResponseRoleList,
@@ -623,3 +624,31 @@ def delete_department_membership(
         "description": "Department memberships successfully deleted",
         "data": deleted_ids,
     }
+
+
+@router.post(
+    "/resetPassword",
+    response_description="Reset password",
+    response_model=ResponseResetPassword | ErrorResponse,
+)
+@error_handlers
+def reset_password(
+    request: Request,
+    email: str,
+) -> dict:
+    try:
+        link = generate_reset_password_link(email)
+        send_email(
+            email,
+            "Reset Password for TUM.ai space",
+            f"Use the following link to reset your password. \
+            If you didn't initiate the request, please ignore this email. \n\n \
+            {link}",
+        )
+        return {
+            "status_code": 200,
+            "response_type": "success",
+            "description": "Password reset link sent.",
+        }
+    except Exception:
+        raise HTTPException(status_code=500, detail="Could not send link.")
