@@ -114,7 +114,7 @@ const SubmitReferral = () => {
     <Dialog
       isOpenOutside={isOpen}
       setIsOpenOutside={setIsOpen}
-      trigger={<Button loading>submit referral</Button>}
+      trigger={<Button>submit referral</Button>}
     >
       <Formik
         initialValues={initialValues}
