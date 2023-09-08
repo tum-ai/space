@@ -18,7 +18,7 @@ import * as Yup from "yup";
 const ReferralsPage = observer(() => {
   const queryClient = useQueryClient();
   const referralsQuery = useQuery({
-    queryKey: ["referral"],
+    queryKey: ["referrals"],
     queryFn: () =>
       axios
         .get("/application/referrals/", { params: { page: 1, page_size: 100 } })
@@ -44,7 +44,10 @@ const ReferralsPage = observer(() => {
           </thead>
           <tbody>
             {referralsQuery.data?.map((referral) => (
-              <tr key={referral.email} className="border-b dark:border-gray-500">
+              <tr
+                key={referral.email}
+                className="border-b dark:border-gray-500"
+              >
                 <td>{referral.email}</td>
                 <td>{referral.first_name}</td>
                 <td>{referral.last_name}</td>
@@ -90,6 +93,7 @@ const ReferralsPage = observer(() => {
 });
 
 const SubmitReferral = () => {
+  const queryClient = useQueryClient();
   const [isOpen, setIsOpen] = useState(false);
 
   const schema = Yup.object().shape({
@@ -124,6 +128,9 @@ const SubmitReferral = () => {
             })
             .then(() => {
               setIsOpen(false);
+              queryClient.invalidateQueries({
+                queryKey: ["referrals"],
+              });
             })
             .catch((err: AxiosError) => {
               toast.error(`Failed to submit referral: ${err.message}`);
