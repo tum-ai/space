@@ -45,6 +45,7 @@ def submit_review(
     request: Request,
     data: Annotated[ApplicationReviewIn, Body(embed=True)],
 ) -> dict:
+    print(data)
     create_db_application_review(
         request.app.state.sql_engine, request.state.profile.id, data
     )

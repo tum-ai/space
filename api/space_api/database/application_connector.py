@@ -108,3 +108,21 @@ def delete_db_referral(
             return True
 
     return False
+
+def delete_db_application(
+    sql_engine: sa.Engine,
+    id: int) -> bool:
+    with Session(sql_engine) as db_session:
+
+        db_application = (
+            db_session.query(Application)
+            .filter(Application.id == id)
+            .first()
+        )
+
+        if db_application:
+            db_session.delete(db_application)
+            db_session.commit()
+            return True
+
+        return False
