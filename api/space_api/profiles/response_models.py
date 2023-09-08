@@ -130,6 +130,10 @@ class ResponseRoleHoldershipUpdateList(BaseResponse):
     failed: list[Any]
 
 
+class ResponseResetPassword(BaseResponse):
+    model_config = ConfigDict(json_schema_extra=BaseResponse.schema_wrapper([]))
+
+
 # ------------------------------------------------------------------------------------ #
 #                         DepartmemtMembership Response Models                         #
 # ------------------------------------------------------------------------------------ #

@@ -7,7 +7,7 @@ export class ProfilesModel {
   root: RootModel;
   profiles = [];
   filteredProfiles = [];
-  filter: any = {};
+  filter: { [key: string]: any } = {};
   search = "";
   sortBy = "";
 

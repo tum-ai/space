@@ -1,10 +1,11 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Body, Request
+from fastapi import APIRouter, Body, HTTPException, Request
 
 from space_api.database.application_connector import (
     create_db_application,
     create_db_referral,
+    delete_db_application,
     delete_db_referral,
     list_db_application,
     list_db_applications,
@@ -17,6 +18,7 @@ from space_api.utils.response import ErrorResponse
 
 from .api_models import ApplicationOut, ApplicationReferralInOut
 from .response_models import (
+    ResponseDeleteApplication,
     ResponseDeleteReferral,
     ResponseRetrieveApplication,
     ResponseRetrieveApplications,
@@ -158,3 +160,33 @@ def delete_referral(
         "response_type": "success",
         "description": "Referral deleted successfully.",
     }
+
+
+@router.delete(
+    "/applications/delete_application/",
+    response_description="Delete a review of a membership application.",
+    response_model=ResponseDeleteApplication,
+)
+@error_handlers
+@ensure_authorization(
+    any_of_roles=["admin"],
+)
+def delete_application(request: Request, id: int) -> dict:
+    review_deleted = delete_db_application(
+        request.app.state.sql_engine, id
+    )
+
+    if review_deleted:
+        return {
+            "status_code": 200,
+            "response_type": "success",
+            "description": "Review deleted successfully",
+        }
+
+    raise HTTPException(
+        status_code=400,
+        detail="""
+            Could not delete application with ID {id}.
+        """
+    )
+
