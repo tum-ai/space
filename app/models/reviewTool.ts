@@ -224,7 +224,8 @@ export class ReviewToolModel {
       });
     if (value) {
       this.fetchMyreviews();
-      this.fetchApplications();
+      await this.fetchApplications();
+      this.filterApplications();
     }
   }
 }
