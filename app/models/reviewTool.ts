@@ -12,6 +12,8 @@ export class ReviewToolModel {
   applicationOnReview: { id?: string };
   openTab: "Applications" | "Review" = "Applications";
   myreviews: any[] = [];
+  filter: { [key: string]: any } = {};
+  formType: "MEMBERSHIP" | "VENTURE" = "MEMBERSHIP";
 
   constructor(root: RootModel) {
     this.root = root;
@@ -38,11 +40,59 @@ export class ReviewToolModel {
     this.setOpenTab("Review");
   }
 
+  #findProp(obj, prop, defval) {
+    if (typeof defval == "undefined") defval = null;
+    prop = prop.split(".");
+    for (var i = 0; i < prop.length; i++) {
+      if (typeof obj[prop[i]] == "undefined") return defval;
+      obj = obj[prop[i]];
+    }
+    return obj;
+  }
+
+  setFilter(key, value) {
+    if (!value) {
+      delete this.filter[key];
+    } else {
+      this.filter[key] = value;
+    }
+    this.filterApplications();
+  }
+
+  resetFilters() {
+    this.filter = {};
+    this.filterApplications();
+  }
+
+  getFormNames() {
+    return [
+      ...new Set(
+        this.applications.map((application) => {
+          return application.submission?.data?.formName;
+        }),
+      ),
+    ];
+  }
+
+  setFormType(formType: string) {
+    this.formType = formType as any;
+  }
+
+  // Api
+
   /**
    * Filters applications in the current state according to the filters and search states.
    */
   filterApplications() {
     this.filteredApplications = this.applications.filter((application) => {
+      for (const key in this.filter) {
+        if (
+          this.filter[key] &&
+          this.#findProp(application, key, "") != this.filter[key]
+        ) {
+          return false;
+        }
+      }
       return (
         !this.search ||
         JSON.stringify({ ...application, _id: "" })
@@ -133,7 +183,7 @@ export class ReviewToolModel {
       .post("/review_tool/application_review", {
         data: {
           form: review,
-          review_type: "MEMBERSHIP",
+          review_type: this.formType,
           reviewee_id: this.applicationOnReview?.id,
         },
       })
@@ -153,6 +203,29 @@ export class ReviewToolModel {
       this.openTab = "Applications";
       this.fetchMyreviews();
       this.fetchApplications();
+    }
+  }
+
+  /**
+   * Deletes the application associated with the id.
+   *
+   * @param id - The ID of the application
+   */
+  async deleteApplication(id) {
+    const value = await axios
+      .delete("/applications/delete_application/?id=" + id)
+      .then(() => {
+        return true;
+      })
+      .catch((err: AxiosError) => {
+        toast.error(
+          `Failed to delete review for application ${id}: ${err.message}`,
+        );
+      });
+    if (value) {
+      this.fetchMyreviews();
+      await this.fetchApplications();
+      this.filterApplications();
     }
   }
 }

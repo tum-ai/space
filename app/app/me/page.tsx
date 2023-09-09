@@ -1,9 +1,9 @@
 "use client";
 
 import { useStores } from "@providers/StoreProvider";
-import ProfileOverview from "../profile/components/ProfileOverview";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
+import ProfileOverview from "../profile/components/ProfileOverview";
 
 const Me = () => {
   const { meModel } = useStores();
