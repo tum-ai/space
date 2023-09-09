@@ -6,14 +6,8 @@ import { Section } from "@components/Section";
 import Select from "@components/Select";
 import { Cross1Icon, PlusIcon } from "@radix-ui/react-icons";
 import axios, { AxiosError } from "axios";
-import {
-  ErrorMessage,
-  Field,
-  FieldArray,
-  Form,
-  Formik,
-  FormikValues,
-} from "formik";
+import { Field, FieldArray, Form, Formik, FormikValues } from "formik";
+import ErrorMessage from "@components/ErrorMessage";
 import toast from "react-hot-toast";
 import * as Yup from "yup";
 
@@ -73,8 +67,8 @@ const Invite = () => {
             .post("/profiles/invite/members", {
               data: values.invitees,
             })
-            .then((response) => {
-              return response.data;
+            .then((res) => {
+              return res.data;
             })
             .catch((err: AxiosError) => {
               toast.error(`Failed to invite: ${err.message}`);
@@ -93,7 +87,7 @@ const Invite = () => {
           }
         }}
       >
-        {({ values, setFieldValue }) => (
+        {({ values, errors, touched, setFieldValue }) => (
           <Form>
             <FieldArray name="invitees">
               {({ remove, push }) => (
@@ -133,121 +127,118 @@ const Invite = () => {
                       </thead>
                       <tbody>
                         {values.invitees.length > 0 &&
-                          values.invitees.map((invitee, index) => (
-                            <tr
-                              className="my-1 grid grid-cols-[repeat(5,_1fr)_3rem] gap-1"
-                              key={invitee.first_name}
-                            >
-                              <td>
-                                <Field
-                                  as={Input}
-                                  name={`invitees.${index}.email`}
-                                  placeholder="daniel.korth@tum.de"
-                                  type="text"
-                                />
-                                <ErrorMessage
-                                  component="p"
-                                  className="text-red-500"
-                                  name={`invitees.${index}.email`}
-                                />
-                              </td>
-                              <td>
-                                <Field
-                                  as={Input}
-                                  name={`invitees.${index}.first_name`}
-                                  placeholder="Daniel"
-                                  type="text"
-                                />
-                                <ErrorMessage
-                                  component="p"
-                                  className="text-red-500"
-                                  name={`invitees.${index}.first_name`}
-                                />
-                              </td>
-                              <td>
-                                <Field
-                                  as={Input}
-                                  name={`invitees.${index}.last_name`}
-                                  placeholder="Korth"
-                                  type="text"
-                                />
-                                <ErrorMessage
-                                  component="p"
-                                  className="text-red-500"
-                                  name={`invitees.${index}.last_name`}
-                                />
-                              </td>
-                              <td>
-                                <Field
-                                  name={`invitees.${index}.department_handle`}
-                                  as={Select}
-                                  placeholder={"Department"}
-                                  data={Object.entries(departments).map(
-                                    ([key, value]) => ({
-                                      key: key,
-                                      value: value,
-                                    }),
-                                  )}
-                                  selectedItem={{
-                                    key: departments[
-                                      invitee["department_handle"]
-                                    ],
-                                    value: invitee["department_handle"],
-                                  }}
-                                  setSelectedItem={(value) => {
-                                    setFieldValue(
-                                      `invitees.${index}.department_handle`,
-                                      value,
-                                    );
-                                  }}
-                                />
-                                <ErrorMessage
-                                  component="p"
-                                  className="text-red-500"
-                                  name={`invitees.${index}.department_handle`}
-                                />
-                              </td>
-                              <td>
-                                <Field
-                                  name={`invitees.${index}.department_position`}
-                                  as={Select}
-                                  placeholder={"Position"}
-                                  data={Object.entries(positions).map(
-                                    ([key, value]) => ({
-                                      key: key,
-                                      value: value,
-                                    }),
-                                  )}
-                                  selectedItem={{
-                                    key: positions[
-                                      invitee["department_position"]
-                                    ],
-                                    value: invitee["department_position"],
-                                  }}
-                                  setSelectedItem={(value) => {
-                                    setFieldValue(
-                                      `invitees.${index}.department_position`,
-                                      value,
-                                    );
-                                  }}
-                                />
-                                <ErrorMessage
-                                  component="p"
-                                  className="text-red-500"
-                                  name={`invitees.${index}.department_position`}
-                                />
-                              </td>
-                              {index !== 0 && (
-                                <button
-                                  className="mt-1 p-2"
-                                  type="button"
-                                  onClick={() => remove(index)}
-                                >
-                                  <Cross1Icon className="h-6 w-6" />
-                                </button>
-                              )}
-                            </tr>
-                          ))}
+                          values.invitees.map(
+                            (invitee: string, index: number) => (
+                              <tr
+                                className="my-1 grid grid-cols-[repeat(5,_1fr)_3rem] gap-1"
+                                key={`invitee-${index}`}
+                              >
+                                <td>
+                                  <Field
+                                    as={Input}
+                                    name={`invitees.${index}.email`}
+                                    placeholder="daniel.korth@tum.de"
+                                    type="text"
+                                    state={
+                                      touched[`invitees.${index}.email`] &&
+                                      errors[`invitees.${index}.email`] &&
+                                      "error"
+                                    }
+                                  />
+                                  <ErrorMessage
+                                    name={`invitees.${index}.email`}
+                                  />
+                                </td>
+                                <td>
+                                  <Field
+                                    as={Input}
+                                    name={`invitees.${index}.first_name`}
+                                    placeholder="Daniel"
+                                    type="text"
+                                  />
+                                  <ErrorMessage
+                                    name={`invitees.${index}.first_name`}
+                                  />
+                                </td>
+                                <td>
+                                  <Field
+                                    as={Input}
+                                    name={`invitees.${index}.last_name`}
+                                    placeholder="Korth"
+                                    type="text"
+                                  />
+                                  <ErrorMessage
+                                    name={`invitees.${index}.last_name`}
+                                  />
+                                </td>
+                                <td>
+                                  <Field
+                                    name={`invitees.${index}.department_handle`}
+                                    as={Select}
+                                    placeholder={"Department"}
+                                    data={Object.entries(departments).map(
+                                      ([key, value]) => ({
+                                        key: key,
+                                        value: value,
+                                      }),
+                                    )}
+                                    selectedItem={{
+                                      key: departments[
+                                        invitee["department_handle"]
+                                      ],
+                                      value: invitee["department_handle"],
+                                    }}
+                                    setSelectedItem={(value) => {
+                                      setFieldValue(
+                                        `invitees.${index}.department_handle`,
+                                        value,
+                                      );
+                                    }}
+                                  />
+                                  <ErrorMessage
+                                    name={`invitees.${index}.department_handle`}
+                                  />
+                                </td>
+                                <td>
+                                  <Field
+                                    name={`invitees.${index}.department_position`}
+                                    as={Select}
+                                    placeholder={"Position"}
+                                    data={Object.entries(positions).map(
+                                      ([key, value]) => ({
+                                        key: key,
+                                        value: value,
+                                      }),
+                                    )}
+                                    selectedItem={{
+                                      key: positions[
+                                        invitee["department_position"]
+                                      ],
+                                      value: invitee["department_position"],
+                                    }}
+                                    setSelectedItem={(value) => {
+                                      setFieldValue(
+                                        `invitees.${index}.department_position`,
+                                        value,
+                                      );
+                                    }}
+                                  />
+                                  <ErrorMessage
+                                    name={`invitees.${index}.department_position`}
+                                  />
+                                </td>
+                                {index !== 0 && (
+                                  <button
+                                    className="mt-1 p-2"
+                                    type="button"
+                                    onClick={() => remove(index)}
+                                  >
+                                    <Cross1Icon className="h-6 w-6" />
+                                  </button>
+                                )}
+                              </tr>
+                            ),
+                          )}
                       </tbody>
                     </table>
                   </Section>

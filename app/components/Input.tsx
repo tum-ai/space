@@ -18,6 +18,14 @@ const styles = cva(
     },
   },
 );
+const labelStyles = cva("text-sm", {
+  variants: {
+    state: {
+      default: "",
+      error: "text-red-500",
+    },
+  },
+});
 
 function Input({ label, state, ...props }: Props) {
   if (!label) {
@@ -25,7 +33,7 @@ function Input({ label, state, ...props }: Props) {
   }
   return (
     <div className="flex flex-col gap-2">
-      <label className="text-sm font-thin">{label}</label>
+      <label className={labelStyles({ state })}>{label}</label>
       <input {...props} className={styles({ state })} />
     </div>
   );

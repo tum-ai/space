@@ -6,7 +6,8 @@ import { Section } from "@components/Section";
 import Select from "@components/Select";
 import axios, { AxiosError } from "axios";
 import download from "downloadjs";
-import { ErrorMessage, Field, Form, Formik, FormikValues } from "formik";
+import { Field, Form, Formik, FormikValues } from "formik";
+import ErrorMessage from "@components/ErrorMessage";
 import { observer } from "mobx-react";
 import toast from "react-hot-toast";
 import * as Yup from "yup";
@@ -104,11 +105,7 @@ function Certificate() {
                     setFieldValue("DEPARTMENT", item);
                   }}
                 />
-                <ErrorMessage
-                  component="p"
-                  className="text-red-500"
-                  name="DEPARTMENT"
-                />
+                <ErrorMessage name="DEPARTMENT" />
               </div>
               <div>
                 <Field
@@ -124,11 +121,7 @@ function Certificate() {
                     setFieldValue("TITLE", position);
                   }}
                 />
-                <ErrorMessage
-                  component="p"
-                  className="text-red-500"
-                  name="DEPARTMENT"
-                />
+                <ErrorMessage name="DEPARTMENT" />
               </div>
               <div>
                 <Field
@@ -138,11 +131,7 @@ function Certificate() {
                   name="NAME"
                   state={touched.NAME && errors.NAME && "error"}
                 />
-                <ErrorMessage
-                  component="p"
-                  className="text-red-500"
-                  name="NAME"
-                />
+                <ErrorMessage name="NAME" />
               </div>
               <div>
                 <Field
@@ -152,11 +141,7 @@ function Certificate() {
                   name="LASTNAME"
                   state={touched.LASTNAME && errors.LASTNAME && "error"}
                 />
-                <ErrorMessage
-                  component="p"
-                  className="text-red-500"
-                  name="LASTNAME"
-                />
+                <ErrorMessage name="LASTNAME" />
               </div>
               <div>
                 <Field
@@ -166,11 +151,7 @@ function Certificate() {
                   name="DATENOW"
                   state={touched.DATENOW && errors.DATENOW && "error"}
                 />
-                <ErrorMessage
-                  component="p"
-                  className="text-red-500"
-                  name="DATENOW"
-                />
+                <ErrorMessage name="DATENOW" />
               </div>
               <div>
                 <Field
@@ -180,11 +161,7 @@ function Certificate() {
                   name="DATEJOINED"
                   state={touched.DATEJOINED && errors.DATEJOINED && "error"}
                 />
-                <ErrorMessage
-                  component="p"
-                  className="text-red-500"
-                  name="DATEJOINED"
-                />
+                <ErrorMessage name="DATEJOINED" />
               </div>
               <div>
                 <Field
@@ -194,11 +171,7 @@ function Certificate() {
                   name="PRONOUNPOS"
                   state={touched.PRONOUNPOS && errors.PRONOUNPOS && "error"}
                 />
-                <ErrorMessage
-                  component="p"
-                  className="text-red-500"
-                  name="PRONOUNPOS"
-                />
+                <ErrorMessage name="PRONOUNPOS" />
               </div>
               <div>
                 <Field
@@ -208,11 +181,7 @@ function Certificate() {
                   name="SIGNED_ON"
                   state={touched.SIGNED_ON && errors.SIGNED_ON && "error"}
                 />
-                <ErrorMessage
-                  component="p"
-                  className="text-red-500"
-                  name="SIGNED_ON"
-                />
+                <ErrorMessage name="SIGNED_ON" />
               </div>
               <div>
                 <Field
@@ -222,11 +191,7 @@ function Certificate() {
                   name="CONTRIB_1"
                   state={touched.CONTRIB_1 && errors.CONTRIB_1 && "error"}
                 />
-                <ErrorMessage
-                  component="p"
-                  className="text-red-500"
-                  name="CONTRIB_1"
-                />
+                <ErrorMessage name="CONTRIB_1" />
               </div>
               <div>
                 <Field
@@ -236,11 +201,7 @@ function Certificate() {
                   name="CONTRIB_2"
                   state={touched.CONTRIB_2 && errors.CONTRIB_2 && "error"}
                 />
-                <ErrorMessage
-                  component="p"
-                  className="text-red-500"
-                  name="CONTRIB_2"
-                />
+                <ErrorMessage name="CONTRIB_2" />
               </div>
               <div>
                 <Field
@@ -250,11 +211,7 @@ function Certificate() {
                   name="CONTRIB_3"
                   state={touched.CONTRIB_3 && errors.CONTRIB_3 && "error"}
                 />
-                <ErrorMessage
-                  component="p"
-                  className="text-red-500"
-                  name="CONTRIB_3"
-                />
+                <ErrorMessage name="CONTRIB_3" />
               </div>
               <Button className="lg:col-span-2" type="submit">
                 save
