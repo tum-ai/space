@@ -15,11 +15,6 @@ function NavBar() {
       text: "Team",
     },
     {
-      href: "/feedback/",
-      text: "Feedback",
-      protected: true,
-    },
-    {
       href: "/invite/",
       text: "Invite Members",
       protected: true,
