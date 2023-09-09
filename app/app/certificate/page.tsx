@@ -11,6 +11,7 @@ import ErrorMessage from "@components/ErrorMessage";
 import { observer } from "mobx-react";
 import toast from "react-hot-toast";
 import * as Yup from "yup";
+import { DownloadIcon } from "@radix-ui/react-icons";
 
 function Certificate() {
   const departments = [
@@ -59,181 +60,183 @@ function Certificate() {
 
   return (
     <ProtectedItem showNotFound roles={["create_certificate"]}>
-      <Section>
-        <div className="text-6xl font-thin">Member Certificate</div>
-      </Section>
-      <Section>
-        <h2 className="text-2xl lg:col-span-2">Create Certificate</h2>
-        <Formik
-          initialValues={initialValues}
-          validationSchema={validationSchema}
-          onSubmit={async (values: FormikValues) => {
-            const response = await axios
-              .post(
-                "/certificate/membership/",
-                { data: values },
-                { responseType: "blob" },
-              )
-              .then((res) => res)
-              .catch((err: AxiosError) => {
-                toast.error(`Failed to generate certificate: ${err.message}`);
-              });
+      <Formik
+        initialValues={initialValues}
+        validationSchema={validationSchema}
+        onSubmit={async (values: FormikValues) => {
+          const response = await axios
+            .post(
+              "/certificate/membership/",
+              { data: values },
+              { responseType: "blob" },
+            )
+            .then((res) => res)
+            .catch((err: AxiosError) => {
+              toast.error(`Failed to generate certificate: ${err.message}`);
+            });
 
-            if (response) {
-              let fileName = `tumai-certificate-${values.NAME}-${values.LASTNAME}.pdf`;
-              download(
-                response.data,
-                fileName,
-                response.headers["content-type"],
-              );
-            }
-          }}
-        >
-          {({ setFieldValue, errors, touched }) => (
-            <Form className="grid grid-cols-2 gap-4">
-              <div>
-                <Field
-                  as={Select}
-                  label="Department"
-                  name="DEPARTMENT"
-                  placeholder={"Department"}
-                  options={departments.map((department) => ({
-                    key: department,
-                    value: department,
-                  }))}
-                  setSelectedItem={(item: string) => {
-                    setFieldValue("DEPARTMENT", item);
-                  }}
-                />
-                <ErrorMessage name="DEPARTMENT" />
-              </div>
-              <div>
-                <Field
-                  as={Select}
-                  label="Position"
-                  name="TITLE"
-                  placeholder={"Position"}
-                  options={positions.map((position) => ({
-                    key: position,
-                    value: position,
-                  }))}
-                  setSelectedItem={(position: string) => {
-                    setFieldValue("TITLE", position);
-                  }}
-                />
-                <ErrorMessage name="DEPARTMENT" />
-              </div>
-              <div>
-                <Field
-                  as={Select}
-                  label="Pronoun (his/her)"
-                  name="PRONOUNPOS"
-                  placeholder="Pronouns"
-                  options={[
-                    { key: "his", value: "his" },
-                    { key: "her", value: "her" },
-                  ]}
-                  setSelectedItem={(position: string) => {
-                    setFieldValue("PRONOUNPOS", position);
-                  }}
-                />
-                <ErrorMessage name="PRONOUNPOS" />
-              </div>
-              <div>
-                <Field
-                  as={Input}
-                  label="First Name"
-                  type="text"
-                  name="NAME"
-                  state={touched.NAME && errors.NAME && "error"}
-                  fullWidth
-                />
-                <ErrorMessage name="NAME" />
-              </div>
-              <div>
-                <Field
-                  as={Input}
-                  label="Last Name"
-                  type="text"
-                  name="LASTNAME"
-                  state={touched.LASTNAME && errors.LASTNAME && "error"}
-                  fullWidth
-                />
-                <ErrorMessage name="LASTNAME" />
-              </div>
-              <div>
-                <Field
-                  as={Input}
-                  label="Issuing Date"
-                  type="text"
-                  name="DATENOW"
-                  state={touched.DATENOW && errors.DATENOW && "error"}
-                  fullWidth
-                />
-                <ErrorMessage name="DATENOW" />
-              </div>
-              <div>
-                <Field
-                  as={Input}
-                  label="Date Joined"
-                  type="text"
-                  name="DATEJOINED"
-                  state={touched.DATEJOINED && errors.DATEJOINED && "error"}
-                  fullWidth
-                />
-                <ErrorMessage name="DATEJOINED" />
-              </div>
-              <div>
-                <Field
-                  as={Input}
-                  label="Date Signed On"
-                  type="text"
-                  name="SIGNED_ON"
-                  state={touched.SIGNED_ON && errors.SIGNED_ON && "error"}
-                  fullWidth
-                />
-                <ErrorMessage name="SIGNED_ON" />
-              </div>
-              <div>
-                <Field
-                  as={Input}
-                  label="Contribution 1"
-                  type="text"
-                  name="CONTRIB_1"
-                  state={touched.CONTRIB_1 && errors.CONTRIB_1 && "error"}
-                  fullWidth
-                />
-                <ErrorMessage name="CONTRIB_1" />
-              </div>
-              <div>
-                <Field
-                  as={Input}
-                  label="Contribution 2"
-                  type="text"
-                  name="CONTRIB_2"
-                  state={touched.CONTRIB_2 && errors.CONTRIB_2 && "error"}
-                  fullWidth
-                />
-                <ErrorMessage name="CONTRIB_2" />
-              </div>
-              <div>
-                <Field
-                  as={Input}
-                  label="Contribution 3"
-                  type="text"
-                  name="CONTRIB_3"
-                  state={touched.CONTRIB_3 && errors.CONTRIB_3 && "error"}
-                  fullWidth
-                />
-                <ErrorMessage name="CONTRIB_3" />
-              </div>
-              <Button className="lg:col-span-2" type="submit">
-                save
+          if (response) {
+            let fileName = `tumai-certificate-${values.NAME}-${values.LASTNAME}.pdf`;
+            download(response.data, fileName, response.headers["content-type"]);
+          }
+        }}
+      >
+        {({ setFieldValue, errors, touched }) => (
+          <>
+            <Section className="flex flex-col justify-between gap-4 md:flex-row md:items-center">
+              <h1 className="text-6xl font-thin">Member Certificate</h1>
+              <Button className="flex w-max items-center gap-2" type="submit">
+                <DownloadIcon />
+                Save Certificate
               </Button>
-            </Form>
-          )}
-        </Formik>
-      </Section>
+            </Section>
+            <Section>
+              <Form className="grid grid-cols-2 gap-4">
+                <div className="col-span-2 grid grid-cols-3 gap-4">
+                  <div>
+                    <Field
+                      as={Select}
+                      label="Department"
+                      name="DEPARTMENT"
+                      placeholder={"Department"}
+                      options={departments.map((department) => ({
+                        key: department,
+                        value: department,
+                      }))}
+                      setSelectedItem={(item: string) => {
+                        setFieldValue("DEPARTMENT", item);
+                      }}
+                    />
+                    <ErrorMessage name="DEPARTMENT" />
+                  </div>
+                  <div>
+                    <Field
+                      as={Select}
+                      label="Position"
+                      name="TITLE"
+                      placeholder={"Position"}
+                      options={positions.map((position) => ({
+                        key: position,
+                        value: position,
+                      }))}
+                      setSelectedItem={(position: string) => {
+                        setFieldValue("TITLE", position);
+                      }}
+                    />
+                    <ErrorMessage name="DEPARTMENT" />
+                  </div>
+                  <div>
+                    <Field
+                      as={Select}
+                      label="Pronoun (his/her)"
+                      name="PRONOUNPOS"
+                      placeholder="Pronouns"
+                      options={[
+                        { key: "his", value: "his" },
+                        { key: "her", value: "her" },
+                      ]}
+                      setSelectedItem={(position: string) => {
+                        setFieldValue("PRONOUNPOS", position);
+                      }}
+                    />
+                    <ErrorMessage name="PRONOUNPOS" />
+                  </div>
+                </div>
+                <div>
+                  <Field
+                    as={Input}
+                    label="First Name"
+                    type="text"
+                    name="NAME"
+                    state={touched.NAME && errors.NAME && "error"}
+                    fullWidth
+                  />
+                  <ErrorMessage name="NAME" />
+                </div>
+                <div>
+                  <Field
+                    as={Input}
+                    label="Last Name"
+                    type="text"
+                    name="LASTNAME"
+                    state={touched.LASTNAME && errors.LASTNAME && "error"}
+                    fullWidth
+                  />
+                  <ErrorMessage name="LASTNAME" />
+                </div>
+                <div>
+                  <Field
+                    as={Input}
+                    label="Date Now"
+                    type="text"
+                    name="DATENOW"
+                    state={touched.DATENOW && errors.DATENOW && "error"}
+                    fullWidth
+                  />
+                  <ErrorMessage name="DATENOW" />
+                </div>
+                <div>
+                  <Field
+                    as={Input}
+                    label="Date Joined"
+                    type="text"
+                    name="DATEJOINED"
+                    state={touched.DATEJOINED && errors.DATEJOINED && "error"}
+                    fullWidth
+                  />
+                  <ErrorMessage name="DATEJOINED" />
+                </div>
+                <div>
+                  <Field
+                    as={Input}
+                    label="Date Signed On"
+                    type="text"
+                    name="SIGNED_ON"
+                    state={touched.SIGNED_ON && errors.SIGNED_ON && "error"}
+                    fullWidth
+                  />
+                  <ErrorMessage name="SIGNED_ON" />
+                </div>
+                <div className="col-span-2 flex flex-col gap-4">
+                  <div>
+                    <Field
+                      as={Input}
+                      label="Contribution 1"
+                      type="text"
+                      name="CONTRIB_1"
+                      state={touched.CONTRIB_1 && errors.CONTRIB_1 && "error"}
+                      fullWidth
+                    />
+                    <ErrorMessage name="CONTRIB_1" />
+                  </div>
+                  <div>
+                    <Field
+                      as={Input}
+                      label="Contribution 2"
+                      type="text"
+                      name="CONTRIB_2"
+                      state={touched.CONTRIB_2 && errors.CONTRIB_2 && "error"}
+                      fullWidth
+                    />
+                    <ErrorMessage name="CONTRIB_2" />
+                  </div>
+                  <div>
+                    <Field
+                      as={Input}
+                      label="Contribution 3"
+                      type="text"
+                      name="CONTRIB_3"
+                      state={touched.CONTRIB_3 && errors.CONTRIB_3 && "error"}
+                      fullWidth
+                    />
+                    <ErrorMessage name="CONTRIB_3" />
+                  </div>
+                </div>
+              </Form>
+            </Section>
+          </>
+        )}
+      </Formik>
     </ProtectedItem>
   );
 }
