@@ -16,6 +16,7 @@ import Link from "next/link";
 import * as Yup from "yup";
 import { ApplicationOverview } from "./_components/applicationOverview";
 import { ViewReview } from "./_components/viewReview";
+import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
 
 const ReviewTool = observer(() => {
   const { reviewToolModel } = useStores();
@@ -24,8 +25,10 @@ const ReviewTool = observer(() => {
     <ProtectedItem showNotFound roles={["submit_reviews"]}>
       <Section className="flex flex-col justify-between gap-4 md:flex-row md:items-center">
         <h1 className="text-6xl font-thin">Review Tool</h1>
-        <Button asChild className="w-max">
-          <Link href={"/review/myreviews"}>My Reviews</Link>
+        <Button asChild className="flex w-max items-center gap-2">
+          <Link href={"/review/myreviews"}>
+            <MagnifyingGlassIcon /> My Reviews
+          </Link>
         </Button>
       </Section>
       <Section>
@@ -359,10 +362,12 @@ const VentureReviewForm = observer(() => {
               name={`profile_category`}
               as={Select}
               placeholder={"Profile category"}
-              options={Object.entries(profileCategories).map(([key, value]) => ({
-                key: key,
-                value: value,
-              }))}
+              options={Object.entries(profileCategories).map(
+                ([key, value]) => ({
+                  key: key,
+                  value: value,
+                }),
+              )}
               selectedItem={{
                 key: profileCategories[values["profile_category"]],
                 value: values["profile_category"],

@@ -4,7 +4,7 @@ import Input from "@components/Input";
 import ProtectedItem from "@components/ProtectedItem";
 import { Section } from "@components/Section";
 import Select from "@components/Select";
-import { Cross1Icon, PlusIcon } from "@radix-ui/react-icons";
+import { UserPlusIcon, PlusIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import axios, { AxiosError } from "axios";
 import { Field, FieldArray, Form, Formik, FormikValues } from "formik";
 import ErrorMessage from "@components/ErrorMessage";
@@ -108,10 +108,13 @@ const Invite = () => {
                           })
                         }
                       >
-                        <PlusIcon /> Add Invitation
+                        <PlusIcon className="h-4 w-4" /> Add Invitation
                       </Button>
 
-                      <Button type="submit">Invite</Button>
+                      <Button type="submit" className="flex items-center gap-2">
+                        <UserPlusIcon className="h-4 w-4" />
+                        Invite
+                      </Button>
                     </div>
                   </Section>
                   <Section className="overflow-x-auto">
@@ -226,13 +229,14 @@ const Invite = () => {
                                   />
                                 </td>
                                 {index !== 0 && (
-                                  <button
-                                    className="mt-1 p-2"
+                                  <Button
+                                    className="p-2 text-black dark:text-white"
                                     type="button"
+                                    variant="link"
                                     onClick={() => remove(index)}
                                   >
-                                    <Cross1Icon className="h-6 w-6" />
-                                  </button>
+                                    <XMarkIcon className="h-6 w-6" />
+                                  </Button>
                                 )}
                               </tr>
                             ),
