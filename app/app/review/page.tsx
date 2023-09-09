@@ -22,11 +22,11 @@ const ReviewTool = observer(() => {
 
   return (
     <ProtectedItem showNotFound roles={["submit_reviews"]}>
-      <Section className="flex items-center justify-between">
+      <Section className="flex flex-col justify-between gap-4 md:flex-row md:items-center">
         <h1 className="text-6xl font-thin">Review Tool</h1>
-        <Link href={"/review/myreviews"}>
-          <Button>My reviews</Button>
-        </Link>
+        <Button asChild className="w-max">
+          <Link href={"/review/myreviews"}>My Reviews</Link>
+        </Button>
       </Section>
       <Section>
         <Tabs
@@ -162,7 +162,7 @@ function Application({ application }) {
                       <div className="cursor-pointer">
                         <Avatar
                           variant={"circle"}
-                          src={profile.profile_picture}
+                          profilePicture={profile.profile_picture}
                           initials={(
                             "" +
                             profile.first_name[0] +
