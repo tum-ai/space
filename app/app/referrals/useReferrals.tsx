@@ -26,6 +26,7 @@ export const useReferrals = (page_size = 100) => {
   return {
     referrals: query.data?.data as Referral[],
     hasMore: true, // TODO: This needs to be parsed from the api
+    isLoading: query.isLoading,
     page,
     isPreviousData: query.data?.isPreviousData,
     increasePage,

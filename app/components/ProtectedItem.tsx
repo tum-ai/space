@@ -1,5 +1,6 @@
 "use client";
 import { useStores } from "@providers/StoreProvider";
+import NotFound from "app/not-found";
 import { observer } from "mobx-react";
 import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";
@@ -23,7 +24,7 @@ function ProtectedItem({
 
   useEffect(() => {
     if (!user && redirectToAuth && !showNotFound) {
-      router.push("/notfound");
+      router.push("/auth");
     }
   }, [user, redirectToAuth, showNotFound, router]);
 
@@ -32,7 +33,7 @@ function ProtectedItem({
   }
 
   if (showNotFound) {
-    return <div>not found</div>;
+    return <NotFound />;
   }
 
   return null;
