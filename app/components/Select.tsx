@@ -39,7 +39,7 @@ function Select({
       onValueChange={setSelectedItem}
     >
       <div className="flex flex-col gap-2">
-        {label && <label className="text-sm font-thin">{label}</label>}
+        {label && <label className="text-sm">{label}</label>}
         <SelectPrimitive.Trigger asChild aria-label="Food">
           <Button>
             <SelectPrimitive.Value placeholder={placeholder} />
