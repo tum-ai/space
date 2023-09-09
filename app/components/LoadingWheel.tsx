@@ -27,15 +27,14 @@ const loadingWheelVariants = cva(
     },
   },
 );
-export interface loadingWheelProps {
+
+export interface Props {
   size?: "small" | "tiny";
   color?: "inverted";
 }
 
-const LoadingWheel = React.forwardRef<HTMLButtonElement, loadingWheelProps>(
-  ({ size, color }, ref) => {
-    return <div className={loadingWheelVariants({ size, color })} />;
-  },
-);
+const LoadingWheel = ({ size, color }: Props) => {
+  return <div className={loadingWheelVariants({ size, color })} />;
+};
 
-export { LoadingWheel, loadingWheelVariants };
+export default LoadingWheel;
