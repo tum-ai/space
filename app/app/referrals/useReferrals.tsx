@@ -15,8 +15,8 @@ export const useReferrals = (page_size = 100) => {
     queryKey: ["referrals", page],
     queryFn: () =>
       axios
-        .get("/application/referrals/", { params: { page: 1, page_size } })
-        .then((res) => res.data.data as Referral[]),
+        .get("/application/referrals/", { params: { page, page_size } })
+        .then((res) => res.data),
     keepPreviousData: true,
   });
 
@@ -24,8 +24,10 @@ export const useReferrals = (page_size = 100) => {
   const decreasePage = () => setPage((old) => Math.max(old - 1, 1));
 
   return {
-    referrals: query.data,
+    referrals: query.data?.data as Referral[],
+    hasMore: true, // TODO: This needs to be parsed from the api
     page,
+    isPreviousData: query.data?.isPreviousData,
     increasePage,
     decreasePage,
   };
