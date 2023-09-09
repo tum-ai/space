@@ -39,7 +39,7 @@ const Invite = () => {
   };
 
   const departments = {
-    "Software Development (DEV)": "DEV",
+    "Software Development": "DEV",
     Industry: "INDUSTRY",
     Makeathon: "MAKEATHON",
     Marketing: "MARKETING",
@@ -87,7 +87,7 @@ const Invite = () => {
           }
         }}
       >
-        {({ values, errors, touched, setFieldValue }) => (
+        {({ values, setFieldValue }) => (
           <Form>
             <FieldArray name="invitees">
               {({ remove, push }) => (
@@ -115,7 +115,7 @@ const Invite = () => {
                     </div>
                   </Section>
                   <Section className="overflow-x-auto">
-                    <table className="text-left">
+                    <table className="w-full min-w-[50rem] text-left">
                       <thead>
                         <tr className="grid grid-cols-[repeat(5,_1fr)_3rem] gap-1">
                           <th>Email</th>
@@ -139,11 +139,7 @@ const Invite = () => {
                                     name={`invitees.${index}.email`}
                                     placeholder="daniel.korth@tum.de"
                                     type="text"
-                                    state={
-                                      touched[`invitees.${index}.email`] &&
-                                      errors[`invitees.${index}.email`] &&
-                                      "error"
-                                    }
+                                    fullWidth
                                   />
                                   <ErrorMessage
                                     name={`invitees.${index}.email`}
@@ -155,6 +151,7 @@ const Invite = () => {
                                     name={`invitees.${index}.first_name`}
                                     placeholder="Daniel"
                                     type="text"
+                                    fullWidth
                                   />
                                   <ErrorMessage
                                     name={`invitees.${index}.first_name`}
@@ -166,6 +163,7 @@ const Invite = () => {
                                     name={`invitees.${index}.last_name`}
                                     placeholder="Korth"
                                     type="text"
+                                    fullWidth
                                   />
                                   <ErrorMessage
                                     name={`invitees.${index}.last_name`}

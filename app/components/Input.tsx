@@ -2,6 +2,7 @@ import { VariantProps, cva } from "class-variance-authority";
 
 interface Props extends VariantProps<typeof styles> {
   label?: string;
+  className?: string;
 }
 
 const styles = cva(
@@ -12,9 +13,14 @@ const styles = cva(
         default: "bg-white dark:border-gray-500 dark:bg-gray-700",
         error: "bg-white text-red-700 border-red-900 dark:bg-gray-700",
       },
+      fullWidth: {
+        true: "w-full",
+        false: "w-max",
+      },
     },
     defaultVariants: {
       state: "default",
+      fullWidth: false,
     },
   },
 );
@@ -27,14 +33,18 @@ const labelStyles = cva("text-sm", {
   },
 });
 
-function Input({ label, state, ...props }: Props) {
+function Input({ label, state, fullWidth, className, ...props }: Props) {
+  const InnerInput = (
+    <input {...props} className={styles({ state, fullWidth, className })} />
+  );
+
   if (!label) {
-    return <input {...props} className={styles({ state })} />;
+    return InnerInput;
   }
   return (
     <div className="flex flex-col gap-2">
       <label className={labelStyles({ state })}>{label}</label>
-      <input {...props} className={styles({ state })} />
+      {InnerInput}
     </div>
   );
 }
