@@ -9,7 +9,12 @@ import User from "./components/User";
 
 function NavBar() {
   const pathname = usePathname();
-  const links = [
+  const links: {
+    href: string;
+    text: string;
+    protected?: boolean;
+    roles?: string[];
+  }[] = [
     {
       href: "/profiles/",
       text: "Team",
@@ -48,11 +53,10 @@ function NavBar() {
         <NavigationMenu.List className="flex items-center justify-between overflow-x-auto">
           <div className="flex gap-6 py-4">
             {links.map((link) => {
-              const component = (
+              const Component = () => (
                 <NavigationMenu.Item>
                   <NavigationMenu.Link asChild>
                     <Link
-                      key={link.href}
                       href={link.href}
                       className={clsx(
                         "whitespace-nowrap hover:text-black dark:hover:text-white",
@@ -69,13 +73,17 @@ function NavBar() {
 
               if (link.protected) {
                 return (
-                  <ProtectedItem key={link["path"]} roles={link.roles}>
-                    {component}
+                  <ProtectedItem key={link.href} roles={link.roles}>
+                    <Component />
                   </ProtectedItem>
                 );
               }
 
-              return component;
+              return (
+                <span key={link.href}>
+                  <Component />
+                </span>
+              );
             })}
           </div>
         </NavigationMenu.List>
