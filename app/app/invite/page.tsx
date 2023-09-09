@@ -230,7 +230,7 @@ const Invite = () => {
                                 </td>
                                 {index !== 0 && (
                                   <Button
-                                    className="p-2 text-black dark:text-white"
+                                    className="h-max p-2 text-black dark:text-white"
                                     type="button"
                                     variant="link"
                                     onClick={() => remove(index)}

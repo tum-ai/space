@@ -82,16 +82,16 @@ function Certificate() {
         }}
       >
         {({ setFieldValue, errors, touched }) => (
-          <>
-            <Section className="flex flex-col justify-between gap-4 md:flex-row md:items-center">
-              <h1 className="text-6xl font-thin">Member Certificate</h1>
-              <Button className="flex w-max items-center gap-2" type="submit">
-                <DownloadIcon />
-                Save Certificate
-              </Button>
-            </Section>
-            <Section>
-              <Form className="grid grid-cols-2 gap-4">
+          <Section>
+            <Form>
+              <div className="flex flex-col justify-between gap-4 md:flex-row md:items-center mb-12">
+                <h1 className="text-6xl font-thin">Member Certificate</h1>
+                <Button className="flex w-max items-center gap-2" type="submit">
+                  <DownloadIcon />
+                  Save Certificate
+                </Button>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
                 <div className="col-span-2 grid grid-cols-3 gap-4">
                   <div>
                     <Field
@@ -232,9 +232,9 @@ function Certificate() {
                     <ErrorMessage name="CONTRIB_3" />
                   </div>
                 </div>
-              </Form>
-            </Section>
-          </>
+              </div>
+            </Form>
+          </Section>
         )}
       </Formik>
     </ProtectedItem>
