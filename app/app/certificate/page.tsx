@@ -87,7 +87,7 @@ function Certificate() {
             }
           }}
         >
-          {({ setFieldValue }) => (
+          {({ setFieldValue, errors, touched }) => (
             <Form className="grid-cols2 grid gap-4">
               <h2 className="text-2xl lg:col-span-2">Create Certificate</h2>
               <div>
@@ -131,7 +131,13 @@ function Certificate() {
                 />
               </div>
               <div>
-                <Field as={Input} label="First Name" type="text" name="NAME" />
+                <Field
+                  as={Input}
+                  label="First Name"
+                  type="text"
+                  name="NAME"
+                  state={touched.NAME && errors.NAME && "error"}
+                />
                 <ErrorMessage
                   component="p"
                   className="text-red-500"
@@ -144,6 +150,7 @@ function Certificate() {
                   label="Last Name"
                   type="text"
                   name="LASTNAME"
+                  state={touched.LASTNAME && errors.LASTNAME && "error"}
                 />
                 <ErrorMessage
                   component="p"
@@ -152,7 +159,13 @@ function Certificate() {
                 />
               </div>
               <div>
-                <Field as={Input} label="Date Now" type="text" name="DATENOW" />
+                <Field
+                  as={Input}
+                  label="Date Now"
+                  type="text"
+                  name="DATENOW"
+                  state={touched.DATENOW && errors.DATENOW && "error"}
+                />
                 <ErrorMessage
                   component="p"
                   className="text-red-500"
@@ -165,6 +178,7 @@ function Certificate() {
                   label="Date Joined"
                   type="text"
                   name="DATEJOINED"
+                  state={touched.DATEJOINED && errors.DATEJOINED && "error"}
                 />
                 <ErrorMessage
                   component="p"
@@ -178,6 +192,7 @@ function Certificate() {
                   label="Pronoun (his/her)"
                   type="text"
                   name="PRONOUNPOS"
+                  state={touched.PRONOUNPOS && errors.PRONOUNPOS && "error"}
                 />
                 <ErrorMessage
                   component="p"
@@ -191,6 +206,7 @@ function Certificate() {
                   label="Date Signed On"
                   type="text"
                   name="SIGNED_ON"
+                  state={touched.SIGNED_ON && errors.SIGNED_ON && "error"}
                 />
                 <ErrorMessage
                   component="p"
@@ -204,6 +220,7 @@ function Certificate() {
                   label="Contribution 1"
                   type="text"
                   name="CONTRIB_1"
+                  state={touched.CONTRIB_1 && errors.CONTRIB_1 && "error"}
                 />
                 <ErrorMessage
                   component="p"
@@ -217,6 +234,7 @@ function Certificate() {
                   label="Contribution 2"
                   type="text"
                   name="CONTRIB_2"
+                  state={touched.CONTRIB_2 && errors.CONTRIB_2 && "error"}
                 />
                 <ErrorMessage
                   component="p"
@@ -230,6 +248,7 @@ function Certificate() {
                   label="Contribution 3"
                   type="text"
                   name="CONTRIB_3"
+                  state={touched.CONTRIB_3 && errors.CONTRIB_3 && "error"}
                 />
                 <ErrorMessage
                   component="p"
