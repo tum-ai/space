@@ -1,10 +1,13 @@
 import { Slot } from "@radix-ui/react-slot";
-import { cva, type VariantProps } from "class-variance-authority";
+import { cx, cva, type VariantProps } from "class-variance-authority";
 import * as React from "react";
-import { LoadingWheel } from "./LoadingWheel";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 px-4 h-[2.75rem]",
+  cx(
+    "inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors",
+    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+    "disabled:pointer-events-none disabled:opacity-50 px-4 h-[2.75rem]",
+  ),
   {
     variants: {
       variant: {
@@ -14,9 +17,13 @@ const buttonVariants = cva(
           "bg-gray-300 dark:bg-gray-400 hover:bg-gray-300/90 dark:hover:bg-gray-400/90 text-black dark:text-black",
         link: "font-light text-gray-500 hover:text-primary",
       },
+      loading: {
+        true: "animate-pulse",
+      },
     },
     defaultVariants: {
       variant: "default",
+      loading: false,
     },
   },
 );
@@ -29,13 +36,8 @@ export interface ButtonProps
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, asChild = false, loading = false, ...props }, ref) => {
+  ({ className, variant, asChild, ...props }, ref) => {
     const Comp = asChild ? Slot : "button";
-
-    if (loading) {
-      props.children = <LoadingWheel size={"small"} color={"inverted"} />;
-      props.onClick = null;
-    }
 
     return (
       <Comp
