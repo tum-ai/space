@@ -35,7 +35,7 @@ function ProfilesList() {
               </div>
               <Select
                 placeholder={"Role"}
-                data={[
+                options={[
                   { key: "all", value: "all" },
                   ...rolesModel.roles?.map((role) => ({
                     key: role["handle"],

@@ -67,7 +67,7 @@ const Applications = observer(() => {
             </div>
             <Select
               placeholder={"Form"}
-              data={[
+              options={[
                 { key: "all", value: null },
                 ...(reviewToolModel.getFormNames()?.map((formName) => ({
                   key: formName,
@@ -256,7 +256,7 @@ const ReviewForm = observer(() => {
       <Select
         label="Choose review type"
         placeholder="From Type"
-        data={[
+        options={[
           {
             key: "Membership review",
             value: "MEMBERSHIP",
@@ -359,7 +359,7 @@ const VentureReviewForm = observer(() => {
               name={`profile_category`}
               as={Select}
               placeholder={"Profile category"}
-              data={Object.entries(profileCategories).map(([key, value]) => ({
+              options={Object.entries(profileCategories).map(([key, value]) => ({
                 key: key,
                 value: value,
               }))}
@@ -422,7 +422,7 @@ const VentureReviewForm = observer(() => {
               name={`like_to_see`}
               as={Select}
               placeholder={"select"}
-              data={Object.entries(likeToSee).map(([key, value]) => ({
+              options={Object.entries(likeToSee).map(([key, value]) => ({
                 key: key,
                 value: value,
               }))}
@@ -564,7 +564,7 @@ const MembershipReviewForm = observer(() => {
               name={`in_tumai`}
               as={Select}
               placeholder={"select"}
-              data={Object.entries(likeToSee).map(([key, value]) => ({
+              options={Object.entries(likeToSee).map(([key, value]) => ({
                 key: key,
                 value: value,
               }))}

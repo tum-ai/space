@@ -62,7 +62,8 @@ function Certificate() {
       <Section>
         <div className="text-6xl font-thin">Member Certificate</div>
       </Section>
-      <Section className="">
+      <Section>
+        <h2 className="text-2xl lg:col-span-2">Create Certificate</h2>
         <Formik
           initialValues={initialValues}
           validationSchema={validationSchema}
@@ -89,15 +90,14 @@ function Certificate() {
           }}
         >
           {({ setFieldValue, errors, touched }) => (
-            <Form className="grid-cols2 grid gap-4">
-              <h2 className="text-2xl lg:col-span-2">Create Certificate</h2>
+            <Form className="grid grid-cols-2 gap-4">
               <div>
                 <Field
                   as={Select}
                   label="Department"
                   name="DEPARTMENT"
                   placeholder={"Department"}
-                  data={departments.map((department) => ({
+                  options={departments.map((department) => ({
                     key: department,
                     value: department,
                   }))}
@@ -113,7 +113,7 @@ function Certificate() {
                   label="Position"
                   name="TITLE"
                   placeholder={"Position"}
-                  data={positions.map((position) => ({
+                  options={positions.map((position) => ({
                     key: position,
                     value: position,
                   }))}
@@ -125,11 +125,28 @@ function Certificate() {
               </div>
               <div>
                 <Field
+                  as={Select}
+                  label="Pronoun (his/her)"
+                  name="PRONOUNPOS"
+                  placeholder="Pronouns"
+                  options={[
+                    { key: "his", value: "his" },
+                    { key: "her", value: "her" },
+                  ]}
+                  setSelectedItem={(position: string) => {
+                    setFieldValue("PRONOUNPOS", position);
+                  }}
+                />
+                <ErrorMessage name="PRONOUNPOS" />
+              </div>
+              <div>
+                <Field
                   as={Input}
                   label="First Name"
                   type="text"
                   name="NAME"
                   state={touched.NAME && errors.NAME && "error"}
+                  fullWidth
                 />
                 <ErrorMessage name="NAME" />
               </div>
@@ -140,16 +157,18 @@ function Certificate() {
                   type="text"
                   name="LASTNAME"
                   state={touched.LASTNAME && errors.LASTNAME && "error"}
+                  fullWidth
                 />
                 <ErrorMessage name="LASTNAME" />
               </div>
               <div>
                 <Field
                   as={Input}
-                  label="Date Now"
+                  label="Issuing Date"
                   type="text"
                   name="DATENOW"
                   state={touched.DATENOW && errors.DATENOW && "error"}
+                  fullWidth
                 />
                 <ErrorMessage name="DATENOW" />
               </div>
@@ -160,18 +179,9 @@ function Certificate() {
                   type="text"
                   name="DATEJOINED"
                   state={touched.DATEJOINED && errors.DATEJOINED && "error"}
+                  fullWidth
                 />
                 <ErrorMessage name="DATEJOINED" />
-              </div>
-              <div>
-                <Field
-                  as={Input}
-                  label="Pronoun (his/her)"
-                  type="text"
-                  name="PRONOUNPOS"
-                  state={touched.PRONOUNPOS && errors.PRONOUNPOS && "error"}
-                />
-                <ErrorMessage name="PRONOUNPOS" />
               </div>
               <div>
                 <Field
@@ -180,6 +190,7 @@ function Certificate() {
                   type="text"
                   name="SIGNED_ON"
                   state={touched.SIGNED_ON && errors.SIGNED_ON && "error"}
+                  fullWidth
                 />
                 <ErrorMessage name="SIGNED_ON" />
               </div>
@@ -190,6 +201,7 @@ function Certificate() {
                   type="text"
                   name="CONTRIB_1"
                   state={touched.CONTRIB_1 && errors.CONTRIB_1 && "error"}
+                  fullWidth
                 />
                 <ErrorMessage name="CONTRIB_1" />
               </div>
@@ -200,6 +212,7 @@ function Certificate() {
                   type="text"
                   name="CONTRIB_2"
                   state={touched.CONTRIB_2 && errors.CONTRIB_2 && "error"}
+                  fullWidth
                 />
                 <ErrorMessage name="CONTRIB_2" />
               </div>
@@ -210,6 +223,7 @@ function Certificate() {
                   type="text"
                   name="CONTRIB_3"
                   state={touched.CONTRIB_3 && errors.CONTRIB_3 && "error"}
+                  fullWidth
                 />
                 <ErrorMessage name="CONTRIB_3" />
               </div>

@@ -297,7 +297,7 @@ function SocialNetworks() {
                 value: experience.type,
               }}
               placeholder="Select a type"
-              data={socialNetworksTypes}
+              options={socialNetworksTypes}
               disabled={false}
             />
             <Input

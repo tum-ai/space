@@ -174,7 +174,7 @@ const Invite = () => {
                                     name={`invitees.${index}.department_handle`}
                                     as={Select}
                                     placeholder={"Department"}
-                                    data={Object.entries(departments).map(
+                                    options={Object.entries(departments).map(
                                       ([key, value]) => ({
                                         key: key,
                                         value: value,
@@ -199,10 +199,10 @@ const Invite = () => {
                                 </td>
                                 <td>
                                   <Field
-                                    name={`invitees.${index}.department_position`}
                                     as={Select}
+                                    name={`invitees.${index}.department_position`}
                                     placeholder={"Position"}
-                                    data={Object.entries(positions).map(
+                                    options={Object.entries(positions).map(
                                       ([key, value]) => ({
                                         key: key,
                                         value: value,
