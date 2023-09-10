@@ -6,18 +6,19 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Logo from "./components/Logo";
 import User from "./components/User";
+import { Button } from "@components/Button";
 
 function NavBar() {
   const pathname = usePathname();
-  const links = [
+  const links: {
+    href: string;
+    text: string;
+    protected?: boolean;
+    roles?: string[];
+  }[] = [
     {
       href: "/profiles/",
       text: "Team",
-    },
-    {
-      href: "/feedback/",
-      text: "Feedback",
-      protected: true,
     },
     {
       href: "/invite/",
@@ -51,36 +52,40 @@ function NavBar() {
           <User />
         </div>
         <NavigationMenu.List className="flex items-center justify-between overflow-x-auto">
-          <div className="flex gap-6 py-4">
+          <div className="flex pt-2 gap-3">
             {links.map((link) => {
-              const component = (
+              const Component = () => (
                 <NavigationMenu.Item>
                   <NavigationMenu.Link asChild>
-                    <Link
-                      key={link.href}
-                      href={link.href}
+                    <Button
+                      asChild
+                      variant="link"
                       className={clsx(
-                        "whitespace-nowrap hover:text-black dark:hover:text-white",
+                        "px-1 py-2",
                         link.href === pathname
                           ? "text-black dark:text-white"
                           : "text-gray-500",
                       )}
                     >
-                      {link.text}
-                    </Link>
+                      <Link href={link.href}>{link.text}</Link>
+                    </Button>
                   </NavigationMenu.Link>
                 </NavigationMenu.Item>
               );
 
               if (link.protected) {
                 return (
-                  <ProtectedItem key={link["path"]} roles={link.roles}>
-                    {component}
+                  <ProtectedItem key={link.href} roles={link.roles}>
+                    <Component />
                   </ProtectedItem>
                 );
               }
 
-              return component;
+              return (
+                <span key={link.href}>
+                  <Component />
+                </span>
+              );
             })}
           </div>
         </NavigationMenu.List>

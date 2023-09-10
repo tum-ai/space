@@ -283,7 +283,7 @@ function SocialNetworks() {
   return (
     <div className="col-span-2 w-full space-y-4">
       <div className="col-span-2 text-xl font-light">Social Networks</div>
-      <div className="col-span-2 font-light text-black">
+      <div className="col-span-2 font-light">
         Feel free to add any relevant social media networks (e.g. LinkedIn,
         GitHub, etc.) here.
       </div>
@@ -297,7 +297,7 @@ function SocialNetworks() {
                 value: experience.type,
               }}
               placeholder="Select a type"
-              data={socialNetworksTypes}
+              options={socialNetworksTypes}
               disabled={false}
             />
             <Input
@@ -363,7 +363,7 @@ function JobExperience() {
   return (
     <div className="col-span-2 w-full space-y-4">
       <div className="col-span-2 text-xl font-light">Job history</div>
-      <div className="col-span-2 font-light text-black">
+      <div className="col-span-2 font-light">
         You can update your job history and add your previous work experience
         here.
       </div>

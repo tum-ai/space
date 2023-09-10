@@ -16,17 +16,20 @@ import Link from "next/link";
 import * as Yup from "yup";
 import { ApplicationOverview } from "./_components/applicationOverview";
 import { ViewReview } from "./_components/viewReview";
+import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
 
 const ReviewTool = observer(() => {
   const { reviewToolModel } = useStores();
 
   return (
     <ProtectedItem showNotFound roles={["submit_reviews"]}>
-      <Section className="flex items-center justify-between">
+      <Section className="flex flex-col justify-between gap-4 md:flex-row md:items-center">
         <h1 className="text-6xl font-thin">Review Tool</h1>
-        <Link href={"/review/myreviews"}>
-          <Button>My reviews</Button>
-        </Link>
+        <Button asChild className="flex w-max items-center gap-2">
+          <Link href={"/review/myreviews"}>
+            <MagnifyingGlassIcon /> My Reviews
+          </Link>
+        </Button>
       </Section>
       <Section>
         <Tabs
@@ -67,7 +70,7 @@ const Applications = observer(() => {
             </div>
             <Select
               placeholder={"Form"}
-              data={[
+              options={[
                 { key: "all", value: null },
                 ...(reviewToolModel.getFormNames()?.map((formName) => ({
                   key: formName,
@@ -162,7 +165,7 @@ function Application({ application }) {
                       <div className="cursor-pointer">
                         <Avatar
                           variant={"circle"}
-                          src={profile.profile_picture}
+                          profilePicture={profile.profile_picture}
                           initials={(
                             "" +
                             profile.first_name[0] +
@@ -256,7 +259,7 @@ const ReviewForm = observer(() => {
       <Select
         label="Choose review type"
         placeholder="From Type"
-        data={[
+        options={[
           {
             key: "Membership review",
             value: "MEMBERSHIP",
@@ -359,10 +362,12 @@ const VentureReviewForm = observer(() => {
               name={`profile_category`}
               as={Select}
               placeholder={"Profile category"}
-              data={Object.entries(profileCategories).map(([key, value]) => ({
-                key: key,
-                value: value,
-              }))}
+              options={Object.entries(profileCategories).map(
+                ([key, value]) => ({
+                  key: key,
+                  value: value,
+                }),
+              )}
               selectedItem={{
                 key: profileCategories[values["profile_category"]],
                 value: values["profile_category"],
@@ -422,7 +427,7 @@ const VentureReviewForm = observer(() => {
               name={`like_to_see`}
               as={Select}
               placeholder={"select"}
-              data={Object.entries(likeToSee).map(([key, value]) => ({
+              options={Object.entries(likeToSee).map(([key, value]) => ({
                 key: key,
                 value: value,
               }))}
@@ -564,7 +569,7 @@ const MembershipReviewForm = observer(() => {
               name={`in_tumai`}
               as={Select}
               placeholder={"select"}
-              data={Object.entries(likeToSee).map(([key, value]) => ({
+              options={Object.entries(likeToSee).map(([key, value]) => ({
                 key: key,
                 value: value,
               }))}

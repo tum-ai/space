@@ -21,7 +21,7 @@ function User() {
           >
             <Avatar
               variant="circle"
-              src={user.profile.profile_picture}
+              profilePicture={user.profile.profile_picture}
               initials={`${user.profile.first_name[0]}${user.profile.last_name[0]}`}
             />
             <p className="hidden text-black sm:flex">

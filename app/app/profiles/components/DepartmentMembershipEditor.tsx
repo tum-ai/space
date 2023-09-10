@@ -194,7 +194,7 @@ const DepartmentMembershipNew = observer(({ departmentMembership, index }) => {
             value: departmentMembership.department_handle,
           }}
           placeholder="Select department"
-          data={departmentTypes}
+          options={departmentTypes}
         />
         <Select
           setSelectedItem={(item) =>
@@ -205,7 +205,7 @@ const DepartmentMembershipNew = observer(({ departmentMembership, index }) => {
             value: departmentMembership.position,
           }}
           placeholder="Select position"
-          data={positionTypes}
+          options={positionTypes}
           disabled={false}
         />
       </div>
