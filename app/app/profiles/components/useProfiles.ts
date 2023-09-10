@@ -3,25 +3,25 @@ import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 import { Profile } from "@models/profile";
 import { useState } from "react";
-
-export interface Filter {
-  name: string;
-  predicate: (profile: Profile) => boolean;
-}
+import { Filter } from "util/types/filter";
 
 export const useProfiles = () => {
-  type Filters = Record<string, Filter>;
+  type Filters = Record<string, Filter<Profile>>;
   const [filters, setFilters] = useState<Filters>({});
   const [search, setSearch] = useState("");
-  const profilesQuery = useQuery({
+  const query = useQuery({
     queryKey: ["profiles"],
     queryFn: () =>
       axios.get("/profiles/").then((res) => res.data.data as Profile[]),
   });
-  const filterPredicate = (profile: Profile) =>
-    Object.values(filters).every((filter: Filter) => filter.predicate(profile));
 
-  const filteredProfiles = profilesQuery.data?.filter(filterPredicate);
+  // TODO: Search is not implemented
+  const filterPredicate = (profile: Profile) =>
+    Object.values(filters).every((filter: Filter<Profile>) =>
+      filter.predicate(profile),
+    );
+
+  const filteredProfiles = query.data?.filter(filterPredicate);
 
   return {
     profiles: filteredProfiles,
@@ -30,6 +30,6 @@ export const useProfiles = () => {
     setSearch,
     filters,
     setFilters,
-    isLoading: profilesQuery.isLoading,
+    isLoading: query.isLoading,
   };
 };

@@ -1,7 +1,11 @@
 import { Checkbox } from "@components/Checkbox";
+import { Application } from "@models/application";
 import Link from "next/link";
 
-export function ApplicationOverview({ data }) {
+interface Props {
+  application: Application;
+}
+export const ApplicationOverview = ({ application }: Props) => {
   return (
     <div className="space-y-4 overflow-scroll">
       <div className="col-span-2 text-2xl">Application</div>
@@ -9,20 +13,20 @@ export function ApplicationOverview({ data }) {
       <div className="grid gap-4 lg:grid-cols-2">
         <div>
           <span className="font-thin">ID: </span>
-          {data.id}
+          {application.id}
         </div>
         <div>
           <span className="font-thin">From: </span>
-          {data.submission?.data?.formName}
+          {application.submission?.data?.formName}
         </div>
         <div>
           <span className="font-thin">Created at: </span>
-          {data.submission?.data?.createdAt &&
-            new Date(data.submission?.data?.createdAt).toDateString()}
+          {application.submission?.data?.createdAt &&
+            new Date(application.submission?.data?.createdAt).toDateString()}
         </div>
       </div>
       <div className="grid gap-4 md:grid-cols-2">
-        {data.submission?.data?.fields
+        {application.submission?.data?.fields
           ?.sort((fieldA, fieldB) => {
             if (typeof fieldA.value == "boolean") {
               return -1;
@@ -83,4 +87,4 @@ export function ApplicationOverview({ data }) {
       </div>
     </div>
   );
-}
+};

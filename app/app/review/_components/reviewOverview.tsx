@@ -25,7 +25,7 @@ export function ReviewOverview({ review }) {
         .filter(([_, value]) => {
           return typeof value == "string" || typeof value == "number";
         })
-        .map(([key, value]: any, i) => {
+        .map(([key, value]: any) => {
           return (
             <div
               key={key}

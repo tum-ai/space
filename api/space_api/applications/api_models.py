@@ -32,9 +32,9 @@ class ApplicationOut(BaseModel):
 
     @classmethod
     def from_db_model(cls, application: Application) -> "ApplicationOut":
-        reviews = []
-        for review in application.reviews:
-            reviews.append(ApplicationReviewOut.from_db_model(review))
+        reviews = [ApplicationReviewOut.from_db_model(
+            review) for review in application.reviews]
+
         return ApplicationOut(
             id=application.id,
             submission=application.submission,
@@ -45,6 +45,7 @@ class ApplicationOut(BaseModel):
     def dummy(cls) -> "ApplicationOut":
         json = cast(dict[str, Any], cls.model_config.get("json_schema_extra"))
         return json["example"]
+
 
 class ApplicationReferralInOut(BaseModel):
     model_config = ConfigDict(
