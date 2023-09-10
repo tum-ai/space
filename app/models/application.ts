@@ -1,6 +1,8 @@
 export interface Review {
+  id: number;
   reviewer: any;
   finalscore: number;
+  application: Application;
 }
 
 export interface Application {
