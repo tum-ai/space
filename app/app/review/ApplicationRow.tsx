@@ -3,12 +3,20 @@ import { Avatar } from "@components/Avatar";
 import { Button } from "@components/Button";
 import ProtectedItem from "@components/ProtectedItem";
 import Tooltip from "@components/Tooltip";
-import { useStores } from "@providers/StoreProvider";
 import { ViewReview } from "./_components/viewReview";
 import { Review } from "@models/application";
+import Link from "next/link";
+import { useMutation } from "@tanstack/react-query";
+import axios from "axios";
 
 export function ApplicationRow({ application }) {
-  const { reviewToolModel } = useStores();
+  const deleteMutation = useMutation({
+    mutationFn: (id: number) =>
+      axios.delete("/applications/delete_application/", {
+        params: { id: id },
+      }),
+  });
+
   const finalScoreSum = application.reviews?.reduce(
     (finalscore: number, review: Review) => {
       return finalscore + review.finalscore;
@@ -63,13 +71,8 @@ export function ApplicationRow({ application }) {
           100 || "-"}
       </td>
       <td className="space-x-2 p-4">
-        <Button
-          className="flex items-center space-x-2"
-          onClick={() => {
-            reviewToolModel.reviewApplication(application.id);
-          }}
-        >
-          review
+        <Button className="flex items-center space-x-2">
+          <Link href={`/review/${application.id}`}>review</Link>
         </Button>
         <ProtectedItem roles={["admin"]}>
           <Button
@@ -79,7 +82,7 @@ export function ApplicationRow({ application }) {
                   "Are you sure you want to delete this application and all its associated reviews?",
                 )
               ) {
-                await reviewToolModel.deleteApplication(application.id);
+                deleteMutation.mutate(application.id);
               }
             }}
           >
