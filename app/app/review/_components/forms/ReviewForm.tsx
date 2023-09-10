@@ -9,13 +9,12 @@ export const ReviewForm = observer(() => {
   const { reviewToolModel } = useStores();
   const formType = reviewToolModel.formType;
 
-  let reviewFormComponent = <p>No form type selected.</p>;
-  if (formType == "MEMBERSHIP") {
-    reviewFormComponent = <MembershipReviewForm />;
-  }
-  if (formType == "VENTURE") {
-    reviewFormComponent = <VentureReviewForm />;
-  }
+  const forms = {
+    MEMBERSHIP: <MembershipReviewForm />,
+    VENTURE: <VentureReviewForm />,
+  };
+
+  let reviewFormComponent = forms[formType];
 
   return (
     <div className="flex flex-col gap-8">

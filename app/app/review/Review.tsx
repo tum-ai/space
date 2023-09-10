@@ -1,5 +1,5 @@
 "use client";
-import { ReviewForm } from "./ReviewForm";
+import { ReviewForm } from "./_components/forms/ReviewForm";
 import { ApplicationToReview } from "./ApplicationToReview";
 
 export function Review() {
