@@ -5,15 +5,23 @@ import { Filter } from "util/types/filter";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 
-export const useReviewTool = () => {
+export const useReviewTool = (page_size = 100) => {
   type Filters = Record<string, Filter<Application>>;
   const [filters, setFilters] = useState<Filters>({});
   const [search, setSearch] = useState("");
+
+  const [page, setPage] = useState(1);
   const query = useQuery({
-    queryKey: ["applications"],
+    queryKey: ["applications", page],
     queryFn: () =>
-      axios.get("/applications/").then((res) => res.data.data as Application[]),
+      axios
+        .get("/applications/", { params: { page, page_size } })
+        .then((res) => res.data.data as Application[]),
   });
+
+  const increasePage = () => setPage((old) => old + 1);
+  const decreasePage = () => setPage((old) => Math.max(old - 1, 1));
+
   const filterPredicate = (application: Application) =>
     Object.values(filters).every((filter: Filter<Application>) =>
       filter.predicate(application),
@@ -56,5 +64,8 @@ export const useReviewTool = () => {
     isLoading: query.isLoading,
     error: query.error,
     getFormNames,
+    page,
+    increasePage,
+    decreasePage,
   };
 };
