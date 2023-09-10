@@ -52,7 +52,7 @@ function NavBar() {
           <User />
         </div>
         <NavigationMenu.List className="flex items-center justify-between overflow-x-auto">
-          <div className="flex gap-3 pt-2">
+          <div className="flex pt-2">
             {links.map((link) => {
               const Component = () => (
                 <NavigationMenu.Item>
@@ -61,7 +61,7 @@ function NavBar() {
                       asChild
                       variant="link"
                       className={clsx(
-                        "px-1 py-2",
+                        "hover:text-black dark:hover:text-white",
                         link.href === pathname
                           ? "text-black dark:text-white"
                           : "text-gray-500",

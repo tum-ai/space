@@ -146,6 +146,7 @@ function Certificate() {
                   <Field
                     as={Input}
                     label="First Name"
+                    placeholder="Daniel"
                     type="text"
                     name="NAME"
                     state={touched.NAME && errors.NAME && "error"}
@@ -157,6 +158,7 @@ function Certificate() {
                   <Field
                     as={Input}
                     label="Last Name"
+                    placeholder="Korth"
                     type="text"
                     name="LASTNAME"
                     state={touched.LASTNAME && errors.LASTNAME && "error"}
