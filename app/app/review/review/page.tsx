@@ -4,11 +4,11 @@ import { ApplicationOverview } from "../_components/applicationOverview";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { Application } from "@models/application";
-import { useParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { Section } from "@components/Section";
 
 function Review() {
-  const id = useParams()?.id;
+  const id = useSearchParams().get("id");
   const query = useQuery({
     enabled: !!id,
     queryKey: ["application", id],
