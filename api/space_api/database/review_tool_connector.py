@@ -39,7 +39,8 @@ def get_scores(application: ApplicationReviewIn) -> tuple[int, int]:
                 like_to_see = 5
             final_score = (0.25 * (application.form["relevance_ai"] +
                                    application.form["skills"])) + \
-                (0.5 * (application.form["motivation"] + application.form["vision"])) + \
+                (0.5 * (application.form["motivation"]
+                        + application.form["vision"])) + \
                 (0.25 * (application.form["personality"] + like_to_see))
     except Exception as e:
         print(e)
