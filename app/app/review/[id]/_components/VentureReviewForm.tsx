@@ -77,6 +77,7 @@ export const VentureReviewForm = ({ application }: FormProps) => {
               label="Relevance to AI or tech-related fields"
               type="number"
               name="relevance_ai"
+              fullWidth
             />
             <ErrorMessage
               component="p"
@@ -90,6 +91,7 @@ export const VentureReviewForm = ({ application }: FormProps) => {
               label="Skills & notable experiences"
               type="number"
               name="skills"
+              fullWidth
             />
             <ErrorMessage
               component="p"
@@ -129,6 +131,7 @@ export const VentureReviewForm = ({ application }: FormProps) => {
               label="Motivation"
               type="number"
               name="motivation"
+              fullWidth
             />
             <ErrorMessage
               component="p"
@@ -142,6 +145,7 @@ export const VentureReviewForm = ({ application }: FormProps) => {
               label="Vision & Entrepreneurial Spirit"
               type="number"
               name="vision"
+              fullWidth
             />
             <ErrorMessage
               component="p"
@@ -155,6 +159,7 @@ export const VentureReviewForm = ({ application }: FormProps) => {
               label="Personality"
               type="number"
               name="personality"
+              fullWidth
             />
             <ErrorMessage
               component="p"
