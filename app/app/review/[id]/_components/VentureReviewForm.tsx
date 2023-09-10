@@ -3,14 +3,13 @@ import { Button } from "@components/Button";
 import Input from "@components/Input";
 import Select from "@components/Select";
 import Textarea from "@components/Textarea";
-import { useStores } from "@providers/StoreProvider";
 import { ErrorMessage, Field, Form, Formik, FormikValues } from "formik";
-import { observer } from "mobx-react";
 import * as Yup from "yup";
+import { FormProps } from "./ReviewForm";
+import axios from "axios";
+import toast from "react-hot-toast";
 
-export const VentureReviewForm = observer(() => {
-  const { reviewToolModel } = useStores();
-
+export const VentureReviewForm = ({ application }: FormProps) => {
   const initialValues = {
     relevance_ai: null,
     skills: null,
@@ -52,9 +51,22 @@ export const VentureReviewForm = observer(() => {
     <Formik
       initialValues={initialValues}
       validationSchema={schema}
-      onSubmit={(values: FormikValues) => {
-        reviewToolModel.submitReview(values);
-      }}
+      onSubmit={(values: FormikValues) =>
+        toast.promise(
+          axios.post("/review_tool/application_review", {
+            data: {
+              form: values,
+              review_type: "VENTURE",
+              reviewee_id: application?.id,
+            },
+          }),
+          {
+            loading: "Submitting review",
+            success: "Successfully submitted review",
+            error: "Failed to submit review",
+          },
+        )
+      }
     >
       {({ values, setFieldValue }) => (
         <Form className="z-0 grid h-fit gap-4 rounded-lg bg-gray-200 p-8 dark:bg-gray-600 md:grid-cols-2">
@@ -208,4 +220,4 @@ export const VentureReviewForm = observer(() => {
       )}
     </Formik>
   );
-});
+};

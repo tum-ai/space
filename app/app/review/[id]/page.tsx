@@ -28,7 +28,7 @@ function Review() {
 
   return (
     <Section className="grid gap-4 md:grid-cols-2">
-      <ReviewForm />
+      <ReviewForm application={query.data} />
       <ApplicationOverview application={query.data} />
     </Section>
   );

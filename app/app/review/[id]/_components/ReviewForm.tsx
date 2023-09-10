@@ -1,17 +1,21 @@
 "use client";
 import Select from "@components/Select";
-import { useStores } from "@providers/StoreProvider";
-import { observer } from "mobx-react";
 import { MembershipReviewForm } from "./MembershipReviewForm";
 import { VentureReviewForm } from "./VentureReviewForm";
+import { Application } from "@models/application";
+import { useState } from "react";
 
-export const ReviewForm = observer(() => {
-  const { reviewToolModel } = useStores();
-  const formType = reviewToolModel.formType;
+export interface FormProps {
+  application: Application;
+}
+export const ReviewForm = ({ application }: FormProps) => {
+  const [formType, setFormType] = useState(
+    application.submission.data.formName,
+  );
 
   const forms = {
-    MEMBERSHIP: <MembershipReviewForm />,
-    VENTURE: <VentureReviewForm />,
+    MEMBERSHIP: <MembershipReviewForm application={application} />,
+    VENTURE: <VentureReviewForm application={application} />,
   };
 
   let reviewFormComponent = forms[formType];
@@ -32,11 +36,9 @@ export const ReviewForm = observer(() => {
           },
         ]}
         value={formType}
-        setSelectedItem={(item) => {
-          reviewToolModel.setFormType(item);
-        }}
+        setSelectedItem={(item) => setFormType(item)}
       />
       {reviewFormComponent}
     </div>
   );
-});
+};
