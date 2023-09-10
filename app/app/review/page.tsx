@@ -3,15 +3,15 @@ import { Button } from "@components/Button";
 import ProtectedItem from "@components/ProtectedItem";
 import { Section } from "@components/Section";
 import Tabs from "@components/Tabs";
-import { useStores } from "@providers/StoreProvider";
 import { observer } from "mobx-react";
 import Link from "next/link";
 import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
 import { Review } from "./Review";
 import { Applications } from "./Applications";
+import { useState } from "react";
 
 const ReviewTool = observer(() => {
-  const { reviewToolModel } = useStores();
+  const [openTab, setOpenTab] = useState("Applications");
 
   return (
     <ProtectedItem showNotFound roles={["submit_reviews"]}>
@@ -30,9 +30,9 @@ const ReviewTool = observer(() => {
             Applications: <Applications />,
             Review: <Review />,
           }}
-          value={reviewToolModel.openTab}
+          value={openTab}
           onValueChange={(tab) => {
-            reviewToolModel.setOpenTab(tab);
+            setOpenTab(tab);
           }}
         />
       </Section>
