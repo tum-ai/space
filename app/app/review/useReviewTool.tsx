@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { Application } from "@models/application";
+import { Application, Review } from "@models/application";
 import { Filter } from "util/types/filter";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
@@ -19,7 +19,19 @@ export const useReviewTool = () => {
       filter.predicate(application),
     );
 
-  const applications = query.data?.filter(filterPredicate);
+  const finalScoreComparator = (a: Application, b: Application): any => {
+    const finalScoresA = a.reviews.map((review: Review) => review.finalscore);
+    const finalScoresB = b.reviews.map((review: Review) => review.finalscore);
+    const sumA = finalScoresA.reduce((a, b) => a + b, 0);
+    const avgA = sumA / finalScoresA.length || 0;
+    const sumB = finalScoresB.reduce((a, b) => a + b, 0);
+    const avgB = sumB / finalScoresB.length || 0;
+    return avgB - avgA;
+  };
+
+  const applications = query.data
+    ?.filter(filterPredicate)
+    .sort(finalScoreComparator);
 
   const getFormNames = () => {
     return [

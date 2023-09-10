@@ -9,8 +9,12 @@ export interface FormProps {
   application: Application;
 }
 export const ReviewForm = ({ application }: FormProps) => {
+  // TODO: add other forms
+  const formNames = {
+    "TUM.ai Application WS23": "MEMBERSHIP",
+  };
   const [formType, setFormType] = useState(
-    application.submission.data.formName,
+    formNames[application.submission.data.formName],
   );
 
   const forms = {

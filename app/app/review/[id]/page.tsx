@@ -21,7 +21,7 @@ function Review() {
   if (!query.data || query.error) {
     return (
       <Section>
-        <h1>Failed to load Application with id {id}</h1>
+        <h1>{`Failed to load Application with id ${id}`}</h1>
       </Section>
     );
   }

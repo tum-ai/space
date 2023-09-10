@@ -62,7 +62,7 @@ export const MembershipReviewForm = ({ application }: FormProps) => {
           axios.post("/review_tool/application_review", {
             data: {
               form: values,
-              review_type: "VENTURE",
+              review_type: "MEMBERSHIP",
               reviewee_id: application?.id,
             },
           }),
@@ -83,6 +83,7 @@ export const MembershipReviewForm = ({ application }: FormProps) => {
               label="Motivation"
               type="number"
               name="motivation"
+              fullWidth
             />
             <ErrorMessage
               component="p"
@@ -92,12 +93,24 @@ export const MembershipReviewForm = ({ application }: FormProps) => {
           </div>
 
           <div>
-            <Field as={Input} label="Skill" type="number" name="skill" />
+            <Field
+              as={Input}
+              label="Skill"
+              type="number"
+              name="skill"
+              fullWidth
+            />
             <ErrorMessage component="p" className="text-red-500" name="skill" />
           </div>
 
           <div>
-            <Field as={Input} label="Overall fit" type="number" name="fit" />
+            <Field
+              as={Input}
+              label="Overall fit"
+              type="number"
+              name="fit"
+              fullWidth
+            />
             <ErrorMessage component="p" className="text-red-500" name="fit" />
           </div>
 
@@ -132,6 +145,7 @@ export const MembershipReviewForm = ({ application }: FormProps) => {
               label="Tum.ai fit comment"
               type="text"
               name="comment_fit_tumai"
+              fullWidth
             />
             <ErrorMessage
               component="p"
@@ -146,6 +160,7 @@ export const MembershipReviewForm = ({ application }: FormProps) => {
               label="Time commitment"
               type="text"
               name="timecommit"
+              fullWidth
             />
             <ErrorMessage
               component="p"
@@ -160,6 +175,7 @@ export const MembershipReviewForm = ({ application }: FormProps) => {
               label="Department 1 score"
               type="number"
               name="dept1_score"
+              fullWidth
             />
             <ErrorMessage
               component="p"
@@ -174,6 +190,7 @@ export const MembershipReviewForm = ({ application }: FormProps) => {
               label="Department 2 score"
               type="number"
               name="dept2_score"
+              fullWidth
             />
             <ErrorMessage
               component="p"
@@ -188,6 +205,7 @@ export const MembershipReviewForm = ({ application }: FormProps) => {
               label="Department 3 score"
               type="number"
               name="dept3_score"
+              fullWidth
             />
             <ErrorMessage
               component="p"
@@ -202,6 +220,7 @@ export const MembershipReviewForm = ({ application }: FormProps) => {
               label="Good fit?"
               type="text"
               name="maybegoodfit"
+              fullWidth
             />
             <ErrorMessage
               component="p"
@@ -216,6 +235,7 @@ export const MembershipReviewForm = ({ application }: FormProps) => {
               label="Further comments"
               type="text"
               name="furthercomments"
+              fullWidth
             />
             <ErrorMessage
               component="p"

@@ -72,7 +72,7 @@ export function ApplicationRow({ application }) {
       </td>
       <td className="space-x-2 p-4">
         <Button className="flex items-center space-x-2">
-          <Link href={`/review/${application.id}`}>review</Link>
+          <Link href={`/review/${application.id}`}>Review</Link>
         </Button>
         <ProtectedItem roles={["admin"]}>
           <Button
@@ -86,7 +86,7 @@ export function ApplicationRow({ application }) {
               }
             }}
           >
-            delete
+            Delete
           </Button>
         </ProtectedItem>
       </td>

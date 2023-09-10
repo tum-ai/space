@@ -2,19 +2,27 @@
 import { Button } from "@components/Button";
 import Icon from "@components/Icon";
 import Select from "@components/Select";
-import { observer } from "mobx-react";
 import { ApplicationRow } from "./ApplicationRow";
 import { useReviewTool } from "./useReviewTool";
 import LoadingWheel from "@components/LoadingWheel";
 
-export const Applications = observer(() => {
-  const reviewToolModel = useReviewTool();
+export const Applications = () => {
+  const {
+    applications,
+    filters,
+    setFilters,
+    search,
+    setSearch,
+    isLoading,
+    error,
+    getFormNames,
+  } = useReviewTool();
 
-  if (reviewToolModel.isLoading) {
+  if (isLoading) {
     return <LoadingWheel />;
   }
 
-  if (reviewToolModel.error) {
+  if (error) {
     return (
       <div>
         <h1>Failed to load applications</h1>
@@ -26,8 +34,8 @@ export const Applications = observer(() => {
     <>
       <div className="flex flex-col justify-between gap-2 md:flex-row md:items-center">
         <div className="mt-2 font-light text-gray-500">
-          {`Total ${reviewToolModel.applications?.length} applications `}
-          {`| ${reviewToolModel.applications
+          {`Total ${applications?.length} applications `}
+          {`| ${applications
             ?.map((application) => application.reviews?.length)
             .reduce((prev, current) => prev + current, 0)} reviews `}
         </div>
@@ -35,24 +43,22 @@ export const Applications = observer(() => {
           <div className="flex items-center gap-2">
             <div className="space-x-2">
               <span className="font-thin">filters: </span>
-              {Object.keys(reviewToolModel.filters)?.length > 0 && (
-                <button onClick={() => reviewToolModel.setFilters({})}>
-                  Reset
-                </button>
+              {Object.keys(filters)?.length > 0 && (
+                <button onClick={() => setFilters({})}>Reset</button>
               )}
             </div>
             <Select
               placeholder={"Form"}
               options={[
                 { key: "all", value: null },
-                ...(reviewToolModel.getFormNames()?.map((formName) => ({
+                ...(getFormNames()?.map((formName) => ({
                   key: formName,
                   value: formName,
                 })) || []),
               ]}
-              value={reviewToolModel.filters?.formName?.name}
+              value={filters?.formName?.name}
               setSelectedItem={(item) => {
-                reviewToolModel.setFilters((old) => ({
+                setFilters((old) => ({
                   ...old,
                   formName: {
                     name: item,
@@ -65,7 +71,7 @@ export const Applications = observer(() => {
             <Button
               onClick={() => {
                 navigator.clipboard.writeText(
-                  reviewToolModel.applications
+                  applications
                     ?.map((application) => `${application.id}`)
                     .join("\n"),
                 );
@@ -77,18 +83,14 @@ export const Applications = observer(() => {
           <div className="flex w-full space-x-4 rounded-lg bg-gray-200 p-2 dark:bg-gray-700 md:w-fit">
             <Icon name={"FaSearch"} className="rounded-lg p-2" />
             <input
-              value={reviewToolModel.search}
+              value={search}
               onChange={(e) => {
-                reviewToolModel.setSearch(e.target.value);
+                setSearch(e.target.value);
               }}
               placeholder="search.."
               className="w-full bg-transparent outline-none"
             />
-            {reviewToolModel.search && (
-              <button onClick={() => reviewToolModel.setSearch("")}>
-                clear
-              </button>
-            )}
+            {search && <button onClick={() => setSearch("")}>clear</button>}
           </div>
         </div>
       </div>
@@ -104,7 +106,7 @@ export const Applications = observer(() => {
             </tr>
           </thead>
           <tbody>
-            {reviewToolModel.applications?.map((application) => (
+            {applications?.map((application) => (
               <ApplicationRow key={application.id} application={application} />
             ))}
           </tbody>
@@ -112,4 +114,4 @@ export const Applications = observer(() => {
       </div>
     </>
   );
-});
+};
