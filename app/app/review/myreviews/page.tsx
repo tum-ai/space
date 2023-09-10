@@ -37,9 +37,9 @@ const MyReviews = observer(() => {
 
   if (query.error) {
     return (
-      <div>
+      <Section>
         <h1>Failed to load your reviews</h1>
-      </div>
+      </Section>
     );
   }
 
