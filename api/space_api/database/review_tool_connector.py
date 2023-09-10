@@ -27,20 +27,20 @@ def get_scores(application: ApplicationReviewIn) -> tuple[int, int]:
     try:
         if application.review_type == "MEMBERSHIP":
             final_score = (0.15 * application.form["motivation"]) + \
-            (0.15 * application.form["skill"]) + \
-            (0.15 * application.form["fit"]) + \
-            (0.55 * application.form["fit"]) + \
-            (0.15 * referral)
+                (0.15 * application.form["skill"]) + \
+                (0.15 * application.form["fit"]) + \
+                (0.55 * application.form["fit"]) + \
+                (0.15 * referral)
         if application.review_type == "VENTURE":
             like_to_see = 0
             if application.form["like_to_see"] == "YES":
                 like_to_see = 10
             elif application.form["like_to_see"] == "MAYBE":
                 like_to_see = 5
-            final_score = (0.25 * (application.form["relevance_ai"] + \
+            final_score = (0.25 * (application.form["relevance_ai"] +
                                    application.form["skills"])) + \
-            (0.5 * (application.form["motivation"] + application.form["vision"])) + \
-            (0.25 * (application.form["personality"] + like_to_see))
+                (0.5 * (application.form["motivation"] + application.form["vision"])) + \
+                (0.25 * (application.form["personality"] + like_to_see))
     except Exception as e:
         print(e)
         final_score = 0
@@ -136,7 +136,7 @@ def update_db_application_review(
         application_review = (
             db_session.query(ApplicationReview)
             .filter(sa.and_(ApplicationReview.reviewee_id == applicant_id,
-                             ApplicationReview.reviewer_id == reviewer_id))
+                            ApplicationReview.reviewer_id == reviewer_id))
             .first()
         )
 
@@ -154,16 +154,17 @@ def update_db_application_review(
 
         return application_review
 
+
 def delete_db_application_review(
-    sql_engine: sa.Engine,
-    profile_id: int,
-    reviewee_id: int) -> bool:
+        sql_engine: sa.Engine,
+        profile_id: int,
+        reviewee_id: int) -> bool:
     with Session(sql_engine) as db_session:
 
         db_review = (
             db_session.query(ApplicationReview)
             .filter(sa.and_(ApplicationReview.reviewee_id == reviewee_id,
-                             ApplicationReview.reviewer_id == profile_id))
+                            ApplicationReview.reviewer_id == profile_id))
             .first()
         )
 
