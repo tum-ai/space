@@ -10,6 +10,7 @@ export class ReviewToolModel {
   search: string = "";
   editorReview: any = {};
   applicationOnReview: { id?: string };
+  currentFormData: any = {};
   openTab: "Applications" | "Review" = "Applications";
   myreviews: any[] = [];
   filter: { [key: string]: any } = {};
@@ -31,6 +32,10 @@ export class ReviewToolModel {
 
   updateEditorReview(change) {
     this.editorReview = { ...this.editorReview, ...change };
+  }
+
+  setCurrentFormData(change) {
+    this.currentFormData = { ...this.currentFormData, ...change };
   }
 
   reviewApplication(id) {
@@ -206,6 +211,37 @@ export class ReviewToolModel {
     }
   }
 
+  /**
+   * Updates a review stored in the current state (editorReview).
+   */
+  async updateReview(review: any, id: string) {
+    console.log("path", `/review_tool/update_review/${id}`);
+    console.log(review);
+    const value = await axios
+      .patch(`/review_tool/update_review/${id}`, {
+        data: {
+          form: review,
+        },
+      })
+      .then((res) => {
+        console.log(res);
+        return true;
+      })
+      .catch((err: AxiosError) => {
+        toast.error(
+          `Failed to submit review for application ${this.applicationOnReview?.id}: ${err.message}`,
+        );
+      });
+
+    if (value) {
+      toast.success("Updated review");
+      this.editorReview = {};
+      this.applicationOnReview = {};
+      this.openTab = "Applications";
+      this.fetchMyreviews();
+      this.fetchApplications();
+    }
+  }
   /**
    * Deletes the application associated with the id.
    *

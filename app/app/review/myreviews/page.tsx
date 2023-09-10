@@ -8,6 +8,7 @@ import { useStores } from "@providers/StoreProvider";
 import { observer } from "mobx-react";
 import Link from "next/link";
 import { ViewReview } from "../_components/viewReview";
+import { EditReview } from "../_components/editReview";
 
 const MyReviews = observer(() => {
   const { reviewToolModel, meModel } = useStores();
@@ -110,6 +111,29 @@ const MyReviews = observer(() => {
                         reviewer: meModel.user.profile,
                       }}
                       trigger={<Button>view</Button>}
+                    />
+                    <EditReview
+                      applicationToView={myreview.application}
+                      viewReview={{
+                        ...myreview,
+                        reviewer: meModel.user.profile,
+                      }}
+                      trigger={
+                        <Button
+                          onClick={() => {
+                            const viewReview = {
+                              ...myreview,
+                              reviewer: meModel.user.profile,
+                            };
+                            reviewToolModel.reviewApplication(
+                              myreview.application.id,
+                            );
+                            reviewToolModel.setCurrentFormData(viewReview.form);
+                          }}
+                        >
+                          edit
+                        </Button>
+                      }
                     />
                   </td>
                 </tr>

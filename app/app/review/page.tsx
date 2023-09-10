@@ -219,7 +219,7 @@ function Application({ application }) {
   );
 }
 
-function Review() {
+export function Review() {
   return (
     <div className="grid gap-4 md:grid-cols-2">
       <ReviewForm />
@@ -478,8 +478,10 @@ const VentureReviewForm = observer(() => {
 
 const MembershipReviewForm = observer(() => {
   const { reviewToolModel } = useStores();
+  const applicationForm = reviewToolModel.currentFormData;
+  const applicationId = reviewToolModel.applicationOnReview?.id;
 
-  const initialValues = {
+  const initialValues = applicationForm || {
     motivation: null,
     skill: null,
     fit: null,
@@ -528,7 +530,11 @@ const MembershipReviewForm = observer(() => {
       initialValues={initialValues}
       validationSchema={schema}
       onSubmit={(values: FormikValues) => {
-        reviewToolModel.submitReview(values);
+        if (applicationForm) {
+          reviewToolModel.updateReview(values, applicationId);
+        } else {
+          reviewToolModel.submitReview(values);
+        }
       }}
     >
       {({ values, setFieldValue }) => (
