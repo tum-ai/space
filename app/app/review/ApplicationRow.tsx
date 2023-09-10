@@ -6,10 +6,12 @@ import Tooltip from "@components/Tooltip";
 import { ViewReview } from "./_components/viewReview";
 import { Review } from "@models/application";
 import Link from "next/link";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
+import toast from "react-hot-toast";
 
 export function ApplicationRow({ application }) {
+  const queryClient = useQueryClient();
   const deleteMutation = useMutation({
     mutationFn: (id: number) =>
       axios.delete("/applications/delete_application/", {
@@ -82,7 +84,17 @@ export function ApplicationRow({ application }) {
                   "Are you sure you want to delete this application and all its associated reviews?",
                 )
               ) {
-                deleteMutation.mutate(application.id);
+                toast
+                  .promise(deleteMutation.mutateAsync(application.id), {
+                    loading: "Deleting Application",
+                    success: "Successfully deleted Application",
+                    error: "Failed to delete Application",
+                  })
+                  .then(() =>
+                    queryClient.invalidateQueries({
+                      queryKey: ["applications"],
+                    }),
+                  );
               }
             }}
           >
