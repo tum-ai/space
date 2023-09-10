@@ -7,7 +7,6 @@ import { Section } from "@components/Section";
 import Textarea from "@components/Textarea";
 import * as DialogRadix from "@radix-ui/react-dialog";
 import { useQueryClient } from "@tanstack/react-query";
-import Loading from "app/loading";
 import axios, { AxiosError } from "axios";
 import { ErrorMessage, Field, Form, Formik, FormikValues } from "formik";
 import { observer } from "mobx-react";
@@ -15,22 +14,32 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import * as Yup from "yup";
 import { useReferrals } from "./useReferrals";
-import { HeartIcon } from "@radix-ui/react-icons";
+import {
+  HeartIcon,
+  ArrowLeftIcon,
+  ArrowRightIcon,
+} from "@radix-ui/react-icons";
 
 const ReferralsPage = observer(() => {
   const queryClient = useQueryClient();
-  const { referrals, isLoading } = useReferrals();
+  const {
+    referrals,
+    page,
+    increasePage,
+    decreasePage,
+    isPreviousData,
+    hasMore,
+  } = useReferrals();
+
   return (
     <ProtectedItem showNotFound>
       <Section className="flex flex-col justify-between gap-4 md:flex-row md:items-center">
         <div className="text-6xl font-thin">Referrals</div>
         <SubmitReferral />
       </Section>
-      {isLoading ? (
-        <Loading />
-      ) : (
-        <Section className="flex overflow-auto">
-          <table className="mx-auto w-full min-w-[800px] table-auto text-center">
+      <Section className="flex flex-col">
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[800px] table-auto text-center">
             <thead>
               <tr className="border-b border-b-gray-400 dark:border-b-white">
                 <th className="p-4">Email</th>
@@ -85,8 +94,25 @@ const ReferralsPage = observer(() => {
               ))}
             </tbody>
           </table>
-        </Section>
-      )}
+        </div>
+        <div className="flex w-full items-center justify-between py-8">
+          <Button
+            variant="link"
+            onClick={() => decreasePage()}
+            disabled={page === 1}
+          >
+            <ArrowLeftIcon className="h-8 w-8" />
+          </Button>
+          <span className="text-lg">{page}</span>
+          <Button
+            variant="link"
+            onClick={() => increasePage()}
+            disabled={isPreviousData || !hasMore}
+          >
+            <ArrowRightIcon className="h-8 w-8" />
+          </Button>
+        </div>
+      </Section>
     </ProtectedItem>
   );
 });
