@@ -15,13 +15,14 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import * as Yup from "yup";
 import { useReferrals } from "./useReferrals";
+import { HeartIcon } from "@radix-ui/react-icons";
 
 const ReferralsPage = observer(() => {
   const queryClient = useQueryClient();
   const { referrals, isLoading } = useReferrals();
   return (
     <ProtectedItem showNotFound>
-      <Section className="flex items-center justify-between">
+      <Section className="flex flex-col justify-between gap-4 md:flex-row md:items-center">
         <div className="text-6xl font-thin">Referrals</div>
         <SubmitReferral />
       </Section>
@@ -114,7 +115,11 @@ const SubmitReferral = () => {
     <Dialog
       isOpenOutside={isOpen}
       setIsOpenOutside={setIsOpen}
-      trigger={<Button>submit referral</Button>}
+      trigger={
+        <Button className="flex w-max items-center gap-2">
+          <HeartIcon /> Submit Referral
+        </Button>
+      }
     >
       <Formik
         initialValues={initialValues}

@@ -13,13 +13,12 @@ const ProfileRow = observer(({ profile }) => {
   const roleHolderships = rolesModel.roleHolderships[profile?.id] || [];
 
   return (
-    <div className="flex justify-between space-x-10 rounded-xl bg-white p-4 shadow dark:bg-gray-700">
-      <div className="grid w-full grid-cols-2 gap-2">
-        {/* profile name and picture */}
+    <div className="flex flex-col gap-4 rounded-xl bg-white p-4 shadow dark:bg-gray-700">
+      <div className="flex w-full justify-between">
         <div className="flex items-center gap-2">
           <Avatar
             variant={"circle"}
-            src={profile.profile_picture}
+            profilePicture={profile.profile_picture}
             initials={(
               "" +
               profile.first_name[0] +
@@ -33,12 +32,14 @@ const ProfileRow = observer(({ profile }) => {
             <p>{profile.email}</p>
           </div>
         </div>
-        <div className="flex w-full justify-end">
-          <Link href={"/profile?id=" + profile?.id}>
-            <Button variant={"secondary"}>view</Button>
-          </Link>
-        </div>
-        <ProtectedItem roles={["admin"]}>
+
+        <Button variant={"secondary"} asChild>
+          <Link href={"/profile?id=" + profile?.id}>view</Link>
+        </Button>
+      </div>
+
+      <ProtectedItem roles={["admin"]}>
+        <div className="grid grid-cols-2 gap-2">
           <DepartmentMembershipEditor
             trigger={<Button>edit membership</Button>}
             profile_id={profile?.id}
@@ -83,8 +84,8 @@ const ProfileRow = observer(({ profile }) => {
               ))}
             </div>
           </Popover>
-        </ProtectedItem>
-      </div>
+        </div>
+      </ProtectedItem>
     </div>
   );
 });
