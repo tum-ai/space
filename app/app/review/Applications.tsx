@@ -5,6 +5,7 @@ import Select from "@components/Select";
 import { ApplicationRow } from "./ApplicationRow";
 import { useReviewTool } from "./useReviewTool";
 import LoadingWheel from "@components/LoadingWheel";
+import { CopyIcon } from "@radix-ui/react-icons";
 
 export const Applications = () => {
   const {
@@ -69,6 +70,7 @@ export const Applications = () => {
               }}
             />
             <Button
+              className="flex w-max items-center gap-2"
               onClick={() => {
                 navigator.clipboard.writeText(
                   applications
@@ -77,6 +79,7 @@ export const Applications = () => {
                 );
               }}
             >
+              <CopyIcon />
               Copy IDs
             </Button>
           </div>
