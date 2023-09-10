@@ -13,6 +13,7 @@ import axios from "axios";
 import { Review } from "@models/application";
 import LoadingWheel from "@components/LoadingWheel";
 import toast from "react-hot-toast";
+import { EditReview } from "../_components/editReview";
 
 const MyReviews = observer(() => {
   const { meModel } = useStores();
@@ -155,6 +156,11 @@ const MyReviews = observer(() => {
                         reviewer: meModel.user.profile,
                       }}
                       trigger={<Button>View</Button>}
+                    />
+                    <EditReview
+                      review={review}
+                      applicationToView={review.application}
+                      trigger={<Button>Edit</Button>}
                     />
                   </td>
                 </tr>

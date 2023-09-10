@@ -7,8 +7,9 @@ import { useState } from "react";
 
 export interface FormProps {
   application: Application;
+  form?: any;
 }
-export const ReviewForm = ({ application }: FormProps) => {
+export const ReviewForm = ({ application, form }: FormProps) => {
   // TODO: add other forms
   const formNames = {
     "TUM.ai Application WS23": "MEMBERSHIP",
@@ -18,8 +19,8 @@ export const ReviewForm = ({ application }: FormProps) => {
   );
 
   const forms = {
-    MEMBERSHIP: <MembershipReviewForm application={application} />,
-    VENTURE: <VentureReviewForm application={application} />,
+    MEMBERSHIP: <MembershipReviewForm application={application} form={form} />,
+    VENTURE: <VentureReviewForm application={application} form={form} />,
   };
 
   let reviewFormComponent = forms[formType];

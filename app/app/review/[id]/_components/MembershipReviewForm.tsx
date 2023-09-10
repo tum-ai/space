@@ -8,8 +8,12 @@ import { FormProps } from "./ReviewForm";
 import toast from "react-hot-toast";
 import axios from "axios";
 
-export const MembershipReviewForm = ({ application }: FormProps) => {
-  const initialValues = {
+export const MembershipReviewForm = ({
+  application,
+  form = undefined,
+}: FormProps) => {
+  const applicationId = application?.id;
+  const initialValues = form || {
     motivation: null,
     skill: null,
     fit: null,
@@ -53,26 +57,53 @@ export const MembershipReviewForm = ({ application }: FormProps) => {
     No: "NO",
   };
 
+  const submitReview = (values: FormikValues) => {
+    toast.promise(
+      axios.post("/review_tool/application_review", {
+        data: {
+          form: values,
+          review_type: "MEMBERSHIP",
+          reviewee_id: application?.id,
+        },
+      }),
+      {
+        loading: "Submitting review",
+        success: "Successfully submitted review",
+        error: "Failed to submit review",
+      },
+    );
+  };
+
+  const updateReview = (values: FormikValues, id: number) => {
+    console.log(values);
+    console.log("path", `/review_tool/update_review/${id}`);
+    toast.promise(
+      axios.patch(`/review_tool/update_review/${id}`, {
+        data: {
+          form: values,
+          review_type: "MEMBERSHIP",
+          reviewee_id: application?.id,
+        },
+      }),
+      {
+        loading: "Updating review",
+        success: "Successfully updated review",
+        error: "Failed to update review",
+      },
+    );
+  };
+
   return (
     <Formik
       initialValues={initialValues}
       validationSchema={schema}
-      onSubmit={(values: FormikValues) =>
-        toast.promise(
-          axios.post("/review_tool/application_review", {
-            data: {
-              form: values,
-              review_type: "MEMBERSHIP",
-              reviewee_id: application?.id,
-            },
-          }),
-          {
-            loading: "Submitting review",
-            success: "Successfully submitted review",
-            error: "Failed to submit review",
-          },
-        )
-      }
+      onSubmit={(values: FormikValues) => {
+        if (form) {
+          updateReview(values, applicationId);
+        } else {
+          submitReview(values);
+        }
+      }}
     >
       {({ values, setFieldValue }) => (
         <Form className="grid h-fit gap-4 rounded-lg bg-gray-200 p-8 dark:bg-gray-600 md:grid-cols-2">
