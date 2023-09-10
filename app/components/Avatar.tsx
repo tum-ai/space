@@ -1,62 +1,34 @@
 import * as AvatarPrimitive from "@radix-ui/react-avatar";
+import { VariantProps, cva } from "class-variance-authority";
 import { clsx } from "clsx";
 
-type AvatarProps = {
-  src: string;
+interface Props extends VariantProps<typeof styles> {
+  profilePicture: string;
   initials: string;
-  variant: "circle" | "rounded";
-  renderInvalidUrls?: boolean;
-  isOnline?: boolean;
-};
+}
 
-const Avatar = ({ src, initials, variant, isOnline = false }: AvatarProps) => {
+const styles = cva("h-10 w-10 overflow-hidden bg-white dark:bg-gray-800", {
+  variants: {
+    variant: {
+      circle: "rounded-full",
+      rounded: "rounded",
+    },
+  },
+});
+
+const Avatar = ({ profilePicture, initials, variant }: Props) => {
   return (
-    <AvatarPrimitive.Root className="relative inline-flex h-10 w-10">
+    <AvatarPrimitive.Root className={styles({ variant })}>
       <AvatarPrimitive.Image
-        src={src}
+        src={profilePicture}
         alt="Avatar"
-        className={clsx(
-          "h-full w-full object-cover",
-          {
-            circle: "rounded-full",
-            rounded: "rounded",
-          }[variant],
-        )}
+        className={clsx("flex h-full w-full object-cover")}
       />
-      {isOnline && (
-        <div
-          className={clsx(
-            "absolute bottom-0 right-0 h-2 w-2",
-            {
-              circle: "-translate-x-1/2 -translate-y-1/2",
-              rounded: "",
-            }[variant],
-          )}
-        >
-          <span className="block h-2.5 w-2.5 rounded-full bg-green-400" />
-        </div>
-      )}
       <AvatarPrimitive.Fallback
-        className={clsx(
-          "flex h-full w-full items-center justify-center bg-white dark:bg-gray-800",
-          {
-            circle: "rounded-full",
-            rounded: "rounded",
-          }[variant],
-        )}
+        className={clsx("flex h-full w-full items-center justify-center")}
         delayMs={600}
       >
-        <span
-          className={clsx(
-            "flex h-full w-full items-center justify-center bg-gray-200 dark:bg-gray-800",
-            {
-              circle: "rounded-full",
-              rounded: "rounded",
-            }[variant],
-          )}
-        >
-          {initials}
-        </span>
+        {initials}
       </AvatarPrimitive.Fallback>
     </AvatarPrimitive.Root>
   );

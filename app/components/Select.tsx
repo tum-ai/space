@@ -20,7 +20,7 @@ interface Props {
   placeholder: string;
   disabled?: boolean;
   label?: string;
-  data: { [key: string]: any }[];
+  options: { [key: string]: any }[];
 }
 
 function Select({
@@ -30,7 +30,7 @@ function Select({
   placeholder,
   disabled = false,
   label,
-  data,
+  options,
 }: Props) {
   return (
     <SelectPrimitive.Root
@@ -39,7 +39,7 @@ function Select({
       onValueChange={setSelectedItem}
     >
       <div className="flex flex-col gap-2">
-        {label && <label className="text-sm font-thin">{label}</label>}
+        {label && <label className="text-sm">{label}</label>}
         <SelectPrimitive.Trigger asChild aria-label="Food">
           <Button>
             <SelectPrimitive.Value placeholder={placeholder} />
@@ -56,10 +56,10 @@ function Select({
           </SelectPrimitive.ScrollUpButton>
           <SelectPrimitive.Viewport className="rounded-lg bg-white p-2 shadow-lg dark:bg-gray-800">
             <SelectPrimitive.Group>
-              {data.map((f, i) => (
+              {options.map((option) => (
                 <SelectPrimitive.Item
-                  key={`${f["key"]}`}
-                  value={f["value"]}
+                  key={`${option["key"]}`}
+                  value={option["value"]}
                   className={clsx(
                     "relative flex items-center rounded-md px-8 py-2 text-sm font-medium text-gray-700 focus:bg-gray-100 dark:text-gray-300 dark:focus:bg-gray-900",
                     "radix-disabled:opacity-50",
@@ -67,7 +67,7 @@ function Select({
                   )}
                 >
                   <SelectPrimitive.ItemText>
-                    {f["key"]}
+                    {option["key"]}
                   </SelectPrimitive.ItemText>
                   <SelectPrimitive.ItemIndicator className="absolute left-2 inline-flex items-center">
                     <CheckIcon />

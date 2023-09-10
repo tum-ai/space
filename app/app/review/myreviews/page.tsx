@@ -15,11 +15,11 @@ const MyReviews = observer(() => {
 
   return (
     <ProtectedItem showNotFound roles={["submit_reviews"]}>
-      <Section className="flex items-center justify-between">
-        <div className="text-6xl font-thin">My reviews</div>
-        <Link href={"/review/"}>
-          <Button>Review Tool</Button>
-        </Link>
+      <Section className="flex flex-col justify-between gap-4 md:flex-row md:items-center">
+        <h1 className="text-6xl font-thin">My Reviews</h1>
+        <Button asChild className="w-max">
+          <Link href={"/review/"}>Review Tool</Link>
+        </Button>
       </Section>
       <Section className="flex overflow-auto">
         <table className="mx-auto w-full min-w-[800px] table-auto text-center">
@@ -59,7 +59,7 @@ const MyReviews = observer(() => {
                                   <div className="cursor-pointer">
                                     <Avatar
                                       variant={"circle"}
-                                      src={profile.profile_picture}
+                                      profilePicture={profile.profile_picture}
                                       initials={(
                                         "" +
                                         profile.first_name[0] +
