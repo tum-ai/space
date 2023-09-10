@@ -7,7 +7,7 @@ interface Props extends VariantProps<typeof styles> {
   initials: string;
 }
 
-const styles = cva("h-10 w-10 overflow-hidden bg-white dark:bg-gray-800", {
+const styles = cva("flex h-10 w-10 overflow-hidden bg-white dark:bg-gray-800", {
   variants: {
     variant: {
       circle: "rounded-full",
