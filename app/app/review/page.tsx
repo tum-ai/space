@@ -25,16 +25,7 @@ const ReviewTool = observer(() => {
       </Section>
 
       <Section>
-        <Tabs
-          tabs={{
-            Applications: <Applications />,
-            Review: <Review />,
-          }}
-          value={openTab}
-          onValueChange={(tab) => {
-            setOpenTab(tab);
-          }}
-        />
+        <Applications />
       </Section>
     </ProtectedItem>
   );

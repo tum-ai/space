@@ -10,16 +10,16 @@ export const useReviewTool = () => {
   const [filters, setFilters] = useState<Filters>({});
   const [search, setSearch] = useState("");
   const query = useQuery({
-    queryKey: ["profiles"],
+    queryKey: ["applications"],
     queryFn: () =>
-      axios.get("/profiles/").then((res) => res.data.data as Application[]),
+      axios.get("/applications/").then((res) => res.data.data as Application[]),
   });
   const filterPredicate = (application: Application) =>
     Object.values(filters).every((filter: Filter<Application>) =>
       filter.predicate(application),
     );
 
-  const filteredApplications = query.data?.filter(filterPredicate);
+  const applications = query.data?.filter(filterPredicate);
 
   const getFormNames = () => {
     return [
@@ -32,12 +32,13 @@ export const useReviewTool = () => {
   };
 
   return {
-    filteredApplications,
+    applications,
     search,
     setSearch,
     filters,
     setFilters,
     isLoading: query.isLoading,
+    error: query.error,
     getFormNames,
   };
 };

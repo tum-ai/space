@@ -5,24 +5,28 @@ import ProtectedItem from "@components/ProtectedItem";
 import Tooltip from "@components/Tooltip";
 import { useStores } from "@providers/StoreProvider";
 import { ViewReview } from "./_components/viewReview";
+import { Review } from "@models/application";
 
-export function Application({ application }) {
+export function ApplicationRow({ application }) {
   const { reviewToolModel } = useStores();
-  const finalScoreSum = application.reviews?.reduce((finalscore, review) => {
-    return finalscore + review.finalscore;
-  }, 0);
+  const finalScoreSum = application.reviews?.reduce(
+    (finalscore: number, review: Review) => {
+      return finalscore + review.finalscore;
+    },
+    0,
+  );
   return (
     <tr className="border-b dark:border-gray-500 " key={application.id}>
       <td>{application.id}</td>
       <td>{application.submission?.data?.formName}</td>
       <td className="flex items-center justify-center gap-1 p-4">
-        {application.reviews?.map((review, i) => {
+        {application.reviews?.map((review: Review, i: number) => {
           const profile = review.reviewer;
           return (
             <ViewReview
               applicationToView={application}
               viewReview={review}
-              key={i}
+              key={`application-${application.id}-review-${i}`}
               trigger={
                 <span>
                   <Tooltip

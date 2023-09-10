@@ -3,27 +3,41 @@ import { Button } from "@components/Button";
 import Icon from "@components/Icon";
 import Select from "@components/Select";
 import { observer } from "mobx-react";
-import { Application as ApplicationRow } from "./Application";
+import { ApplicationRow } from "./ApplicationRow";
 import { useReviewTool } from "./useReviewTool";
+import LoadingWheel from "@components/LoadingWheel";
 
 export const Applications = observer(() => {
   const reviewToolModel = useReviewTool();
+
+  if (reviewToolModel.isLoading) {
+    return <LoadingWheel />;
+  }
+
+  if (reviewToolModel.error) {
+    return (
+      <div>
+        <h1>Failed to load applications</h1>
+      </div>
+    );
+  }
+
   return (
     <>
       <div className="flex flex-col justify-between gap-2 md:flex-row md:items-center">
         <div className="mt-2 font-light text-gray-500">
-          {`Total ${reviewToolModel.filteredApplications.length} applications `}
-          {`| ${reviewToolModel.filteredApplications
-            .map((application) => application.reviews.length)
+          {`Total ${reviewToolModel.applications?.length} applications `}
+          {`| ${reviewToolModel.applications
+            ?.map((application) => application.reviews?.length)
             .reduce((prev, current) => prev + current, 0)} reviews `}
         </div>
         <div className="flex gap-2">
           <div className="flex items-center gap-2">
             <div className="space-x-2">
               <span className="font-thin">filters: </span>
-              {Object.keys(reviewToolModel.filters).length > 0 && (
+              {Object.keys(reviewToolModel.filters)?.length > 0 && (
                 <button onClick={() => reviewToolModel.setFilters({})}>
-                  reset
+                  Reset
                 </button>
               )}
             </div>
@@ -36,7 +50,7 @@ export const Applications = observer(() => {
                   value: formName,
                 })) || []),
               ]}
-              value={reviewToolModel.filters?.formName.name}
+              value={reviewToolModel.filters?.formName?.name}
               setSelectedItem={(item) => {
                 reviewToolModel.setFilters((old) => ({
                   ...old,
@@ -51,8 +65,8 @@ export const Applications = observer(() => {
             <Button
               onClick={() => {
                 navigator.clipboard.writeText(
-                  reviewToolModel.filteredApplications
-                    .map((application) => `${application.id}`)
+                  reviewToolModel.applications
+                    ?.map((application) => `${application.id}`)
                     .join("\n"),
                 );
               }}
@@ -90,7 +104,7 @@ export const Applications = observer(() => {
             </tr>
           </thead>
           <tbody>
-            {reviewToolModel.filteredApplications?.map((application) => (
+            {reviewToolModel.applications?.map((application) => (
               <ApplicationRow key={application.id} application={application} />
             ))}
           </tbody>

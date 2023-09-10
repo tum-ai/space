@@ -1,4 +1,7 @@
-export interface Review {}
+export interface Review {
+  reviewer: any;
+  finalscore: number;
+}
 
 export interface Application {
   id: number;
@@ -6,6 +9,8 @@ export interface Application {
   submission: {
     data: {
       formName: string;
+      createdAt: any;
+      fields: any[];
     };
   };
 }
