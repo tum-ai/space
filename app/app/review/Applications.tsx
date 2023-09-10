@@ -5,7 +5,7 @@ import Select from "@components/Select";
 import { ApplicationRow } from "./ApplicationRow";
 import { useReviewTool } from "./useReviewTool";
 import LoadingWheel from "@components/LoadingWheel";
-import { CopyIcon } from "@radix-ui/react-icons";
+import { ArrowLeftIcon, ArrowRightIcon, CopyIcon } from "@radix-ui/react-icons";
 
 export const Applications = () => {
   const {
@@ -17,7 +17,10 @@ export const Applications = () => {
     isLoading,
     error,
     getFormNames,
-  } = useReviewTool();
+    page,
+    increasePage,
+    decreasePage,
+  } = useReviewTool(50);
 
   if (isLoading) {
     return <LoadingWheel />;
@@ -114,6 +117,19 @@ export const Applications = () => {
             ))}
           </tbody>
         </table>
+        <div className="flex w-full items-center justify-between py-8">
+          <Button
+            variant="link"
+            onClick={() => decreasePage()}
+            disabled={page === 1}
+          >
+            <ArrowLeftIcon className="h-8 w-8" />
+          </Button>
+          <span className="text-lg">{page}</span>
+          <Button variant="link" onClick={() => increasePage()}>
+            <ArrowRightIcon className="h-8 w-8" />
+          </Button>
+        </div>
       </div>
     </>
   );
