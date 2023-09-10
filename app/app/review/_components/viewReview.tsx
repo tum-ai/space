@@ -12,7 +12,7 @@ export function ViewReview({ trigger, viewReview, applicationToView }) {
       </DialogClose>
       <div className="grid gap-4 md:grid-cols-2">
         <ReviewOverview review={viewReview} />
-        <ApplicationOverview data={applicationToView} />
+        <ApplicationOverview application={applicationToView} />
       </div>
     </Dialog>
   );

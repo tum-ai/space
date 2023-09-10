@@ -52,7 +52,7 @@ function NavBar() {
           <User />
         </div>
         <NavigationMenu.List className="flex items-center justify-between overflow-x-auto">
-          <div className="flex pt-2 gap-3">
+          <div className="flex gap-3 pt-2">
             {links.map((link) => {
               const Component = () => (
                 <NavigationMenu.Item>

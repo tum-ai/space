@@ -8,10 +8,42 @@ import { useStores } from "@providers/StoreProvider";
 import { observer } from "mobx-react";
 import Link from "next/link";
 import { ViewReview } from "../_components/viewReview";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import axios from "axios";
+import { Review } from "@models/application";
+import LoadingWheel from "@components/LoadingWheel";
+import toast from "react-hot-toast";
 
 const MyReviews = observer(() => {
-  const { reviewToolModel, meModel } = useStores();
-  const myreviews = reviewToolModel.myreviews;
+  const { meModel } = useStores();
+  const queryClient = useQueryClient();
+
+  const query = useQuery({
+    queryKey: ["myreviews"],
+    queryFn: () =>
+      axios
+        .get("/review_tool/myreviews/")
+        .then((res) => res.data.data as Review[]),
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: (id: number) =>
+      axios.delete("/review_tool/delete_review/", {
+        params: { reviewee_id: id },
+      }),
+  });
+
+  if (query.isLoading) {
+    return <LoadingWheel />;
+  }
+
+  if (query.error) {
+    return (
+      <Section>
+        <h1>Failed to load your reviews</h1>
+      </Section>
+    );
+  }
 
   return (
     <ProtectedItem showNotFound roles={["submit_reviews"]}>
@@ -33,23 +65,23 @@ const MyReviews = observer(() => {
             </tr>
           </thead>
           <tbody>
-            {myreviews.map((myreview) => {
-              const finalScoreSum = myreview.application.reviews?.reduce(
+            {query.data?.map((review) => {
+              const finalScoreSum = review.application.reviews?.reduce(
                 (finalscore, review) => {
                   return finalscore + review.finalscore;
                 },
                 0,
               );
               return (
-                <tr className="border-b dark:border-gray-500" key={myreview.id}>
-                  <td>{myreview.application.id}</td>
-                  <td>{myreview.application.submission?.data?.formName}</td>
+                <tr className="border-b dark:border-gray-500" key={review.id}>
+                  <td>{review.application.id}</td>
+                  <td>{review.application.submission?.data?.formName}</td>
                   <td className="flex items-center justify-center p-4">
-                    {myreview.application.reviews.map((review) => {
+                    {review.application.reviews.map((review) => {
                       const profile = review.reviewer;
                       return (
                         <ViewReview
-                          applicationToView={myreview.application}
+                          applicationToView={review.application}
                           viewReview={review}
                           key={review.id}
                           trigger={
@@ -86,7 +118,7 @@ const MyReviews = observer(() => {
                   <td>
                     {Math.round(
                       (finalScoreSum * 100) /
-                        myreview.application.reviews?.length,
+                        review.application.reviews?.length,
                     ) / 100 || "-"}
                   </td>
                   <td className="space-x-2 p-4">
@@ -97,19 +129,32 @@ const MyReviews = observer(() => {
                             "Are you sure you want to delete this review?",
                           )
                         ) {
-                          reviewToolModel.deleteReview(myreview.application.id);
+                          toast
+                            .promise(
+                              deleteMutation.mutateAsync(review.application.id),
+                              {
+                                loading: "Deleting review",
+                                success: "Successfully deleted review",
+                                error: "Failed to delete review",
+                              },
+                            )
+                            .then(() =>
+                              queryClient.invalidateQueries({
+                                queryKey: ["myreviews"],
+                              }),
+                            );
                         }
                       }}
                     >
-                      delete
+                      Delete
                     </Button>
                     <ViewReview
-                      applicationToView={myreview.application}
+                      applicationToView={review.application}
                       viewReview={{
-                        ...myreview,
+                        ...review,
                         reviewer: meModel.user.profile,
                       }}
-                      trigger={<Button>view</Button>}
+                      trigger={<Button>View</Button>}
                     />
                   </td>
                 </tr>

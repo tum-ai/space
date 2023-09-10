@@ -41,14 +41,6 @@ export class MeModel {
           this.root.rolesModel.getRoleHolderships();
           this.root.departmentMembershipsModel.fetchDepartments();
         }
-        if (
-          profile["role_holderships"].find(
-            (role) => role["handle"] == "submit_reviews",
-          )
-        ) {
-          this.root.reviewToolModel.fetchApplications();
-          this.root.reviewToolModel.fetchMyreviews();
-        }
       } else {
         this.setUser(null);
       }
