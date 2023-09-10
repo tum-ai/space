@@ -84,7 +84,7 @@ function Certificate() {
         {({ setFieldValue, errors, touched }) => (
           <Section>
             <Form>
-              <div className="flex flex-col justify-between gap-4 md:flex-row md:items-center mb-12">
+              <div className="mb-12 flex flex-col justify-between gap-4 md:flex-row md:items-center">
                 <h1 className="text-6xl font-thin">Member Certificate</h1>
                 <Button className="flex w-max items-center gap-2" type="submit">
                   <DownloadIcon />

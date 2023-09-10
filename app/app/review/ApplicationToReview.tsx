@@ -3,15 +3,13 @@ import { useStores } from "@providers/StoreProvider";
 import { observer } from "mobx-react";
 import { ApplicationOverview } from "./_components/applicationOverview";
 
-
 export const ApplicationToReview = observer(() => {
-    const { reviewToolModel } = useStores();
-    const applicationOnReview = reviewToolModel.applicationOnReview;
+  const { reviewToolModel } = useStores();
+  const applicationOnReview = reviewToolModel.applicationOnReview;
 
-    if (!applicationOnReview) {
-        return <p>No application selected</p>;
-    }
+  if (!applicationOnReview) {
+    return <p>No application selected</p>;
+  }
 
-    return <ApplicationOverview data={applicationOnReview} />;
+  return <ApplicationOverview data={applicationOnReview} />;
 });
-
