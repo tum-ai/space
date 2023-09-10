@@ -8,13 +8,15 @@ import { useStores } from "@providers/StoreProvider";
 import { observer } from "mobx-react";
 import Link from "next/link";
 import { ViewReview } from "../_components/viewReview";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { Review } from "@models/application";
 import LoadingWheel from "@components/LoadingWheel";
+import toast from "react-hot-toast";
 
 const MyReviews = observer(() => {
   const { meModel } = useStores();
+  const queryClient = useQueryClient();
 
   const query = useQuery({
     queryKey: ["myreviews"],
@@ -127,11 +129,24 @@ const MyReviews = observer(() => {
                             "Are you sure you want to delete this review?",
                           )
                         ) {
-                          deleteMutation.mutate(review.application.id);
+                          toast
+                            .promise(
+                              deleteMutation.mutateAsync(review.application.id),
+                              {
+                                loading: "Deleting review",
+                                success: "Successfully deleted review",
+                                error: "Failed to delete review",
+                              },
+                            )
+                            .then(() =>
+                              queryClient.invalidateQueries({
+                                queryKey: ["myreviews"],
+                              }),
+                            );
                         }
                       }}
                     >
-                      delete
+                      Delete
                     </Button>
                     <ViewReview
                       applicationToView={review.application}
@@ -139,7 +154,7 @@ const MyReviews = observer(() => {
                         ...review,
                         reviewer: meModel.user.profile,
                       }}
-                      trigger={<Button>view</Button>}
+                      trigger={<Button>View</Button>}
                     />
                   </td>
                 </tr>
