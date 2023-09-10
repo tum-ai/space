@@ -25,9 +25,12 @@ def list_db_applications(
 
 def list_db_application(sql_engine: sa.Engine, application_id: int) -> Application:
     with Session(sql_engine) as db_session:
-        db_model = db_session.query(Application).get(application_id)
-        assert db_model is not None, "Application not found"
-        return db_model
+        db_application: Application = db_session.query(
+            Application).get(application_id)
+
+        db_application.force_load()
+
+        return db_application
 
 
 def create_db_application(
@@ -98,7 +101,7 @@ def delete_db_referral(
         db_referral = (
             db_session.query(ApplicationReferral)
             .filter(sa.and_(ApplicationReferral.referer_id == referer_id,
-                             ApplicationReferral.email == email))
+                            ApplicationReferral.email == email))
             .first()
         )
 
@@ -109,9 +112,10 @@ def delete_db_referral(
 
     return False
 
+
 def delete_db_application(
-    sql_engine: sa.Engine,
-    id: int) -> bool:
+        sql_engine: sa.Engine,
+        id: int) -> bool:
     with Session(sql_engine) as db_session:
 
         db_application = (
