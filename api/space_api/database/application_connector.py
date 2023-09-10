@@ -23,11 +23,15 @@ def list_db_applications(
         return db_applications
 
 
-def list_db_application(sql_engine: sa.Engine, application_id: int) -> Application:
+def list_db_application(
+        sql_engine: sa.Engine,
+        application_id: int
+) -> Application:
     with Session(sql_engine) as db_session:
-        db_application = db_session.query(
+        db_application: Application | None = db_session.query(
             Application).get(application_id)
 
+        assert db_application is not None, "Application not found"
         db_application.force_load()
 
         return db_application
