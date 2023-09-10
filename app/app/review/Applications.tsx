@@ -2,12 +2,12 @@
 import { Button } from "@components/Button";
 import Icon from "@components/Icon";
 import Select from "@components/Select";
-import { useStores } from "@providers/StoreProvider";
 import { observer } from "mobx-react";
-import { Application } from "./Application";
+import { Application as ApplicationRow } from "./Application";
+import { useReviewTool } from "./useReviewTool";
 
 export const Applications = observer(() => {
-  const { reviewToolModel } = useStores();
+  const reviewToolModel = useReviewTool();
   return (
     <>
       <div className="flex flex-col justify-between gap-2 md:flex-row md:items-center">
@@ -21,8 +21,8 @@ export const Applications = observer(() => {
           <div className="flex items-center gap-2">
             <div className="space-x-2">
               <span className="font-thin">filters: </span>
-              {Object.keys(reviewToolModel.filter).length > 0 && (
-                <button onClick={() => reviewToolModel.resetFilters()}>
+              {Object.keys(reviewToolModel.filters).length > 0 && (
+                <button onClick={() => reviewToolModel.setFilters({})}>
                   reset
                 </button>
               )}
@@ -36,12 +36,16 @@ export const Applications = observer(() => {
                   value: formName,
                 })) || []),
               ]}
-              value={reviewToolModel.filter["submission.data.formName"]}
+              value={reviewToolModel.filters?.formName.name}
               setSelectedItem={(item) => {
-                reviewToolModel.setFilter(
-                  "submission.data.formName",
-                  item ? item : null,
-                );
+                reviewToolModel.setFilters((old) => ({
+                  ...old,
+                  formName: {
+                    name: item,
+                    predicate: (application) =>
+                      application.submission.data.formName === item,
+                  },
+                }));
               }}
             />
             <Button
@@ -53,7 +57,7 @@ export const Applications = observer(() => {
                 );
               }}
             >
-              copy IDs
+              Copy IDs
             </Button>
           </div>
           <div className="flex w-full space-x-4 rounded-lg bg-gray-200 p-2 dark:bg-gray-700 md:w-fit">
@@ -67,11 +71,7 @@ export const Applications = observer(() => {
               className="w-full bg-transparent outline-none"
             />
             {reviewToolModel.search && (
-              <button
-                onClick={(e) => {
-                  reviewToolModel.setSearch("");
-                }}
-              >
+              <button onClick={() => reviewToolModel.setSearch("")}>
                 clear
               </button>
             )}
@@ -91,7 +91,7 @@ export const Applications = observer(() => {
           </thead>
           <tbody>
             {reviewToolModel.filteredApplications?.map((application) => (
-              <Application key={application.id} application={application} />
+              <ApplicationRow key={application.id} application={application} />
             ))}
           </tbody>
         </table>
