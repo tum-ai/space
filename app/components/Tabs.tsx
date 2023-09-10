@@ -1,6 +1,10 @@
 import * as RadixTabs from "@radix-ui/react-tabs";
 
-export default function Tabs({ tabs, ...props }) {
+export interface Props extends RadixTabs.TabsProps {
+  tabs: { [name: string]: React.ReactNode };
+}
+
+const Tabs = ({ tabs, ...props }: Props) => {
   return (
     <RadixTabs.Root {...props}>
       <RadixTabs.List className="mb-8 grid grid-cols-2 text-xl">
@@ -21,4 +25,6 @@ export default function Tabs({ tabs, ...props }) {
       ))}
     </RadixTabs.Root>
   );
-}
+};
+
+export default Tabs;
