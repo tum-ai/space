@@ -25,7 +25,7 @@ def list_db_applications(
 
 def list_db_application(sql_engine: sa.Engine, application_id: int) -> Application:
     with Session(sql_engine) as db_session:
-        db_application: Application = db_session.query(
+        db_application = db_session.query(
             Application).get(application_id)
 
         db_application.force_load()
