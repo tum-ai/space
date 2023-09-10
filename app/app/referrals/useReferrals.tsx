@@ -11,12 +11,12 @@ import { useState } from "react";
  */
 export const useReferrals = (page_size = 100) => {
   const [page, setPage] = useState(1);
-  const { isLoading, data } = useQuery({
+  const query = useQuery({
     queryKey: ["referrals", page],
     queryFn: () =>
       axios
-        .get("/application/referrals/", { params: { page: 1, page_size } })
-        .then((res) => res.data.data as Referral[]),
+        .get("/application/referrals/", { params: { page, page_size } })
+        .then((res) => res.data),
     keepPreviousData: true,
   });
 
@@ -24,9 +24,11 @@ export const useReferrals = (page_size = 100) => {
   const decreasePage = () => setPage((old) => Math.max(old - 1, 1));
 
   return {
-    isLoading,
-    referrals: data,
+    referrals: query.data?.data as Referral[],
+    hasMore: true, // TODO: This needs to be parsed from the api
+    isLoading: query.isLoading,
     page,
+    isPreviousData: query.data?.isPreviousData,
     increasePage,
     decreasePage,
   };
