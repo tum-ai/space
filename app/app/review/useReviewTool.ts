@@ -19,6 +19,9 @@ export const useReviewTool = () => {
       filter.predicate(application),
     );
 
+  const searchFilter = (application: Application) =>
+    search === "" || JSON.stringify(application).toLowerCase().includes(search);
+
   const finalScoreComparator = (a: Application, b: Application): any => {
     const finalScoresA = a.reviews.map((review: Review) => review.finalscore);
     const finalScoresB = b.reviews.map((review: Review) => review.finalscore);
@@ -31,6 +34,7 @@ export const useReviewTool = () => {
 
   const applications = query.data
     ?.filter(filterPredicate)
+    .filter(searchFilter)
     .sort(finalScoreComparator);
 
   const getFormNames = () => {
