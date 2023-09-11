@@ -1,7 +1,7 @@
 import Dialog from "@components/Dialog";
 import { DialogClose } from "@radix-ui/react-dialog";
 import { Cross1Icon } from "@radix-ui/react-icons";
-import { ReviewForm } from "../[id]/_components/ReviewForm";
+import { ReviewForm } from "../review/_components/ReviewForm";
 import { ApplicationOverview } from "./applicationOverview";
 
 export function EditReview({ review, trigger, applicationToView }) {
