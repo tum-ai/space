@@ -1,5 +1,6 @@
 "use client";
 import Select from "@components/Select";
+import { MembershipFormType, VentureFormType } from "../../types";
 import { MembershipReviewForm } from "./MembershipReviewForm";
 import { VentureReviewForm } from "./VentureReviewForm";
 import { Application } from "@models/application";
@@ -7,10 +8,9 @@ import { useState } from "react";
 
 export interface FormProps {
   application: Application;
-  form?: any;
+  form?: MembershipFormType | VentureFormType;
 }
 export const ReviewForm = ({ application, form }: FormProps) => {
-  // TODO: add other forms
   const formNames = {
     "TUM.ai Application WS23": "MEMBERSHIP",
   };
