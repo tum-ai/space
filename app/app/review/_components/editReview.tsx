@@ -4,9 +4,10 @@ import { Cross1Icon } from "@radix-ui/react-icons";
 import { ReviewForm } from "../review/_components/ReviewForm";
 import { ApplicationOverview } from "./applicationOverview";
 import { Review } from "@models/application";
+import { MembershipFormType, VentureFormType } from "../types";
 
 interface EditReviewProps {
-  review: Review & { form: any };
+  review: Review & { form: MembershipFormType | VentureFormType };
   trigger: React.ReactNode;
 }
 
