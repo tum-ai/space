@@ -1,4 +1,5 @@
 export interface Review {
+  form: any;
   id: number;
   reviewer: any;
   finalscore: number;
