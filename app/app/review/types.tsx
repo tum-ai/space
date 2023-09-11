@@ -1,3 +1,18 @@
+// TODO: ADD MORE SPECIFIC TYPES
+export type ApplicationType = {
+  id: number;
+  reviews: Array<any>;
+  reviewees: Array<any>;
+};
+
+export type ReviewType = {
+  application: ApplicationType;
+  finalscore: number;
+  form: VentureFormType | MembershipFormType;
+  referraL: number;
+  review_type: "VENTURE" | "MEMBERSHIP";
+};
+
 export type MembershipFormType = {
   motivation: string;
   skill: number;
