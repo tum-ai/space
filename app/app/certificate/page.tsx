@@ -36,7 +36,6 @@ function Certificate() {
     LASTNAME: Yup.string().required(),
     DATENOW: Yup.string().required(),
     DATEJOINED: Yup.string().required(),
-    PRONOUNPOS: Yup.string().required(),
     SIGNED_ON: Yup.string().required(),
     CONTRIB_1: Yup.string().required(),
     CONTRIB_2: Yup.string().required(),
@@ -51,7 +50,6 @@ function Certificate() {
     LASTNAME: "",
     DATENOW: "",
     DATEJOINED: "",
-    PRONOUNPOS: "",
     SIGNED_ON: "",
     CONTRIB_1: "",
     CONTRIB_2: "",
@@ -92,55 +90,37 @@ function Certificate() {
                 </Button>
               </div>
               <div className="grid grid-cols-2 gap-4">
-                <div className="col-span-2 grid grid-cols-3 gap-4">
-                  <div>
-                    <Field
-                      as={Select}
-                      label="Department"
-                      name="DEPARTMENT"
-                      placeholder={"Department"}
-                      options={departments.map((department) => ({
-                        key: department,
-                        value: department,
-                      }))}
-                      setSelectedItem={(item: string) => {
-                        setFieldValue("DEPARTMENT", item);
-                      }}
-                    />
-                    <ErrorMessage name="DEPARTMENT" />
-                  </div>
-                  <div>
-                    <Field
-                      as={Select}
-                      label="Position"
-                      name="TITLE"
-                      placeholder={"Position"}
-                      options={positions.map((position) => ({
-                        key: position,
-                        value: position,
-                      }))}
-                      setSelectedItem={(position: string) => {
-                        setFieldValue("TITLE", position);
-                      }}
-                    />
-                    <ErrorMessage name="DEPARTMENT" />
-                  </div>
-                  <div>
-                    <Field
-                      as={Select}
-                      label="Pronoun (his/her)"
-                      name="PRONOUNPOS"
-                      placeholder="Pronouns"
-                      options={[
-                        { key: "his", value: "his" },
-                        { key: "her", value: "her" },
-                      ]}
-                      setSelectedItem={(position: string) => {
-                        setFieldValue("PRONOUNPOS", position);
-                      }}
-                    />
-                    <ErrorMessage name="PRONOUNPOS" />
-                  </div>
+                <div>
+                  <Field
+                    as={Select}
+                    label="Department"
+                    name="DEPARTMENT"
+                    placeholder={"Department"}
+                    options={departments.map((department) => ({
+                      key: department,
+                      value: department,
+                    }))}
+                    setSelectedItem={(item: string) => {
+                      setFieldValue("DEPARTMENT", item);
+                    }}
+                  />
+                  <ErrorMessage name="DEPARTMENT" />
+                </div>
+                <div>
+                  <Field
+                    as={Select}
+                    label="Position"
+                    name="TITLE"
+                    placeholder={"Position"}
+                    options={positions.map((position) => ({
+                      key: position,
+                      value: position,
+                    }))}
+                    setSelectedItem={(position: string) => {
+                      setFieldValue("TITLE", position);
+                    }}
+                  />
+                  <ErrorMessage name="DEPARTMENT" />
                 </div>
                 <div>
                   <Field

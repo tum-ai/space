@@ -61,7 +61,7 @@ function NavBar() {
                       asChild
                       variant="link"
                       className={clsx(
-                        "hover:text-black dark:hover:text-white",
+                        "w-max hover:text-black dark:hover:text-white",
                         link.href === pathname
                           ? "text-black dark:text-white"
                           : "text-gray-500",
