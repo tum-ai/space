@@ -116,19 +116,19 @@ export const Applications = () => {
             ))}
           </tbody>
         </table>
-        <div className="flex w-full items-center justify-between py-8">
-          <Button
-            variant="link"
-            onClick={() => decreasePage()}
-            disabled={page === 1}
-          >
-            <ArrowLeftIcon className="h-8 w-8" />
-          </Button>
-          <span className="text-lg">{page}</span>
-          <Button variant="link" onClick={() => increasePage()}>
-            <ArrowRightIcon className="h-8 w-8" />
-          </Button>
-        </div>
+      </div>
+      <div className="flex w-full items-center justify-between py-8">
+        <Button
+          variant="link"
+          onClick={() => decreasePage()}
+          disabled={page === 1}
+        >
+          <ArrowLeftIcon className="h-8 w-8" />
+        </Button>
+        <span className="text-lg">{page}</span>
+        <Button variant="link" onClick={() => increasePage()}>
+          <ArrowRightIcon className="h-8 w-8" />
+        </Button>
       </div>
     </>
   );
