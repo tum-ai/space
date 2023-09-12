@@ -133,7 +133,7 @@ function ProfileEditor({ trigger }) {
             name="first_name"
             value={editorProfile.first_name}
             onChange={handleChange}
-            required={true}
+            fullWidth
           />
           <Input
             label="Last name"
@@ -142,7 +142,7 @@ function ProfileEditor({ trigger }) {
             name="last_name"
             value={editorProfile.last_name}
             onChange={handleChange}
-            required={true}
+            fullWidth
           />
           <Input
             label="Nationality"
@@ -151,7 +151,7 @@ function ProfileEditor({ trigger }) {
             name="nationality"
             value={editorProfile.nationality}
             onChange={handleChange}
-            required={true}
+            fullWidth
           />
           <Input
             label="University"
@@ -160,7 +160,7 @@ function ProfileEditor({ trigger }) {
             name="university"
             value={editorProfile.university}
             onChange={handleChange}
-            required={true}
+            fullWidth
           />
           <Input
             label="Degree level"
@@ -169,7 +169,7 @@ function ProfileEditor({ trigger }) {
             name="degree_level"
             value={editorProfile.degree_level}
             onChange={handleChange}
-            required={true}
+            fullWidth
           />
           <Input
             label="Degree name"
@@ -178,7 +178,7 @@ function ProfileEditor({ trigger }) {
             name="degree_name"
             value={editorProfile.degree_name}
             onChange={handleChange}
-            required={true}
+            fullWidth
           />
           <Input
             label="Semester"
@@ -187,7 +187,7 @@ function ProfileEditor({ trigger }) {
             name="degree_semester"
             value={editorProfile.degree_semester}
             onChange={handleChange}
-            required={true}
+            fullWidth
           />
           <Input
             label="Current job"
@@ -196,18 +196,17 @@ function ProfileEditor({ trigger }) {
             name="currentJob"
             value={editorProfile.currentJob}
             onChange={handleChange}
+            fullWidth
           />
-          <div className="col-span-2">
-            <Textarea
-              label="Description"
-              type="text"
-              id="description"
-              name="description"
-              value={editorProfile.description}
-              onChange={handleChange}
-              required={false}
-            />
-          </div>
+          <Textarea
+            label="Description"
+            type="text"
+            id="description"
+            name="description"
+            value={editorProfile.description}
+            onChange={handleChange}
+            required={false}
+          />
           <hr className="col-span-2" />
           {/* Job Experience Editor */}
           <JobExperience />
