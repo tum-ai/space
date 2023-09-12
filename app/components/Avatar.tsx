@@ -7,14 +7,17 @@ interface Props extends VariantProps<typeof styles> {
   initials: string;
 }
 
-const styles = cva("flex h-10 w-10 overflow-hidden bg-white dark:bg-gray-800", {
-  variants: {
-    variant: {
-      circle: "rounded-full",
-      rounded: "rounded",
+const styles = cva(
+  "flex h-10 w-10 overflow-hidden bg-white dark:bg-gray-800 flex-shrink-0",
+  {
+    variants: {
+      variant: {
+        circle: "rounded-full",
+        rounded: "rounded",
+      },
     },
   },
-});
+);
 
 const Avatar = ({ profilePicture, initials, variant }: Props) => {
   return (

@@ -43,7 +43,7 @@ export const Applications = () => {
             ?.map((application) => application.reviews?.length)
             .reduce((prev, current) => prev + current, 0)} reviews `}
         </div>
-        <div className="flex gap-2">
+        <div className="flex flex-col items-end gap-2 lg:flex-row">
           <div className="flex items-center gap-2">
             <div className="space-x-2">
               <span className="font-thin">filters: </span>
@@ -54,7 +54,6 @@ export const Applications = () => {
             <Select
               placeholder={"Form"}
               options={[
-                { key: "all", value: null },
                 ...(getFormNames()?.map((formName) => ({
                   key: formName,
                   value: formName,
@@ -117,19 +116,19 @@ export const Applications = () => {
             ))}
           </tbody>
         </table>
-        <div className="flex w-full items-center justify-between py-8">
-          <Button
-            variant="link"
-            onClick={() => decreasePage()}
-            disabled={page === 1}
-          >
-            <ArrowLeftIcon className="h-8 w-8" />
-          </Button>
-          <span className="text-lg">{page}</span>
-          <Button variant="link" onClick={() => increasePage()}>
-            <ArrowRightIcon className="h-8 w-8" />
-          </Button>
-        </div>
+      </div>
+      <div className="flex w-full items-center justify-between py-8">
+        <Button
+          variant="link"
+          onClick={() => decreasePage()}
+          disabled={page === 1}
+        >
+          <ArrowLeftIcon className="h-8 w-8" />
+        </Button>
+        <span className="text-lg">{page}</span>
+        <Button variant="link" onClick={() => increasePage()}>
+          <ArrowRightIcon className="h-8 w-8" />
+        </Button>
       </div>
     </>
   );
