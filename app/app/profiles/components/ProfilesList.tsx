@@ -3,7 +3,7 @@ import Icon from "@components/Icon";
 import Select from "@components/Select";
 import { useStores } from "@providers/StoreProvider";
 import { observer } from "mobx-react";
-import ProfileRow from "./ProfileRow";
+import ProfileCard from "./ProfileCard";
 import { Profile } from "@models/profile";
 import LoadingWheel from "@components/LoadingWheel";
 import { useProfiles } from "./useProfiles";
@@ -23,7 +23,7 @@ function ProfilesList() {
           <div className="mt-2 font-light text-gray-500">
             Total {profilesModel.profiles?.length} members
           </div>
-          <div className="flex flex-col items-start space-y-2 lg:flex-row lg:items-end lg:space-x-4">
+          <div className="flex flex-col items-end space-y-2 lg:flex-row lg:space-x-4">
             <div className="flex items-center space-x-4">
               <div className="space-x-2">
                 <span className="font-thin">filters: </span>
@@ -81,9 +81,9 @@ function ProfilesList() {
           </div>
         </div>
       </div>
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
         {profilesModel.profiles.map((profile, i) => (
-          <ProfileRow key={i} profile={profile} />
+          <ProfileCard key={i} profile={profile} />
         ))}
       </div>
     </div>
