@@ -43,7 +43,7 @@ export const Applications = () => {
             ?.map((application) => application.reviews?.length)
             .reduce((prev, current) => prev + current, 0)} reviews `}
         </div>
-        <div className="flex gap-2">
+        <div className="flex flex-col items-end gap-2 lg:flex-row">
           <div className="flex items-center gap-2">
             <div className="space-x-2">
               <span className="font-thin">filters: </span>
@@ -54,7 +54,6 @@ export const Applications = () => {
             <Select
               placeholder={"Form"}
               options={[
-                { key: "all", value: null },
                 ...(getFormNames()?.map((formName) => ({
                   key: formName,
                   value: formName,
