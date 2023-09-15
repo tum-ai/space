@@ -8,9 +8,7 @@ version_scheme = "post-release"
 name = "tumai-space-api"
 version = "0.1.0"
 description = ""
-authors = [
-    { name = "Robin Holzinger", email = "robin.holzingr@gmail.com" }
-]
+authors = [{ name = "Robin Holzinger", email = "robin.holzingr@gmail.com" }]
 classifiers = [
   "Programming Language :: Python :: 3",
   "Programming Language :: Python :: 3.11",
@@ -27,7 +25,7 @@ include = ["api_space.*"]
 
 [tool.ruff]
 line-length = 88
-select = ["F", "E", "W", "I", "N", "UP"]
+select = ["F", "E", "W", "N", "UP"]
 target-version = "py311"
 
 [tool.mypy]

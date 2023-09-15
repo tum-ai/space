@@ -1,4 +1,4 @@
-name: Backend CI - /api
+name: /api lint, format, test
 
 on:
   pull_request:
@@ -48,9 +48,11 @@ jobs:
       - name: Lint with Ruff
         run: python -m ruff check .
         working-directory: api
-      - name: Run mypy
+      - name: MyPy - Static Type Checking
         run: python -m mypy .
         working-directory: api
+      - name: Yapf - Check formatting
+        run: python -m yapf --recursive --diff .
       - name: Run pytest
         run: python -m pytest tests
         working-directory: api

@@ -13,6 +13,7 @@ dependencies:
 
     # linting
     - mypy
+    - yapf
     - ruff
     - typing_extensions
     - types-python-dateutil
@@ -43,6 +44,7 @@ dependencies:
           - types-pyyaml
           - types-python-dateutil
           - types-requests
+
           # runtime
           - fastapi-mail
           - firebase-admin

@@ -12,7 +12,8 @@ class ApplicationOut(BaseModel):
             "example": {
                 "id": 1,
                 "submission": {
-                    "type": "Industry",
+                    "type":
+                    "Industry",
                     "fields": [
                         {
                             "key": "question_mVGEg3_e25-9e68-5d730598c681",
@@ -23,8 +24,7 @@ class ApplicationOut(BaseModel):
                     ],
                 },
             }
-        }
-    )
+        })
 
     id: int
     submission: Any
@@ -32,14 +32,14 @@ class ApplicationOut(BaseModel):
 
     @classmethod
     def from_db_model(cls, application: Application) -> "ApplicationOut":
-        reviews = [ApplicationReviewOut.from_db_model(
-            review) for review in application.reviews]
+        reviews = [
+            ApplicationReviewOut.from_db_model(review)
+            for review in application.reviews
+        ]
 
-        return ApplicationOut(
-            id=application.id,
-            submission=application.submission,
-            reviews=reviews
-        )
+        return ApplicationOut(id=application.id,
+                              submission=application.submission,
+                              reviews=reviews)
 
     @classmethod
     def dummy(cls) -> "ApplicationOut":
@@ -56,8 +56,7 @@ class ApplicationReferralInOut(BaseModel):
                 "last_name": 'Doe',
                 "comment": 'Good guy, love to work with him.'
             }
-        }
-    )
+        })
 
     email: str
     first_name: str
@@ -65,7 +64,8 @@ class ApplicationReferralInOut(BaseModel):
     comment: str
 
     @classmethod
-    def from_db_model(cls, referral: ApplicationReferral) -> "ApplicationReferralInOut":
+    def from_db_model(
+            cls, referral: ApplicationReferral) -> "ApplicationReferralInOut":
         return ApplicationReferralInOut(
             email=referral.email,
             first_name=referral.first_name,

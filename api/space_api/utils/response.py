@@ -7,8 +7,7 @@ class BaseResponse(BaseModel):
             "status_code": 200,
             "response_type": "success",
             "description": "Operation successful",
-        }
-    )
+        })
 
     status_code: int
     response_type: str

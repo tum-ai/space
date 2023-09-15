@@ -46,9 +46,8 @@ def generate_certificate(
         )
 
         if 200 <= response.status_code < 300:
-            return StreamingResponse(
-                BytesIO(response.content), media_type="application/pdf"
-            )
+            return StreamingResponse(BytesIO(response.content),
+                                     media_type="application/pdf")
     except Exception:
         pass
     raise HTTPException(status_code=500, detail="Error generating certificate")

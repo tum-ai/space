@@ -22,8 +22,7 @@ class ApplicationReviewOut(BaseModel):
                 "finalscore": 7.5,
                 "reviewee_id": 1,
             }
-        }
-    )
+        })
 
     form: Any
     review_type: str
@@ -33,7 +32,8 @@ class ApplicationReviewOut(BaseModel):
     reviewee_id: int
 
     @classmethod
-    def from_db_model(cls, review: ApplicationReview) -> "ApplicationReviewOut":
+    def from_db_model(cls,
+                      review: ApplicationReview) -> "ApplicationReviewOut":
         return ApplicationReviewOut(
             form=review.form,
             review_type=review.review_type,
@@ -61,8 +61,7 @@ class ApplicationReviewIn(BaseModel):
                 "review_type": "MEMBERSHIP",
                 "reviewee_id": 1,
             }
-        }
-    )
+        })
 
     form: Any
     review_type: str
@@ -72,6 +71,7 @@ class ApplicationReviewIn(BaseModel):
     def dummy(cls) -> "ApplicationReviewIn":
         json = cast(dict[str, Any], cls.model_config.get("json_schema_extra"))
         return json["example"]
+
 
 class ApplicationReviewUpdate(BaseModel):
     model_config = ConfigDict(
@@ -83,8 +83,7 @@ class ApplicationReviewUpdate(BaseModel):
                     "comment": "good candidate"
                 },
             }
-        }
-    )
+        })
 
     form: Any
 
@@ -93,13 +92,15 @@ class ApplicationReviewUpdate(BaseModel):
         json = cast(dict[str, Any], cls.model_config.get("json_schema_extra"))
         return json["example"]
 
+
 class ApplicationOut(BaseModel):
     model_config = ConfigDict(
         json_schema_extra={
             "example": {
                 "id": 1,
                 "submission": {
-                    "type": "Industry",
+                    "type":
+                    "Industry",
                     "fields": [
                         {
                             "key": "question_mVGEg3_e25-9e68-5d730598c681",
@@ -110,8 +111,7 @@ class ApplicationOut(BaseModel):
                     ],
                 },
             }
-        }
-    )
+        })
 
     id: int
     reviews: list[ApplicationReviewOut]
@@ -122,11 +122,9 @@ class ApplicationOut(BaseModel):
         reviews = []
         for review in application.reviews:
             reviews.append(ApplicationReviewOut.from_db_model(review))
-        return ApplicationOut(
-            id=application.id,
-            submission=application.submission,
-            reviews=reviews
-        )
+        return ApplicationOut(id=application.id,
+                              submission=application.submission,
+                              reviews=reviews)
 
     @classmethod
     def dummy(cls) -> "ApplicationOut":
@@ -149,8 +147,7 @@ class MyApplicationReviewOut(BaseModel):
                 "application": ApplicationOut.dummy(),
                 "finalscore": 7.5,
             }
-        }
-    )
+        })
 
     form: Any
     review_type: str
@@ -159,7 +156,8 @@ class MyApplicationReviewOut(BaseModel):
     application: ApplicationOut
 
     @classmethod
-    def from_db_model(cls, review: ApplicationReview) -> "MyApplicationReviewOut":
+    def from_db_model(cls,
+                      review: ApplicationReview) -> "MyApplicationReviewOut":
         return MyApplicationReviewOut(
             form=review.form,
             review_type=review.review_type,
