@@ -19,7 +19,8 @@ from space_api.utils.error import (
 from .firebase_auth import verify_id_token
 
 
-def __ensure_auth(func: Callable, request: Request, *args: Any, **kwargs: Any) -> Any:
+def __ensure_auth(func: Callable, request: Request, *args: Any,
+                  **kwargs: Any) -> Any:
     headers = request.headers
     # ==========FOR TESTING USING THE FASTAPI DOCS WITHOUT AUTH===
     # class dotdict(dict):
@@ -46,30 +47,28 @@ def __ensure_auth(func: Callable, request: Request, *args: Any, **kwargs: Any) -
         raise RESPONSE_AUTH_FAILED
 
     profile = retrieve_or_create_db_profile_by_firebase_uid(
-        request.app.state.sql_engine, fb_user
-    )
+        request.app.state.sql_engine, fb_user)
     if profile is None:
         raise RESPONSE_AUTH_FAILED
 
     request.state.fb_user = fb_user
     request.state.profile = profile
 
-    any_of_positions: list[tuple[PositionType | None, str | None]] | None = kwargs.pop(
-        "any_of_positions", None
-    )
+    any_of_positions: list[tuple[PositionType | None,
+                                 str | None]] | None = kwargs.pop(
+                                     "any_of_positions", None)
     any_of_roles: list[str] | None = kwargs.pop("any_of_roles", None)
 
     succeeded = False
     if any_of_positions is None and any_of_roles is None:
         succeeded = True
     if not succeeded and len(any_of_positions or []) > 0:
-        succeeded = profile_has_one_of_positions(
-            request.app.state.sql_engine, profile.id, any_of_positions or []
-        )
+        succeeded = profile_has_one_of_positions(request.app.state.sql_engine,
+                                                 profile.id, any_of_positions
+                                                 or [])
     if not succeeded and len(any_of_roles or []) > 0:
-        succeeded = profile_has_one_of_roles(
-            request.app.state.sql_engine, profile.id, any_of_roles or []
-        )
+        succeeded = profile_has_one_of_roles(request.app.state.sql_engine,
+                                             profile.id, any_of_roles or [])
 
     if not succeeded:
         raise RESPONSE_UNAUTHORIZED
@@ -78,6 +77,7 @@ def __ensure_auth(func: Callable, request: Request, *args: Any, **kwargs: Any) -
 
 
 def ensure_authenticated(func: Callable) -> Callable:
+
     @wraps(func)
     def wrapper(request: Request, *args: Any, **kwargs: Any):
         return __ensure_auth(func, request, *args, **kwargs)
@@ -104,6 +104,7 @@ def ensure_authorization(
     """
 
     def outer_wrapper(func: Callable) -> Callable:
+
         @wraps(func)
         def wrapper(request: Request, *args: Any, **kwargs: Any) -> Any:
             kwargs["any_of_positions"] = any_of_positions

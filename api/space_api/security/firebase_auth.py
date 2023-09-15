@@ -33,16 +33,17 @@ def verify_id_token(jwt: str) -> UserRecord | None:
         return None
 
 
-def create_invite_email_user(display_name: str, email: str) -> UserRecord | str:
+def create_invite_email_user(display_name: str,
+                             email: str) -> UserRecord | str:
     """
     Returns:
         UserRecord: if successful
         str: error message if unsuccessful
     """
     try:
-        new_user: UserRecord = auth.create_user(
-            display_name=display_name, email=email, email_verified=False
-        )
+        new_user: UserRecord = auth.create_user(display_name=display_name,
+                                                email=email,
+                                                email_verified=False)
         return new_user
     except AlreadyExistsError:
         return "UserAlreadyExists"

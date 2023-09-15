@@ -1,4 +1,4 @@
-name: API CI - lint and pytest
+name: /app build
 
 on:
   pull_request:

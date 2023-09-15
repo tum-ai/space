@@ -6,6 +6,7 @@ from space_api.utils.error import RESPONSE_NOT_FOUND
 
 
 def error_handlers(func: Callable) -> Any:
+
     @wraps(func)
     def wrapper(*args: Any, **kwargs: Any) -> Any:
         try:

@@ -14,13 +14,15 @@ class DepartmentOut(BaseModel):
     model_config = ConfigDict(
         json_schema_extra={
             "example": {
-                "handle": "dev",
-                "name": "Development & IT",
-                "description": "We are responsible for all IT "
-                + "and engineering related tasks!",
+                "handle":
+                "dev",
+                "name":
+                "Development & IT",
+                "description":
+                "We are responsible for all IT " +
+                "and engineering related tasks!",
             }
-        }
-    )
+        })
 
     handle: str
 
@@ -28,7 +30,8 @@ class DepartmentOut(BaseModel):
     description: str
 
     @classmethod
-    def from_db_model(cls, department: db_models.Department) -> "DepartmentOut":
+    def from_db_model(cls,
+                      department: db_models.Department) -> "DepartmentOut":
         return DepartmentOut(
             handle=department.handle,
             name=department.name,
@@ -47,21 +50,20 @@ class DepartmentOut(BaseModel):
 
 
 class RoleInOut(BaseModel):
-    model_config = ConfigDict(
-        json_schema_extra={
-            "example": {
-                "handle": "admin",
-                "description": "Administrator",
-            }
+    model_config = ConfigDict(json_schema_extra={
+        "example": {
+            "handle": "admin",
+            "description": "Administrator",
         }
-    )
+    })
 
     handle: str
     description: str
 
     @classmethod
     def from_db_model(cls, role: db_models.Role) -> "RoleInOut":
-        return RoleInOut(handle=role.handle, description=role.description or "")
+        return RoleInOut(handle=role.handle,
+                         description=role.description or "")
 
     @classmethod
     def dummy(cls) -> "RoleInOut":
@@ -79,8 +81,7 @@ class ProfileMemberInvitation(BaseModel):
                 "department_handle": "dev",
                 "department_position": "Member",
             }
-        }
-    )
+        })
 
     email: str
     first_name: str
@@ -95,15 +96,13 @@ class ProfileMemberInvitation(BaseModel):
 
 
 class SocialNetworkIn(BaseModel):
-    model_config = ConfigDict(
-        json_schema_extra={
-            "example": {
-                "type": "github",
-                "handle": "tum_ai",
-                "link": "",
-            }
+    model_config = ConfigDict(json_schema_extra={
+        "example": {
+            "type": "github",
+            "handle": "tum_ai",
+            "link": "",
         }
-    )
+    })
 
     type: db_models.SocialNetworkType
     handle: str | None
@@ -124,8 +123,7 @@ class SocialNetworkOut(BaseModel):
                 "handle": "tum_ai",
                 "link": "",
             }
-        }
-    )
+        })
 
     profile_id: int
     type: db_models.SocialNetworkType
@@ -155,8 +153,7 @@ class DepartmentMembershipOut(BaseModel):
                 "position": "teamlead",
                 "department_handle": "DEV",
             }
-        }
-    )
+        })
 
     profile_id: int
     position: db_models.PositionType
@@ -166,8 +163,8 @@ class DepartmentMembershipOut(BaseModel):
 
     @classmethod
     def from_db_model(
-        cls, s: db_models.DepartmentMembership
-    ) -> "DepartmentMembershipOut":
+            cls,
+            s: db_models.DepartmentMembership) -> "DepartmentMembershipOut":
         return DepartmentMembershipOut(
             profile_id=s.profile_id,
             position=cast(db_models.PositionType, s.position),
@@ -186,30 +183,42 @@ class ProfileInCreateUpdateBase(BaseModel):
     model_config = ConfigDict(
         json_schema_extra={
             "example": {
-                "email": "test@mymail.com",
-                "phone": "+42 42424242",
-                "first_name": "Max",
-                "last_name": "Mustermann",
-                "birthday": date(2000, 12, 30),
-                "nationality": "German",
-                "description": "Hi and welcome!",
-                "activity_status": "active",
-                "degree_level": "B.Sc.",
-                "degree_name": "Computer Science",
-                "degree_semester": "5",
-                "university": "TUM",
+                "email":
+                "test@mymail.com",
+                "phone":
+                "+42 42424242",
+                "first_name":
+                "Max",
+                "last_name":
+                "Mustermann",
+                "birthday":
+                date(2000, 12, 30),
+                "nationality":
+                "German",
+                "description":
+                "Hi and welcome!",
+                "activity_status":
+                "active",
+                "degree_level":
+                "B.Sc.",
+                "degree_name":
+                "Computer Science",
+                "degree_semester":
+                "5",
+                "university":
+                "TUM",
                 "job_history": [
                     db_models.JobHistoryElement.dummy(),
                     db_models.JobHistoryElement.dummy(),
                 ],
-                "time_joined": datetime.now(),
+                "time_joined":
+                datetime.now(),
                 "social_networks": [
                     SocialNetworkIn.dummy(),
                     SocialNetworkIn.dummy(),
                 ],
             }
-        }
-    )
+        })
 
     email: str
     phone: str | None = Field(None)
@@ -251,25 +260,40 @@ class ProfileOut(BaseModel):
     model_config = ConfigDict(
         json_schema_extra={
             "example": {
-                "id": 42,
-                "firebase_uid": "SnMRJyesPzZI6teM684qhUxgH2g2",
-                "email": "test@mymail.com",
-                "phone": "+42 42424242",
-                "first_name": "Max",
-                "last_name": "Mustermann",
-                "birthday": date(2000, 12, 30),
-                "nationality": "German",
-                "description": "Hi and welcome!",
-                "activity_status": "active",
-                "degree_level": "B.Sc.",
-                "degree_name": "Computer Science",
-                "degree_semester": "5",
-                "university": "TUM",
+                "id":
+                42,
+                "firebase_uid":
+                "SnMRJyesPzZI6teM684qhUxgH2g2",
+                "email":
+                "test@mymail.com",
+                "phone":
+                "+42 42424242",
+                "first_name":
+                "Max",
+                "last_name":
+                "Mustermann",
+                "birthday":
+                date(2000, 12, 30),
+                "nationality":
+                "German",
+                "description":
+                "Hi and welcome!",
+                "activity_status":
+                "active",
+                "degree_level":
+                "B.Sc.",
+                "degree_name":
+                "Computer Science",
+                "degree_semester":
+                "5",
+                "university":
+                "TUM",
                 "job_history": [
                     db_models.JobHistoryElement.dummy(),
                     db_models.JobHistoryElement.dummy(),
                 ],
-                "time_joined": datetime.now(),
+                "time_joined":
+                datetime.now(),
                 "social_networks": [
                     SocialNetworkOut.dummy(),
                     SocialNetworkOut.dummy(),
@@ -279,8 +303,7 @@ class ProfileOut(BaseModel):
                     DepartmentMembershipOut.dummy(),
                 ],
             }
-        }
-    )
+        })
 
     id: int
     firebase_uid: str
@@ -327,7 +350,8 @@ class ProfileOut(BaseModel):
             job_history=profile.decoded_job_history,
             time_joined=cast(datetime, profile.time_joined),
             social_networks=[
-                SocialNetworkOut.from_db_model(s) for s in profile.social_networks
+                SocialNetworkOut.from_db_model(s)
+                for s in profile.social_networks
             ],
             department_memberships=[
                 DepartmentMembershipOut.from_db_model(s)
@@ -346,20 +370,30 @@ class ProfileOutPublic(BaseModel):
     model_config = ConfigDict(
         json_schema_extra={
             "example": {
-                "id": 42,
-                "first_name": "Max",
-                "last_name": "Mustermann",
-                "description": "Hi and welcome!",
-                "activity_status": "active",
-                "degree_level": "B.Sc.",
-                "degree_name": "Computer Science",
-                "degree_semester": "5",
-                "university": "TUM",
+                "id":
+                42,
+                "first_name":
+                "Max",
+                "last_name":
+                "Mustermann",
+                "description":
+                "Hi and welcome!",
+                "activity_status":
+                "active",
+                "degree_level":
+                "B.Sc.",
+                "degree_name":
+                "Computer Science",
+                "degree_semester":
+                "5",
+                "university":
+                "TUM",
                 "job_history": [
                     db_models.JobHistoryElement.dummy(),
                     db_models.JobHistoryElement.dummy(),
                 ],
-                "time_joined": datetime.now(),
+                "time_joined":
+                datetime.now(),
                 "social_networks": [
                     SocialNetworkOut.dummy(),
                     SocialNetworkOut.dummy(),
@@ -369,8 +403,7 @@ class ProfileOutPublic(BaseModel):
                     DepartmentMembershipOut.dummy(),
                 ],
             }
-        }
-    )
+        })
 
     id: int
 
@@ -409,7 +442,8 @@ class ProfileOutPublic(BaseModel):
             job_history=profile.decoded_job_history,
             time_joined=cast(datetime, profile.time_joined),
             social_networks=[
-                SocialNetworkOut.from_db_model(s) for s in profile.social_networks
+                SocialNetworkOut.from_db_model(s)
+                for s in profile.social_networks
             ],
             department_memberships=[
                 DepartmentMembershipOut.from_db_model(s)
@@ -433,8 +467,7 @@ class ProfileOutPublicReduced(BaseModel):
                 "last_name": "Mustermann",
                 "description": "Hi and welcome!",
             }
-        }
-    )
+        })
 
     id: int
 
@@ -443,7 +476,8 @@ class ProfileOutPublicReduced(BaseModel):
     description: str | None = Field(None)
 
     @classmethod
-    def from_db_model(cls, profile: db_models.Profile) -> "ProfileOutPublicReduced":
+    def from_db_model(cls,
+                      profile: db_models.Profile) -> "ProfileOutPublicReduced":
         return ProfileOutPublicReduced(
             id=profile.id,
             first_name=profile.first_name,
@@ -458,6 +492,7 @@ class ProfileOutPublicReduced(BaseModel):
 
 
 class UpdateProfile(BaseModel):
+
     class Settings:
         template = "profiles"
 
@@ -474,15 +509,14 @@ class RoleHoldershipInOut(BaseModel):
                 "profile": ProfileOutPublic.dummy(),
                 "role": RoleInOut.dummy(),
             }
-        }
-    )
+        })
 
     profile: ProfileOutPublic
     role: RoleInOut
 
     @classmethod
     def from_db_model(
-        cls, role_holdership: db_models.RoleHoldership
+            cls, role_holdership: db_models.RoleHoldership
     ) -> "RoleHoldershipInOut":
         return RoleHoldershipInOut(
             profile=ProfileOutPublic.from_db_model(role_holdership.profile),
@@ -503,8 +537,7 @@ class RoleHoldershipUpdateInOut(BaseModel):
                 "role_handle": "invite_members",
                 "method": "create",
             }
-        }
-    )
+        })
 
     profile_id: int
     role_handle: str
@@ -544,8 +577,7 @@ class DepartmentMembershipWithShortProfileOut(BaseModel):
                 "time_from": datetime.now(),
                 "time_to": datetime.now(),
             }
-        }
-    )
+        })
 
     id: int
     profile: ProfileOutPublicReduced
@@ -563,12 +595,11 @@ class DepartmentMembershipWithShortProfileOut(BaseModel):
             profile=ProfileOutPublicReduced.from_db_model(dm.profile),
             department=DepartmentOut.from_db_model(dm.department),
             position=str(dm.position),
-            time_from=datetime.combine(dm.time_from.date(), dm.time_from.time())
-            if dm.time_from is not None
-            else None,
+            time_from=datetime.combine(dm.time_from.date(),
+                                       dm.time_from.time())
+            if dm.time_from is not None else None,
             time_to=datetime.combine(dm.time_to.date(), dm.time_to.time())
-            if dm.time_to is not None
-            else None,
+            if dm.time_to is not None else None,
         )
 
     @classmethod
@@ -588,8 +619,7 @@ class DepartmentMembership(BaseModel):
                 "time_from": datetime.now(),
                 "time_to": datetime.now(),
             }
-        }
-    )
+        })
 
     id: int
     profile: ProfileOutPublicReduced
@@ -600,19 +630,17 @@ class DepartmentMembership(BaseModel):
 
     @classmethod
     def from_db_model(
-        cls, dm: db_models.DepartmentMembership
-    ) -> "DepartmentMembership":
+            cls, dm: db_models.DepartmentMembership) -> "DepartmentMembership":
         return DepartmentMembership(
             id=dm.id,
             profile=ProfileOutPublicReduced.from_db_model(dm.profile),
             department=DepartmentOut.from_db_model(dm.department),
             position=str(dm.position),
-            time_from=datetime.combine(dm.time_from.date(), dm.time_from.time())
-            if dm.time_from is not None
-            else None,
+            time_from=datetime.combine(dm.time_from.date(),
+                                       dm.time_from.time())
+            if dm.time_from is not None else None,
             time_to=datetime.combine(dm.time_to.date(), dm.time_to.time())
-            if dm.time_to is not None
-            else None,
+            if dm.time_to is not None else None,
         )
 
     @classmethod
@@ -631,8 +659,7 @@ class DepartmentMembershipInCreate(BaseModel):
                 "time_from": datetime.now(),
                 "time_to": datetime.now(),
             }
-        }
-    )
+        })
 
     profile_id: int
     department_handle: str
@@ -655,8 +682,7 @@ class DepartmentMembershipInUpdate(BaseModel):
                 "time_from": datetime.now(),
                 "time_to": datetime.now(),
             }
-        }
-    )
+        })
 
     id: int
     position: str

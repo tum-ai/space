@@ -22,8 +22,7 @@ def create_sqla_engine() -> Engine:
     db_password = os.environ["DB_PASSWORD"]
 
     conn_str = f"postgresql://{db_user}:%s@{db_host}:{db_port}/{db_name}" % quote_plus(
-        db_password
-    )
+        db_password)
     engine: Engine = create_engine(
         conn_str,
         echo=False,
@@ -42,13 +41,15 @@ async def setup_db_client(running_app: FastAPI) -> None:
     # create views
     init_views(running_app.state.sql_engine, SaBaseModel)
 
-    SaBaseModel.metadata.create_all(bind=running_app.state.sql_engine, checkfirst=True)
+    SaBaseModel.metadata.create_all(bind=running_app.state.sql_engine,
+                                    checkfirst=True)
 
     # add pre-existing roles
     upsert_roles(running_app.state.sql_engine)
 
     # add pre-existing departments
     upsert_departments(running_app.state.sql_engine)
+
 
 def setup_db_client_appless() -> Engine:
     log.info("Setting up sqlalchemy/postgres database connection")
@@ -132,7 +133,8 @@ def upsert_roles(engine: Engine) -> None:
             handle="departmemt_membership_management",
             description="View and update department memberships of members",
         ),
-        Role(handle="create_certificate", description="Access Certification Rendering"),
+        Role(handle="create_certificate",
+             description="Access Certification Rendering"),
         Role(handle="submit_reviews", description="Submit Reviews Access"),
     ]
 

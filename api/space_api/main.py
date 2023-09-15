@@ -91,7 +91,9 @@ def email_test(
     subject: str,
     body: str,
 ) -> dict:
-    send_email(receipient="admin+tumaispacedev@tum-ai.com", subject=subject, body=body)
+    send_email(receipient="admin+tumaispacedev@tum-ai.com",
+               subject=subject,
+               body=body)
     return {"msg": "Send success!"}
 
 
