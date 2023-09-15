@@ -37,13 +37,12 @@ router = APIRouter()
 )
 @enable_paging(max_page_size=100)
 @error_handlers
-@ensure_authorization(
-    any_of_roles=["submit_reviews"],
-)
-def list_applications(request: Request, page: int = 1, page_size: int = 100) -> dict:
-    db_applications = list_db_applications(
-        request.app.state.sql_engine, page, page_size
-    )
+@ensure_authorization(any_of_roles=["submit_reviews"], )
+def list_applications(request: Request,
+                      page: int = 1,
+                      page_size: int = 100) -> dict:
+    db_applications = list_db_applications(request.app.state.sql_engine, page,
+                                           page_size)
     out_applications: list[ApplicationOut] = [
         ApplicationOut.from_db_model(p) for p in db_applications
     ]
@@ -62,13 +61,13 @@ def list_applications(request: Request, page: int = 1, page_size: int = 100) -> 
     response_description="List all applications",
     response_model=ResponseRetrieveApplication | ErrorResponse,
 )
-@ensure_authorization(
-    any_of_roles=["submit_reviews"],
-)
+@ensure_authorization(any_of_roles=["submit_reviews"], )
 @error_handlers
 def list_application(request: Request, application_id: int) -> dict:
-    db_application = list_db_application(request.app.state.sql_engine, application_id)
-    out_application: ApplicationOut = ApplicationOut.from_db_model(db_application)
+    db_application = list_db_application(request.app.state.sql_engine,
+                                         application_id)
+    out_application: ApplicationOut = ApplicationOut.from_db_model(
+        db_application)
     return {
         "status_code": 200,
         "response_type": "success",
@@ -83,10 +82,7 @@ def list_application(request: Request, application_id: int) -> dict:
     response_model=ResponseSubmitApplication,
 )
 @error_handlers
-def submit_application(
-    request: Request,
-    payload: dict
-) -> dict:
+def submit_application(request: Request, payload: dict) -> dict:
     create_db_application(request.app.state.sql_engine, payload)
 
     return {
@@ -95,7 +91,9 @@ def submit_application(
         "description": "Application submitted successfully",
     }
 
+
 # Referrals
+
 
 @router.get(
     "/application/referrals/",
@@ -105,10 +103,11 @@ def submit_application(
 @enable_paging(max_page_size=100)
 @error_handlers
 @ensure_authenticated
-def list_referrals(request: Request, page: int = 1, page_size: int = 100) -> dict:
-    db_referrals = list_db_referrals(
-        request.app.state.sql_engine, request.state.profile.id, page, page_size
-    )
+def list_referrals(request: Request,
+                   page: int = 1,
+                   page_size: int = 100) -> dict:
+    db_referrals = list_db_referrals(request.app.state.sql_engine,
+                                     request.state.profile.id, page, page_size)
     out_referrals: list[ApplicationReferralInOut] = [
         ApplicationReferralInOut.from_db_model(p) for p in db_referrals
     ]
@@ -130,10 +129,10 @@ def list_referrals(request: Request, page: int = 1, page_size: int = 100) -> dic
 @error_handlers
 @ensure_authenticated
 def submit_referral(
-    request: Request,
-    data: Annotated[ApplicationReferralInOut, Body(embed=True)]
-) -> dict:
-    create_db_referral(request.app.state.sql_engine, request.state.profile.id, data)
+        request: Request, data: Annotated[ApplicationReferralInOut,
+                                          Body(embed=True)]) -> dict:
+    create_db_referral(request.app.state.sql_engine, request.state.profile.id,
+                       data)
     # TODO: update all scores of the applications of the referral email
     return {
         "status_code": 200,
@@ -149,11 +148,9 @@ def submit_referral(
 )
 @error_handlers
 @ensure_authenticated
-def delete_referral(
-    request: Request,
-    email: str
-) -> dict:
-    delete_db_referral(request.app.state.sql_engine, request.state.profile.id, email)
+def delete_referral(request: Request, email: str) -> dict:
+    delete_db_referral(request.app.state.sql_engine, request.state.profile.id,
+                       email)
     # TODO: update all scores of the applications of the referral email
     return {
         "status_code": 200,
@@ -168,13 +165,9 @@ def delete_referral(
     response_model=ResponseDeleteApplication,
 )
 @error_handlers
-@ensure_authorization(
-    any_of_roles=["admin"],
-)
+@ensure_authorization(any_of_roles=["admin"], )
 def delete_application(request: Request, id: int) -> dict:
-    review_deleted = delete_db_application(
-        request.app.state.sql_engine, id
-    )
+    review_deleted = delete_db_application(request.app.state.sql_engine, id)
 
     if review_deleted:
         return {
@@ -183,10 +176,7 @@ def delete_application(request: Request, id: int) -> dict:
             "description": "Review deleted successfully",
         }
 
-    raise HTTPException(
-        status_code=400,
-        detail="""
+    raise HTTPException(status_code=400,
+                        detail="""
             Could not delete application with ID {id}.
-        """
-    )
-
+        """)

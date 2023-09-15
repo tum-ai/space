@@ -34,7 +34,8 @@ from .setup import setup_db_client_appless
 
 def list_db_departments(sql_engine: sa.Engine) -> list[Department]:
     with Session(sql_engine) as db_session:
-        db_departments: list[Department] = db_session.query(Department).limit(100).all()
+        db_departments: list[Department] = db_session.query(Department).limit(
+            100).all()
         return db_departments
 
 
@@ -88,11 +89,8 @@ def retrieve_or_create_db_profile_by_firebase_uid(
     fb_user: Any,
 ) -> Profile:
     with Session(sql_engine) as db_session:
-        db_model: Profile | None = (
-            db_session.query(Profile)
-            .filter(Profile.firebase_uid == fb_user["uid"])
-            .one_or_none()
-        )
+        db_model: Profile | None = (db_session.query(Profile).filter(
+            Profile.firebase_uid == fb_user["uid"]).one_or_none())
         if db_model is None:
             return create_db_profile_from_fb_user(sql_engine, fb_user)
         else:
@@ -107,9 +105,8 @@ def retrieve_db_profile_by_firebase_uid(
     firebase_uid: str,
 ) -> Profile:
     with Session(sql_engine) as db_session:
-        db_model = (
-            db_session.query(Profile).filter(Profile.firebase_uid == firebase_uid).one()
-        )
+        db_model = (db_session.query(Profile).filter(
+            Profile.firebase_uid == firebase_uid).one())
 
         # asserts presence values
         if not db_model:
@@ -126,7 +123,8 @@ def create_db_profiles(
     created_db_profiles = []
     with Session(sql_engine) as db_session:
         for new_profile in new_profiles:
-            job_history_encoded = Profile.encode_job_history(new_profile.job_history)
+            job_history_encoded = Profile.encode_job_history(
+                new_profile.job_history)
 
             db_profile = Profile(
                 email=new_profile.email,
@@ -154,10 +152,10 @@ def create_db_profiles(
                     SocialNetwork(
                         profile_id=db_profile.id,
                         type=sn.type,
-                        handle=sn.handle if sn.handle and len(sn.handle) > 0 else None,
+                        handle=sn.handle
+                        if sn.handle and len(sn.handle) > 0 else None,
                         link=sn.link if sn.link and len(sn.link) > 0 else None,
-                    )
-                )
+                    ))
             created_db_profiles.append(db_profile)
 
         db_session.commit()
@@ -213,7 +211,8 @@ def update_db_profile(
     profile_to_update: ProfileInUpdate,
 ) -> Profile:
     with Session(sql_engine) as db_session:
-        job_history_encoded = Profile.encode_job_history(profile_to_update.job_history)
+        job_history_encoded = Profile.encode_job_history(
+            profile_to_update.job_history)
 
         db_profile: Profile | None = db_session.query(Profile).get(profile_id)
         assert db_profile
@@ -249,15 +248,20 @@ def update_db_profile(
         # - pk of social network: profile_id (fixed here), type
         # build hashset by type (find removed, changed & added social networks)
         old_sn_types = {sn.type: sn for sn in db_profile.social_networks}
-        new_sn_types = {sn.type: sn for sn in profile_to_update.social_networks}
+        new_sn_types = {
+            sn.type: sn
+            for sn in profile_to_update.social_networks
+        }
 
         # process all old social networks (remove, update, leave)
         for old_k in old_sn_types:
             old_sn: SocialNetwork = old_sn_types[old_k]
             if old_k in new_sn_types:
                 # still in use: detect changes
-                new_sn: SocialNetworkIn = new_sn_types[str(old_k)]  # type: ignore
-                if (old_sn.link != new_sn.link) or (old_sn.handle != new_sn.handle):
+                new_sn: SocialNetworkIn = new_sn_types[str(
+                    old_k)]  # type: ignore
+                if (old_sn.link != new_sn.link) or (old_sn.handle
+                                                    != new_sn.handle):
                     # values changed
                     old_sn.link = new_sn.link
                     old_sn.handle = new_sn.handle
@@ -280,10 +284,10 @@ def update_db_profile(
                 SocialNetwork(
                     profile_id=db_profile.id,
                     type=new_k,
-                    handle=sn.handle if sn.handle and len(sn.handle) > 0 else None,
+                    handle=sn.handle
+                    if sn.handle and len(sn.handle) > 0 else None,
                     link=sn.link if sn.link and len(sn.link) > 0 else None,
-                )
-            )
+                ))
 
         db_session.add(db_profile)
         db_session.commit()
@@ -293,14 +297,11 @@ def update_db_profile(
     return db_profile
 
 
-def list_db_profiles(sql_engine: sa.Engine, page: int, page_size: int) -> list[Profile]:
+def list_db_profiles(sql_engine: sa.Engine, page: int,
+                     page_size: int) -> list[Profile]:
     with Session(sql_engine) as db_session:
-        db_profiles: list[Profile] = (
-            db_session.query(Profile)
-            .offset(page_size * (page - 1))
-            .limit(page_size)
-            .all()
-        )
+        db_profiles: list[Profile] = (db_session.query(Profile).offset(
+            page_size * (page - 1)).limit(page_size).all())
 
         for db_profile in db_profiles:
             db_profile.force_load()
@@ -316,7 +317,8 @@ def retrieve_db_profile(sql_engine: sa.Engine, profile_id: int) -> Profile:
         return db_model
 
 
-def delete_db_profiles(sql_engine: sa.Engine, profile_ids: list[int]) -> list[int]:
+def delete_db_profiles(sql_engine: sa.Engine,
+                       profile_ids: list[int]) -> list[int]:
     with Session(sql_engine) as db_session:
         stmt = sa.delete(Profile).where(Profile.id.in_(profile_ids))
         db_session.execute(stmt)
@@ -351,32 +353,27 @@ def profile_has_one_of_positions(
             )
 
         elif department_handle is None:
-            or_statement = sa.or_(
-                or_statement, (DepartmentMembership.position == position)
-            )
+            or_statement = sa.or_(or_statement,
+                                  (DepartmentMembership.position == position))
 
         else:
             or_statement = sa.or_(
                 or_statement,
                 sa.and_(
-                    (DepartmentMembership.department_handle == department_handle),
+                    (DepartmentMembership.department_handle
+                     == department_handle),
                     (DepartmentMembership.position == position),
                 ),
             )
 
     with Session(sql_engine) as db_session:
-        found = (
-            db_session.query(DepartmentMembership)
-            .filter(
-                sa.and_(
-                    DepartmentMembership.profile_id == profile_id,
-                    or_statement,
-                    (DepartmentMembership.time_from < datetime.datetime.now()),
-                    (DepartmentMembership.time_to > datetime.datetime.now()),
-                )
-            )
-            .count()
-        )
+        found = (db_session.query(DepartmentMembership).filter(
+            sa.and_(
+                DepartmentMembership.profile_id == profile_id,
+                or_statement,
+                (DepartmentMembership.time_from < datetime.datetime.now()),
+                (DepartmentMembership.time_to > datetime.datetime.now()),
+            )).count())
         return found >= 1
 
 
@@ -389,14 +386,13 @@ def profile_has_one_of_roles(
     for role_handle in any_of:
         if role_handle is None:
             continue
-        or_statement = sa.or_(RoleHoldership.role_handle == role_handle, or_statement)
+        or_statement = sa.or_(RoleHoldership.role_handle == role_handle,
+                              or_statement)
 
     with Session(sql_engine) as db_session:
-        found = (
-            db_session.query(RoleHoldership)
-            .where(sa.and_(RoleHoldership.profile_id == profile_id, or_statement))
-            .count()
-        )
+        found = (db_session.query(RoleHoldership).where(
+            sa.and_(RoleHoldership.profile_id == profile_id,
+                    or_statement)).count())
         return found >= 1
 
 
@@ -420,21 +416,19 @@ def invite_new_members(
     for new_profile in new_profiles:
         display_name = f"{new_profile.first_name} {new_profile.last_name}"
         if len(new_profile.email) < 2 or len(display_name) < 3:
-            error_profiles.append((new_profile, "Email or display name too short!"))
+            error_profiles.append(
+                (new_profile, "Email or display name too short!"))
             continue
 
         created_fb_user_or_error = create_invite_email_user(
-            display_name=display_name, email=new_profile.email
-        )
+            display_name=display_name, email=new_profile.email)
         if isinstance(created_fb_user_or_error, str):
-            error_profiles.append(
-                (
-                    new_profile,
-                    "User with this email already exists!"
-                    if created_fb_user_or_error == "UserAlreadyExists"
-                    else "Unknown error while creating user!",
-                )
-            )
+            error_profiles.append((
+                new_profile,
+                "User with this email already exists!"
+                if created_fb_user_or_error == "UserAlreadyExists" else
+                "Unknown error while creating user!",
+            ))
             continue
 
         else:
@@ -502,8 +496,7 @@ def list_db_roleholderships(
         if role_handle is not None:
             filter = sa.and_(filter, RoleHoldership.role_handle == role_handle)
         db_role_holderships: list[RoleHoldership] = (
-            db_session.query(RoleHoldership).filter(filter).all()
-        )
+            db_session.query(RoleHoldership).filter(filter).all())
 
         for db_rh in db_role_holderships:
             db_rh.force_load()
@@ -512,10 +505,10 @@ def list_db_roleholderships(
 
 
 def update_db_roleholderships(
-    sql_engine: sa.Engine, new_role_holderships: list[RoleHoldershipUpdateInOut]
-) -> tuple[
-    list[RoleHoldershipUpdateInOut], list[tuple[RoleHoldershipUpdateInOut, str]]
-]:
+    sql_engine: sa.Engine,
+    new_role_holderships: list[RoleHoldershipUpdateInOut]
+) -> tuple[list[RoleHoldershipUpdateInOut], list[tuple[
+        RoleHoldershipUpdateInOut, str]]]:
     """
     Returns:
         List[Profile]: successfully created role holderships
@@ -539,39 +532,34 @@ def update_db_roleholderships(
                         RoleHoldershipUpdateInOut.from_db_model(
                             created_role_holdership,
                             new_role_holdership.method,
-                        )
-                    )
+                        ))
 
                 elif new_role_holdership.method == "delete":
                     db_session.query(RoleHoldership).filter(
                         sa.and_(
-                            RoleHoldership.profile_id == new_role_holdership.profile_id,
-                            RoleHoldership.role_handle
-                            == new_role_holdership.role_handle,
-                        )
-                    ).delete()
+                            RoleHoldership.profile_id ==
+                            new_role_holdership.profile_id,
+                            RoleHoldership.role_handle ==
+                            new_role_holdership.role_handle,
+                        )).delete()
                     db_session.commit()
                     created_profiles.append(new_role_holdership)
 
                 else:
-                    error_profiles.append(
-                        (
-                            new_role_holdership,
-                            f"Method {new_role_holdership.method} does not exist!",
-                        )
-                    )
+                    error_profiles.append((
+                        new_role_holdership,
+                        f"Method {new_role_holdership.method} does not exist!",
+                    ))
 
         except Exception as e:
             if "unique constraint" in str(e):
                 error_profiles.append((new_role_holdership, "Already exists!"))
             else:
                 traceback.print_exc()
-                error_profiles.append(
-                    (
-                        new_role_holdership,
-                        str(e) or "Unknown error while creating role holdership!",
-                    )
-                )
+                error_profiles.append((
+                    new_role_holdership,
+                    str(e) or "Unknown error while creating role holdership!",
+                ))
             continue
 
     return created_profiles, error_profiles
@@ -598,29 +586,30 @@ def list_db_department_memberships(
         # build filter
         filter = sa.and_(sa.true(), sa.true())
         if profile_id is not None:
-            filter = sa.and_(filter, DepartmentMembership.profile_id == profile_id)
+            filter = sa.and_(filter,
+                             DepartmentMembership.profile_id == profile_id)
         if department_handle is not None:
             filter = sa.and_(
-                filter, DepartmentMembership.department_handle == department_handle
-            )
+                filter,
+                DepartmentMembership.department_handle == department_handle)
         if position is not None:
             filter = sa.and_(filter, DepartmentMembership.position == position)
         if started_before is not None:
-            filter = sa.and_(filter, DepartmentMembership.time_from < started_before)
+            filter = sa.and_(filter, DepartmentMembership.time_from
+                             < started_before)
         if started_after is not None:
-            filter = sa.and_(filter, DepartmentMembership.time_from > started_after)
+            filter = sa.and_(filter, DepartmentMembership.time_from
+                             > started_after)
         if ended_before is not None:
-            filter = sa.and_(filter, DepartmentMembership.time_to < ended_before)
+            filter = sa.and_(filter, DepartmentMembership.time_to
+                             < ended_before)
         if ended_after is not None:
-            filter = sa.and_(filter, DepartmentMembership.time_to > ended_after)
+            filter = sa.and_(filter, DepartmentMembership.time_to
+                             > ended_after)
 
         db_department_memberships: list[DepartmentMembership] = (
-            db_session.query(DepartmentMembership)
-            .filter(filter)
-            .offset(page_size * (page - 1))
-            .limit(page_size)
-            .all()
-        )
+            db_session.query(DepartmentMembership).filter(filter).offset(
+                page_size * (page - 1)).limit(page_size).all())
 
         for dm in db_department_memberships:
             dm.force_load()
@@ -629,10 +618,11 @@ def list_db_department_memberships(
 
 
 def get_db_department_memberships(
-    sql_engine: sa.Engine, department_membership_id: int
-) -> DepartmentMembership:
+        sql_engine: sa.Engine,
+        department_membership_id: int) -> DepartmentMembership:
     with Session(sql_engine) as db_session:
-        db_model = db_session.query(DepartmentMembership).get(department_membership_id)
+        db_model = db_session.query(DepartmentMembership).get(
+            department_membership_id)
         if not db_model:
             raise KeyError
         db_model.force_load()
@@ -642,7 +632,8 @@ def get_db_department_memberships(
 def create_db_department_memberships(
     sql_engine: sa.Engine,
     new_department_memberships: list[DepartmentMembershipInCreate],
-) -> tuple[list[DepartmentMembership], list[tuple[DepartmentMembershipInCreate, str]]]:
+) -> tuple[list[DepartmentMembership], list[tuple[DepartmentMembershipInCreate,
+                                                  str]]]:
     """
     Returns:
         List[DepartmentMembership]: successfully created memberships
@@ -668,12 +659,11 @@ def create_db_department_memberships(
                 created_memberships.append(created_membership)
 
         except Exception as ex:
-            error_memberships.append(
-                (
-                    new_membership,
-                    str(ex) or "Unknown error while creating department membership!",
-                )
-            )
+            error_memberships.append((
+                new_membership,
+                str(ex)
+                or "Unknown error while creating department membership!",
+            ))
 
     return created_memberships, error_memberships
 
@@ -681,7 +671,8 @@ def create_db_department_memberships(
 def update_db_department_memberships(
     sql_engine: sa.Engine,
     department_memberships: list[DepartmentMembershipInUpdate],
-) -> tuple[list[DepartmentMembership], list[tuple[DepartmentMembershipInUpdate, str]]]:
+) -> tuple[list[DepartmentMembership], list[tuple[DepartmentMembershipInUpdate,
+                                                  str]]]:
     """
     Returns:
         List[DepartmentMembership]: successfully updated department_memberships
@@ -695,13 +686,11 @@ def update_db_department_memberships(
         try:
             with Session(sql_engine) as db_session:
                 db_membership = db_session.query(DepartmentMembership).get(
-                    membership.id
-                )
+                    membership.id)
 
                 if not db_membership:
                     raise ValueError(
-                        f"Membership with id {membership.id} does not exist!"
-                    )
+                        f"Membership with id {membership.id} does not exist!")
                 db_membership.position = membership.position
                 db_membership.time_from = membership.time_from
                 db_membership.time_to = membership.time_to
@@ -712,12 +701,11 @@ def update_db_department_memberships(
                 updated_memberships.append(db_membership)
 
         except Exception as ex:
-            error_memberships.append(
-                (
-                    membership,
-                    str(ex) or "Unknown error while updating department membership!",
-                )
-            )
+            error_memberships.append((
+                membership,
+                str(ex)
+                or "Unknown error while updating department membership!",
+            ))
 
     return updated_memberships, error_memberships
 
@@ -728,8 +716,7 @@ def delete_db_department_memberships(
 ) -> list[int]:
     with Session(sql_engine) as db_session:
         stmt = sa.delete(DepartmentMembership).where(
-            DepartmentMembership.id.in_(department_membership_ids)
-        )
+            DepartmentMembership.id.in_(department_membership_ids))
         db_session.execute(stmt)
         db_session.commit()
         return department_membership_ids

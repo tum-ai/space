@@ -20,19 +20,15 @@ from .api_models import (
 
 
 class ResponseDepartmentList(BaseResponse):
-    model_config = ConfigDict(
-        json_schema_extra=BaseResponse.schema_wrapper(
-            [DepartmentOut.dummy(), DepartmentOut.dummy()]
-        )
-    )
+    model_config = ConfigDict(json_schema_extra=BaseResponse.schema_wrapper(
+        [DepartmentOut.dummy(), DepartmentOut.dummy()]))
 
     data: list[DepartmentOut]
 
 
 class ResponseDepartment(BaseResponse):
     model_config = ConfigDict(
-        json_schema_extra=BaseResponse.schema_wrapper(DepartmentOut.dummy())
-    )
+        json_schema_extra=BaseResponse.schema_wrapper(DepartmentOut.dummy()))
 
     data: DepartmentOut
 
@@ -44,36 +40,29 @@ class ResponseDepartment(BaseResponse):
 
 class ResponseProfile(BaseResponse):
     model_config = ConfigDict(
-        json_schema_extra=BaseResponse.schema_wrapper(ProfileOut.dummy())
-    )
+        json_schema_extra=BaseResponse.schema_wrapper(ProfileOut.dummy()))
 
     data: ProfileOut
 
 
 class ResponsePublicProfile(BaseResponse):
-    model_config = ConfigDict(
-        json_schema_extra=BaseResponse.schema_wrapper(ProfileOutPublic.dummy())
-    )
+    model_config = ConfigDict(json_schema_extra=BaseResponse.schema_wrapper(
+        ProfileOutPublic.dummy()))
 
     data: ProfileOutPublic
 
 
 class ResponseProfileList(BaseResponse):
-    model_config = ConfigDict(
-        json_schema_extra=BaseResponse.schema_wrapper(
-            [ProfileOut.dummy(), ProfileOut.dummy()]
-        )
-    )
+    model_config = ConfigDict(json_schema_extra=BaseResponse.schema_wrapper(
+        [ProfileOut.dummy(), ProfileOut.dummy()]))
 
     data: list[ProfileOut]
 
 
 class ResponsePublicProfileList(BaseResponse):
-    model_config = ConfigDict(
-        json_schema_extra=BaseResponse.schema_wrapper(
-            [ProfileOutPublic.dummy(), ProfileOutPublic.dummy()]
-        )
-    )
+    model_config = ConfigDict(json_schema_extra=BaseResponse.schema_wrapper(
+        [ProfileOutPublic.dummy(),
+         ProfileOutPublic.dummy()]))
 
     data: list[ProfileOutPublic]
 
@@ -81,7 +70,8 @@ class ResponsePublicProfileList(BaseResponse):
 class ResponseDeletedIntPKList(BaseResponse):
     """data contains ids of deleted profiles"""
 
-    model_config = ConfigDict(json_schema_extra=BaseResponse.schema_wrapper([43, 32]))
+    model_config = ConfigDict(
+        json_schema_extra=BaseResponse.schema_wrapper([43, 32]))
 
     data: list[int]
 
@@ -92,7 +82,8 @@ class ResponseDeletedIntPKList(BaseResponse):
 
 
 class ResponseInviteProfilesList(BaseResponse):
-    model_config = ConfigDict(json_schema_extra=BaseResponse.schema_wrapper([]))
+    model_config = ConfigDict(
+        json_schema_extra=BaseResponse.schema_wrapper([]))
 
     succeeded: list[ProfileOut]
     failed: list[Any]
@@ -104,34 +95,31 @@ class ResponseInviteProfilesList(BaseResponse):
 
 
 class ResponseRoleList(BaseResponse):
-    model_config = ConfigDict(
-        json_schema_extra=BaseResponse.schema_wrapper(
-            [RoleInOut.dummy(), RoleInOut.dummy()]
-        )
-    )
+    model_config = ConfigDict(json_schema_extra=BaseResponse.schema_wrapper(
+        [RoleInOut.dummy(), RoleInOut.dummy()]))
 
     data: list[RoleInOut]
 
 
 class ResponseRoleHoldershipList(BaseResponse):
-    model_config = ConfigDict(
-        json_schema_extra=BaseResponse.schema_wrapper(
-            [RoleHoldershipInOut.dummy(), RoleHoldershipInOut.dummy()]
-        )
-    )
+    model_config = ConfigDict(json_schema_extra=BaseResponse.schema_wrapper(
+        [RoleHoldershipInOut.dummy(),
+         RoleHoldershipInOut.dummy()]))
 
     data: list[RoleHoldershipInOut]
 
 
 class ResponseRoleHoldershipUpdateList(BaseResponse):
-    model_config = ConfigDict(json_schema_extra=BaseResponse.schema_wrapper([]))
+    model_config = ConfigDict(
+        json_schema_extra=BaseResponse.schema_wrapper([]))
 
     succeeded: list[RoleHoldershipUpdateInOut]
     failed: list[Any]
 
 
 class ResponseResetPassword(BaseResponse):
-    model_config = ConfigDict(json_schema_extra=BaseResponse.schema_wrapper([]))
+    model_config = ConfigDict(
+        json_schema_extra=BaseResponse.schema_wrapper([]))
 
 
 # ------------------------------------------------------------------------------------ #
@@ -140,31 +128,24 @@ class ResponseResetPassword(BaseResponse):
 
 
 class ResponseDepartmentMembershipWithProfileList(BaseResponse):
-    model_config = ConfigDict(
-        json_schema_extra=BaseResponse.schema_wrapper(
-            [
-                DepartmentMembershipWithShortProfileOut.dummy(),
-            ]
-        )
-    )
+    model_config = ConfigDict(json_schema_extra=BaseResponse.schema_wrapper([
+        DepartmentMembershipWithShortProfileOut.dummy(),
+    ]))
 
     data: list[DepartmentMembershipWithShortProfileOut]
 
 
 class ResponseDepartmentMembershipWithProfile(BaseResponse):
-    model_config = ConfigDict(
-        json_schema_extra=BaseResponse.schema_wrapper(
-            [
-                DepartmentMembershipWithShortProfileOut.dummy(),
-            ]
-        )
-    )
+    model_config = ConfigDict(json_schema_extra=BaseResponse.schema_wrapper([
+        DepartmentMembershipWithShortProfileOut.dummy(),
+    ]))
 
     data: DepartmentMembershipWithShortProfileOut
 
 
 class ResponseDepartmentMembershipCreateUpdateList(BaseResponse):
-    model_config = ConfigDict(json_schema_extra=BaseResponse.schema_wrapper([]))
+    model_config = ConfigDict(
+        json_schema_extra=BaseResponse.schema_wrapper([]))
 
     succeeded: list[DepartmentMembershipWithShortProfileOut]
     failed: list[Any]

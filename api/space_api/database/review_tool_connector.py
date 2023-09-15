@@ -1,7 +1,6 @@
 import sqlalchemy as sa
 from sqlalchemy.orm import (
-    Session,
-)
+    Session, )
 
 from space_api.review_tool.api_models import (
     ApplicationReviewIn,
@@ -9,8 +8,7 @@ from space_api.review_tool.api_models import (
 )
 
 from .db_models import (
-    ApplicationReview,
-)
+    ApplicationReview, )
 
 
 def get_scores(application: ApplicationReviewIn) -> tuple[int, int]:
@@ -74,15 +72,11 @@ def create_db_application_review(
     return db__application_review
 
 
-def retrieve_db_application_review(
-    sql_engine: sa.Engine, application_id: int
-) -> ApplicationReview:
+def retrieve_db_application_review(sql_engine: sa.Engine,
+                                   application_id: int) -> ApplicationReview:
     with Session(sql_engine) as db_session:
-        db_model = (
-            db_session.query(ApplicationReview)
-            .filter(ApplicationReview.reviewee_id == application_id)
-            .first()
-        )
+        db_model = (db_session.query(ApplicationReview).filter(
+            ApplicationReview.reviewee_id == application_id).first())
 
         assert db_model
 
@@ -93,14 +87,10 @@ def retrieve_db_application_review(
 
 
 def retrieve_db_application_all_reviews_for_reviewer(
-    sql_engine: sa.Engine, profile_id: int
-) -> list[ApplicationReview]:
+        sql_engine: sa.Engine, profile_id: int) -> list[ApplicationReview]:
     with Session(sql_engine) as db_session:
-        db_applications_reviews = (
-            db_session
-            .query(ApplicationReview)
-            .filter(ApplicationReview.reviewer_id == profile_id).all()
-        )
+        db_applications_reviews = (db_session.query(ApplicationReview).filter(
+            ApplicationReview.reviewer_id == profile_id).all())
 
         for db_applications_review in db_applications_reviews:
             db_applications_review.force_load()
@@ -110,15 +100,12 @@ def retrieve_db_application_all_reviews_for_reviewer(
 
 
 def retrieve_db_application_all_reviews(
-    sql_engine: sa.Engine, page: int, page_size: int
-) -> list[ApplicationReview]:
+        sql_engine: sa.Engine, page: int,
+        page_size: int) -> list[ApplicationReview]:
     with Session(sql_engine) as db_session:
         db_applications_reviews: list[ApplicationReview] = (
-            db_session.query(ApplicationReview)
-            .offset(page_size * (page - 1))
-            .limit(page_size)
-            .all()
-        )
+            db_session.query(ApplicationReview).offset(
+                page_size * (page - 1)).limit(page_size).all())
 
         for db_applications_review in db_applications_reviews:
             db_applications_review.force_load()
@@ -134,12 +121,9 @@ def update_db_application_review(
     updated_application_review: ApplicationReviewUpdate,
 ) -> ApplicationReview:
     with Session(sql_engine) as db_session:
-        application_review = (
-            db_session.query(ApplicationReview)
-            .filter(sa.and_(ApplicationReview.reviewee_id == applicant_id,
-                            ApplicationReview.reviewer_id == reviewer_id))
-            .first()
-        )
+        application_review = (db_session.query(ApplicationReview).filter(
+            sa.and_(ApplicationReview.reviewee_id == applicant_id,
+                    ApplicationReview.reviewer_id == reviewer_id)).first())
 
         assert application_review
 
@@ -156,18 +140,13 @@ def update_db_application_review(
         return application_review
 
 
-def delete_db_application_review(
-        sql_engine: sa.Engine,
-        profile_id: int,
-        reviewee_id: int) -> bool:
+def delete_db_application_review(sql_engine: sa.Engine, profile_id: int,
+                                 reviewee_id: int) -> bool:
     with Session(sql_engine) as db_session:
 
-        db_review = (
-            db_session.query(ApplicationReview)
-            .filter(sa.and_(ApplicationReview.reviewee_id == reviewee_id,
-                            ApplicationReview.reviewer_id == profile_id))
-            .first()
-        )
+        db_review = (db_session.query(ApplicationReview).filter(
+            sa.and_(ApplicationReview.reviewee_id == reviewee_id,
+                    ApplicationReview.reviewer_id == profile_id)).first())
 
         if db_review:
             db_session.delete(db_review)

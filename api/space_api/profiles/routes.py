@@ -61,7 +61,6 @@ from .response_models import (
 
 router = APIRouter()
 
-
 # ------------------------------------------------------------------------------------ #
 #                                 Department Endpoints                                 #
 # ------------------------------------------------------------------------------------ #
@@ -113,17 +112,16 @@ def get_department(request: Request, handle: str) -> dict:
     response_model=ResponseRoleHoldershipList | ErrorResponse,
 )
 @error_handlers
-@ensure_authorization(
-    any_of_roles=["admin"],
-)
+@ensure_authorization(any_of_roles=["admin"], )
 def list_role_holderships(
     request: Request,
     profile_id: int | None = None,
 ) -> dict:
-    db_role_holderships = list_db_roleholderships(
-        request.app.state.sql_engine, profile_id
-    )
-    out_roles = [RoleHoldershipInOut.from_db_model(rh) for rh in db_role_holderships]
+    db_role_holderships = list_db_roleholderships(request.app.state.sql_engine,
+                                                  profile_id)
+    out_roles = [
+        RoleHoldershipInOut.from_db_model(rh) for rh in db_role_holderships
+    ]
     return {
         "status_code": 200,
         "response_type": "success",
@@ -138,13 +136,12 @@ def list_role_holderships(
     response_model=ResponseRoleHoldershipList | ErrorResponse,
 )
 @ensure_authenticated
-def list_user_role_holderships(
-    request: Request,
-) -> dict:
-    db_role_holderships = list_db_roleholderships(
-        request.app.state.sql_engine, request.state.profile.id
-    )
-    out_roles = [RoleHoldershipInOut.from_db_model(rh) for rh in db_role_holderships]
+def list_user_role_holderships(request: Request, ) -> dict:
+    db_role_holderships = list_db_roleholderships(request.app.state.sql_engine,
+                                                  request.state.profile.id)
+    out_roles = [
+        RoleHoldershipInOut.from_db_model(rh) for rh in db_role_holderships
+    ]
     return {
         "status_code": 200,
         "response_type": "success",
@@ -159,19 +156,18 @@ def list_user_role_holderships(
     response_model=ResponseRoleHoldershipUpdateList | ErrorResponse,
 )
 @error_handlers
-@ensure_authorization(
-    any_of_roles=["admin"],
-)
+@ensure_authorization(any_of_roles=["admin"], )
 def update_role_holderships(
     request: Request,
-    data: Annotated[list[RoleHoldershipUpdateInOut], Body(embed=True)],
+    data: Annotated[list[RoleHoldershipUpdateInOut],
+                    Body(embed=True)],
 ) -> dict:
     out_holdersips, failed_holderships = update_db_roleholderships(
-        request.app.state.sql_engine, data
-    )
-    failed_holderships_out = [
-        {"data": err_data, "error": err} for err_data, err in failed_holderships
-    ]
+        request.app.state.sql_engine, data)
+    failed_holderships_out = [{
+        "data": err_data,
+        "error": err
+    } for err_data, err in failed_holderships]
     return {
         "status_code": 200,
         "response_type": "success",
@@ -189,9 +185,14 @@ def update_role_holderships(
 @enable_paging(max_page_size=100)
 @error_handlers
 @ensure_authorization(any_of_positions=[(None, "board")])
-def list_profiles(request: Request, page: int = 1, page_size: int = 100) -> dict:
-    db_profiles = list_db_profiles(request.app.state.sql_engine, page, page_size)
-    out_profiles: list[ProfileOut] = [ProfileOut.from_db_model(p) for p in db_profiles]
+def list_profiles(request: Request,
+                  page: int = 1,
+                  page_size: int = 100) -> dict:
+    db_profiles = list_db_profiles(request.app.state.sql_engine, page,
+                                   page_size)
+    out_profiles: list[ProfileOut] = [
+        ProfileOut.from_db_model(p) for p in db_profiles
+    ]
     return {
         "status_code": 200,
         "response_type": "success",
@@ -209,8 +210,11 @@ def list_profiles(request: Request, page: int = 1, page_size: int = 100) -> dict
 )
 @enable_paging(max_page_size=100)
 @error_handlers
-def list_public_profiles(request: Request, page: int = 1, page_size: int = 100) -> dict:
-    db_profiles = list_db_profiles(request.app.state.sql_engine, page, page_size)
+def list_public_profiles(request: Request,
+                         page: int = 1,
+                         page_size: int = 100) -> dict:
+    db_profiles = list_db_profiles(request.app.state.sql_engine, page,
+                                   page_size)
     out_public_profiles: list[ProfileOutPublic] = [
         ProfileOutPublic.from_db_model(p) for p in db_profiles
     ]
@@ -282,7 +286,8 @@ def show_current_profile(request: Request) -> dict:
 @error_handlers
 @ensure_authorization(any_of_positions=[(None, "board")])
 def delete_profiles(request: Request, profile_ids: list[int]) -> dict:
-    deleted_profiles = delete_db_profiles(request.app.state.sql_engine, profile_ids)
+    deleted_profiles = delete_db_profiles(request.app.state.sql_engine,
+                                          profile_ids)
     return {
         "status_code": 200,
         "response_type": "success",
@@ -320,7 +325,8 @@ def delete_profile(request: Request, profile_id: int) -> dict:
 @error_handlers
 @ensure_authenticated
 def delete_own_profile(request: Request) -> dict:
-    if not delete_db_profile(request.app.state.sql_engine, request.state.profile.id):
+    if not delete_db_profile(request.app.state.sql_engine,
+                             request.state.profile.id):
         return {
             "status_code": 400,
             "response_type": "error",
@@ -345,9 +351,8 @@ def update_profile(
     profile_id: int,
     data: Annotated[ProfileInUpdate, Body(embed=True)],
 ) -> dict:
-    updated_db_profile = update_db_profile(
-        request.app.state.sql_engine, profile_id, data
-    )
+    updated_db_profile = update_db_profile(request.app.state.sql_engine,
+                                           profile_id, data)
     udpated_profile = ProfileOut.from_db_model(updated_db_profile)
     return {
         "status_code": 201,
@@ -369,9 +374,8 @@ def update_current_profile(
     request: Request,
     data: Annotated[ProfileInUpdate, Body(embed=True)],
 ) -> dict:
-    updated_db_profile = update_db_profile(
-        request.app.state.sql_engine, request.state.profile.id, data
-    )
+    updated_db_profile = update_db_profile(request.app.state.sql_engine,
+                                           request.state.profile.id, data)
     udpated_profile = ProfileOut.from_db_model(updated_db_profile)
     return {
         "status_code": 201,
@@ -399,26 +403,29 @@ def update_current_profile(
 )
 def invite_members(
     request: Request,
-    data: Annotated[list[ProfileMemberInvitation], Body(embed=True)],
+    data: Annotated[list[ProfileMemberInvitation],
+                    Body(embed=True)],
 ) -> dict:
     try:
         created_profiles, error_profiles = invite_new_members(
-            request.app.state.sql_engine, data
-        )
-        created_profiles_out = [ProfileOut.from_db_model(p) for p in created_profiles]
+            request.app.state.sql_engine, data)
+        created_profiles_out = [
+            ProfileOut.from_db_model(p) for p in created_profiles
+        ]
         for profile in created_profiles_out:
             link = generate_reset_password_link(profile.email)
             send_email(
-               profile.email,
+                profile.email,
                 "Welcome to TUM.ai space",
                 f"Dear {profile.first_name} {profile.last_name},\n\nYou have been \
                 invited to TUM.ai space. Please follow the link below to reset your \
                     password. After that you can login under space.tum-ai.com.\
                     \n\n{link}\n\nBest regards,\nthe TUM.ai space Team",
             )
-        error_profiles_out = [
-            {"data": err_data, "error": err} for err_data, err in error_profiles
-        ]
+        error_profiles_out = [{
+            "data": err_data,
+            "error": err
+        } for err_data, err in error_profiles]
         return {
             "status_code": 200,
             "response_type": "success",
@@ -466,7 +473,8 @@ def list_roles(request: Request) -> dict:
 
 @router.get(
     "/department-memberships",
-    response_description="List department memberships that meet the filter criteria",
+    response_description=
+    "List department memberships that meet the filter criteria",
     response_model=ResponseDepartmentMembershipWithProfileList | ErrorResponse,
 )
 @enable_paging(max_page_size=200)
@@ -521,13 +529,12 @@ def list_department_memberships(
     any_of_positions=[("teamlead", None), (None, "board")],
     any_of_roles=["departmemt_membership_management"],
 )
-def get_department_membership(request: Request, department_membership_id: int) -> dict:
+def get_department_membership(request: Request,
+                              department_membership_id: int) -> dict:
     db_department_membership = get_db_department_memberships(
-        request.app.state.sql_engine, department_membership_id
-    )
+        request.app.state.sql_engine, department_membership_id)
     out_department_membership = DepartmentMembershipWithShortProfileOut.from_db_model(
-        db_department_membership
-    )
+        db_department_membership)
     return {
         "status_code": 200,
         "response_type": "success",
@@ -539,7 +546,8 @@ def get_department_membership(request: Request, department_membership_id: int) -
 @router.post(
     "/department-memberships",
     response_description="Create department memberships in TUM.ai Space",
-    response_model=ResponseDepartmentMembershipCreateUpdateList | ErrorResponse,
+    response_model=ResponseDepartmentMembershipCreateUpdateList
+    | ErrorResponse,
 )
 @error_handlers
 @ensure_authorization(
@@ -548,18 +556,19 @@ def get_department_membership(request: Request, department_membership_id: int) -
 )
 def create_department_memberships(
     request: Request,
-    data: Annotated[list[DepartmentMembershipInCreate], Body(embed=True)],
+    data: Annotated[list[DepartmentMembershipInCreate],
+                    Body(embed=True)],
 ) -> dict:
     db_memberships, failed_memberships = create_db_department_memberships(
-        request.app.state.sql_engine, data
-    )
+        request.app.state.sql_engine, data)
     out_memberships = [
         DepartmentMembershipWithShortProfileOut.from_db_model(db_m)
         for db_m in db_memberships
     ]
-    failed_memberships_out = [
-        {"data": err_data, "error": err} for err_data, err in failed_memberships
-    ]
+    failed_memberships_out = [{
+        "data": err_data,
+        "error": err
+    } for err_data, err in failed_memberships]
     return {
         "status_code": 200,
         "response_type": "success",
@@ -572,7 +581,8 @@ def create_department_memberships(
 @router.patch(
     "/department-memberships",
     response_description="Update department memberships in TUM.ai Space",
-    response_model=ResponseDepartmentMembershipCreateUpdateList | ErrorResponse,
+    response_model=ResponseDepartmentMembershipCreateUpdateList
+    | ErrorResponse,
 )
 @error_handlers
 @ensure_authorization(
@@ -581,18 +591,19 @@ def create_department_memberships(
 )
 def update_department_memberships(
     request: Request,
-    data: Annotated[list[DepartmentMembershipInUpdate], Body(embed=True)],
+    data: Annotated[list[DepartmentMembershipInUpdate],
+                    Body(embed=True)],
 ) -> dict:
     db_memberships, failed_memberships = update_db_department_memberships(
-        request.app.state.sql_engine, data
-    )
+        request.app.state.sql_engine, data)
     out_memberships = [
         DepartmentMembershipWithShortProfileOut.from_db_model(db_m)
         for db_m in db_memberships
     ]
-    failed_memberships_out = [
-        {"data": err_data, "error": err} for err_data, err in failed_memberships
-    ]
+    failed_memberships_out = [{
+        "data": err_data,
+        "error": err
+    } for err_data, err in failed_memberships]
     return {
         "status_code": 200,
         "response_type": "success",
@@ -612,12 +623,10 @@ def update_department_memberships(
     any_of_positions=[("teamlead", None), (None, "board")],
     any_of_roles=["departmemt_membership_management"],
 )
-def delete_department_membership(
-    request: Request, department_membership_ids: list[int]
-) -> dict:
+def delete_department_membership(request: Request,
+                                 department_membership_ids: list[int]) -> dict:
     deleted_ids = delete_db_department_memberships(
-        request.app.state.sql_engine, department_membership_ids
-    )
+        request.app.state.sql_engine, department_membership_ids)
     return {
         "status_code": 200,
         "response_type": "success",
