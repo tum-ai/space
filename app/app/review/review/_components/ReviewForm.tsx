@@ -25,24 +25,26 @@ export const ReviewForm = ({ application }: FormProps) => {
   let reviewFormComponent = forms[formType];
 
   return (
-    <div className="flex flex-col gap-8">
-      <Select
-        label="Choose review type"
-        placeholder="From Type"
-        options={[
-          {
-            key: "Membership review",
-            value: "MEMBERSHIP",
-          },
-          {
-            key: "Venture review",
-            value: "VENTURE",
-          },
-        ]}
-        value={formType}
-        setSelectedItem={(item) => setFormType(item)}
-      />
-      {reviewFormComponent}
+    <div className="h-full">
+      <div className="top-0 flex flex-col gap-8 md:sticky">
+        <Select
+          label="Choose review type"
+          placeholder="From Type"
+          options={[
+            {
+              key: "Membership review",
+              value: "MEMBERSHIP",
+            },
+            {
+              key: "Venture review",
+              value: "VENTURE",
+            },
+          ]}
+          value={formType}
+          setSelectedItem={(item) => setFormType(item)}
+        />
+        {reviewFormComponent}
+      </div>
     </div>
   );
 };
