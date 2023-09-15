@@ -1,6 +1,6 @@
 export function ReviewOverview({ review }) {
   return (
-    <div className="top-0 grid h-fit grid-cols-1 gap-4 overflow-scroll md:sticky md:grid-cols-2">
+    <div className="top-0 grid h-fit grid-cols-1 gap-4 md:sticky md:grid-cols-2">
       <div className="text-2xl md:col-span-2">
         <span>Reviewer: </span>
         {review.reviewer?.first_name + " " + review.reviewer?.last_name}
