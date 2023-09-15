@@ -7,7 +7,7 @@ interface Props {
 }
 export const ApplicationOverview = ({ application }: Props) => {
   return (
-    <div className="space-y-4 overflow-scroll">
+    <div className="space-y-4 pb-16">
       <div className="col-span-2 text-2xl">Application</div>
       <hr className="border-2 border-black dark:border-white" />
       <div className="grid gap-4 lg:grid-cols-2">
