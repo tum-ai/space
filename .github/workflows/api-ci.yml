@@ -52,7 +52,7 @@ jobs:
         run: python -m mypy .
         working-directory: api
       - name: Yapf - Check formatting
-        run: python -m yapf --diff
+        run: python -m yapf --recursive --diff .
       - name: Run pytest
         run: python -m pytest tests
         working-directory: api
