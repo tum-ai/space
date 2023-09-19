@@ -10,7 +10,7 @@ import Link from "next/link";
 import { ViewReview } from "../_components/viewReview";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
-import { Review } from "@models/application";
+import { Review } from "@models/review";
 import LoadingWheel from "@components/LoadingWheel";
 import toast from "react-hot-toast";
 import { EditReview } from "../_components/editReview";
@@ -159,8 +159,7 @@ const MyReviews = observer(() => {
                     />
                     <EditReview
                       review={review}
-                      applicationToView={review.application}
-                      trigger={<Button>Edit</Button>}
+                      trigger={<Button type="button">Edit</Button>}
                     />
                   </td>
                 </tr>

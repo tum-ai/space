@@ -9,10 +9,7 @@ import { FormProps } from "./ReviewForm";
 import axios from "axios";
 import toast from "react-hot-toast";
 
-export const VentureReviewForm = (
-  { application }: FormProps,
-  form = undefined,
-) => {
+export const VentureReviewForm = ({ application, form }: FormProps) => {
   const applicationId = application?.id;
   const initialValues = form || {
     relevance_ai: null,

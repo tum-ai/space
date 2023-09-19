@@ -8,10 +8,7 @@ import { FormProps } from "./ReviewForm";
 import toast from "react-hot-toast";
 import axios from "axios";
 
-export const MembershipReviewForm = ({
-  application,
-  form = undefined,
-}: FormProps) => {
+export const MembershipReviewForm = ({ application, form }: FormProps) => {
   const applicationId = application?.id;
   const initialValues = form || {
     motivation: null,
