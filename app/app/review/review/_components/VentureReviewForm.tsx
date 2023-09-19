@@ -9,8 +9,9 @@ import { FormProps } from "./ReviewForm";
 import axios from "axios";
 import toast from "react-hot-toast";
 
-export const VentureReviewForm = ({ application }: FormProps) => {
-  const initialValues = {
+export const VentureReviewForm = ({ application, form }: FormProps) => {
+  const applicationId = application?.id;
+  const initialValues = form || {
     relevance_ai: null,
     skills: null,
     profile_category: null,
@@ -47,26 +48,51 @@ export const VentureReviewForm = ({ application }: FormProps) => {
     No: "NO",
   };
 
+  const submitReview = (values: FormikValues) => {
+    toast.promise(
+      axios.post("/review_tool/application_review", {
+        data: {
+          form: values,
+          review_type: "VENTURE",
+          reviewee_id: application?.id,
+        },
+      }),
+      {
+        loading: "Submitting review",
+        success: "Successfully submitted review",
+        error: "Failed to submit review",
+      },
+    );
+  };
+
+  const updateReview = (values: FormikValues, id: number) => {
+    toast.promise(
+      axios.patch(`/review_tool/update_review/${id}`, {
+        data: {
+          form: values,
+          review_type: "VENTURE",
+          reviewee_id: application?.id,
+        },
+      }),
+      {
+        loading: "Updating review",
+        success: "Successfully updated review",
+        error: "Failed to update review",
+      },
+    );
+  };
+
   return (
     <Formik
       initialValues={initialValues}
       validationSchema={schema}
-      onSubmit={(values: FormikValues) =>
-        toast.promise(
-          axios.post("/review_tool/application_review", {
-            data: {
-              form: values,
-              review_type: "VENTURE",
-              reviewee_id: application?.id,
-            },
-          }),
-          {
-            loading: "Submitting review",
-            success: "Successfully submitted review",
-            error: "Failed to submit review",
-          },
-        )
-      }
+      onSubmit={(values: FormikValues) => {
+        if (form) {
+          updateReview(values, applicationId);
+        } else {
+          submitReview(values);
+        }
+      }}
     >
       {({ values, setFieldValue }) => (
         <Form className="z-0 grid h-fit gap-4 rounded-lg bg-gray-200 p-8 dark:bg-gray-600 md:grid-cols-2">

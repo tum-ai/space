@@ -1,9 +1,4 @@
-export interface Review {
-  id: number;
-  reviewer: any;
-  finalscore: number;
-  application: Application;
-}
+import { Review } from "./review";
 
 export interface Application {
   id: number;

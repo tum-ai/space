@@ -1,5 +1,5 @@
 "use client";
-import { ReviewForm } from "./_components/ReviewForm";
+import { ReviewFormComponent } from "./_components/ReviewForm";
 import { ApplicationOverview } from "../_components/applicationOverview";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
@@ -28,7 +28,7 @@ function Review() {
 
   return (
     <Section className="grid gap-4 md:grid-cols-2">
-      <ReviewForm application={query.data} />
+      <ReviewFormComponent application={query.data} />
       <ApplicationOverview application={query.data} />
     </Section>
   );
