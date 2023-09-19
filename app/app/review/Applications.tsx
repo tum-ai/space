@@ -5,7 +5,14 @@ import Select from "@components/Select";
 import { ApplicationRow } from "./ApplicationRow";
 import { useReviewTool } from "./useReviewTool";
 import LoadingWheel from "@components/LoadingWheel";
-import { ArrowLeftIcon, ArrowRightIcon, CopyIcon } from "@radix-ui/react-icons";
+import {
+  ArrowLeftIcon,
+  ArrowRightIcon,
+  CopyIcon,
+  DownloadIcon,
+} from "@radix-ui/react-icons";
+import toast from "react-hot-toast";
+import axios from "axios";
 
 export const Applications = () => {
   const {
@@ -44,7 +51,7 @@ export const Applications = () => {
             .reduce((prev, current) => prev + current, 0)} reviews `}
         </div>
         <div className="flex flex-col items-end gap-2 lg:flex-row">
-          <div className="flex items-center gap-2">
+          <div className="flex max-w-full items-center gap-2 overflow-x-auto">
             <div className="space-x-2">
               <span className="font-thin">filters: </span>
               {Object.keys(filters)?.length > 0 && (
@@ -84,7 +91,21 @@ export const Applications = () => {
               <CopyIcon />
               Copy IDs
             </Button>
+
+            <Button
+              className="flex w-max items-center gap-2"
+              onClick={() =>
+                toast.promise(axios.get("TODO"), {
+                  loading: `Loading reviews for ${filters?.formName?.name}`,
+                  success: "Reviews loaded successfully",
+                  error: "Failed to load reviews",
+                })
+              }
+            >
+              <DownloadIcon /> Export Reviews
+            </Button>
           </div>
+
           <div className="flex w-full space-x-4 rounded-lg bg-gray-200 p-2 dark:bg-gray-700 md:w-fit">
             <Icon name={"FaSearch"} className="rounded-lg p-2" />
             <input
