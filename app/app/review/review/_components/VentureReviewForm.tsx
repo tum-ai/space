@@ -66,8 +66,6 @@ export const VentureReviewForm = ({ application, form }: FormProps) => {
   };
 
   const updateReview = (values: FormikValues, id: number) => {
-    console.log(values);
-    console.log("path", `/review_tool/update_review/${id}`);
     toast.promise(
       axios.patch(`/review_tool/update_review/${id}`, {
         data: {

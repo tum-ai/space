@@ -11,7 +11,6 @@ interface EditReviewProps {
 }
 
 export function EditReview({ review, trigger }: EditReviewProps) {
-  console.log(review);
   const form = review?.form;
   return (
     <Dialog trigger={trigger}>
