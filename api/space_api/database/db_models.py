@@ -267,7 +267,7 @@ class DepartmentMembership(MixinAsDict, SaBaseModel):
 
     department_handle: Mapped[str] = mapped_column(ForeignKey(
         Department.handle),
-                                                   nullable=False)
+        nullable=False)
     department: Mapped["Department"] = relationship(
         "Department", back_populates="memberships")
 
@@ -387,6 +387,7 @@ class ApplicationReview(MixinAsDict, SaBaseModel):
                                                         ondelete="CASCADE"),
                                              nullable=False,
                                              primary_key=True)
+
     application: Mapped["Application"] = relationship("Application",
                                                       back_populates="reviews")
 
