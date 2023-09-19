@@ -94,13 +94,17 @@ export const Applications = () => {
 
             <Button
               className="flex w-max items-center gap-2"
-              onClick={() =>
-                toast.promise(axios.get("TODO"), {
-                  loading: `Loading reviews for ${filters?.formName?.name}`,
-                  success: "Reviews loaded successfully",
-                  error: "Failed to load reviews",
-                })
-              }
+              onClick={() => {
+                const formType = filters?.formName?.name;
+                return toast.promise(
+                  axios.get(`/review_tool/reviews/export/${formType}`),
+                  {
+                    loading: `Loading reviews for ${formType}`,
+                    success: "Reviews loaded successfully",
+                    error: "Failed to load reviews",
+                  },
+                );
+              }}
             >
               <DownloadIcon /> Export Reviews
             </Button>

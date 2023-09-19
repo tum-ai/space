@@ -4,10 +4,8 @@ import ProtectedItem from "@components/ProtectedItem";
 import { Section } from "@components/Section";
 import { observer } from "mobx-react";
 import Link from "next/link";
-import { DownloadIcon, MagnifyingGlassIcon } from "@radix-ui/react-icons";
+import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
 import { Applications } from "./Applications";
-import toast from "react-hot-toast";
-import axios from "axios";
 
 const ReviewTool = observer(() => {
   return (
