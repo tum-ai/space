@@ -473,7 +473,8 @@ def list_roles(request: Request) -> dict:
 
 @router.get(
     "/department-memberships",
-    response_description="List department memberships that meet the filter criteria",
+    response_description=
+    "List department memberships that meet the filter criteria",
     response_model=ResponseDepartmentMembershipWithProfileList | ErrorResponse,
 )
 @enable_paging(max_page_size=200)
