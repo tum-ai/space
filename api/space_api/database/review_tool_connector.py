@@ -114,19 +114,6 @@ def retrieve_db_application_all_reviews(
         return db_applications_reviews
 
 
-def retrieve_db_application_review_export(
-        sql_engine: sa.Engine, form_type: str) -> list[ApplicationReview]:
-    with Session(sql_engine) as db_session:
-        db_reviews = db_session.query(ApplicationReview)
-        # TODO: filter needs to be submission.data.formName
-        # .filter(ApplicationReview.review_type == form_type)
-
-        for db_review in db_reviews:
-            db_review.force_load()
-
-        return db_reviews
-
-
 def update_db_application_review(
     sql_engine: sa.Engine,
     reviewer_id: int,

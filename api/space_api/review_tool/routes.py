@@ -8,7 +8,6 @@ from space_api.database.review_tool_connector import (
     retrieve_db_application_all_reviews,
     retrieve_db_application_all_reviews_for_reviewer,
     retrieve_db_application_review,
-    retrieve_db_application_review_export,
     update_db_application_review,
 )
 from space_api.security.decorators import ensure_authorization
@@ -102,7 +101,8 @@ def get_application_reviews_for_reviewer(request: Request) -> dict:
 
 @router.get(
     "/review_tool/reviews/",
-    response_description="List all membership applications reviews, paging support",
+    response_description=
+    "List all membership applications reviews, paging support",
     response_model=ResponseApplicationReviewList | ErrorResponse,
 )
 @enable_paging(max_page_size=100)
@@ -123,29 +123,6 @@ def get_application_reviews(request: Request,
         "page": page,
         "page_size": page_size,
         "data": out_applications,
-    }
-
-
-@router.get(
-    "/review_tool/reviews/export/{form_type}",
-    response_description="Returns all reviews for a given form type",
-    response_model=ResponseApplicationReviewList | ErrorResponse,
-)
-def get_application_reviews_export(request: Request,
-                                   form_type: str,
-                                   ) -> dict:
-
-    db_reviews = retrieve_db_application_review_export(
-        request.app.state.sql_engine, form_type)
-    out_reviews: list[ApplicationReviewOut] = [
-        ApplicationReviewOut.from_db_model(review) for review in db_reviews
-    ]
-
-    return {
-        "status_code": 200,
-        "response_type": "success",
-        "description": "Reviews list successfully received",
-        "data": out_reviews
     }
 
 
