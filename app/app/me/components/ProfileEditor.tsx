@@ -89,7 +89,7 @@ const validationSchema = Yup.object().shape({
   ),
   social_networks: Yup.array().of(
     Yup.object().shape({
-      type: Yup.string().nullable(),
+      type: Yup.string().required("Type is required."),
       link: Yup.string()
         .url("Invalid URL format")
         .required("Link is required."),
@@ -211,49 +211,49 @@ const UploadProfilePicture = ({ handleChange }) => (
 
 const ProfileDetails = () => (
   <div className="grid grid-cols-2 gap-4">
-    <FieldComponent
+    <InputFieldComponent
       name="first_name"
       label="First name"
       placeholder="Max"
       type="text"
     />
-    <FieldComponent
+    <InputFieldComponent
       name="last_name"
       label="Last name"
       placeholder="Mustermann"
       type="text"
     />
-    <FieldComponent
+    <InputFieldComponent
       name="nationality"
       label="Nationality"
       placeholder="German"
       type="text"
     />
-    <FieldComponent
+    <InputFieldComponent
       name="university"
       label="University"
       placeholder="TUM"
       type="text"
     />
-    <FieldComponent
+    <InputFieldComponent
       name="degree_level"
       label="Degree Level"
       placeholder="B.Sc."
       type="text"
     />
-    <FieldComponent
+    <InputFieldComponent
       name="degree_name"
       label="Degree name"
       placeholder="Computer Science"
       type="text"
     />
-    <FieldComponent
+    <InputFieldComponent
       name="degree_semester"
       label="Semester"
       placeholder="2"
       type="number"
     />
-    <FieldComponent
+    <InputFieldComponent
       name="currentJob"
       label="Current job"
       placeholder="Software Engineer"
@@ -262,7 +262,7 @@ const ProfileDetails = () => (
   </div>
 );
 
-const FieldComponent = ({ name, label, placeholder, type }) => (
+const InputFieldComponent = ({ name, label, placeholder, type }) => (
   <div>
     <Field
       as={Input}
@@ -291,18 +291,24 @@ function SocialNetworks() {
                 key={index}
                 className="space-y-3 rounded-2xl border-2 border-gray-100 p-4"
               >
-                <Field
-                  as={Select}
-                  name={`social_networks[${index}].type`}
-                  selectedItem={{ key: network.type, value: network.type }}
-                  placeholder="Select a type"
-                  options={SOCIAL_NETWORKS_TYPES}
-                  disabled={false}
-                  setSelectedItem={(itemValue: string) => {
-                    setFieldValue(`social_networks[${index}].type`, itemValue);
-                  }}
-                />
-                <FieldComponent
+                <div>
+                  <Field
+                    as={Select}
+                    name={`social_networks[${index}].type`}
+                    selectedItem={{ key: network.type, value: network.type }}
+                    placeholder="Select a type"
+                    options={SOCIAL_NETWORKS_TYPES}
+                    disabled={false}
+                    setSelectedItem={(itemValue: string) => {
+                      setFieldValue(
+                        `social_networks[${index}].type`,
+                        itemValue,
+                      );
+                    }}
+                  />
+                  <ErrorMessage name={`social_networks[${index}].type`} />
+                </div>
+                <InputFieldComponent
                   name={`social_networks[${index}].link`}
                   label="Link"
                   placeholder="https://www.linkedin.com/in/maxmustermann/"
@@ -347,25 +353,25 @@ function JobExperience() {
                 key={index}
                 className="grid-cols-2 gap-3 rounded-2xl border-2 border-white p-4 sm:grid xl:grid-cols-4"
               >
-                <FieldComponent
+                <InputFieldComponent
                   name={`job_history[${index}].employer`}
                   label="Employer"
                   placeholder="TUM"
                   type="text"
                 />
-                <FieldComponent
+                <InputFieldComponent
                   name={`job_history[${index}].position`}
                   label="Position"
                   placeholder="Software Engineer"
                   type="text"
                 />
-                <FieldComponent
+                <InputFieldComponent
                   name={`job_history[${index}].date_from`}
                   label="Start date"
                   placeholder="2020-01-01"
                   type="date"
                 />
-                <FieldComponent
+                <InputFieldComponent
                   name={`job_history[${index}].date_to`}
                   label="End date"
                   placeholder="2020-01-01"
