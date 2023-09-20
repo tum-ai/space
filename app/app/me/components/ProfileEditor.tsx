@@ -10,6 +10,12 @@ import { Field, FieldArray, Form, Formik, useFormikContext } from "formik";
 import * as Yup from "yup";
 import * as DialogRadix from "@radix-ui/react-dialog";
 import Image from "next/image";
+import {
+  ArrowDownOnSquareStackIcon,
+  ArrowUpTrayIcon,
+  PlusIcon,
+  TrashIcon,
+} from "@heroicons/react/24/outline";
 
 const NEW_JOB_EXPERIENCE = {
   employer: "",
@@ -122,6 +128,7 @@ function ProfileEditor({ trigger }) {
               values.profile_picture,
             );
           }
+          console.log(values);
           await meModel.updateEditorProfile(values);
           await meModel.editProfile();
           await queryClient.invalidateQueries({ queryKey: ["me"] });
@@ -152,7 +159,9 @@ const ProfileHeader = () => (
   <div className="flex items-center justify-between">
     <h1 className="text-3xl">Edit Profile</h1>
     <div className="col-span-2 flex space-x-2">
-      <Button type="submit">Save</Button>
+      <Button type="submit" icon={<ArrowDownOnSquareStackIcon />}>
+        Save
+      </Button>
       <DialogRadix.Close>
         <Button variant="secondary">Close</Button>
       </DialogRadix.Close>
@@ -197,6 +206,7 @@ const UploadProfilePicture = ({ handleChange }) => (
   <Button
     type="button"
     onClick={() => document.getElementById("profile_picture").click()}
+    icon={<ArrowUpTrayIcon />}
   >
     <Input
       label="Upload picture"
@@ -210,56 +220,66 @@ const UploadProfilePicture = ({ handleChange }) => (
 );
 
 const ProfileDetails = () => (
-  <div className="grid grid-cols-2 gap-4">
+  <>
+    <div className="grid grid-cols-2 gap-4">
+      <InputFieldComponent
+        name="first_name"
+        label="First name"
+        placeholder="Max"
+        type="text"
+      />
+      <InputFieldComponent
+        name="last_name"
+        label="Last name"
+        placeholder="Mustermann"
+        type="text"
+      />
+      <InputFieldComponent
+        name="nationality"
+        label="Nationality"
+        placeholder="German"
+        type="text"
+      />
+      <InputFieldComponent
+        name="university"
+        label="University"
+        placeholder="TUM"
+        type="text"
+      />
+      <InputFieldComponent
+        name="degree_level"
+        label="Degree Level"
+        placeholder="B.Sc."
+        type="text"
+      />
+      <InputFieldComponent
+        name="degree_name"
+        label="Degree name"
+        placeholder="Computer Science"
+        type="text"
+      />
+      <InputFieldComponent
+        name="degree_semester"
+        label="Semester"
+        placeholder="2"
+        type="number"
+      />
+      {/*
+      <InputFieldComponent
+        name="currentJob"
+        label="Current job"
+        placeholder="Software Engineer"
+        type="text"
+      />
+    */}
+    </div>
     <InputFieldComponent
-      name="first_name"
-      label="First name"
-      placeholder="Max"
+      name="description"
+      label="Description"
+      placeholder="I am a student at TUM."
       type="text"
     />
-    <InputFieldComponent
-      name="last_name"
-      label="Last name"
-      placeholder="Mustermann"
-      type="text"
-    />
-    <InputFieldComponent
-      name="nationality"
-      label="Nationality"
-      placeholder="German"
-      type="text"
-    />
-    <InputFieldComponent
-      name="university"
-      label="University"
-      placeholder="TUM"
-      type="text"
-    />
-    <InputFieldComponent
-      name="degree_level"
-      label="Degree Level"
-      placeholder="B.Sc."
-      type="text"
-    />
-    <InputFieldComponent
-      name="degree_name"
-      label="Degree name"
-      placeholder="Computer Science"
-      type="text"
-    />
-    <InputFieldComponent
-      name="degree_semester"
-      label="Semester"
-      placeholder="2"
-      type="number"
-    />
-    <InputFieldComponent
-      name="currentJob"
-      label="Current job"
-      placeholder="Software Engineer"
-      type="text"
-    />
-  </div>
+  </>
 );
 
 const InputFieldComponent = ({ name, label, placeholder, type }) => (
@@ -278,18 +298,18 @@ const InputFieldComponent = ({ name, label, placeholder, type }) => (
 
 function SocialNetworks() {
   const { values, setFieldValue } = useFormikContext<ProfileFormData>();
-
+  if (!values.social_networks) return null;
   return (
     <FieldArray name="social_networks">
       {(arrayHelpers) => (
-        <div>
-          <h2 className="text-xl font-light">Social Networks</h2>
+        <div className="pt-3">
+          <h2 className="text-2xl">Social Networks</h2>
           <p className="font-light">Add relevant social media networks here.</p>
           <div className="col-span-2 mt-3 w-full space-y-4">
             {values.social_networks.map((network, index) => (
               <div
                 key={index}
-                className="space-y-3 rounded-2xl border-2 border-gray-100 p-4"
+                className="space-y-3 rounded-2xl border-2 border-gray-100/30 p-4"
               >
                 <div>
                   <Field
@@ -314,7 +334,10 @@ function SocialNetworks() {
                   placeholder="https://www.linkedin.com/in/maxmustermann/"
                   type="text"
                 />
-                <Button onClick={() => arrayHelpers.remove(index)}>
+                <Button
+                  onClick={() => arrayHelpers.remove(index)}
+                  icon={<TrashIcon />}
+                >
                   Remove
                 </Button>
               </div>
@@ -327,6 +350,7 @@ function SocialNetworks() {
                   link: "",
                 })
               }
+              icon={<PlusIcon />}
             >
               Add Social Network
             </Button>
@@ -339,24 +363,24 @@ function SocialNetworks() {
 
 function JobExperience() {
   const { values, setFieldValue } = useFormikContext<ProfileFormData>();
-
+  if (!values.job_history) return null;
   return (
     <FieldArray
       name="job_history"
       render={(arrayHelpers) => (
         <div>
-          <h2 className="text-xl font-light">Job History</h2>
+          <h2 className="text-2xl">Job History</h2>
           <p className="font-light">Update your job history here.</p>
-          <div className="mt-3 space-y-4">
+          <div className="mt-5 space-y-6">
             {values.job_history.map((job, index) => (
               <div
                 key={index}
-                className="grid-cols-2 gap-3 rounded-2xl border-2 border-white p-4 sm:grid xl:grid-cols-4"
+                className="grid-cols-2 gap-8 rounded-2xl border-2 border-gray-100/30 p-4 sm:grid xl:grid-cols-4"
               >
                 <InputFieldComponent
                   name={`job_history[${index}].employer`}
                   label="Employer"
-                  placeholder="TUM"
+                  placeholder="Google"
                   type="text"
                 />
                 <InputFieldComponent
@@ -380,12 +404,16 @@ function JobExperience() {
                 <Button
                   className="mt-2"
                   onClick={() => arrayHelpers.remove(index)}
+                  icon={<TrashIcon />}
                 >
                   Remove
                 </Button>
               </div>
             ))}
-            <Button onClick={() => arrayHelpers.push(NEW_JOB_EXPERIENCE)}>
+            <Button
+              onClick={() => arrayHelpers.push(NEW_JOB_EXPERIENCE)}
+              icon={<PlusIcon />}
+            >
               Add Work Experience
             </Button>
           </div>

@@ -7,6 +7,7 @@ import ProfileEditor from "../../me/components/ProfileEditor";
 import { observer } from "mobx-react";
 import Image from "next/image";
 import Link from "next/link";
+import { PencilSquareIcon } from "@heroicons/react/24/outline";
 
 interface Props {
   profile: Profile;
@@ -19,15 +20,7 @@ function ProfileOverview({ profile, meModel, publicView }: Props) {
       {meModel && (
         <div className="absolute top-0 flex w-full justify-end p-4">
           <ProfileEditor
-            trigger={
-              <Button
-                onClick={() => {
-                  meModel.editorProfile = { ...profile };
-                }}
-              >
-                Edit
-              </Button>
-            }
+            trigger={<Button icon={<PencilSquareIcon />}>Edit</Button>}
           />
         </div>
       )}

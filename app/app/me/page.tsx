@@ -12,6 +12,11 @@ const Me = () => {
     queryFn: () => axios("/me"),
   });
 
+  // Set editorProfile as soon as data is available
+  if (profileQuery.data?.data?.data) {
+    meModel.editorProfile = { ...profileQuery.data.data.data };
+  }
+
   if (profileQuery.isLoading) {
     return <h1>Loading profile</h1>;
   }
