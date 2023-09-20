@@ -13,6 +13,7 @@ import {
 } from "@radix-ui/react-icons";
 import toast from "react-hot-toast";
 import axios from "axios";
+import download from "downloadjs";
 
 export const Applications = () => {
   const {
@@ -94,15 +95,30 @@ export const Applications = () => {
 
             <Button
               className="flex w-max items-center gap-2"
-              onClick={() => {
+              onClick={async () => {
                 const formType = filters?.formName?.name;
-                return toast.promise(
-                  axios.get(`/review_tool/reviews/export/${formType}`),
+                const response = await toast.promise(
+                  axios.get("/applications", {
+                    params: {
+                      form_type: formType,
+                    },
+                  }),
                   {
                     loading: `Loading reviews for ${formType}`,
                     success: "Reviews loaded successfully",
                     error: "Failed to load reviews",
                   },
+                );
+                const fileName = `applications-${
+                  formType
+                    ? formType?.toLowerCase()?.replace(/ /g, "_") + ".json"
+                    : "all-forms"
+                }`;
+
+                download(
+                  response.data,
+                  fileName,
+                  response.headers["content-type"],
                 );
               }}
             >
