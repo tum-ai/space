@@ -302,15 +302,12 @@ function SocialNetworks() {
                     setFieldValue(`social_networks[${index}].type`, itemValue);
                   }}
                 />
-                <div>
-                  <Field
-                    as={Input}
-                    label="Link"
-                    type="text"
-                    name={`social_networks[${index}].link`}
-                  />
-                  <ErrorMessage name={`social_networks[${index}].link`} />
-                </div>
+                <FieldComponent
+                  name={`social_networks[${index}].link`}
+                  label="Link"
+                  placeholder="https://www.linkedin.com/in/maxmustermann/"
+                  type="text"
+                />
                 <Button onClick={() => arrayHelpers.remove(index)}>
                   Remove
                 </Button>
