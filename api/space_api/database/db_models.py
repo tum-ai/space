@@ -267,7 +267,7 @@ class DepartmentMembership(MixinAsDict, SaBaseModel):
 
     department_handle: Mapped[str] = mapped_column(ForeignKey(
         Department.handle),
-        nullable=False)
+                                                   nullable=False)
     department: Mapped["Department"] = relationship(
         "Department", back_populates="memberships")
 

@@ -6,8 +6,7 @@ from space_api.applications.api_models import ApplicationReferralInOut
 from .db_models import Application, ApplicationReferral
 
 
-def list_db_applications(sql_engine: sa.Engine,
-                         page: int | None,
+def list_db_applications(sql_engine: sa.Engine, page: int | None,
                          page_size: int | None,
                          form_type: str | None) -> list[Application]:
     with Session(sql_engine) as db_session:
