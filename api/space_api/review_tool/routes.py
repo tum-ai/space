@@ -35,7 +35,7 @@ router = APIRouter()
 
 @router.post(
     "/review_tool/application_review",
-    response_description="Submit a review of a  application.",
+    response_description="Submit a review of a application.",
     response_model=ResponseSubmitReview,
 )
 @error_handlers
