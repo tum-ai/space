@@ -128,7 +128,6 @@ function ProfileEditor({ trigger }) {
               values.profile_picture,
             );
           }
-          console.log(values);
           await meModel.updateEditorProfile(values);
           await meModel.editProfile();
           await queryClient.invalidateQueries({ queryKey: ["me"] });
@@ -337,6 +336,7 @@ function SocialNetworks() {
                 <Button
                   onClick={() => arrayHelpers.remove(index)}
                   icon={<TrashIcon />}
+                  variant={"secondary"}
                 >
                   Remove
                 </Button>
@@ -405,6 +405,7 @@ function JobExperience() {
                   className="mt-2"
                   onClick={() => arrayHelpers.remove(index)}
                   icon={<TrashIcon />}
+                  variant={"secondary"}
                 >
                   Remove
                 </Button>
