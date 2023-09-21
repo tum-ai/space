@@ -22,6 +22,7 @@ export const Applications = () => {
     setFilters,
     search,
     setSearch,
+    handleSearch,
     isLoading,
     error,
     getFormNames,
@@ -126,7 +127,13 @@ export const Applications = () => {
             </Button>
           </div>
 
-          <div className="flex w-full space-x-4 rounded-lg bg-gray-200 p-2 dark:bg-gray-700 md:w-fit">
+          <form
+            className="flex w-full space-x-4 rounded-lg bg-gray-200 p-2 dark:bg-gray-700 md:w-fit"
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleSearch();
+            }}
+          >
             <Icon name={"FaSearch"} className="rounded-lg p-2" />
             <input
               value={search}
@@ -136,8 +143,7 @@ export const Applications = () => {
               placeholder="search.."
               className="w-full bg-transparent outline-none"
             />
-            {search && <button onClick={() => setSearch("")}>clear</button>}
-          </div>
+          </form>
         </div>
       </div>
       <div className="flex flex-col space-y-4 overflow-auto pt-4">
