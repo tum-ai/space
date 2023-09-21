@@ -339,11 +339,11 @@ class Application(MixinAsDict, SaBaseModel):
 
     __tablename__ = "application"
 
-    # -------------------------------- MANAGED FIELDS -------------------------------- #
+    # MANAGED FIELDS
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     submission: Mapped[str] = mapped_column(JSON, nullable=False)
 
-    # ----------------------------- RELATIONAL FK FIELDS ----------------------------- #
+    # RELATIONAL FK FIELDS
     # back reference from ApplicationReview
     reviews: Mapped[list["ApplicationReview"]] = relationship(
         "ApplicationReview",
@@ -387,6 +387,7 @@ class ApplicationReview(MixinAsDict, SaBaseModel):
                                                         ondelete="CASCADE"),
                                              nullable=False,
                                              primary_key=True)
+
     application: Mapped["Application"] = relationship("Application",
                                                       back_populates="reviews")
 
