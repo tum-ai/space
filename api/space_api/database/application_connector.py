@@ -7,19 +7,13 @@ from .db_models import Application, ApplicationReferral
 
 
 def list_db_applications(sql_engine: sa.Engine, page: int | None,
-                         page_size: int | None,
-                         form_type: str | None) -> list[Application]:
+                         page_size: int | None) -> list[Application]:
     with Session(sql_engine) as db_session:
 
         query = db_session.query(Application)
 
         if (page_size and page):
             query.offset(page_size * (page - 1)).limit(page_size)
-
-        if (form_type):
-            # TODO: This does not work
-            query.filter(
-                Application.submission['formName']['data'] == form_type)
 
         db_applications: list[Application] = query.all()
 
