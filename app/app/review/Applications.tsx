@@ -57,7 +57,27 @@ export const Applications = () => {
             <div className="space-x-2">
               <span className="font-thin">filters: </span>
               {Object.keys(filters)?.length > 0 && (
-                <button onClick={() => setFilters({})}>Reset</button>
+                <button
+                  onClick={() => {
+                    const formNames = getFormNames();
+                    const firstFormName = formNames && formNames[0];
+
+                    setFilters({
+                      ...(firstFormName
+                        ? {
+                            formName: {
+                              name: firstFormName,
+                              predicate: (application) =>
+                                application.submission.data.formName ===
+                                firstFormName,
+                            },
+                          }
+                        : {}),
+                    });
+                  }}
+                >
+                  Reset
+                </button>
               )}
             </div>
             <Select
@@ -68,7 +88,9 @@ export const Applications = () => {
                   value: formName,
                 })) || []),
               ]}
-              value={filters?.formName?.name}
+              value={
+                filters?.formName?.name || (getFormNames() && getFormNames()[0])
+              }
               setSelectedItem={(item) => {
                 setFilters((old) => ({
                   ...old,
@@ -80,6 +102,7 @@ export const Applications = () => {
                 }));
               }}
             />
+
             <Button
               className="flex w-max items-center gap-2"
               onClick={() => {

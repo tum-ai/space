@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Application } from "@models/application";
 import { Filter } from "util/types/filter";
 import { useQuery } from "@tanstack/react-query";
@@ -62,15 +62,31 @@ export const useReviewTool = (page_size = 100) => {
     .filter(searchFilter)
     .sort(finalScoreComparator);
 
-  const getFormNames = () => {
-    return [
-      ...new Set(
-        query.data?.map((application) => {
-          return application.submission?.data?.formName;
-        }),
-      ),
-    ];
-  };
+    const getFormNames = () => {
+      return [
+        ...new Set(
+          query.data?.map((application) => {
+            return application.submission?.data?.formName;
+          }),
+        ),
+      ];
+    };
+  
+    useEffect(() => {
+      if (query.data && !filters.formName) {
+        const formNames = getFormNames();
+        if (formNames && formNames.length > 0) {
+          setFilters((prev) => ({
+            ...prev,
+            formName: {
+              name: formNames[0],
+              predicate: (application) =>
+                application.submission.data.formName === formNames[0],
+            },
+          }));
+        }
+      }
+    }, [query.data]);
 
   return {
     applications,
