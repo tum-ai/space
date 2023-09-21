@@ -44,12 +44,21 @@ def list_applications(
     page: int | None = None,
     page_size: int | None = 100,
     form_type: str | None = None,
+    search: str | None = None,
 ) -> dict:
-    db_applications = list_db_applications(request.app.state.sql_engine, page,
-                                           page_size, form_type)
+    db_applications = list_db_applications(request.app.state.sql_engine,
+                                           page,
+                                           page_size)
     out_applications: list[ApplicationOut] = [
         ApplicationOut.from_db_model(p) for p in db_applications
     ]
+
+    if (form_type):
+        out_applications = list(
+            filter(
+                lambda application:
+                    application.submission["data"]["formName"] == form_type,
+                out_applications))
 
     return {
         "status_code": 200,
