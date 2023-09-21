@@ -54,12 +54,6 @@ export const Applications = () => {
         </div>
         <div className="flex flex-col items-end gap-2 lg:flex-row">
           <div className="flex max-w-full items-center gap-2 overflow-x-auto">
-            <div className="space-x-2">
-              <span className="font-thin">filters: </span>
-              {Object.keys(filters)?.length > 0 && (
-                <button onClick={() => setFilters({})}>Reset</button>
-              )}
-            </div>
             <Select
               placeholder={"Form"}
               options={[
@@ -68,7 +62,9 @@ export const Applications = () => {
                   value: formName,
                 })) || []),
               ]}
-              value={filters?.formName?.name}
+              value={
+                filters?.formName?.name || (getFormNames() && getFormNames()[0])
+              }
               setSelectedItem={(item) => {
                 setFilters((old) => ({
                   ...old,
@@ -80,6 +76,7 @@ export const Applications = () => {
                 }));
               }}
             />
+
             <Button
               className="flex w-max items-center gap-2"
               onClick={() => {
