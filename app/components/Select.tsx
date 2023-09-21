@@ -50,7 +50,7 @@ function Select({
         </SelectPrimitive.Trigger>
       </div>
       <SelectPrimitive.Portal>
-        <SelectPrimitive.Content position="popper">
+        <SelectPrimitive.Content position="popper" className="z-50">
           <SelectPrimitive.ScrollUpButton className="flex items-center justify-center text-gray-700 dark:text-gray-300">
             <ChevronUpIcon />
           </SelectPrimitive.ScrollUpButton>
