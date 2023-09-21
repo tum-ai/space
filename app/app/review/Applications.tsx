@@ -54,32 +54,6 @@ export const Applications = () => {
         </div>
         <div className="flex flex-col items-end gap-2 lg:flex-row">
           <div className="flex max-w-full items-center gap-2 overflow-x-auto">
-            <div className="space-x-2">
-              <span className="font-thin">filters: </span>
-              {Object.keys(filters)?.length > 0 && (
-                <button
-                  onClick={() => {
-                    const formNames = getFormNames();
-                    const firstFormName = formNames && formNames[0];
-
-                    setFilters({
-                      ...(firstFormName
-                        ? {
-                            formName: {
-                              name: firstFormName,
-                              predicate: (application) =>
-                                application.submission.data.formName ===
-                                firstFormName,
-                            },
-                          }
-                        : {}),
-                    });
-                  }}
-                >
-                  Reset
-                </button>
-              )}
-            </div>
             <Select
               placeholder={"Form"}
               options={[
