@@ -8,20 +8,35 @@ import { Review } from "@models/review";
 
 export const useReviewTool = (page_size = 100) => {
   type Filters = Record<string, Filter<Application>>;
+  const [serverSearching, setServerSearching] = useState(false);
   const [filters, setFilters] = useState<Filters>({});
   const [search, setSearch] = useState("");
 
   const [page, setPage] = useState(1);
   const query = useQuery({
-    queryKey: ["applications", page],
+    queryKey: ["applications", page, serverSearching && search],
     queryFn: () =>
       axios
-        .get("/applications/", { params: { page, page_size } })
+        .get("/applications/", {
+          params: {
+            page,
+            page_size,
+            search: serverSearching ? search : null,
+          },
+        })
         .then((res) => res.data.data as Application[]),
   });
 
   const increasePage = () => setPage((old) => old + 1);
   const decreasePage = () => setPage((old) => Math.max(old - 1, 1));
+
+  /*
+   * Triggers a search through all applications in the server
+   */
+  const handleSearch = () => {
+    console.log(search);
+    setServerSearching(true);
+  };
 
   const filterPredicate = (application: Application) =>
     Object.values(filters).every((filter: Filter<Application>) =>
@@ -29,7 +44,8 @@ export const useReviewTool = (page_size = 100) => {
     );
 
   const searchFilter = (application: Application) =>
-    search === "" || JSON.stringify(application).toLowerCase().includes(search);
+    search === "" ||
+    JSON.stringify(application).toLowerCase().includes(search.toLowerCase());
 
   const finalScoreComparator = (a: Application, b: Application): any => {
     const finalScoresA = a.reviews.map((review: Review) => review.finalscore);
@@ -59,7 +75,11 @@ export const useReviewTool = (page_size = 100) => {
   return {
     applications,
     search,
-    setSearch,
+    setSearch: (searchTerm: string) => {
+      setServerSearching(false);
+      setSearch(searchTerm);
+    },
+    handleSearch,
     filters,
     setFilters,
     isLoading: query.isLoading,
