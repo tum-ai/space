@@ -1,421 +1,427 @@
 "use client";
 import { Button } from "@components/Button";
+import ErrorMessage from "@components/ErrorMessage";
 import Dialog from "@components/Dialog";
 import Input from "@components/Input";
 import Select from "@components/Select";
-import Textarea from "@components/Textarea";
 import { useStores } from "@providers/StoreProvider";
-import * as DialogRadix from "@radix-ui/react-dialog";
 import { useQueryClient } from "@tanstack/react-query";
-import { observer } from "mobx-react";
+import { Field, FieldArray, Form, Formik, useFormikContext } from "formik";
+import * as Yup from "yup";
+import * as DialogRadix from "@radix-ui/react-dialog";
 import Image from "next/image";
-import { useState } from "react";
-import toast from "react-hot-toast";
+import {
+  ArrowDownOnSquareStackIcon,
+  ArrowUpTrayIcon,
+  PlusIcon,
+  TrashIcon,
+} from "@heroicons/react/24/outline";
 
-const newJobExperience = {
+const NEW_JOB_EXPERIENCE = {
   employer: "",
   position: "",
   date_from: "",
   date_to: "",
 };
 
-const socialNetworksTypes = [
-  // 'Slack', 'LinkedIn', 'GitHub', 'Phone', 'Instagram', 'Telegram', 'Discord', 'Other'
-  { key: "Slack", value: "Slack" },
-  { key: "LinkedIn", value: "LinkedIn" },
-  { key: "GitHub", value: "GitHub" },
-  { key: "Phone", value: "Phone" },
-  { key: "Instagram", value: "Instagram" },
-  { key: "Telegram", value: "Telegram" },
-  { key: "Discord", value: "Discord" },
-  { key: "Other", value: "Other" },
-];
+const SOCIAL_NETWORKS_TYPES = [
+  "Slack",
+  "LinkedIn",
+  "GitHub",
+  "Phone",
+  "Instagram",
+  "Telegram",
+  "Discord",
+  "Other",
+].map((type) => ({ key: type, value: type }));
+
+type JobHistoryType = {
+  employer?: string | null;
+  position?: string | null;
+  date_from?: Date | string | null;
+  date_to?: Date | string | null;
+};
+
+type SocialNetworkType = {
+  type?: string | null;
+  link?: string | null;
+};
+
+type ProfileFormData = {
+  profile_picture?: string | null;
+  first_name: string;
+  last_name: string;
+  nationality?: string | null;
+  university?: string | null;
+  degree_level?: string | null;
+  degree_name?: string | null;
+  degree_semester?: number | null;
+  currentJob?: string | null;
+  description?: string | null;
+  job_history: JobHistoryType[];
+  social_networks: SocialNetworkType[];
+};
+
+const validationSchema = Yup.object().shape({
+  profile_picture: Yup.mixed()
+    .test("fileSize", "File is too big! Max size is 200 KB.", (value) => {
+      if (value instanceof FileList) {
+        return value[0]?.size <= 0.2 * 1048576;
+      }
+      return true; // not a file input
+    })
+    .nullable(),
+  first_name: Yup.string().required("First name is required."),
+  last_name: Yup.string().required("Last name is required."),
+  nationality: Yup.string().nullable(),
+  university: Yup.string().nullable(),
+  degree_level: Yup.string().nullable(),
+  degree_name: Yup.string().nullable(),
+  degree_semester: Yup.number()
+    .min(1, "Semester must be at least 1.")
+    .integer("Semester must be an integer.")
+    .nullable(),
+  currentJob: Yup.string().nullable(),
+  description: Yup.string().nullable(),
+  job_history: Yup.array().of(
+    Yup.object().shape({
+      employer: Yup.string().required("Employer is required."),
+      position: Yup.string().required("Position is required."),
+      date_from: Yup.date().required("Start date is required."),
+      date_to: Yup.date()
+        .min(Yup.ref("date_from"), "End date must be after the start date.")
+        .required("End date is required."),
+    }),
+  ),
+  social_networks: Yup.array().of(
+    Yup.object().shape({
+      type: Yup.string().required("Type is required."),
+      link: Yup.string()
+        .url("Invalid URL format")
+        .required("Link is required."),
+    }),
+  ),
+});
 
 function ProfileEditor({ trigger }) {
   const { meModel } = useStores();
   const editorProfile = meModel.editorProfile;
+  const queryClient = useQueryClient();
 
-  function convertImageToBase64(file) {
+  const convertImageToBase64 = (file) => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
       reader.onload = () => resolve(reader.result);
-      reader.onerror = (error) => reject(error);
+      reader.onerror = reject;
       reader.readAsDataURL(file);
     });
-  }
-
-  async function handleChange(e) {
-    // profile picture handling
-    if (e.target.name === "profile_picture") {
-      const file = e.target.files[0];
-      const MB = 1048576;
-      if (file.size > 0.2 * MB) {
-        toast.error("File is too big! Max size is 200 KB.");
-      } else {
-        const base64 = await convertImageToBase64(file);
-        meModel.updateEditorProfile({
-          ["profile_picture"]: base64,
-        });
-      }
-    } else {
-      meModel.updateEditorProfile({
-        [e.target.name]: e.target.value,
-      });
-    }
-  }
-
-  const queryClient = useQueryClient();
+  };
 
   return (
     <Dialog trigger={trigger || <Button>edit</Button>}>
-      <div className="flex w-full flex-col space-y-6">
-        <DialogRadix.Title className="flex items-center justify-between">
-          <h1 className="text-3xl">Edit Profile</h1>
-          <div className="col-span-2 flex space-x-2">
-            <DialogRadix.Close>
-              <Button
-                onClick={async (e) => {
-                  await meModel.editProfile();
-                  queryClient.invalidateQueries({ queryKey: ["me"] });
-                }}
-              >
-                save
-              </Button>
-            </DialogRadix.Close>
-            <DialogRadix.Close>
-              <Button variant="secondary">cancel</Button>
-            </DialogRadix.Close>
-          </div>
-        </DialogRadix.Title>
-        <form className="flex flex-col gap-4 lg:grid lg:grid-cols-2 lg:gap-8 lg:space-y-0">
-          <div className="col-span-2 flex items-center space-x-4">
-            {editorProfile.profile_picture ? (
-              <div className="flex flex-col items-center">
-                <Image
-                  className="h-28 w-28 rounded-full border object-cover drop-shadow-lg"
-                  src={editorProfile.profile_picture}
-                  width={100}
-                  height={100}
-                  alt=""
-                />
-                <button
-                  onClick={() => {
-                    meModel.updateEditorProfile({
-                      ["profile_picture"]: null,
-                    });
-                  }}
-                >
-                  remove
-                </button>
-              </div>
-            ) : (
-              <Button
-                type="button"
-                onClick={() => {
-                  document.getElementById("profile_picture").click();
-                }}
-              >
-                <Input
-                  label="Upload picture"
-                  type="file"
-                  accept="image/*"
-                  id="profile_picture"
-                  name="profile_picture"
-                  onChange={handleChange}
-                />
-              </Button>
-            )}
-          </div>
-          <Input
-            label="First name"
-            type="text"
-            id="first_name"
-            name="first_name"
-            value={editorProfile.first_name}
-            onChange={handleChange}
-            fullWidth
+      <Formik
+        initialValues={editorProfile}
+        validationSchema={validationSchema}
+        onSubmit={async (values) => {
+          if (values.profile_picture) {
+            values.profile_picture = await convertImageToBase64(
+              values.profile_picture,
+            );
+          }
+          await meModel.updateEditorProfile(values);
+          await meModel.editProfile();
+          await queryClient.invalidateQueries({ queryKey: ["me"] });
+        }}
+      >
+        {({ handleChange }) => (
+          <ProfileForm
+            handleChange={handleChange}
+            editorProfile={editorProfile}
           />
-          <Input
-            label="Last name"
-            type="text"
-            id="last_name"
-            name="last_name"
-            value={editorProfile.last_name}
-            onChange={handleChange}
-            fullWidth
-          />
-          <Input
-            label="Nationality"
-            type="text"
-            id="nationality"
-            name="nationality"
-            value={editorProfile.nationality}
-            onChange={handleChange}
-            fullWidth
-          />
-          <Input
-            label="University"
-            type="text"
-            id="university"
-            name="university"
-            value={editorProfile.university}
-            onChange={handleChange}
-            fullWidth
-          />
-          <Input
-            label="Degree level"
-            type="text"
-            id="degree_level"
-            name="degree_level"
-            value={editorProfile.degree_level}
-            onChange={handleChange}
-            fullWidth
-          />
-          <Input
-            label="Degree name"
-            type="text"
-            id="degree_name"
-            name="degree_name"
-            value={editorProfile.degree_name}
-            onChange={handleChange}
-            fullWidth
-          />
-          <Input
-            label="Semester"
-            type="number"
-            id="degree_semester"
-            name="degree_semester"
-            value={editorProfile.degree_semester}
-            onChange={handleChange}
-            fullWidth
-          />
-          <Input
-            label="Current job"
-            type="text"
-            id="currentJob"
-            name="currentJob"
-            value={editorProfile.currentJob}
-            onChange={handleChange}
-            fullWidth
-          />
-          <Textarea
-            label="Description"
-            type="text"
-            id="description"
-            name="description"
-            value={editorProfile.description}
-            onChange={handleChange}
-            required={false}
-          />
-          <hr className="col-span-2" />
-          {/* Job Experience Editor */}
-          <JobExperience />
-          <hr className="col-span-2" />
-          {/* Social Networks Editor */}
-          <SocialNetworks />
-        </form>
-      </div>
+        )}
+      </Formik>
     </Dialog>
   );
 }
 
-function SocialNetworks() {
+const ProfileForm = ({ handleChange, editorProfile }) => (
+  <Form className="flex w-full flex-col space-y-6">
+    <ProfileHeader />
+    <ProfilePicture handleChange={handleChange} editorProfile={editorProfile} />
+    <ProfileDetails />
+    <JobExperience />
+    <SocialNetworks />
+  </Form>
+);
+
+const ProfileHeader = () => (
+  <div className="flex items-center justify-between">
+    <h1 className="text-3xl">Edit Profile</h1>
+    <div className="col-span-2 flex space-x-2">
+      <Button type="submit" icon={<ArrowDownOnSquareStackIcon />}>
+        Save
+      </Button>
+      <DialogRadix.Close>
+        <Button variant="secondary">Close</Button>
+      </DialogRadix.Close>
+    </div>
+  </div>
+);
+
+const ProfilePicture = ({ handleChange, editorProfile }) => (
+  <div className="col-span-2 flex items-center space-x-4">
+    {editorProfile.profile_picture ? (
+      <ExistingProfilePicture editorProfile={editorProfile} />
+    ) : (
+      <UploadProfilePicture handleChange={handleChange} />
+    )}
+  </div>
+);
+
+const ExistingProfilePicture = ({ editorProfile }) => {
   const { meModel } = useStores();
-  const editorProfile = meModel.editorProfile;
-  const [selectedOptions, setSelectedOptions] = useState(
-    editorProfile.social_networks &&
-      editorProfile.social_networks.map((network) => network.type),
-  );
-
-  const newSocialNetwork = {
-    type: "",
-    link: "",
-    profile_id: editorProfile.id,
-  };
-
-  function handleAddExperience(type, newExperience) {
-    if (!editorProfile[type]) {
-      meModel.updateEditorProfile({
-        [type]: [newExperience],
-      });
-      return;
-    }
-
-    meModel.updateEditorProfile({
-      [type]: [...editorProfile[type], newExperience],
-    });
-  }
-
-  function handleRemoveExperience(index, type) {
-    const updatedExperience = [...editorProfile[type]];
-    updatedExperience.splice(index, 1);
-    meModel.updateEditorProfile({
-      [type]: updatedExperience,
-    });
-  }
-
-  function handleListItemChange(event, index, type) {
-    const { name, value } = event.target;
-    const updatedProfile = editorProfile[type].map((item, i) => {
-      return i === index ? { ...item, [name]: value } : item;
-    });
-    meModel.updateEditorProfile({ [type]: updatedProfile });
-  }
-
-  const handleSelect = (item, index) => {
-    const updatedSelectedOptions = [...selectedOptions];
-    updatedSelectedOptions[index] = item.value;
-    setSelectedOptions(updatedSelectedOptions);
-    meModel.updateEditorProfile({
-      social_networks: editorProfile.social_networks.map((network, i) => {
-        if (i === index) {
-          return {
-            ...network,
-            type: item.value,
-          };
-        }
-        return network;
-      }),
-    });
-  };
 
   return (
-    <div className="col-span-2 w-full space-y-4">
-      <div className="col-span-2 text-xl font-light">Social Networks</div>
-      <div className="col-span-2 font-light">
-        Feel free to add any relevant social media networks (e.g. LinkedIn,
-        GitHub, etc.) here.
-      </div>
-      {editorProfile.social_networks &&
-        editorProfile.social_networks.map((experience, index) => (
-          <div key={index} className="rounded-2xl border-2 border-gray-100 p-4">
-            <Select
-              setSelectedItem={(item) => handleSelect(item, index)}
-              selectedItem={{
-                key: experience.type,
-                value: experience.type,
-              }}
-              placeholder="Select a type"
-              options={socialNetworksTypes}
-              disabled={false}
-            />
-            <Input
-              label="Link"
-              type="text"
-              name="link"
-              required={true}
-              value={experience.link}
-              onChange={(e) =>
-                handleListItemChange(e, index, "social_networks")
-              }
-            />
-            <button
-              onClick={() => handleRemoveExperience(index, "social_networks")}
-            >
-              Remove
-            </button>
-          </div>
-        ))}
+    <div className="flex flex-col items-center">
+      <Image
+        className="h-28 w-28 rounded-full border object-cover drop-shadow-lg"
+        src={editorProfile.profile_picture}
+        width={100}
+        height={100}
+        alt=""
+      />
       <button
-        className="mt-4 rounded-lg bg-gray-200 p-2 hover:text-black hover:underline dark:bg-gray-700 dark:hover:text-white"
-        onClick={() => handleAddExperience("social_networks", newSocialNetwork)}
+        onClick={() =>
+          meModel.updateEditorProfile({ ["profile_picture"]: null })
+        }
       >
-        Add Social Network
+        remove
       </button>
     </div>
+  );
+};
+
+const UploadProfilePicture = ({ handleChange }) => (
+  <Button
+    type="button"
+    onClick={() => document.getElementById("profile_picture").click()}
+    icon={<ArrowUpTrayIcon />}
+  >
+    <Input
+      label="Upload picture"
+      type="file"
+      accept="image/*"
+      id="profile_picture"
+      name="profile_picture"
+      onChange={handleChange}
+    />
+  </Button>
+);
+
+const ProfileDetails = () => (
+  <>
+    <div className="grid grid-cols-2 gap-4">
+      <InputFieldComponent
+        name="first_name"
+        label="First name"
+        placeholder="Max"
+        type="text"
+      />
+      <InputFieldComponent
+        name="last_name"
+        label="Last name"
+        placeholder="Mustermann"
+        type="text"
+      />
+      <InputFieldComponent
+        name="nationality"
+        label="Nationality"
+        placeholder="German"
+        type="text"
+      />
+      <InputFieldComponent
+        name="university"
+        label="University"
+        placeholder="TUM"
+        type="text"
+      />
+      <InputFieldComponent
+        name="degree_level"
+        label="Degree Level"
+        placeholder="B.Sc."
+        type="text"
+      />
+      <InputFieldComponent
+        name="degree_name"
+        label="Degree name"
+        placeholder="Computer Science"
+        type="text"
+      />
+      <InputFieldComponent
+        name="degree_semester"
+        label="Semester"
+        placeholder="2"
+        type="number"
+      />
+      {/*
+      <InputFieldComponent
+        name="currentJob"
+        label="Current job"
+        placeholder="Software Engineer"
+        type="text"
+      />
+    */}
+    </div>
+    <InputFieldComponent
+      name="description"
+      label="Description"
+      placeholder="I am a student at TUM."
+      type="text"
+    />
+  </>
+);
+
+const InputFieldComponent = ({ name, label, placeholder, type }) => (
+  <div>
+    <Field
+      as={Input}
+      name={name}
+      label={label}
+      placeholder={placeholder}
+      type={type}
+      fullWidth
+    />
+    <ErrorMessage name={name} />
+  </div>
+);
+
+function SocialNetworks() {
+  const { values, setFieldValue } = useFormikContext<ProfileFormData>();
+  if (!values.social_networks) return null;
+  return (
+    <FieldArray name="social_networks">
+      {(arrayHelpers) => (
+        <div className="pt-3">
+          <h2 className="text-2xl">Social Networks</h2>
+          <p className="font-light">Add relevant social media networks here.</p>
+          <div className="col-span-2 mt-3 w-full space-y-4">
+            {values.social_networks.map((network, index) => (
+              <div
+                key={index}
+                className="space-y-3 rounded-2xl border-2 border-gray-100/30 p-4"
+              >
+                <div>
+                  <Field
+                    as={Select}
+                    name={`social_networks[${index}].type`}
+                    selectedItem={{ key: network.type, value: network.type }}
+                    placeholder="Select a type"
+                    options={SOCIAL_NETWORKS_TYPES}
+                    disabled={false}
+                    setSelectedItem={(itemValue: string) => {
+                      setFieldValue(
+                        `social_networks[${index}].type`,
+                        itemValue,
+                      );
+                    }}
+                  />
+                  <ErrorMessage name={`social_networks[${index}].type`} />
+                </div>
+                <InputFieldComponent
+                  name={`social_networks[${index}].link`}
+                  label="Link"
+                  placeholder="https://www.linkedin.com/in/maxmustermann/"
+                  type="text"
+                />
+                <Button
+                  onClick={() => arrayHelpers.remove(index)}
+                  icon={<TrashIcon />}
+                  variant={"secondary"}
+                >
+                  Remove
+                </Button>
+              </div>
+            ))}
+            <Button
+              onClick={() =>
+                arrayHelpers.push({
+                  handle: "tum_ai",
+                  type: "github",
+                  link: "",
+                })
+              }
+              icon={<PlusIcon />}
+            >
+              Add Social Network
+            </Button>
+          </div>
+        </div>
+      )}
+    </FieldArray>
   );
 }
 
 function JobExperience() {
-  const { meModel } = useStores();
-  const editorProfile = meModel.editorProfile;
-
-  function handleAddExperience(type, newExperience) {
-    if (!editorProfile[type]) {
-      meModel.updateEditorProfile({
-        [type]: [newExperience],
-      });
-      return;
-    }
-
-    meModel.updateEditorProfile({
-      [type]: [...editorProfile[type], newExperience],
-    });
-  }
-
-  function handleRemoveExperience(index, type) {
-    const updatedExperience = [...editorProfile[type]];
-    updatedExperience.splice(index, 1);
-    meModel.updateEditorProfile({
-      [type]: updatedExperience,
-    });
-  }
-
-  function handleListItemChange(event, index, type) {
-    const { name, value } = event.target;
-    const updatedProfile = editorProfile[type].map((item, i) => {
-      return i === index ? { ...item, [name]: value } : item;
-    });
-    meModel.updateEditorProfile({ [type]: updatedProfile });
-  }
-
+  const { values, setFieldValue } = useFormikContext<ProfileFormData>();
+  if (!values.job_history) return null;
   return (
-    <div className="col-span-2 w-full space-y-4">
-      <div className="col-span-2 text-xl font-light">Job history</div>
-      <div className="col-span-2 font-light">
-        You can update your job history and add your previous work experience
-        here.
-      </div>
-      {editorProfile.job_history &&
-        editorProfile.job_history.map((experience, index) => (
-          <div key={index} className="rounded-2xl border-2 border-gray-100 p-4">
-            <Input
-              label="Employer"
-              type="text"
-              name="employer"
-              value={experience.employer}
-              required={true}
-              onChange={(e) => handleListItemChange(e, index, "job_history")}
-            />
-            <Input
-              label="Position"
-              type="text"
-              name="position"
-              required={true}
-              value={experience.position}
-              onChange={(e) => handleListItemChange(e, index, "job_history")}
-            />
-            <Input
-              label="Start date"
-              type="date"
-              name="date_from"
-              required={true}
-              value={experience.date_from}
-              onChange={(e) => handleListItemChange(e, index, "job_history")}
-            />
-            <Input
-              label="End date"
-              type="date"
-              name="date_to"
-              required={true}
-              value={experience.date_to}
-              onChange={(e) => handleListItemChange(e, index, "job_history")}
-            />
-            <button
-              onClick={() => handleRemoveExperience(index, "job_history")}
+    <FieldArray
+      name="job_history"
+      render={(arrayHelpers) => (
+        <div>
+          <h2 className="text-2xl">Job History</h2>
+          <p className="font-light">Update your job history here.</p>
+          <div className="mt-5 space-y-6">
+            {values.job_history.map((job, index) => (
+              <div
+                key={index}
+                className="grid-cols-2 gap-8 rounded-2xl border-2 border-gray-100/30 p-4 sm:grid xl:grid-cols-4"
+              >
+                <InputFieldComponent
+                  name={`job_history[${index}].employer`}
+                  label="Employer"
+                  placeholder="Google"
+                  type="text"
+                />
+                <InputFieldComponent
+                  name={`job_history[${index}].position`}
+                  label="Position"
+                  placeholder="Software Engineer"
+                  type="text"
+                />
+                <InputFieldComponent
+                  name={`job_history[${index}].date_from`}
+                  label="Start date"
+                  placeholder="2020-01-01"
+                  type="date"
+                />
+                <InputFieldComponent
+                  name={`job_history[${index}].date_to`}
+                  label="End date"
+                  placeholder="2020-01-01"
+                  type="date"
+                />
+                <Button
+                  className="mt-2"
+                  onClick={() => arrayHelpers.remove(index)}
+                  icon={<TrashIcon />}
+                  variant={"secondary"}
+                >
+                  Remove
+                </Button>
+              </div>
+            ))}
+            <Button
+              onClick={() => arrayHelpers.push(NEW_JOB_EXPERIENCE)}
+              icon={<PlusIcon />}
             >
-              Remove
-            </button>
+              Add Work Experience
+            </Button>
           </div>
-        ))}
-      <button
-        className="mt-4 rounded-lg bg-gray-200 p-2 hover:text-black hover:underline dark:bg-gray-700 dark:hover:text-white"
-        onClick={() => handleAddExperience("job_history", newJobExperience)}
-      >
-        Add Work Experience
-      </button>
-    </div>
+        </div>
+      )}
+    />
   );
 }
 
-export default observer(ProfileEditor);
+export default ProfileEditor;
