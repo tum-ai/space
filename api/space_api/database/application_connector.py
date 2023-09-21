@@ -6,12 +6,22 @@ from space_api.applications.api_models import ApplicationReferralInOut
 from .db_models import Application, ApplicationReferral
 
 
-def list_db_applications(sql_engine: sa.Engine, page: int,
-                         page_size: int) -> list[Application]:
+def list_db_applications(sql_engine: sa.Engine, page: int | None,
+                         page_size: int | None,
+                         form_type: str | None) -> list[Application]:
     with Session(sql_engine) as db_session:
-        db_applications: list[Application] = (
-            db_session.query(Application).offset(
-                page_size * (page - 1)).limit(page_size).all())
+
+        query = db_session.query(Application)
+
+        if (page_size and page):
+            query.offset(page_size * (page - 1)).limit(page_size)
+
+        if (form_type):
+            # TODO: This does not work
+            query.filter(
+                Application.submission['formName']['data'] == form_type)
+
+        db_applications: list[Application] = query.all()
 
         for db_application in db_applications:
             db_application.force_load()

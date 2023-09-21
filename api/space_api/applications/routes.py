@@ -32,20 +32,25 @@ router = APIRouter()
 
 @router.get(
     "/applications/",
-    response_description="List all applications",
+    summary="List all applications",
+    description="List all applications from all forms",
+    response_description="A list of all applications including reviews",
     response_model=ResponseRetrieveApplications | ErrorResponse,
 )
-@enable_paging(max_page_size=100)
 @error_handlers
 @ensure_authorization(any_of_roles=["submit_reviews"], )
-def list_applications(request: Request,
-                      page: int = 1,
-                      page_size: int = 100) -> dict:
+def list_applications(
+    request: Request,
+    page: int | None = None,
+    page_size: int | None = 100,
+    form_type: str | None = None,
+) -> dict:
     db_applications = list_db_applications(request.app.state.sql_engine, page,
-                                           page_size)
+                                           page_size, form_type)
     out_applications: list[ApplicationOut] = [
         ApplicationOut.from_db_model(p) for p in db_applications
     ]
+
     return {
         "status_code": 200,
         "response_type": "success",
