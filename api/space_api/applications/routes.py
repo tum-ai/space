@@ -46,8 +46,7 @@ def list_applications(
     form_type: str | None = None,
     search: str | None = None,
 ) -> dict:
-    db_applications = list_db_applications(request.app.state.sql_engine,
-                                           page,
+    db_applications = list_db_applications(request.app.state.sql_engine, page,
                                            page_size)
     out_applications: list[ApplicationOut] | filter[ApplicationOut] = [
         ApplicationOut.from_db_model(p) for p in db_applications
@@ -55,16 +54,12 @@ def list_applications(
 
     if (form_type):
         out_applications = filter(
-            lambda application:
-            application.submission["data"]["formName"] == form_type,
-            out_applications)
+            lambda application: application.submission["data"]["formName"] ==
+            form_type, out_applications)
 
     if (search):
-        out_applications = filter((
-            lambda application: search.lower() in str(application.submission)
-            .lower()),
-            out_applications
-        )
+        out_applications = filter((lambda application: search.lower() in str(
+            application.submission).lower()), out_applications)
 
     return {
         "status_code": 200,
@@ -76,13 +71,13 @@ def list_applications(
     }
 
 
-@ router.get(
+@router.get(
     "/application/{application_id}",
     response_description="List all applications",
     response_model=ResponseRetrieveApplication | ErrorResponse,
 )
-@ ensure_authorization(any_of_roles=["submit_reviews"], )
-@ error_handlers
+@ensure_authorization(any_of_roles=["submit_reviews"], )
+@error_handlers
 def list_application(request: Request, application_id: int) -> dict:
     db_application = list_db_application(request.app.state.sql_engine,
                                          application_id)
@@ -96,12 +91,12 @@ def list_application(request: Request, application_id: int) -> dict:
     }
 
 
-@ router.post(
+@router.post(
     "/application/submit/",
     response_description="Submit application.",
     response_model=ResponseSubmitApplication,
 )
-@ error_handlers
+@error_handlers
 def submit_application(request: Request, payload: dict) -> dict:
     create_db_application(request.app.state.sql_engine, payload)
 
@@ -115,14 +110,14 @@ def submit_application(request: Request, payload: dict) -> dict:
 # Referrals
 
 
-@ router.get(
+@router.get(
     "/application/referrals/",
     response_description="List all referrals",
     response_model=ResponseRetrieveReferrals | ErrorResponse,
 )
-@ enable_paging(max_page_size=100)
-@ error_handlers
-@ ensure_authenticated
+@enable_paging(max_page_size=100)
+@error_handlers
+@ensure_authenticated
 def list_referrals(request: Request,
                    page: int = 1,
                    page_size: int = 100) -> dict:
@@ -141,13 +136,13 @@ def list_referrals(request: Request,
     }
 
 
-@ router.post(
+@router.post(
     "/application/referral/",
     response_description="Submit referral.",
     response_model=ResponseSubmitReferral,
 )
-@ error_handlers
-@ ensure_authenticated
+@error_handlers
+@ensure_authenticated
 def submit_referral(
         request: Request, data: Annotated[ApplicationReferralInOut,
                                           Body(embed=True)]) -> dict:
@@ -161,13 +156,13 @@ def submit_referral(
     }
 
 
-@ router.delete(
+@router.delete(
     "/application/referral/",
     response_description="Delete referral.",
     response_model=ResponseDeleteReferral,
 )
-@ error_handlers
-@ ensure_authenticated
+@error_handlers
+@ensure_authenticated
 def delete_referral(request: Request, email: str) -> dict:
     delete_db_referral(request.app.state.sql_engine, request.state.profile.id,
                        email)
@@ -179,13 +174,13 @@ def delete_referral(request: Request, email: str) -> dict:
     }
 
 
-@ router.delete(
+@router.delete(
     "/applications/delete_application/",
     response_description="Delete a review of a membership application.",
     response_model=ResponseDeleteApplication,
 )
-@ error_handlers
-@ ensure_authorization(any_of_roles=["admin"], )
+@error_handlers
+@ensure_authorization(any_of_roles=["admin"], )
 def delete_application(request: Request, id: int) -> dict:
     review_deleted = delete_db_application(request.app.state.sql_engine, id)
 

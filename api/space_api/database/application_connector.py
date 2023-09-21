@@ -6,8 +6,7 @@ from space_api.applications.api_models import ApplicationReferralInOut
 from .db_models import Application, ApplicationReferral
 
 
-def list_db_applications(sql_engine: sa.Engine,
-                         page: int | None,
+def list_db_applications(sql_engine: sa.Engine, page: int | None,
                          page_size: int | None) -> list[Application]:
     with Session(sql_engine) as db_session:
 
@@ -39,8 +38,6 @@ def list_db_application(sql_engine: sa.Engine,
 def create_db_application(
     sql_engine: sa.Engine,
     submission: dict,
-
-
 ) -> Application:
     with Session(sql_engine) as db_session:
         db_application = Application(submission=submission)
@@ -59,10 +56,9 @@ def list_db_referrals(sql_engine: sa.Engine, referer_id: int, page: int,
                       page_size: int) -> list[ApplicationReferral]:
     with Session(sql_engine) as db_session:
         db_referrals: list[ApplicationReferral] = (
-            db_session.query(ApplicationReferral)
-            .filter(ApplicationReferral.referer_id == referer_id)
-            .offset(page_size * (page - 1)).limit(page_size)
-            .all())
+            db_session.query(ApplicationReferral).filter(
+                ApplicationReferral.referer_id == referer_id).offset(
+                    page_size * (page - 1)).limit(page_size).all())
 
         for db_referral in db_referrals:
             db_referral.force_load()
@@ -98,13 +94,9 @@ def delete_db_referral(
     email: str,
 ) -> bool:
     with Session(sql_engine) as db_session:
-        db_referral = (db_session
-                       .query(ApplicationReferral)
-                       .filter(
-                           sa.and_(
-                               ApplicationReferral.referer_id == referer_id,
-                               ApplicationReferral.email == email))
-                       .first())
+        db_referral = (db_session.query(ApplicationReferral).filter(
+            sa.and_(ApplicationReferral.referer_id == referer_id,
+                    ApplicationReferral.email == email)).first())
 
         if db_referral:
             db_session.delete(db_referral)
