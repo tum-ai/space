@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Application } from "@models/application";
 import { Filter } from "util/types/filter";
 import { useQuery } from "@tanstack/react-query";
@@ -24,7 +24,23 @@ export const useReviewTool = (page_size = 100) => {
             search: serverSearching ? search : null,
           },
         })
-        .then((res) => res.data.data as Application[]),
+        .then((res) => res.data.data as Application[])
+        .then((res) => {
+          if (!filters.formName) {
+            const formNames = getFormNames();
+            if (formNames.length) {
+              setFilters((prev) => ({
+                ...prev,
+                formName: {
+                  name: formNames[0],
+                  predicate: (application) =>
+                    application.submission.data.formName === formNames[0],
+                },
+              }));
+            }
+          }
+          return res;
+        }),
   });
 
   const increasePage = () => setPage((old) => old + 1);
@@ -62,31 +78,15 @@ export const useReviewTool = (page_size = 100) => {
     .filter(searchFilter)
     .sort(finalScoreComparator);
 
-    const getFormNames = () => {
-      return [
-        ...new Set(
-          query.data?.map((application) => {
-            return application.submission?.data?.formName;
-          }),
-        ),
-      ];
-    };
-  
-    useEffect(() => {
-      if (query.data && !filters.formName) {
-        const formNames = getFormNames();
-        if (formNames && formNames.length > 0) {
-          setFilters((prev) => ({
-            ...prev,
-            formName: {
-              name: formNames[0],
-              predicate: (application) =>
-                application.submission.data.formName === formNames[0],
-            },
-          }));
-        }
-      }
-    }, [query.data]);
+  const getFormNames = () => {
+    return [
+      ...new Set(
+        query.data?.map((application) => {
+          return application.submission?.data?.formName;
+        }),
+      ),
+    ];
+  };
 
   return {
     applications,
