@@ -49,7 +49,7 @@ def list_applications(
     db_applications = list_db_applications(request.app.state.sql_engine,
                                            page,
                                            page_size)
-    out_applications: list[ApplicationOut] = [
+    out_applications: list[ApplicationOut] | filter[ApplicationOut] = [
         ApplicationOut.from_db_model(p) for p in db_applications
     ]
 
