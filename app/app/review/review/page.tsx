@@ -1,5 +1,4 @@
 "use client";
-import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { ReviewFormComponent } from "./_components/ReviewForm";
 import { ApplicationOverview } from "../_components/applicationOverview";
@@ -9,11 +8,12 @@ import { Application } from "@models/application";
 import { Section } from "@components/Section";
 import { Button } from "@components/Button";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
+import { useRouter, useSearchParams } from "next/navigation";
 
 function Review() {
   const router = useRouter();
   const [currentId, setCurrentId] = useState<number>(null);
-  const id = router.query.id;
+  const id = useSearchParams().get("id");
 
   useEffect(() => {
     if (id) setCurrentId(Number(id));
@@ -22,13 +22,13 @@ function Review() {
   const goToNext = () => {
     const newId = currentId + 1;
     setCurrentId(newId);
-    router.push(`/review/review?id=${newId}`, undefined, { shallow: true });
+    router.push(`/review/review?id=${newId}`, undefined);
   };
 
   const goToPrevious = () => {
     const newId = currentId - 1;
     setCurrentId(newId);
-    router.push(`/review/review?id=${newId}`, undefined, { shallow: true });
+    router.push(`/review/review?id=${newId}`, undefined);
   };
 
   const query = useQuery({
