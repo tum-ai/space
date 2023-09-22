@@ -7,6 +7,7 @@ import * as Yup from "yup";
 import { FormProps } from "./ReviewForm";
 import toast from "react-hot-toast";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 
 export const MembershipReviewForm = ({ application, form }: FormProps) => {
   const applicationId = application?.id;
@@ -54,8 +55,9 @@ export const MembershipReviewForm = ({ application, form }: FormProps) => {
     No: "NO",
   };
 
-  const submitReview = (values: FormikValues) => {
-    toast.promise(
+  const router = useRouter();
+  const submitReview = async (values: FormikValues) => {
+    await toast.promise(
       axios.post("/review_tool/application_review", {
         data: {
           form: values,
@@ -69,6 +71,8 @@ export const MembershipReviewForm = ({ application, form }: FormProps) => {
         error: "Failed to submit review",
       },
     );
+
+    router.push("/review");
   };
 
   const updateReview = (values: FormikValues, id: number) => {
