@@ -37,7 +37,7 @@ export const ApplicationOverview = ({ application }: Props) => {
 
       <hr className="border-2 border-black dark:border-white" />
 
-      <div className="grid gap-x-4 gap-y-8 lg:grid-cols-2">
+      <dl className="grid gap-x-4 gap-y-8 lg:grid-cols-2">
         <div>
           <dt className="mb-1 text-sm font-thin text-gray-500">ID:</dt>
           <dd>{application.id}</dd>
@@ -55,9 +55,7 @@ export const ApplicationOverview = ({ application }: Props) => {
               new Date(application.submission?.data?.createdAt).toDateString()}
           </dd>
         </div>
-      </div>
 
-      <div className="grid gap-x-4 gap-y-8 lg:grid-cols-2">
         {application.submission?.data?.fields
           ?.sort((fieldA) => {
             if (typeof fieldA.value == "boolean") {
@@ -71,7 +69,7 @@ export const ApplicationOverview = ({ application }: Props) => {
           .map((field: TallyField) => (
             <TallyFieldComp field={field} key={field.key} />
           ))}
-      </div>
+      </dl>
     </div>
   );
 };
