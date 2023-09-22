@@ -51,9 +51,7 @@ export const ApplicationOverview = ({ application }: Props) => {
                       <Link
                         target="_blank"
                         className="text-blue-500"
-                        href={`${field.type != "FILE_UPLOAD" ? "//" : ""}${
-                          field.value[0].url || field.value || null
-                        }`}
+                        href={field.value[0].url || field.value || null}
                       >
                         {field.value[0].url || field.value || null ? (
                           <p>link</p>
