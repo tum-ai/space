@@ -107,7 +107,8 @@ const TallyFieldComp = ({ field }: TallyFieldCompProps) => {
         <dt className="mb-1 text-sm font-thin text-gray-500">{field.label}</dt>
         <dd>
           {(field.value as string[]).map(
-            (value) => field.options.find((option) => option.id === value).text,
+            (value) =>
+              field.options.find((option) => option.id === value)?.text,
           )}
         </dd>
       </div>
