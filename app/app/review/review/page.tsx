@@ -1,22 +1,35 @@
 "use client";
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { ReviewFormComponent } from "./_components/ReviewForm";
 import { ApplicationOverview } from "../_components/applicationOverview";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { Application } from "@models/application";
-import { useSearchParams } from "next/navigation";
 import { Section } from "@components/Section";
 import { Button } from "@components/Button";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 
 function Review() {
+  const router = useRouter();
   const [currentId, setCurrentId] = useState<number>(null);
-  const id = useSearchParams().get("id");
+  const id = router.query.id;
 
   useEffect(() => {
     if (id) setCurrentId(Number(id));
   }, [id]);
+
+  const goToNext = () => {
+    const newId = currentId + 1;
+    setCurrentId(newId);
+    router.push(`/review/review?id=${newId}`, undefined, { shallow: true });
+  };
+
+  const goToPrevious = () => {
+    const newId = currentId - 1;
+    setCurrentId(newId);
+    router.push(`/review/review?id=${newId}`, undefined, { shallow: true });
+  };
 
   const query = useQuery({
     enabled: !!currentId,
@@ -26,9 +39,6 @@ function Review() {
         .get(`/application/${currentId}`)
         .then((res) => res.data.data as Application),
   });
-
-  const goToNext = () => setCurrentId((prevId) => prevId + 1);
-  const goToPrevious = () => setCurrentId((prevId) => prevId - 1);
 
   if (!query.data || query.error) {
     return (
