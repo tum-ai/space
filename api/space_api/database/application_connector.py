@@ -24,13 +24,13 @@ def list_db_applications(sql_engine: sa.Engine,
 
         query = db_session.query(Application)
 
-        if (page_size and page):
-            query = query.offset(page_size * (page - 1)).limit(page_size)
-
         if (form_type):
             query = query.filter(
                 Application.submission['data']['formName'].astext == form_type
             )
+
+        if (page_size and page):
+            query = query.offset(page_size * (page - 1)).limit(page_size)
 
         db_applications: list[Application] = query.all()
 
