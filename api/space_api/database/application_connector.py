@@ -13,7 +13,7 @@ def list_db_applications(sql_engine: sa.Engine, page: int | None,
         query = db_session.query(Application)
 
         if (page_size and page):
-            query.offset(page_size * (page - 1)).limit(page_size)
+            query = query.offset(page_size * (page - 1)).limit(page_size)
 
         db_applications: list[Application] = query.all()
 
