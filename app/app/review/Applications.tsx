@@ -25,7 +25,7 @@ export const Applications = () => {
     handleSearch,
     isLoading,
     error,
-    getFormNames,
+    formNames,
     page,
     increasePage,
     decreasePage,
@@ -57,24 +57,13 @@ export const Applications = () => {
             <Select
               placeholder={"Form"}
               options={[
-                ...(getFormNames()?.map((formName) => ({
+                ...(formNames.map((formName) => ({
                   key: formName,
                   value: formName,
                 })) || []),
               ]}
-              value={
-                filters?.formName?.name || (getFormNames() && getFormNames()[0])
-              }
-              setSelectedItem={(item) => {
-                setFilters((old) => ({
-                  ...old,
-                  formName: {
-                    name: item,
-                    predicate: (application) =>
-                      application.submission.data.formName === item,
-                  },
-                }));
-              }}
+              value={filters?.formName?.name}
+              setSelectedItem={(item) => setFilters("formName", item)}
             />
 
             <Button
