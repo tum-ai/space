@@ -53,7 +53,6 @@ def list_applications(
         ApplicationOut.from_db_model(p) for p in db_applications
     ]
 
-
     # Those things should be done in the DB
     if (form_type):
         out_applications = filter(
@@ -65,7 +64,7 @@ def list_applications(
             application.submission).lower()), out_applications)
 
     if (not with_pictures):
-        for out_application in out_applications:
+        for out_application in out_applications:  # type: ignore
             for review in out_application.reviews:
                 review.reviewer.profile_picture = None
 
