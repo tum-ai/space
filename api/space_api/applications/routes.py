@@ -31,10 +31,8 @@ from .response_models import (
 router = APIRouter()
 
 
-@router.get(
-    "/applications/info",
-    summary="Get information about available forms"
-)
+@router.get("/applications/info",
+            summary="Get information about available forms")
 @error_handlers
 @ensure_authorization(any_of_roles=["submit_reviews"], )
 def get_form_types(request: Request) -> dict:
@@ -67,10 +65,8 @@ def list_applications(
     form_type: str | None = None,
     search: str | None = None,
 ) -> dict:
-    db_applications = list_db_applications(request.app.state.sql_engine,
-                                           page,
-                                           page_size,
-                                           form_type)
+    db_applications = list_db_applications(request.app.state.sql_engine, page,
+                                           page_size, form_type)
 
     out_applications: list[ApplicationOut] | filter[ApplicationOut] = [
         ApplicationOut.from_db_model(p) for p in db_applications

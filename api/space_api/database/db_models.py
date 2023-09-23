@@ -268,7 +268,7 @@ class DepartmentMembership(MixinAsDict, SaBaseModel):
 
     department_handle: Mapped[str] = mapped_column(ForeignKey(
         Department.handle),
-        nullable=False)
+                                                   nullable=False)
     department: Mapped["Department"] = relationship(
         "Department", back_populates="memberships")
 
@@ -342,8 +342,8 @@ class Application(MixinAsDict, SaBaseModel):
 
     # MANAGED FIELDS
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    submission: Mapped[dict[str, Any]] = mapped_column(
-        postgresql.JSON, nullable=False)
+    submission: Mapped[dict[str, Any]] = mapped_column(postgresql.JSON,
+                                                       nullable=False)
 
     # RELATIONAL FK FIELDS
     # back reference from ApplicationReview
