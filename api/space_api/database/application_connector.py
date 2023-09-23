@@ -6,6 +6,15 @@ from space_api.applications.api_models import ApplicationReferralInOut
 from .db_models import Application, ApplicationReferral
 
 
+def get_db_form_types(sql_engine: sa.Engine):
+    with Session(sql_engine) as db_session:
+        db_form_types = db_session.query(
+            sa.func.distinct(Application.submission['data']['formName'].astext)
+        ).all()
+
+        return db_form_types
+
+
 def list_db_applications(sql_engine: sa.Engine,
                          page: int | None,
                          page_size: int | None,
