@@ -46,16 +46,14 @@ def list_applications(
     form_type: str | None = None,
     search: str | None = None,
 ) -> dict:
-    db_applications = list_db_applications(request.app.state.sql_engine, page,
-                                           page_size)
+    db_applications = list_db_applications(request.app.state.sql_engine,
+                                           page,
+                                           page_size,
+                                           form_type)
+
     out_applications: list[ApplicationOut] | filter[ApplicationOut] = [
         ApplicationOut.from_db_model(p) for p in db_applications
     ]
-
-    if (form_type):
-        out_applications = filter(
-            lambda application: application.submission["data"]["formName"] ==
-            form_type, out_applications)
 
     if (search):
         out_applications = filter((lambda application: search.lower() in str(
