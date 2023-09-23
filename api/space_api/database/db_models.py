@@ -16,6 +16,7 @@ from sqlalchemy import (
     String,
     func,
 )
+from sqlalchemy.dialects import postgresql
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
@@ -341,7 +342,8 @@ class Application(MixinAsDict, SaBaseModel):
 
     # MANAGED FIELDS
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    submission: Mapped[str] = mapped_column(JSON, nullable=False)
+    submission: Mapped[dict[str, Any]] = mapped_column(postgresql.JSON,
+                                                       nullable=False)
 
     # RELATIONAL FK FIELDS
     # back reference from ApplicationReview

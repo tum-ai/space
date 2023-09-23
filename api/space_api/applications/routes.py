@@ -7,6 +7,7 @@ from space_api.database.application_connector import (
     create_db_referral,
     delete_db_application,
     delete_db_referral,
+    get_db_form_types,
     list_db_application,
     list_db_applications,
     list_db_referrals,
@@ -30,6 +31,24 @@ from .response_models import (
 router = APIRouter()
 
 
+@router.get("/applications/info",
+            summary="Get information about available forms")
+@error_handlers
+@ensure_authorization(any_of_roles=["submit_reviews"], )
+def get_form_types(request: Request) -> dict:
+    db_form_types = get_db_form_types(request.app.state.sql_engine)
+    for form_type in db_form_types:
+        print(form_type)
+    out_form_types = {name for name, in db_form_types}
+
+    return {
+        "status_code": 200,
+        "response_type": "success",
+        "description": "PublicProfile list successfully received",
+        "data": out_form_types,
+    }
+
+
 @router.get(
     "/applications/",
     summary="List all applications",
@@ -48,16 +67,11 @@ def list_applications(
     with_pictures: bool = False,
 ) -> dict:
     db_applications = list_db_applications(request.app.state.sql_engine, page,
-                                           page_size)
+                                           page_size, form_type)
+
     out_applications: list[ApplicationOut] | filter[ApplicationOut] = [
         ApplicationOut.from_db_model(p) for p in db_applications
     ]
-
-    # Those things should be done in the DB
-    if (form_type):
-        out_applications = filter(
-            lambda application: application.submission["data"]["formName"] ==
-            form_type, out_applications)
 
     if (search):
         out_applications = filter((lambda application: search.lower() in str(
