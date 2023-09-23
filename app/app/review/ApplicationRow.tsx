@@ -1,5 +1,4 @@
 "use client";
-import { Avatar } from "@components/Avatar";
 import { Button } from "@components/Button";
 import ProtectedItem from "@components/ProtectedItem";
 import Tooltip from "@components/Tooltip";
@@ -9,6 +8,7 @@ import Link from "next/link";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { DocumentMagnifyingGlassIcon } from "@heroicons/react/24/outline";
 
 export function ApplicationRow({ application }) {
   const queryClient = useQueryClient();
@@ -28,45 +28,38 @@ export function ApplicationRow({ application }) {
   return (
     <tr className="border-b dark:border-gray-500 " key={application.id}>
       <td>{application.id}</td>
-      <td>{application.submission?.data?.formName}</td>
-      <td className="flex items-center justify-center gap-1 p-4">
-        {application.reviews?.map((review: Review, i: number) => {
-          const profile = review.reviewer;
-          return (
-            <ViewReview
-              applicationToView={application}
-              viewReview={review}
-              key={`application-${application.id}-review-${i}`}
-              trigger={
-                <span>
-                  <Tooltip
-                    trigger={
-                      <div className="cursor-pointer">
-                        <Avatar
-                          variant={"circle"}
-                          profilePicture={profile.profile_picture}
-                          initials={(
-                            "" +
-                            profile.first_name[0] +
-                            profile.last_name[0]
-                          ).toUpperCase()}
-                        />
+      <td>
+        <div className="flex items-center justify-center gap-1">
+          {application.reviews?.map((review: Review, i: number) => {
+            const profile = review.reviewer;
+            return (
+              <ViewReview
+                applicationToView={application}
+                viewReview={review}
+                key={`application-${application.id}-review-${i}`}
+                trigger={
+                  <span>
+                    <Tooltip
+                      trigger={
+                        <div className="cursor-pointer">
+                          <DocumentMagnifyingGlassIcon className="h-8" />
+                        </div>
+                      }
+                    >
+                      <div>
+                        {profile.first_name +
+                          " " +
+                          profile.last_name +
+                          " - final score: " +
+                          review.finalscore}
                       </div>
-                    }
-                  >
-                    <div>
-                      {profile.first_name +
-                        " " +
-                        profile.last_name +
-                        " - final score: " +
-                        review.finalscore}
-                    </div>
-                  </Tooltip>
-                </span>
-              }
-            />
-          );
-        })}
+                    </Tooltip>
+                  </span>
+                }
+              />
+            );
+          })}
+        </div>
       </td>
       <td>
         {Math.round((finalScoreSum * 100) / application.reviews?.length) /
