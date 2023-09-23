@@ -64,6 +64,7 @@ def list_applications(
     page_size: int | None = 100,
     form_type: str | None = None,
     search: str | None = None,
+    with_pictures: bool = False,
 ) -> dict:
     db_applications = list_db_applications(request.app.state.sql_engine, page,
                                            page_size, form_type)
@@ -75,6 +76,11 @@ def list_applications(
     if (search):
         out_applications = filter((lambda application: search.lower() in str(
             application.submission).lower()), out_applications)
+
+    if (not with_pictures):
+        for out_application in out_applications:  # type: ignore
+            for review in out_application.reviews:
+                review.reviewer.profile_picture = None
 
     return {
         "status_code": 200,

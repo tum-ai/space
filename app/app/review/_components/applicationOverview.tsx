@@ -1,6 +1,31 @@
-import { Checkbox } from "@components/Checkbox";
 import { Application } from "@models/application";
 import Link from "next/link";
+
+interface TallyFileUpload {
+  id: string;
+  mimeType: string;
+  name: string;
+  url: string;
+}
+
+interface TallyField {
+  key: string;
+  value?: string | string[] | TallyFileUpload[];
+  label?: string;
+  options?: { id: string; text: string }[];
+  type:
+    | "CHECKBOXES"
+    | "INPUT_TEXT"
+    | "INPUT_EMAIL"
+    | "INPUT_PHONE_NUMBER"
+    | "DROPDOWN"
+    | "INPUT_DATE"
+    | "FILE_UPLOAD"
+    | "INPUT_LINK"
+    | "MULTIPLE_CHOICE"
+    | "INPUT_NUMBER"
+    | "TEXTAREA";
+}
 
 interface Props {
   application: Application;
@@ -9,82 +34,89 @@ export const ApplicationOverview = ({ application }: Props) => {
   return (
     <div className="space-y-4 pb-16">
       <div className="col-span-2 text-2xl">Application</div>
+
       <hr className="border-2 border-black dark:border-white" />
-      <div className="grid gap-4 lg:grid-cols-2">
+
+      <dl className="grid gap-x-4 gap-y-8 lg:grid-cols-2">
         <div>
-          <span className="font-thin">ID: </span>
-          {application.id}
+          <dt className="mb-1 text-sm font-thin text-gray-500">ID:</dt>
+          <dd>{application.id}</dd>
         </div>
+
         <div>
-          <span className="font-thin">From: </span>
-          {application.submission?.data?.formName}
+          <dt className="mb-1 text-sm font-thin text-gray-500">From:</dt>
+          <dd>{application.submission?.data?.formName}</dd>
         </div>
+
         <div>
-          <span className="font-thin">Created at: </span>
-          {application.submission?.data?.createdAt &&
-            new Date(application.submission?.data?.createdAt).toDateString()}
+          <dt className="mb-1 text-sm font-thin text-gray-500">Created at:</dt>
+          <dd>
+            {application.submission?.data?.createdAt &&
+              new Date(application.submission?.data?.createdAt).toDateString()}
+          </dd>
         </div>
-      </div>
-      <div className="grid gap-4 md:grid-cols-2">
+
         {application.submission?.data?.fields
-          ?.sort((fieldA, fieldB) => {
+          ?.sort((fieldA) => {
             if (typeof fieldA.value == "boolean") {
               return -1;
             }
           })
-          .filter((field) => field.value != null && field.type != "CHECKBOXES")
-          .map((field) => {
-            return (
-              <div
-                key={field.label}
-                className={`${
-                  field.type == "TEXTAREA" ? "md:col-span-2" : ""
-                } border-b border-black pb-2 dark:border-white`}
-              >
-                <div className="font-thin">{field.label}</div>
-                {typeof field.value == "boolean" ? (
-                  <Checkbox checked={field.value} onCheckedChange={undefined} />
-                ) : (
-                  <div className="font-medium">
-                    {field.type == "FILE_UPLOAD" ||
-                    field.type == "INPUT_LINK" ? (
-                      <Link
-                        target="_blank"
-                        className="text-blue-500"
-                        href={`${field.type != "FILE_UPLOAD" ? "//" : ""}${
-                          field.value[0].url || field.value || null
-                        }`}
-                      >
-                        {field.value[0].url || field.value || null ? (
-                          <p>link</p>
-                        ) : (
-                          <p>-</p>
-                        )}
-                      </Link>
-                    ) : field.type == "CHECKBOXES" ||
-                      field.type == "DROPDOWN" ||
-                      field.type == "MULTIPLE_CHOICE" ? (
-                      <div>
-                        {field.value.map((choicId) => {
-                          const choice = field.options.find(
-                            (option) => option.id == choicId,
-                          );
-                          if (choice) {
-                            return choice.value || choice.text;
-                          } else {
-                            return "UNKNOWN";
-                          }
-                        })}
-                      </div>
-                    ) : (
-                      JSON.stringify(field.value).replaceAll('"', "")
-                    )}
-                  </div>
-                )}
-              </div>
-            );
-          })}
+          .filter(
+            (field: TallyField) =>
+              field.value && field.type !== "CHECKBOXES" && field.value !== ".",
+          )
+          .map((field: TallyField) => (
+            <TallyFieldComp field={field} key={field.key} />
+          ))}
+      </dl>
+    </div>
+  );
+};
+
+interface TallyFieldCompProps {
+  field: TallyField;
+}
+const TallyFieldComp = ({ field }: TallyFieldCompProps) => {
+  if (field.type === "INPUT_LINK") {
+    return (
+      <div>
+        <Link className="text-blue-500 underline" href={field.value as string}>
+          {field.label}
+        </Link>
       </div>
+    );
+  }
+
+  if (field.type === "FILE_UPLOAD") {
+    const fieldValue = field.value.at(0) as unknown as TallyFileUpload;
+    return (
+      <div>
+        <Link className="text-blue-500 underline" href={fieldValue.url}>
+          {field.label}
+        </Link>
+      </div>
+    );
+  }
+
+  if (field.type === "MULTIPLE_CHOICE" || field.type === "DROPDOWN") {
+    return (
+      <div>
+        <dt className="mb-1 text-sm font-thin text-gray-500">{field.label}</dt>
+        <dd>
+          {(field.value as string[]).map(
+            (value) =>
+              field.options.find((option) => option.id === value)?.text,
+          )}
+        </dd>
+      </div>
+    );
+  }
+
+  return (
+    <div className={field.type === "TEXTAREA" && "col-span-2"}>
+      <dt className="mb-2 text-sm font-thin text-gray-500">{field.label}</dt>
+      <dd>{field.value as string}</dd>
     </div>
   );
 };

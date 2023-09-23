@@ -137,8 +137,7 @@ export const Applications = () => {
           <thead>
             <tr className="border-b border-b-gray-400 dark:border-b-white">
               <th className="p-4">ID</th>
-              <th className="p-4">Form Name</th>
-              <th className="p-4">Reviewers</th>
+              <th className="p-4">Reviews</th>
               <th className="p-4">Avg. Final Score</th>
               <th className="p-4">Actions</th>
             </tr>
