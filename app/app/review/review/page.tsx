@@ -1,5 +1,4 @@
 "use client";
-import { useEffect, useState } from "react";
 import { ReviewFormComponent } from "./_components/ReviewForm";
 import { ApplicationOverview } from "../_components/applicationOverview";
 import { useQuery } from "@tanstack/react-query";
@@ -12,38 +11,32 @@ import { useRouter, useSearchParams } from "next/navigation";
 
 function Review() {
   const router = useRouter();
-  const [currentId, setCurrentId] = useState<number>(null);
-  const id = useSearchParams().get("id");
-
-  useEffect(() => {
-    if (id) setCurrentId(Number(id));
-  }, [id]);
+  const searchParams = useSearchParams();
+  const id = searchParams.get("id");
 
   const goToNext = () => {
-    const newId = currentId + 1;
-    setCurrentId(newId);
+    const newId = (Number(id) + 1).toString();
     router.push(`/review/review?id=${newId}`, undefined);
   };
 
   const goToPrevious = () => {
-    const newId = currentId - 1;
-    setCurrentId(newId);
+    const newId = (Number(id) - 1).toString();
     router.push(`/review/review?id=${newId}`, undefined);
   };
 
   const query = useQuery({
-    enabled: !!currentId,
-    queryKey: ["application", currentId],
+    enabled: !!id,
+    queryKey: ["application", id],
     queryFn: () =>
       axios
-        .get(`/application/${currentId}`)
+        .get(`/application/${id}`)
         .then((res) => res.data.data as Application),
   });
 
   if (!query.data || query.error) {
     return (
       <Section>
-        <h1>{`Failed to load Application with id ${currentId}`}</h1>
+        <h1>{`Failed to load Application with id ${id}`}</h1>
       </Section>
     );
   }
