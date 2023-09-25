@@ -118,7 +118,7 @@ function ProfileEditor({ trigger }) {
   };
 
   return (
-    <Dialog trigger={trigger || <Button>edit</Button>}>
+    <Dialog trigger={trigger}>
       <Formik
         initialValues={editorProfile}
         validationSchema={validationSchema}
@@ -154,11 +154,14 @@ const ProfileForm = ({ handleChange, editorProfile }) => (
   </Form>
 );
 
+const IconProps = "w-5 mr-2";
+
 const ProfileHeader = () => (
   <div className="flex items-center justify-between">
     <h1 className="text-3xl">Edit Profile</h1>
     <div className="col-span-2 flex space-x-2">
-      <Button type="submit" icon={<ArrowDownOnSquareStackIcon />}>
+      <Button type="submit">
+        <ArrowDownOnSquareStackIcon className={IconProps} />
         Save
       </Button>
       <DialogRadix.Close>
@@ -205,8 +208,8 @@ const UploadProfilePicture = ({ handleChange }) => (
   <Button
     type="button"
     onClick={() => document.getElementById("profile_picture").click()}
-    icon={<ArrowUpTrayIcon />}
   >
+    <ArrowUpTrayIcon className={IconProps} />
     <Input
       label="Upload picture"
       type="file"
@@ -335,9 +338,9 @@ function SocialNetworks() {
                 />
                 <Button
                   onClick={() => arrayHelpers.remove(index)}
-                  icon={<TrashIcon />}
                   variant={"secondary"}
                 >
+                  <TrashIcon className={IconProps} />
                   Remove
                 </Button>
               </div>
@@ -350,8 +353,8 @@ function SocialNetworks() {
                   link: "",
                 })
               }
-              icon={<PlusIcon />}
             >
+              <PlusIcon className={IconProps} />
               Add Social Network
             </Button>
           </div>
@@ -404,17 +407,15 @@ function JobExperience() {
                 <Button
                   className="mt-2"
                   onClick={() => arrayHelpers.remove(index)}
-                  icon={<TrashIcon />}
                   variant={"secondary"}
                 >
+                  <TrashIcon className={IconProps} />
                   Remove
                 </Button>
               </div>
             ))}
-            <Button
-              onClick={() => arrayHelpers.push(NEW_JOB_EXPERIENCE)}
-              icon={<PlusIcon />}
-            >
+            <Button onClick={() => arrayHelpers.push(NEW_JOB_EXPERIENCE)}>
+              <PlusIcon className={IconProps} />
               Add Work Experience
             </Button>
           </div>

@@ -20,7 +20,12 @@ function ProfileOverview({ profile, meModel, publicView }: Props) {
       {meModel && (
         <div className="absolute top-0 flex w-full justify-end p-4">
           <ProfileEditor
-            trigger={<Button icon={<PencilSquareIcon />}>Edit</Button>}
+            trigger={
+              <Button>
+                <PencilSquareIcon className="mr-2 w-5" />
+                Edit
+              </Button>
+            }
           />
         </div>
       )}
