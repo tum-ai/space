@@ -12,19 +12,45 @@ export const useReviewTool = (page_size = 100) => {
   const [filters, setFilters] = useState<Filters>({});
   const [search, setSearch] = useState("");
 
+  const updateFilter = (filterName: string, value: string) => {
+    setFilters((old) => ({
+      ...old,
+      [filterName]: {
+        name: value,
+        predicate: (application) =>
+          application.submission.data.formName === value,
+      },
+    }));
+  };
+
   const [page, setPage] = useState(1);
+
+  const infoQuery = useQuery({
+    queryKey: ["applications/info"],
+    queryFn: () =>
+      axios
+        .get("/applications/info")
+        .then((res) => res.data.data as string[])
+        .then((formNames) => {
+          updateFilter("formName", formNames.at(0));
+          return formNames;
+        }),
+  });
+
   const query = useQuery({
-    queryKey: ["applications", page, serverSearching && search],
+    queryKey: ["applications", page, serverSearching && search, filters],
     queryFn: () =>
       axios
         .get("/applications/", {
           params: {
             page,
             page_size,
+            form_type: filters.formName.name,
             search: serverSearching ? search : null,
           },
         })
         .then((res) => res.data.data as Application[]),
+    enabled: !!filters.formName?.name,
   });
 
   const increasePage = () => setPage((old) => old + 1);
@@ -62,16 +88,6 @@ export const useReviewTool = (page_size = 100) => {
     .filter(searchFilter)
     .sort(finalScoreComparator);
 
-  const getFormNames = () => {
-    return [
-      ...new Set(
-        query.data?.map((application) => {
-          return application.submission?.data?.formName;
-        }),
-      ),
-    ];
-  };
-
   return {
     applications,
     search,
@@ -81,10 +97,10 @@ export const useReviewTool = (page_size = 100) => {
     },
     handleSearch,
     filters,
-    setFilters,
+    setFilters: updateFilter,
     isLoading: query.isLoading,
     error: query.error,
-    getFormNames,
+    formNames: infoQuery.data ?? [],
     page,
     increasePage,
     decreasePage,

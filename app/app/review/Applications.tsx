@@ -25,7 +25,7 @@ export const Applications = () => {
     handleSearch,
     isLoading,
     error,
-    getFormNames,
+    formNames,
     page,
     increasePage,
     decreasePage,
@@ -54,32 +54,18 @@ export const Applications = () => {
         </div>
         <div className="flex flex-col items-end gap-2 lg:flex-row">
           <div className="flex max-w-full items-center gap-2 overflow-x-auto">
-            <div className="space-x-2">
-              <span className="font-thin">filters: </span>
-              {Object.keys(filters)?.length > 0 && (
-                <button onClick={() => setFilters({})}>Reset</button>
-              )}
-            </div>
             <Select
               placeholder={"Form"}
               options={[
-                ...(getFormNames()?.map((formName) => ({
+                ...(formNames.map((formName) => ({
                   key: formName,
                   value: formName,
                 })) || []),
               ]}
               value={filters?.formName?.name}
-              setSelectedItem={(item) => {
-                setFilters((old) => ({
-                  ...old,
-                  formName: {
-                    name: item,
-                    predicate: (application) =>
-                      application.submission.data.formName === item,
-                  },
-                }));
-              }}
+              setSelectedItem={(item) => setFilters("formName", item)}
             />
+
             <Button
               className="flex w-max items-center gap-2"
               onClick={() => {
@@ -151,8 +137,7 @@ export const Applications = () => {
           <thead>
             <tr className="border-b border-b-gray-400 dark:border-b-white">
               <th className="p-4">ID</th>
-              <th className="p-4">Form Name</th>
-              <th className="p-4">Reviewers</th>
+              <th className="p-4">Reviews</th>
               <th className="p-4">Avg. Final Score</th>
               <th className="p-4">Actions</th>
             </tr>
