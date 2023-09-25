@@ -37,6 +37,7 @@ function Review() {
     return (
       <Section>
         <h1>{`Failed to load Application with id ${id}`}</h1>
+        <NavigationButton onNext={goToNext} onPrev={goToPrevious} />
       </Section>
     );
   }
@@ -52,7 +53,7 @@ function Review() {
 
 const NavigationButton = ({ onNext, onPrev }) => {
   return (
-    <div className="absolute bottom-8 right-8 flex overflow-hidden rounded-md">
+    <div className="absolute bottom-8 right-8 flex overflow-hidden rounded-md shadow-md">
       <Button variant="default" onClick={onPrev} className="rounded-r-none">
         <ChevronLeftIcon className="h-5 w-5" />
       </Button>
