@@ -33,11 +33,10 @@ export interface ButtonProps
     VariantProps<typeof buttonVariants> {
   asChild?: boolean;
   loading?: boolean;
-  icon?: React.ReactElement;
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, asChild, icon, children, ...props }, ref) => {
+  ({ className, variant, asChild, children, ...props }, ref) => {
     const Comp = asChild ? Slot : "button";
 
     return (
@@ -46,11 +45,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         ref={ref}
         {...props}
       >
-        <span className="flex items-center">
-          {" "}
-          {icon && <span className="mr-2 w-5">{icon}</span>}
-          {children}
-        </span>
+        <span className="flex items-center">{children}</span>
       </Comp>
     );
   },
