@@ -22,7 +22,6 @@ const NEW_JOB_EXPERIENCE = {
   position: "",
   date_from: "",
   date_to: "",
-  currently_active: false,
 };
 
 const SOCIAL_NETWORKS_TYPES = [
@@ -41,7 +40,6 @@ type JobHistoryType = {
   position?: string | null;
   date_from?: Date | string | null;
   date_to?: Date | string | null;
-  currently_active?: boolean;
 };
 
 type SocialNetworkType = {
