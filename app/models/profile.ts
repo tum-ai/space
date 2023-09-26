@@ -1,6 +1,13 @@
 export interface SocialNetwork {
-  link: string; // URL
+  link: string;
   type: string;
+}
+
+export interface JobHistory {
+  employer: string;
+  position: string;
+  start_date: string;
+  end_date: string;
 }
 
 export interface Profile {
@@ -11,6 +18,7 @@ export interface Profile {
   description: string;
   profile_picture: string;
   socialNetworks: SocialNetwork[];
+  job_history: JobHistory[];
   department: string;
   previousDepartments: string[];
   degree_level: string; // TODO: this should probably be it's own type

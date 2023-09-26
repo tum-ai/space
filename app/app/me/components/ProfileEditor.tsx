@@ -22,6 +22,7 @@ const NEW_JOB_EXPERIENCE = {
   position: "",
   date_from: "",
   date_to: "",
+  currently_active: false,
 };
 
 const SOCIAL_NETWORKS_TYPES = [
@@ -40,6 +41,7 @@ type JobHistoryType = {
   position?: string | null;
   date_from?: Date | string | null;
   date_to?: Date | string | null;
+  currently_active?: boolean;
 };
 
 type SocialNetworkType = {
@@ -88,9 +90,10 @@ const validationSchema = Yup.object().shape({
       employer: Yup.string().required("Employer is required."),
       position: Yup.string().required("Position is required."),
       date_from: Yup.date().required("Start date is required."),
-      date_to: Yup.date()
-        .min(Yup.ref("date_from"), "End date must be after the start date.")
-        .required("End date is required."),
+      date_to: Yup.date().min(
+        Yup.ref("date_from"),
+        "End date must be after the start date.",
+      ),
     }),
   ),
   social_networks: Yup.array().of(
@@ -311,11 +314,12 @@ function SocialNetworks() {
             {values.social_networks.map((network, index) => (
               <div
                 key={index}
-                className="space-y-3 rounded-2xl border-2 border-gray-100/30 p-4"
+                className="space-y-3 rounded-2xl border-2 border-gray-300 p-4 dark:border-gray-400"
               >
                 <div>
                   <Field
                     as={Select}
+                    label="Type"
                     name={`social_networks[${index}].type`}
                     selectedItem={{ key: network.type, value: network.type }}
                     placeholder="Select a type"
@@ -328,8 +332,8 @@ function SocialNetworks() {
                       );
                     }}
                   />
-                  <ErrorMessage name={`social_networks[${index}].type`} />
                 </div>
+                <ErrorMessage name={`social_networks[${index}].type`} />
                 <InputFieldComponent
                   name={`social_networks[${index}].link`}
                   label="Link"
@@ -349,7 +353,7 @@ function SocialNetworks() {
               onClick={() =>
                 arrayHelpers.push({
                   handle: "tum_ai",
-                  type: "github",
+                  type: "",
                   link: "",
                 })
               }
@@ -378,7 +382,7 @@ function JobExperience() {
             {values.job_history.map((job, index) => (
               <div
                 key={index}
-                className="grid-cols-2 gap-8 rounded-2xl border-2 border-gray-100/30 p-4 sm:grid xl:grid-cols-4"
+                className="grid-cols-2 gap-8 rounded-2xl border-2 border-gray-100/30 p-4 shadow-md sm:grid xl:grid-cols-4"
               >
                 <InputFieldComponent
                   name={`job_history[${index}].employer`}
