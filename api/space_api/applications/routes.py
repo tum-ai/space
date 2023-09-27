@@ -239,7 +239,7 @@ def get_stats(request: Request, form_type: str) -> dict:
         'Prefer not to say': 0
     }
 
-    out_applications: list[ApplicationOut] | filter[ApplicationOut] = [
+    out_applications = [
         ApplicationOut.from_db_model(p) for p in db_applications
     ]
 
