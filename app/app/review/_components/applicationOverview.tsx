@@ -79,9 +79,15 @@ interface TallyFieldCompProps {
 }
 const TallyFieldComp = ({ field }: TallyFieldCompProps) => {
   if (field.type === "INPUT_LINK") {
+    const fieldValue = field.value as string;
+    const redirectLink =
+      fieldValue.startsWith("https://") || fieldValue.startsWith("http://")
+        ? fieldValue
+        : `https://${fieldValue}`;
+
     return (
       <div>
-        <Link className="text-blue-500 underline" href={field.value as string}>
+        <Link className="text-blue-500 underline" href={redirectLink}>
           {field.label}
         </Link>
       </div>
