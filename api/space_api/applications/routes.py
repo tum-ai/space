@@ -216,8 +216,9 @@ def delete_application(request: Request, id: int) -> dict:
         """)
 
 
-@router.get("/applications/{form_type}/stats/",
-            summary="Get information about available guys and girls and the rest")
+@router.get(
+    "/applications/{form_type}/stats/",
+    summary="Get information about available guys and girls and the rest")
 @error_handlers
 @ensure_authorization(any_of_roles=["submit_reviews"], )
 def get_stats(request: Request, form_type: str) -> dict:
@@ -253,8 +254,10 @@ def get_stats(request: Request, form_type: str) -> dict:
         idx = subject.submission['data']['fields'][gender_index]['value'][0]
         gender_count[id2gender[idx]] += 1
 
-    data = [{'name': key, 'count': value}
-            for key, value in gender_count.items()]
+    data = [{
+        'name': key,
+        'count': value
+    } for key, value in gender_count.items()]
 
     return {
         "status_code": 200,
