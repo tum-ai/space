@@ -37,8 +37,6 @@ router = APIRouter()
 @ensure_authorization(any_of_roles=["submit_reviews"], )
 def get_form_types(request: Request) -> dict:
     db_form_types = get_db_form_types(request.app.state.sql_engine)
-    for form_type in db_form_types:
-        print(form_type)
     out_form_types = {name for name, in db_form_types}
 
     return {
@@ -216,3 +214,45 @@ def delete_application(request: Request, id: int) -> dict:
                         detail="""
             Could not delete application with ID {id}.
         """)
+
+
+@router.get("/applications/{form_type}/stats/",
+            summary="Get information about available guys and girls and the rest")
+@error_handlers
+@ensure_authorization(any_of_roles=["submit_reviews"], )
+def get_form_types(request: Request, form_type: str) -> dict:
+
+    def find_index_by_id(fields, value):
+        for index, field in enumerate(fields):
+            if field['label'] and field['label'].lower() == value.lower():
+                return index
+
+    db_applications = list_db_applications(request.app.state.sql_engine, None, None, form_type=form_type)
+
+    gender_count = {
+        'Male': 0,
+        'Female': 0,
+        'Diverse': 0,
+        'Prefer not to say': 0
+    }
+    
+    out_applications: list[ApplicationOut] | filter[ApplicationOut] = [
+        ApplicationOut.from_db_model(p) for p in db_applications
+    ]
+
+    gender_index = find_index_by_id(out_applications[0].submission['data']['fields'], 'Gender')
+    id2gender = out_applications[0].submission['data']['fields'][gender_index]['options']
+
+    id2gender = {item['id']: item['text'] for item in id2gender}
+    for subject in out_applications:
+        idx = subject.submission['data']['fields'][gender_index]['value'][0]
+        gender_count[id2gender[idx]] += 1
+
+    data = [{'name': key, 'count': value} for key, value in gender_count.items()]
+
+    return {
+        "status_code": 200,
+        "response_type": "success",
+        "description": "Data successfully received",
+        "data": data,
+    }
