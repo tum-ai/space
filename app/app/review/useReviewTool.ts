@@ -4,13 +4,19 @@ import { Application } from "@models/application";
 import { Filter } from "util/types/filter";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { Review } from "@models/review";
+
+type Predicate<T> = (t: T) => boolean;
 
 export const useReviewTool = (page_size = 100) => {
   type Filters = Record<string, Filter<Application>>;
   const [serverSearching, setServerSearching] = useState(false);
   const [filters, setFilters] = useState<Filters>({});
-  const [search, setSearch] = useState("");
+  const [searchPredicate, setSearchPredicate] = useState<
+    Predicate<Application>
+  >(function (_app: Application) {
+    return true;
+  });
+  const [searchTerm, setSearchTerm] = useState("");
 
   const updateFilter = (filterName: string, value: string) => {
     setFilters((old) => ({
@@ -37,8 +43,8 @@ export const useReviewTool = (page_size = 100) => {
         }),
   });
 
-  const query = useQuery({
-    queryKey: ["applications", page, serverSearching && search, filters],
+  const applicationsQuery = useQuery({
+    queryKey: ["applications", page, serverSearching && searchTerm, filters],
     queryFn: () =>
       axios
         .get("/applications/", {
@@ -46,7 +52,7 @@ export const useReviewTool = (page_size = 100) => {
             page,
             page_size,
             form_type: filters.formName.name,
-            search: serverSearching ? search : null,
+            search: serverSearching ? searchTerm : null,
           },
         })
         .then((res) => res.data.data as Application[]),
@@ -56,50 +62,48 @@ export const useReviewTool = (page_size = 100) => {
   const increasePage = () => setPage((old) => old + 1);
   const decreasePage = () => setPage((old) => Math.max(old - 1, 1));
 
-  /*
-   * Triggers a search through all applications in the server
-   */
-  const handleSearch = () => {
-    console.log(search);
-    setServerSearching(true);
-  };
-
   const filterPredicate = (application: Application) =>
     Object.values(filters).every((filter: Filter<Application>) =>
       filter.predicate(application),
     );
 
-  const searchFilter = (application: Application) =>
-    search === "" ||
-    JSON.stringify(application).toLowerCase().includes(search.toLowerCase());
-
-  const finalScoreComparator = (a: Application, b: Application): any => {
-    const finalScoresA = a.reviews.map((review: Review) => review.finalscore);
-    const finalScoresB = b.reviews.map((review: Review) => review.finalscore);
-    const sumA = finalScoresA.reduce((a, b) => a + b, 0);
-    const avgA = sumA / finalScoresA.length || 0;
-    const sumB = finalScoresB.reduce((a, b) => a + b, 0);
-    const avgB = sumB / finalScoresB.length || 0;
-    return avgB - avgA;
-  };
-
-  const applications = query.data
+  // TODO: add final score comparator to server db call
+  const applications = applicationsQuery.data
     ?.filter(filterPredicate)
-    .filter(searchFilter)
-    .sort(finalScoreComparator);
+    .filter(searchPredicate);
 
   return {
     applications,
-    search,
+    searchPredicate,
+    search: searchTerm,
     setSearch: (searchTerm: string) => {
       setServerSearching(false);
-      setSearch(searchTerm);
+      setSearchTerm(searchTerm);
+
+      const predicate = (application: Application) => {
+        const relevant_ids = ["first name", "last name"].map(
+          (keyword) =>
+            applications?.at(0)?.submission.data.fields.findIndex((field) => {
+              return field.label?.toLowerCase().trim() === keyword;
+            }),
+        );
+
+        return relevant_ids.some((relevant_id) => {
+          console.log(application.submission.data.fields[relevant_id].value);
+          return (
+            application.submission.data.fields[relevant_id].value ===
+            searchTerm.toLowerCase()
+          );
+        });
+      };
+
+      setSearchPredicate(predicate);
     },
-    handleSearch,
+    handleSearch: () => setServerSearching(true),
     filters,
     setFilters: updateFilter,
-    isLoading: query.isLoading,
-    error: query.error,
+    isLoading: applicationsQuery.isLoading,
+    error: applicationsQuery.error,
     formNames: infoQuery.data ?? [],
     page,
     increasePage,

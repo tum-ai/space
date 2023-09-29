@@ -1,5 +1,9 @@
 import { Review } from "./review";
 
+export interface TallyField {
+  label?: string;
+  value?: string;
+}
 export interface Application {
   id: number;
   reviews: Review[];
@@ -7,7 +11,7 @@ export interface Application {
     data: {
       formName: string;
       createdAt: any;
-      fields: any[];
+      fields: TallyField[];
     };
   };
 }
