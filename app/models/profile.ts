@@ -10,6 +10,13 @@ export interface JobHistory {
   end_date: string;
 }
 
+export interface DepartmentMemberships {
+  department_handle: string;
+  position: string;
+  time_from: string;
+  time_to: string;
+}
+
 export interface Profile {
   id?: string;
   email: string;
@@ -19,6 +26,7 @@ export interface Profile {
   profile_picture: string;
   socialNetworks: SocialNetwork[];
   job_history: JobHistory[];
+  department_memberships: DepartmentMemberships[];
   department: string;
   previousDepartments: string[];
   degree_level: string; // TODO: this should probably be it's own type

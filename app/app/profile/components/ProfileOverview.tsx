@@ -74,16 +74,19 @@ const JobHistory: React.FC<{
     <div className="mt-6 space-y-8">
       <h1 className="text-4xl font-thin">Job History</h1>
       {sortedJobs.map((job) => (
-        <div
-          key={job.position}
-          className="grid-cols-2 gap-4 rounded-2xl p-4 shadow-md dark:ring-1 dark:ring-gray-600 sm:grid lg:grid-cols-4"
-        >
-          {Object.entries(job).map(([key, value]) => (
-            <div key={key} className="space-y-3">
-              <h3 className="text-sm font-light">{formatKey(key)}</h3>
-              <p className="font-semibold">{value}</p>
-            </div>
-          ))}
+        <div key={job.position} className="flex flex-row justify-center">
+          <div className="text-black">
+            {job.start_date}
+            {job.end_date}
+          </div>
+          <div className="grid w-full grid-cols-2 gap-5 rounded-xl p-4 shadow-md dark:ring-1 dark:ring-gray-600 md:grid-cols-4">
+            {Object.entries(job).map(([key, value]) => (
+              <div key={key} className="space-y-2">
+                <h3 className="text-sm font-medium">{formatKey(key)}</h3>
+                <p>{value}</p>
+              </div>
+            ))}
+          </div>
         </div>
       ))}
     </div>
@@ -132,6 +135,13 @@ const ProfileOverview: React.FC<Props> = ({ profile, meModel, publicView }) => {
           <SocialNetworks networks={profile.socialNetworks} />
         </div>
         <dl className="divide-y divide-gray-600">
+          {!publicView && (
+            <ProfileDetailItem
+              title="Nationality"
+              detail={profile.nationality}
+            />
+          )}
+          <ProfileDetailItem title="University" detail={profile.university} />
           <ProfileDetailItem
             title="Degree"
             detail={`${profile.degree_level} ${profile.degree_name}`}
@@ -140,14 +150,7 @@ const ProfileOverview: React.FC<Props> = ({ profile, meModel, publicView }) => {
             title="Semester"
             detail={profile.degree_semester}
           />
-          <ProfileDetailItem title="University" detail={profile.university} />
           <ProfileDetailItem title="Description" detail={profile.description} />
-          {!publicView && (
-            <ProfileDetailItem
-              title="Nationality"
-              detail={profile.nationality}
-            />
-          )}
         </dl>
         <JobHistory jobs={profile.job_history || []} />
         {/* Adding a default value here */}
