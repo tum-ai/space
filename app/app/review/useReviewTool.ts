@@ -5,26 +5,22 @@ import { Filter } from "util/types/filter";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 
-type Predicate<T> = (t: T) => boolean;
-
 export const useReviewTool = (page_size = 100) => {
   type Filters = Record<string, Filter<Application>>;
   const [serverSearching, setServerSearching] = useState(false);
   const [filters, setFilters] = useState<Filters>({});
-  const [searchPredicate, setSearchPredicate] = useState<
-    Predicate<Application>
-  >(function (_app: Application) {
-    return true;
-  });
   const [searchTerm, setSearchTerm] = useState("");
 
-  const updateFilter = (filterName: string, value: string) => {
+  const updateFilter = (
+    filterName: string,
+    name: string,
+    predicate: (app: Application) => boolean,
+  ) => {
     setFilters((old) => ({
       ...old,
       [filterName]: {
-        name: value,
-        predicate: (application) =>
-          application.submission.data.formName === value,
+        name,
+        predicate,
       },
     }));
   };
@@ -32,19 +28,29 @@ export const useReviewTool = (page_size = 100) => {
   const [page, setPage] = useState(1);
 
   const infoQuery = useQuery({
-    queryKey: ["applications/info"],
+    queryKey: ["applications", "info"],
     queryFn: () =>
       axios
         .get("/applications/info")
         .then((res) => res.data.data as string[])
         .then((formNames) => {
-          updateFilter("formName", formNames.at(0));
+          const formName = formNames.at(0);
+          updateFilter(
+            "formName",
+            formName,
+            (application) => application.submission.data.formName === formName,
+          );
           return formNames;
         }),
   });
 
   const applicationsQuery = useQuery({
-    queryKey: ["applications", page, serverSearching && searchTerm, filters],
+    queryKey: [
+      "applications",
+      page,
+      serverSearching && searchTerm,
+      filters["formName"],
+    ],
     queryFn: () =>
       axios
         .get("/applications/", {
@@ -62,46 +68,51 @@ export const useReviewTool = (page_size = 100) => {
   const increasePage = () => setPage((old) => old + 1);
   const decreasePage = () => setPage((old) => Math.max(old - 1, 1));
 
-  const filterPredicate = (application: Application) =>
-    Object.values(filters).every((filter: Filter<Application>) =>
-      filter.predicate(application),
-    );
+  const filterPredicate = (application: Application) => {
+    return Object.values(filters).every((filter: Filter<Application>) => {
+      return filter.predicate(application);
+    });
+  };
 
-  // TODO: add final score comparator to server db call
-  const applications = applicationsQuery.data
-    ?.filter(filterPredicate)
-    .filter(searchPredicate);
+  const setSearch = (searchTerm: string) => {
+    setServerSearching(false);
+
+    if (searchTerm === "") {
+      setFilters(({ ["search"]: _, ...rest }) => rest);
+      setSearchTerm("");
+      return;
+    }
+
+    setSearchTerm(searchTerm);
+    const predicate = (application: Application) => {
+      const relevant_ids = ["first name", "last name"].map(
+        (keyword) =>
+          applicationsQuery.data
+            ?.at(0)
+            ?.submission.data.fields.findIndex((field) => {
+              return field.label?.toLowerCase().trim() === keyword;
+            }),
+      );
+      return relevant_ids.some(
+        (relevant_id) =>
+          application.submission.data.fields[relevant_id]?.value
+            ?.toLowerCase()
+            .includes(searchTerm.toLowerCase()),
+      );
+    };
+
+    updateFilter("search", searchTerm, predicate);
+  };
+
+  const applications = applicationsQuery.data?.filter(filterPredicate);
 
   return {
     applications,
-    searchPredicate,
     search: searchTerm,
-    setSearch: (searchTerm: string) => {
-      setServerSearching(false);
-      setSearchTerm(searchTerm);
-
-      const predicate = (application: Application) => {
-        const relevant_ids = ["first name", "last name"].map(
-          (keyword) =>
-            applications?.at(0)?.submission.data.fields.findIndex((field) => {
-              return field.label?.toLowerCase().trim() === keyword;
-            }),
-        );
-
-        return relevant_ids.some((relevant_id) => {
-          console.log(application.submission.data.fields[relevant_id].value);
-          return (
-            application.submission.data.fields[relevant_id].value ===
-            searchTerm.toLowerCase()
-          );
-        });
-      };
-
-      setSearchPredicate(predicate);
-    },
+    setSearch,
     handleSearch: () => setServerSearching(true),
     filters,
-    setFilters: updateFilter,
+    updateFilter,
     isLoading: applicationsQuery.isLoading,
     error: applicationsQuery.error,
     formNames: infoQuery.data ?? [],
