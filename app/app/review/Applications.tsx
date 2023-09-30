@@ -14,12 +14,13 @@ import {
 import toast from "react-hot-toast";
 import axios from "axios";
 import download from "downloadjs";
+import { Application } from "@models/application";
 
 export const Applications = () => {
   const {
     applications,
     filters,
-    setFilters,
+    updateFilter,
     search,
     setSearch,
     handleSearch,
@@ -63,7 +64,7 @@ export const Applications = () => {
                 })) || []),
               ]}
               value={filters?.formName?.name}
-              setSelectedItem={(item) => setFilters("formName", item)}
+              setSelectedItem={(item) => updateFilter("formName", item, (application: Application) => application.submission.data.formName === item)}
             />
 
             <Button
@@ -96,11 +97,10 @@ export const Applications = () => {
                     error: "Failed to load reviews",
                   },
                 );
-                const fileName = `applications-${
-                  formType
-                    ? formType?.toLowerCase()?.replace(/ /g, "_") + ".json"
-                    : "all-forms"
-                }`;
+                const fileName = `applications-${formType
+                  ? formType?.toLowerCase()?.replace(/ /g, "_") + ".json"
+                  : "all-forms"
+                  }`;
 
                 download(
                   response.data,
