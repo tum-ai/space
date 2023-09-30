@@ -1,4 +1,5 @@
-import { Application, TallyField, TallyFileUpload } from "@models/application";
+import { Application } from "@models/application";
+import { TallyField, TallyFileUpload } from "@models/tally";
 import Link from "next/link";
 
 interface Props {
