@@ -4,21 +4,23 @@ import { Application } from "@models/application";
 import { Filter } from "util/types/filter";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { Review } from "@models/review";
 
 export const useReviewTool = (page_size = 100) => {
   type Filters = Record<string, Filter<Application>>;
   const [serverSearching, setServerSearching] = useState(false);
   const [filters, setFilters] = useState<Filters>({});
-  const [search, setSearch] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
 
-  const updateFilter = (filterName: string, value: string) => {
+  const updateFilter = (
+    filterName: string,
+    name: string,
+    predicate: (app: Application) => boolean,
+  ) => {
     setFilters((old) => ({
       ...old,
       [filterName]: {
-        name: value,
-        predicate: (application) =>
-          application.submission.data.formName === value,
+        name,
+        predicate,
       },
     }));
   };
@@ -26,19 +28,29 @@ export const useReviewTool = (page_size = 100) => {
   const [page, setPage] = useState(1);
 
   const infoQuery = useQuery({
-    queryKey: ["applications/info"],
+    queryKey: ["applications", "info"],
     queryFn: () =>
       axios
         .get("/applications/info")
         .then((res) => res.data.data as string[])
         .then((formNames) => {
-          updateFilter("formName", formNames.at(0));
+          const formName = formNames.at(0);
+          updateFilter(
+            "formName",
+            formName,
+            (application) => application.submission.data.formName === formName,
+          );
           return formNames;
         }),
   });
 
-  const query = useQuery({
-    queryKey: ["applications", page, serverSearching && search, filters],
+  const applicationsQuery = useQuery({
+    queryKey: [
+      "applications",
+      page,
+      serverSearching && searchTerm,
+      filters["formName"],
+    ],
     queryFn: () =>
       axios
         .get("/applications/", {
@@ -46,7 +58,7 @@ export const useReviewTool = (page_size = 100) => {
             page,
             page_size,
             form_type: filters.formName.name,
-            search: serverSearching ? search : null,
+            search: serverSearching ? searchTerm : null,
           },
         })
         .then((res) => res.data.data as Application[]),
@@ -56,50 +68,55 @@ export const useReviewTool = (page_size = 100) => {
   const increasePage = () => setPage((old) => old + 1);
   const decreasePage = () => setPage((old) => Math.max(old - 1, 1));
 
-  /*
-   * Triggers a search through all applications in the server
-   */
-  const handleSearch = () => {
-    console.log(search);
-    setServerSearching(true);
+  const filterPredicate = (application: Application) => {
+    return Object.values(filters).every((filter: Filter<Application>) => {
+      return filter.predicate(application);
+    });
   };
 
-  const filterPredicate = (application: Application) =>
-    Object.values(filters).every((filter: Filter<Application>) =>
-      filter.predicate(application),
-    );
+  const setSearch = (searchTerm: string) => {
+    setServerSearching(false);
 
-  const searchFilter = (application: Application) =>
-    search === "" ||
-    JSON.stringify(application).toLowerCase().includes(search.toLowerCase());
+    if (searchTerm === "") {
+      setFilters(({ ["search"]: _, ...rest }) => rest);
+      setSearchTerm("");
+      return;
+    }
 
-  const finalScoreComparator = (a: Application, b: Application): any => {
-    const finalScoresA = a.reviews.map((review: Review) => review.finalscore);
-    const finalScoresB = b.reviews.map((review: Review) => review.finalscore);
-    const sumA = finalScoresA.reduce((a, b) => a + b, 0);
-    const avgA = sumA / finalScoresA.length || 0;
-    const sumB = finalScoresB.reduce((a, b) => a + b, 0);
-    const avgB = sumB / finalScoresB.length || 0;
-    return avgB - avgA;
+    setSearchTerm(searchTerm);
+    const predicate = (application: Application) => {
+      const relevant_ids = ["first name", "last name"].map(
+        (keyword) =>
+          applicationsQuery.data
+            ?.at(0)
+            ?.submission.data.fields.findIndex((field) => {
+              return field.label?.toLowerCase().trim() === keyword;
+            }),
+      );
+      return relevant_ids.some((relevant_id) => {
+        const value = application.submission.data.fields[relevant_id]?.value;
+
+        return (
+          typeof value === "string" &&
+          value?.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+      });
+    };
+
+    updateFilter("search", searchTerm, predicate);
   };
 
-  const applications = query.data
-    ?.filter(filterPredicate)
-    .filter(searchFilter)
-    .sort(finalScoreComparator);
+  const applications = applicationsQuery.data?.filter(filterPredicate);
 
   return {
     applications,
-    search,
-    setSearch: (searchTerm: string) => {
-      setServerSearching(false);
-      setSearch(searchTerm);
-    },
-    handleSearch,
+    search: searchTerm,
+    setSearch,
+    handleSearch: () => setServerSearching(true),
     filters,
-    setFilters: updateFilter,
-    isLoading: query.isLoading,
-    error: query.error,
+    updateFilter,
+    isLoading: applicationsQuery.isLoading,
+    error: applicationsQuery.error,
     formNames: infoQuery.data ?? [],
     page,
     increasePage,
