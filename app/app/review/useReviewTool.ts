@@ -93,12 +93,14 @@ export const useReviewTool = (page_size = 100) => {
               return field.label?.toLowerCase().trim() === keyword;
             }),
       );
-      return relevant_ids.some(
-        (relevant_id) =>
-          application.submission.data.fields[relevant_id]?.value
-            ?.toLowerCase()
-            .includes(searchTerm.toLowerCase()),
-      );
+      return relevant_ids.some((relevant_id) => {
+        const value = application.submission.data.fields[relevant_id]?.value;
+
+        return (
+          typeof value === "string" &&
+          value?.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+      });
     };
 
     updateFilter("search", searchTerm, predicate);

@@ -1,31 +1,5 @@
-import { Application } from "@models/application";
+import { Application, TallyField, TallyFileUpload } from "@models/application";
 import Link from "next/link";
-
-interface TallyFileUpload {
-  id: string;
-  mimeType: string;
-  name: string;
-  url: string;
-}
-
-interface TallyField {
-  key: string;
-  value?: string | string[] | TallyFileUpload[];
-  label?: string;
-  options?: { id: string; text: string }[];
-  type:
-    | "CHECKBOXES"
-    | "INPUT_TEXT"
-    | "INPUT_EMAIL"
-    | "INPUT_PHONE_NUMBER"
-    | "DROPDOWN"
-    | "INPUT_DATE"
-    | "FILE_UPLOAD"
-    | "INPUT_LINK"
-    | "MULTIPLE_CHOICE"
-    | "INPUT_NUMBER"
-    | "TEXTAREA";
-}
 
 interface Props {
   application: Application;
@@ -63,8 +37,9 @@ export const ApplicationOverview = ({ application }: Props) => {
             }
           })
           .filter(
-            (field: TallyField) =>
-              field.value && field.type !== "CHECKBOXES" && field.value !== ".",
+            (field: TallyField) => {
+              return field.value && field.type !== "CHECKBOXES" && field.value !== ".";
+            },
           )
           .map((field: TallyField) => (
             <TallyFieldComp field={field} key={field.key} />
