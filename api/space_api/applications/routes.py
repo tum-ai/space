@@ -1,4 +1,4 @@
-from typing import Annotated
+from typing import Annotated, Any
 
 from fastapi import APIRouter, Body, HTTPException, Request
 
@@ -49,6 +49,15 @@ def get_form_types(request: Request) -> dict:
     }
 
 
+def find_tally_index_by_label(label: str,
+                              submission: dict[str, Any]) -> int | None:
+    for i, field in enumerate(submission["data"]["fields"]):
+        print(field["label"])
+        if field["label"] and field["label"].lower() == label.lower():
+            return i
+    return None
+
+
 @router.get(
     "/applications/",
     summary="List all applications",
@@ -61,26 +70,40 @@ def get_form_types(request: Request) -> dict:
 def list_applications(
     request: Request,
     page: int | None = None,
-    page_size: int | None = 100,
+    page_size: int | None = None,
     form_type: str | None = None,
     search: str | None = None,
     with_pictures: bool = False,
 ) -> dict:
-    db_applications = list_db_applications(request.app.state.sql_engine, page,
-                                           page_size, form_type)
-
-    out_applications: list[ApplicationOut] | filter[ApplicationOut] = [
-        ApplicationOut.from_db_model(p) for p in db_applications
-    ]
-
-    if (search):
-        out_applications = filter((lambda application: search.lower() in str(
-            application.submission).lower()), out_applications)
+    applications = list_db_applications(request.app.state.sql_engine, page,
+                                        page_size, form_type)
 
     if (not with_pictures):
-        for out_application in out_applications:  # type: ignore
-            for review in out_application.reviews:
+        for application in applications:
+            for review in application.reviews:
                 review.reviewer.profile_picture = None
+
+    if (search):
+        # TODO: if no applications return 204 - no content
+        first_application = applications[0]
+        relevant_idxs = [
+            find_tally_index_by_label(keyword, first_application.submission)
+            for keyword in ["first name", "last name"]
+        ]
+
+        def search_predicate(submission) -> bool:
+            for idx in relevant_idxs:
+                if search in submission["data"]["fields"][idx]["value"]:
+                    return True
+            return False
+
+        applications = [application for
+                        application in applications
+                        if search_predicate(application.submission)]
+
+    out_applications: list[ApplicationOut] = [
+        ApplicationOut.from_db_model(p) for p in applications
+    ]
 
     return {
         "status_code": 200,
