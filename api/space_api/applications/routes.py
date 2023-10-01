@@ -49,8 +49,8 @@ def get_form_types(request: Request) -> dict:
     }
 
 
-def find_tally_index_by_label(label: str,
-                              submission: dict[str, Any]) -> int | None:
+def find_tally_index_by_label(label: str, submission: dict[str,
+                                                           Any]) -> int | None:
     for i, field in enumerate(submission["data"]["fields"]):
         print(field["label"])
         if field["label"] and field["label"].lower() == label.lower():
@@ -97,9 +97,10 @@ def list_applications(
                     return True
             return False
 
-        applications = [application for
-                        application in applications
-                        if search_predicate(application.submission)]
+        applications = [
+            application for application in applications
+            if search_predicate(application.submission)
+        ]
 
     out_applications: list[ApplicationOut] = [
         ApplicationOut.from_db_model(p) for p in applications
