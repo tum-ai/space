@@ -56,7 +56,7 @@ export const useReviewTool = (page_size = 100) => {
         .get("/applications/", {
           params: {
             page,
-            page_size,
+            page_size: serverSearching ? null : page_size,
             form_type: filters.formName.name,
             search: serverSearching ? searchTerm : null,
           },
@@ -85,7 +85,7 @@ export const useReviewTool = (page_size = 100) => {
 
     setSearchTerm(searchTerm);
     const predicate = (application: Application) => {
-      const relevant_ids = ["first name", "last name"].map(
+      const relevant_idxs = ["first name", "last name"].map(
         (keyword) =>
           applicationsQuery.data
             ?.at(0)
@@ -93,8 +93,8 @@ export const useReviewTool = (page_size = 100) => {
               return field.label?.toLowerCase().trim() === keyword;
             }),
       );
-      return relevant_ids.some((relevant_id) => {
-        const value = application.submission.data.fields[relevant_id]?.value;
+      return relevant_idxs.some((relevant_idx) => {
+        const value = application.submission.data.fields[relevant_idx]?.value;
 
         return (
           typeof value === "string" &&
