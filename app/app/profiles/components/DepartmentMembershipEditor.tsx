@@ -1,4 +1,4 @@
-import { Button } from "@components/Button";
+import { Button } from "@components/ui/button";
 import Dialog from "@components/Dialog";
 import Input from "@components/Input";
 import ProtectedItem from "@components/ProtectedItem";

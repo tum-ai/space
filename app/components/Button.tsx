@@ -1,55 +1,11 @@
-import { Slot } from "@radix-ui/react-slot";
-import { cva, cx, type VariantProps } from "class-variance-authority";
-import * as React from "react";
+import { Button as ShadCNButton, ButtonProps } from "./ui/button";
 
-const buttonVariants = cva(
-  cx(
-    "inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors",
-    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
-    "disabled:pointer-events-none disabled:opacity-50 px-4 min-h-[2.75rem]",
-  ),
-  {
-    variants: {
-      variant: {
-        default:
-          "bg-black dark:bg-white hover:bg-black/90 dark:hover:bg-white/90 text-white dark:text-black",
-        secondary:
-          "bg-gray-300 dark:bg-gray-400 hover:bg-gray-300/90 dark:hover:bg-gray-400/90 text-black dark:text-black",
-        link: "text-gray-500 hover:text-primary hover:bg-gray-100/90 dark:hover:bg-gray-900/90",
-      },
-      loading: {
-        true: "animate-pulse",
-      },
-    },
-    defaultVariants: {
-      variant: "default",
-      loading: false,
-    },
-  },
-);
 
-export interface ButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
-    VariantProps<typeof buttonVariants> {
-  asChild?: boolean;
-  loading?: boolean;
-}
+/**
+ *  @deprecated. use components/ui/button
+ */
+const Button = (props: ButtonProps) => (
+  <ShadCNButton {...props} />
+)
 
-const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, asChild, children, ...props }, ref) => {
-    const Comp = asChild ? Slot : "button";
-
-    return (
-      <Comp
-        className={buttonVariants({ variant, className })}
-        ref={ref}
-        {...props}
-      >
-        <span className="flex items-center">{children}</span>
-      </Comp>
-    );
-  },
-);
-Button.displayName = "Button";
-
-export { Button, buttonVariants };
+export { Button };

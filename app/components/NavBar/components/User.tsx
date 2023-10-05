@@ -24,7 +24,7 @@ function User() {
               profilePicture={user.profile.profile_picture}
               initials={`${user.profile.first_name[0]}${user.profile.last_name[0]}`}
             />
-            <p className="hidden text-black sm:flex">
+            <p className="hidden sm:flex">
               {user.profile.first_name} {user.profile.last_name}
             </p>
           </Link>

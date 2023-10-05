@@ -1,5 +1,5 @@
 "use client";
-import { Button } from "@components/Button";
+import { Button } from "@components/ui/button";
 import ProtectedItem from "@components/ProtectedItem";
 import Tooltip from "@components/Tooltip";
 import { ViewReview } from "./_components/viewReview";
@@ -65,7 +65,7 @@ export function ApplicationRow({ application }) {
         {Math.round((finalScoreSum * 100) / application.reviews?.length) /
           100 || "-"}
       </td>
-      <td className="space-x-2 p-4">
+      <td className="space-x-2 p-4 flex justify-end">
         <Button className="flex items-center space-x-2">
           <Link href={`/review/review?id=${application.id}`}>Review</Link>
         </Button>

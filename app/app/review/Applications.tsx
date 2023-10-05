@@ -1,5 +1,5 @@
 "use client";
-import { Button } from "@components/Button";
+import { Button } from "@components/ui/button";
 import Icon from "@components/Icon";
 import Select from "@components/Select";
 import { ApplicationRow } from "./ApplicationRow";

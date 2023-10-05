@@ -5,7 +5,7 @@ import {
 } from "@radix-ui/react-icons";
 import * as SelectPrimitive from "@radix-ui/react-select";
 import clsx from "clsx";
-import { Button } from "./Button";
+import { Button } from "./ui/button";
 
 interface Props {
   setSelectedItem: (item: string) => void;
@@ -23,6 +23,9 @@ interface Props {
   options: { [key: string]: any }[];
 }
 
+/*
+ * @deprecated - use ui/select components instead
+ */
 function Select({
   setSelectedItem,
   selectedItem,
