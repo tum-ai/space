@@ -29,16 +29,6 @@ a {
   box-sizing: border-box;
 }
 
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
-    background: black;
-  }
-  body {
-    background: black;
-  }
-}
-
 .slide-down {
   animation: slide-down 0.2s ease-in-out;
   top: 0px;

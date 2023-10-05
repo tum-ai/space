@@ -114,13 +114,13 @@ export const Applications = () => {
           </div>
 
           <form
-            className="flex w-full space-x-4 rounded-lg bg-gray-200 p-2 dark:bg-gray-700 md:w-fit"
+            className="flex w-full items-center space-x-4 rounded-lg bg-gray-200 dark:bg-gray-700 md:w-fit py-2"
             onSubmit={(e) => {
               e.preventDefault();
               handleSearch();
             }}
           >
-            <Icon name={"FaSearch"} className="rounded-lg p-2" />
+            <Icon name={"FaSearch"} className="rounded-lg px-2" />
             <input
               value={search}
               onChange={(e) => {
