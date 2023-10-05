@@ -1,5 +1,5 @@
 "use client";
-import { Button } from "@components/Button";
+import { Button } from "@components/ui/button";
 import Input from "@components/Input";
 import Select from "@components/Select";
 import { ErrorMessage, Field, Form, Formik, FormikValues } from "formik";

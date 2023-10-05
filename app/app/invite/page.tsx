@@ -1,5 +1,5 @@
 "use client";
-import { Button } from "@components/Button";
+import { Button } from "@components/ui/button";
 import Input from "@components/Input";
 import ProtectedItem from "@components/ProtectedItem";
 import { Section } from "@components/Section";

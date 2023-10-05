@@ -1,6 +1,6 @@
 "use client";
 import { Avatar } from "@components/Avatar";
-import { Button } from "@components/Button";
+import { Button } from "@components/ui/button";
 import ProtectedItem from "@components/ProtectedItem";
 import { Section } from "@components/Section";
 import Tooltip from "@components/Tooltip";
@@ -119,7 +119,7 @@ const MyReviews = observer(() => {
                   <td>
                     {Math.round(
                       (finalScoreSum * 100) /
-                        review.application.reviews?.length,
+                      review.application.reviews?.length,
                     ) / 100 || "-"}
                   </td>
                   <td className="space-x-2 p-4">
