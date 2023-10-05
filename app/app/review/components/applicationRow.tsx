@@ -2,7 +2,7 @@
 import { Button } from "@components/ui/button";
 import ProtectedItem from "@components/ProtectedItem";
 import Tooltip from "@components/Tooltip";
-import { ViewReview } from "./_components/viewReview";
+import { ViewReview } from "./viewReview";
 import { Review } from "@models/review";
 import Link from "next/link";
 import { useMutation, useQueryClient } from "@tanstack/react-query";

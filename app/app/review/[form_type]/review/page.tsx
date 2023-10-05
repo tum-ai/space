@@ -1,6 +1,5 @@
 "use client";
-import { ReviewFormComponent } from "./_components/ReviewForm";
-import { ApplicationOverview } from "../_components/applicationOverview";
+import { ReviewFormComponent } from "./components/ReviewForm";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { Application } from "@models/application";
@@ -8,6 +7,7 @@ import { Section } from "@components/Section";
 import { Button } from "@components/ui/button";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 import { useRouter, useSearchParams } from "next/navigation";
+import { ApplicationOverview } from "app/review/components/applicationOverview";
 
 function Review() {
   const router = useRouter();

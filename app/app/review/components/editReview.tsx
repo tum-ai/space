@@ -1,9 +1,9 @@
 import Dialog from "@components/Dialog";
 import { DialogClose } from "@radix-ui/react-dialog";
 import { Cross1Icon } from "@radix-ui/react-icons";
-import { ReviewFormComponent } from "../review/_components/ReviewForm";
-import { ApplicationOverview } from "./applicationOverview";
 import { Review } from "@models/review";
+import { ReviewFormComponent } from "../[form_type]/review/components/ReviewForm";
+import { ApplicationOverview } from "./applicationOverview";
 
 interface EditReviewProps {
   review: Review;

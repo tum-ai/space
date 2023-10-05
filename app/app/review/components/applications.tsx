@@ -1,9 +1,8 @@
 "use client";
 import { Button } from "@components/ui/button";
 import Icon from "@components/Icon";
-import Select from "@components/Select";
-import { ApplicationRow } from "./ApplicationRow";
-import { useReviewTool } from "./useReviewTool";
+import { ApplicationRow } from "./applicationRow";
+import { useReviewTool } from "../useReviewTool";
 import LoadingWheel from "@components/LoadingWheel";
 import {
   ArrowLeftIcon,
@@ -14,23 +13,24 @@ import {
 import toast from "react-hot-toast";
 import axios from "axios";
 import download from "downloadjs";
-import { Application } from "@models/application";
 
-export const Applications = () => {
+interface Props {
+  formType: string;
+}
+
+export const Applications = ({ formType }: Props) => {
   const {
     applications,
     filters,
-    updateFilter,
     search,
     setSearch,
     handleSearch,
     isLoading,
     error,
-    formNames,
     page,
     increasePage,
     decreasePage,
-  } = useReviewTool(50);
+  } = useReviewTool(50, formType as string);
 
   if (isLoading) {
     return <LoadingWheel />;
@@ -55,18 +55,6 @@ export const Applications = () => {
         </div>
         <div className="flex flex-col items-end gap-2 lg:flex-row">
           <div className="flex max-w-full items-center gap-2 overflow-x-auto">
-            <Select
-              placeholder={"Form"}
-              options={[
-                ...(formNames.map((formName) => ({
-                  key: formName,
-                  value: formName,
-                })) || []),
-              ]}
-              value={filters?.formName?.name}
-              setSelectedItem={(item) => updateFilter("formName", item, (application: Application) => application.submission.data.formName === item)}
-            />
-
             <Button
               className="flex w-max items-center gap-2"
               onClick={() => {
