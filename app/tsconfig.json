@@ -24,7 +24,6 @@
       "@providers/*": ["./providers/*"],
       "@hooks/*": ["./hooks/*"],
       "@config/*": ["./config/*"],
-      "@/*": ["./"]
     },
     "strict": false,
     "plugins": [
