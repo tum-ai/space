@@ -3,7 +3,7 @@ import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 import { Profile } from "@models/profile";
 import { useState } from "react";
-import { Filter } from "util/types/filter";
+import { Filter } from "@lib/types/filter";
 
 export const useProfiles = () => {
   type Filters = Record<string, Filter<Profile>>;
