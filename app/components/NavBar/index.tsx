@@ -6,7 +6,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Logo from "./components/Logo";
 import User from "./components/User";
-import { Button } from "@components/Button";
+import { Button } from "@components/ui/button";
 
 function NavBar() {
   const pathname = usePathname();

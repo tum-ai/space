@@ -6,6 +6,7 @@ import axios from "axios";
 import { createContext } from "react";
 import { Toaster } from "react-hot-toast";
 import { useStores } from "../providers/StoreProvider";
+import { ThemeProvider } from "@components/theme-provider";
 
 axios.defaults.baseURL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -21,13 +22,20 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <QueryClientProvider client={queryClient}>
-          <StoresContext.Provider value={stores}>
-            <NavBar />
-            <main>{children}</main>
-            <Toaster />
-          </StoresContext.Provider>
-        </QueryClientProvider>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <QueryClientProvider client={queryClient}>
+            <StoresContext.Provider value={stores}>
+              <NavBar />
+              <main>{children}</main>
+              <Toaster />
+            </StoresContext.Provider>
+          </QueryClientProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

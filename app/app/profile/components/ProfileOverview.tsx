@@ -1,5 +1,5 @@
 "use client";
-import { Button } from "@components/Button";
+import { Button } from "@components/ui/button";
 import Icon from "@components/Icon";
 import { MeModel } from "@models/me";
 import { Profile } from "@models/profile";

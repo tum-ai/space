@@ -19,11 +19,11 @@
     "paths": {
       "@styles/*": ["./styles/*"],
       "@components/*": ["./components/*"],
+      "@lib/*": ["./lib/*"],
       "@models/*": ["./models/*"],
       "@providers/*": ["./providers/*"],
       "@hooks/*": ["./hooks/*"],
       "@config/*": ["./config/*"],
-      "~/*": ["./src/*"]
     },
     "strict": false,
     "plugins": [
