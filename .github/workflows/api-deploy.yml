@@ -1,4 +1,4 @@
-name: Build & deploy backend to tumai rootserver
+name: Production - Deploy API to tumai server
 
 on:
   release:

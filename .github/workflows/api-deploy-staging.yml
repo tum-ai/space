@@ -1,4 +1,4 @@
-name: Build & deploy staging backend to tumai rootserver
+name: Development - Deploy API to tumai server
 
 on:
   push:
