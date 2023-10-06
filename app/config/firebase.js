@@ -1,6 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
-import { environment_name } from "../config/environment";
+
+const environment_name = process.env.NEXT_PUBLIC_ENV_NAME;
 
 const firebaseConfigProd = {
   apiKey: "AIzaSyDzvLalrCrtzp5gB3KGB2aH6j9EaD8Su5E",
