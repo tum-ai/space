@@ -14,9 +14,14 @@ import axios from "axios";
 import download from "downloadjs";
 import { ApplicationRow } from "../components/applicationRow";
 import { Section } from "@components/Section";
+import { usePathname, useSearchParams } from "next/navigation";
+import Link from "next/link";
 
 const ReviewTool = ({ params }) => {
   const formType = decodeURIComponent(params.form_type);
+  const searchParams = useSearchParams();
+  const pathName = usePathname();
+  const page = searchParams.get("page") ?? "1";
 
   const {
     applications,
@@ -26,10 +31,11 @@ const ReviewTool = ({ params }) => {
     handleSearch,
     isLoading,
     error,
-    page,
-    increasePage,
-    decreasePage,
-  } = useReviewTool(50, formType as string);
+  } = useReviewTool({
+    pageSize: 50,
+    formType: formType as string,
+    page: page,
+  });
 
   if (isLoading) {
     return <LoadingWheel />;
@@ -141,17 +147,13 @@ const ReviewTool = ({ params }) => {
         </table>
       </div>
       <div className="flex w-full items-center justify-between py-8">
-        <Button
-          variant="link"
-          onClick={() => decreasePage()}
-          disabled={page === 1}
-        >
+        <Link href={`${pathName}?page=${(Number(page) - 1).toString()}`}>
           <ArrowLeftIcon className="h-8 w-8" />
-        </Button>
+        </Link>
         <span className="text-lg">{page}</span>
-        <Button variant="link" onClick={() => increasePage()}>
+        <Link href={`${pathName}?page=${(Number(page) + 1).toString()}`}>
           <ArrowRightIcon className="h-8 w-8" />
-        </Button>
+        </Link>
       </div>
     </Section>
   );
