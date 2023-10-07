@@ -109,17 +109,14 @@ const MyReviews = observer(() => {
                 </td>
                 <td>
                   {Math.round(
-                    (finalScoreSum * 100) /
-                    review.application.reviews?.length,
+                    (finalScoreSum * 100) / review.application.reviews?.length,
                   ) / 100 || "-"}
                 </td>
                 <td className="space-x-2 p-4">
                   <Button
                     onClick={() => {
                       if (
-                        confirm(
-                          "Are you sure you want to delete this review?",
-                        )
+                        confirm("Are you sure you want to delete this review?")
                       ) {
                         toast
                           .promise(
