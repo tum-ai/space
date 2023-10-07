@@ -10,6 +10,7 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import { DocumentMagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { usePathname } from "next/navigation";
+import { TableCell, TableRow } from "@components/ui/table";
 
 export function ApplicationRow({ application }) {
   const pathname = usePathname();
@@ -28,10 +29,15 @@ export function ApplicationRow({ application }) {
     0,
   );
   return (
-    <tr className="border-b dark:border-gray-500 " key={application.id}>
-      <td>{application.id}</td>
-      <td>
-        <div className="flex items-center justify-center gap-1">
+    <TableRow className="border-b dark:border-gray-500 " key={application.id}>
+      <TableCell>{application.id}</TableCell>
+      <TableCell>
+        {/* TODO: This is a quick hack for the TUM.ai WS23 application */}
+        {application.submission.data.fields[4].value}{" "}
+        {application.submission.data.fields[5].value}
+      </TableCell>
+      <TableCell>
+        <div className="flex items-center gap-1">
           {application.reviews?.map((review: Review, i: number) => {
             const profile = review.reviewer;
             return (
@@ -62,41 +68,43 @@ export function ApplicationRow({ application }) {
             );
           })}
         </div>
-      </td>
-      <td>
+      </TableCell>
+      <TableCell>
         {Math.round((finalScoreSum * 100) / application.reviews?.length) /
           100 || "-"}
-      </td>
-      <td className="flex justify-end space-x-2 p-4">
-        <Button className="flex items-center space-x-2">
-          <Link href={`${pathname}/${application.id}`}>Review</Link>
-        </Button>
-        <ProtectedItem roles={["admin"]}>
-          <Button
-            onClick={async () => {
-              if (
-                confirm(
-                  "Are you sure you want to delete this application and all its associated reviews?",
-                )
-              ) {
-                toast
-                  .promise(deleteMutation.mutateAsync(application.id), {
-                    loading: "Deleting Application",
-                    success: "Successfully deleted Application",
-                    error: "Failed to delete Application",
-                  })
-                  .then(() =>
-                    queryClient.invalidateQueries({
-                      queryKey: ["applications"],
-                    }),
-                  );
-              }
-            }}
-          >
-            Delete
+      </TableCell>
+      <TableCell>
+        <div className="flex gap-2">
+          <Button className="flex items-center space-x-2">
+            <Link href={`${pathname}/${application.id}`}>Review</Link>
           </Button>
-        </ProtectedItem>
-      </td>
-    </tr>
+          <ProtectedItem roles={["admin"]}>
+            <Button
+              onClick={async () => {
+                if (
+                  confirm(
+                    "Are you sure you want to delete this application and all its associated reviews?",
+                  )
+                ) {
+                  toast
+                    .promise(deleteMutation.mutateAsync(application.id), {
+                      loading: "Deleting Application",
+                      success: "Successfully deleted Application",
+                      error: "Failed to delete Application",
+                    })
+                    .then(() =>
+                      queryClient.invalidateQueries({
+                        queryKey: ["applications"],
+                      }),
+                    );
+                }
+              }}
+            >
+              Delete
+            </Button>
+          </ProtectedItem>
+        </div>
+      </TableCell>
+    </TableRow>
   );
 }

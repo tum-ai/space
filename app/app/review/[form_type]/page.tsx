@@ -16,6 +16,15 @@ import { ApplicationRow } from "../components/applicationRow";
 import { Section } from "@components/Section";
 import { usePathname, useSearchParams } from "next/navigation";
 import Link from "next/link";
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@components/ui/table";
 
 const ReviewTool = ({ params }) => {
   const formType = decodeURIComponent(params.form_type);
@@ -130,21 +139,23 @@ const ReviewTool = ({ params }) => {
         </div>
       </div>
       <div className="flex flex-col space-y-4 overflow-auto pt-4">
-        <table className="mx-auto w-full min-w-[800px] table-auto text-center">
-          <thead>
-            <tr className="border-b border-b-gray-400 dark:border-b-white">
-              <th className="p-4">ID</th>
-              <th className="p-4">Reviews</th>
-              <th className="p-4">Avg. Final Score</th>
-              <th className="p-4">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
+        <Table>
+          <TableCaption>A list of {formType}</TableCaption>
+          <TableHeader>
+            <TableRow>
+              <TableHead>ID</TableHead>
+              <TableHead>Name</TableHead>
+              <TableHead>Reviews</TableHead>
+              <TableHead>Average Final Score</TableHead>
+              <TableHead className="w-32">Actions</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
             {applications?.map((application) => (
               <ApplicationRow key={application.id} application={application} />
             ))}
-          </tbody>
-        </table>
+          </TableBody>
+        </Table>
       </div>
       <div className="flex w-full items-center justify-between py-8">
         <Link href={`${pathName}?page=${(Number(page) - 1).toString()}`}>
