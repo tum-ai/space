@@ -1,6 +1,8 @@
+import { env } from "env.mjs";
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
-import { environment_name } from "../config/environment";
+
+const environment_name = env.NEXT_PUBLIC_ENVIRONMENT;
 
 const firebaseConfigProd = {
   apiKey: "AIzaSyDzvLalrCrtzp5gB3KGB2aH6j9EaD8Su5E",
@@ -25,7 +27,6 @@ const firebaseConfigStaging = {
 var firebaseConfig;
 if (environment_name === "production") {
   firebaseConfig = firebaseConfigProd;
-  // TODO: staging
 } else {
   firebaseConfig = firebaseConfigStaging;
   // throw new Error(`Invalid environment: ${environment_name}`);
