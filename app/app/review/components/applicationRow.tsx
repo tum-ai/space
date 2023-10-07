@@ -9,8 +9,10 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { DocumentMagnifyingGlassIcon } from "@heroicons/react/24/outline";
+import { usePathname } from "next/navigation";
 
 export function ApplicationRow({ application }) {
+  const pathname = usePathname();
   const queryClient = useQueryClient();
   const deleteMutation = useMutation({
     mutationFn: (id: number) =>
@@ -65,9 +67,9 @@ export function ApplicationRow({ application }) {
         {Math.round((finalScoreSum * 100) / application.reviews?.length) /
           100 || "-"}
       </td>
-      <td className="space-x-2 p-4 flex justify-end">
+      <td className="flex justify-end space-x-2 p-4">
         <Button className="flex items-center space-x-2">
-          <Link href={`/review/review?id=${application.id}`}>Review</Link>
+          <Link href={`${pathname}/${application.id}`}>Review</Link>
         </Button>
         <ProtectedItem roles={["admin"]}>
           <Button

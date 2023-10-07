@@ -6,22 +6,21 @@ import { Application } from "@models/application";
 import { Section } from "@components/Section";
 import { Button } from "@components/ui/button";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { ApplicationOverview } from "app/review/components/applicationOverview";
 
-function Review() {
+const Review = ({ params }) => {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const id = searchParams.get("id");
+  const id = params.application_id;
 
   const goToNext = () => {
     const newId = (Number(id) + 1).toString();
-    router.push(`/review/review?id=${newId}`, undefined);
+    router.push(`./${newId}`);
   };
 
   const goToPrevious = () => {
     const newId = (Number(id) - 1).toString();
-    router.push(`/review/review?id=${newId}`, undefined);
+    router.push(`./${newId}`);
   };
 
   const query = useQuery({
@@ -49,7 +48,7 @@ function Review() {
       <NavigationButton onNext={goToNext} onPrev={goToPrevious} />
     </Section>
   );
-}
+};
 
 const NavigationButton = ({ onNext, onPrev }) => {
   return (
