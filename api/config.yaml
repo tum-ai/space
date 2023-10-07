@@ -16,6 +16,9 @@ AUTH:
         # Should contain AUTH_WEBSITE_DOMAIN
         - 'http://space.tum-ai.com'
         - 'https://space.tum-ai.com'
+        - 'http://dev.space.tum-ai.com'
+        - 'https://dev.space.tum-ai.com'
+          # TODO: Remove the staging urls below
         - 'http://space.staging.tum-ai.com'
         - 'https://space.staging.tum-ai.com'
         - 'http://localhost'
