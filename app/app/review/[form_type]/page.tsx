@@ -1,9 +1,7 @@
 "use client";
 import { Button } from "@components/ui/button";
 import Icon from "@components/Icon";
-import Select from "@components/Select";
-import { ApplicationRow } from "./ApplicationRow";
-import { useReviewTool } from "./useReviewTool";
+import { useReviewTool } from "../useReviewTool";
 import LoadingWheel from "@components/LoadingWheel";
 import {
   ArrowLeftIcon,
@@ -14,23 +12,30 @@ import {
 import toast from "react-hot-toast";
 import axios from "axios";
 import download from "downloadjs";
-import { Application } from "@models/application";
+import { ApplicationRow } from "../components/applicationRow";
+import { Section } from "@components/Section";
+import { usePathname, useSearchParams } from "next/navigation";
+import Link from "next/link";
 
-export const Applications = () => {
+const ReviewTool = ({ params }) => {
+  const formType = decodeURIComponent(params.form_type);
+  const searchParams = useSearchParams();
+  const pathName = usePathname();
+  const page = searchParams.get("page") ?? "1";
+
   const {
     applications,
     filters,
-    updateFilter,
     search,
     setSearch,
     handleSearch,
     isLoading,
     error,
-    formNames,
-    page,
-    increasePage,
-    decreasePage,
-  } = useReviewTool(50);
+  } = useReviewTool({
+    pageSize: 50,
+    formType: formType as string,
+    page: page,
+  });
 
   if (isLoading) {
     return <LoadingWheel />;
@@ -45,28 +50,19 @@ export const Applications = () => {
   }
 
   return (
-    <>
+    <Section>
       <div className="flex flex-col justify-between gap-2 md:flex-row md:items-center">
-        <div className="mt-2 font-light text-gray-500">
-          {`Total ${applications?.length} applications `}
-          {`| ${applications
-            ?.map((application) => application.reviews?.length)
-            .reduce((prev, current) => prev + current, 0)} reviews `}
+        <div className="mt-2 font-light">
+          <h2>{formType}</h2>
+          <p className="text-gray-500">
+            {`Total ${applications?.length} applications `}
+            {`| ${applications
+              ?.map((application) => application.reviews?.length)
+              .reduce((prev, current) => prev + current, 0)} reviews `}
+          </p>
         </div>
         <div className="flex flex-col items-end gap-2 lg:flex-row">
           <div className="flex max-w-full items-center gap-2 overflow-x-auto">
-            <Select
-              placeholder={"Form"}
-              options={[
-                ...(formNames.map((formName) => ({
-                  key: formName,
-                  value: formName,
-                })) || []),
-              ]}
-              value={filters?.formName?.name}
-              setSelectedItem={(item) => updateFilter("formName", item, (application: Application) => application.submission.data.formName === item)}
-            />
-
             <Button
               className="flex w-max items-center gap-2"
               onClick={() => {
@@ -97,10 +93,11 @@ export const Applications = () => {
                     error: "Failed to load reviews",
                   },
                 );
-                const fileName = `applications-${formType
-                  ? formType?.toLowerCase()?.replace(/ /g, "_") + ".json"
-                  : "all-forms"
-                  }`;
+                const fileName = `applications-${
+                  formType
+                    ? formType?.toLowerCase()?.replace(/ /g, "_") + ".json"
+                    : "all-forms"
+                }`;
 
                 download(
                   response.data,
@@ -114,7 +111,7 @@ export const Applications = () => {
           </div>
 
           <form
-            className="flex w-full items-center space-x-4 rounded-lg bg-gray-200 dark:bg-gray-700 md:w-fit py-2"
+            className="flex w-full items-center space-x-4 rounded-lg bg-gray-200 py-2 dark:bg-gray-700 md:w-fit"
             onSubmit={(e) => {
               e.preventDefault();
               handleSearch();
@@ -150,18 +147,15 @@ export const Applications = () => {
         </table>
       </div>
       <div className="flex w-full items-center justify-between py-8">
-        <Button
-          variant="link"
-          onClick={() => decreasePage()}
-          disabled={page === 1}
-        >
+        <Link href={`${pathName}?page=${(Number(page) - 1).toString()}`}>
           <ArrowLeftIcon className="h-8 w-8" />
-        </Button>
+        </Link>
         <span className="text-lg">{page}</span>
-        <Button variant="link" onClick={() => increasePage()}>
+        <Link href={`${pathName}?page=${(Number(page) + 1).toString()}`}>
           <ArrowRightIcon className="h-8 w-8" />
-        </Button>
+        </Link>
       </div>
-    </>
+    </Section>
   );
 };
+export default ReviewTool;

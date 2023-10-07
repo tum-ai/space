@@ -1,32 +1,35 @@
 "use client";
-import { Button } from "@components/ui/button";
-import ProtectedItem from "@components/ProtectedItem";
 import { Section } from "@components/Section";
-import { observer } from "mobx-react";
+import { Button } from "@components/ui/button";
+import { Card, CardFooter, CardHeader } from "@components/ui/card";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 import Link from "next/link";
-import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
-import { Applications } from "./Applications";
 
-const ReviewTool = observer(() => {
+const ReviewPage = () => {
+  const formTypesQuery = useQuery({
+    queryKey: ["applications", "info"],
+    queryFn: () =>
+      axios.get("/applications/info").then((res) => res.data.data as string[]),
+  });
+
   return (
-    <ProtectedItem showNotFound roles={["submit_reviews"]}>
-      <Section className="flex flex-col justify-between gap-4 md:flex-row md:items-center">
-        <h1 className="text-6xl font-thin">Review Tool</h1>
-
-        <div className="flex gap-2">
-          <Button asChild className="flex w-max items-center gap-2">
-            <Link href={"/review/myreviews"}>
-              <MagnifyingGlassIcon /> My Reviews
-            </Link>
-          </Button>
-        </div>
-      </Section>
-
-      <Section>
-        <Applications />
-      </Section>
-    </ProtectedItem>
+    <Section>
+      <div className="grid grid-cols-2 gap-4">
+        {formTypesQuery.data &&
+          formTypesQuery.data.map((formType) => (
+            <Card key={`form_type_${formType}`}>
+              <CardHeader>{formType}</CardHeader>
+              <CardFooter>
+                <Button className="w-full" asChild>
+                  <Link href={`/review/${formType}`}>View Applications</Link>
+                </Button>
+              </CardFooter>
+            </Card>
+          ))}
+      </div>
+    </Section>
   );
-});
+};
 
-export default ReviewTool;
+export default ReviewPage;

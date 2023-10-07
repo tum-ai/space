@@ -5,7 +5,13 @@ import { Filter } from "@lib/types/filter";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 
-export const useReviewTool = (page_size = 100) => {
+interface Params {
+  pageSize: number;
+  formType: string;
+  page: string;
+}
+
+export const useReviewTool = ({ pageSize = 50, formType, page }: Params) => {
   type Filters = Record<string, Filter<Application>>;
   const [serverSearching, setServerSearching] = useState(false);
   const [filters, setFilters] = useState<Filters>({});
@@ -25,25 +31,6 @@ export const useReviewTool = (page_size = 100) => {
     }));
   };
 
-  const [page, setPage] = useState(1);
-
-  const infoQuery = useQuery({
-    queryKey: ["applications", "info"],
-    queryFn: () =>
-      axios
-        .get("/applications/info")
-        .then((res) => res.data.data as string[])
-        .then((formNames) => {
-          const formName = formNames.at(0);
-          updateFilter(
-            "formName",
-            formName,
-            (application) => application.submission.data.formName === formName,
-          );
-          return formNames;
-        }),
-  });
-
   const applicationsQuery = useQuery({
     queryKey: [
       "applications",
@@ -56,17 +43,13 @@ export const useReviewTool = (page_size = 100) => {
         .get("/applications/", {
           params: {
             page,
-            page_size: serverSearching ? null : page_size,
-            form_type: filters.formName.name,
+            page_size: serverSearching ? null : pageSize,
+            form_type: formType,
             search: serverSearching ? searchTerm : null,
           },
         })
         .then((res) => res.data.data as Application[]),
-    enabled: !!filters.formName?.name,
   });
-
-  const increasePage = () => setPage((old) => old + 1);
-  const decreasePage = () => setPage((old) => Math.max(old - 1, 1));
 
   const filterPredicate = (application: Application) => {
     return Object.values(filters).every((filter: Filter<Application>) => {
@@ -117,9 +100,5 @@ export const useReviewTool = (page_size = 100) => {
     updateFilter,
     isLoading: applicationsQuery.isLoading,
     error: applicationsQuery.error,
-    formNames: infoQuery.data ?? [],
-    page,
-    increasePage,
-    decreasePage,
   };
 };
