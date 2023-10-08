@@ -9,16 +9,16 @@ import { useStores } from "../providers/StoreProvider";
 import { ThemeProvider } from "@components/theme-provider";
 import { env } from "env.mjs";
 
-Axios.defaults.baseURL = `https://${env.NEXT_PUBLIC_API_URL}`;
-
 const StoresContext = createContext(null);
 const queryClient = new QueryClient();
 
-export default function RootLayout({
-  children,
-}: {
+interface Props {
   children: React.ReactNode;
-}) {
+}
+
+export default function RootLayout({ children }: Props) {
+  Axios.defaults.baseURL = env.NEXT_PUBLIC_API_URL;
+
   const stores = useStores();
   return (
     <html lang="en">
