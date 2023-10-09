@@ -96,7 +96,8 @@ export const useReviewTool = ({ pageSize = 50, formType, page }: Params) => {
     search: searchTerm,
     setSearch,
     handleSearch: () => {
-      setServerSearching(true), applicationsQuery.refetch();
+      setServerSearching(true);
+      applicationsQuery.refetch();
     },
     filters,
     updateFilter,
