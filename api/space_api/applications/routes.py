@@ -52,7 +52,6 @@ def get_form_types(request: Request) -> dict:
 def find_tally_index_by_label(label: str, submission: dict[str,
                                                            Any]) -> int | None:
     for i, field in enumerate(submission["data"]["fields"]):
-        print(field["label"])
         if field["label"] and field["label"].lower() == label.lower():
             return i
     return None
@@ -93,7 +92,8 @@ def list_applications(
 
         def search_predicate(submission) -> bool:
             for idx in relevant_idxs:
-                if search in submission["data"]["fields"][idx]["value"]:
+                if search.lower() \
+                        in submission["data"]["fields"][idx]["value"].lower():
                     return True
             return False
 
