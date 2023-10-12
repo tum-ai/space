@@ -24,6 +24,7 @@ dependencies:
     - pytest-cov
 
     # runtime
+    - auth0-python
     - fastapi
     - gunicorn
     - httptools
@@ -37,7 +38,9 @@ dependencies:
     - sqlalchemy-utils
     - uvicorn
     - uvloop
+    - chardet
     - pre_commit
+    - pyjwt
 
     - pip:
           # linting

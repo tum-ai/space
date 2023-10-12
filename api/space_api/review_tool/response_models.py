@@ -12,27 +12,22 @@ class ResponseSubmitReview(BaseResponse):
 
 
 class ResponseApplicationReview(BaseResponse):
+    model_config = ConfigDict(
+        json_schema_extra={"example": ApplicationReviewOut.dummy()}
+    )
     data: ApplicationReviewOut
-
-    class Config:
-        schema_extra = BaseResponse.schema_wrapper(
-            ApplicationReviewOut.dummy())
 
 
 class ResponseApplicationReviewList(BaseResponse):
+    model_config = ConfigDict(
+        json_schema_extra={"example": [ApplicationReviewOut.dummy()]}
+    )
     data: list[ApplicationReviewOut]
-
-    class Config:
-        schema_extra = BaseResponse.schema_wrapper(
-            ApplicationReviewOut.dummy())
 
 
 class ResponseMyApplicationReviewList(BaseResponse):
+    model_config = ConfigDict(json_schema_extra={"example": []})
     data: list[MyApplicationReviewOut]
-
-    class Config:
-        schema_extra = BaseResponse.schema_wrapper(
-            MyApplicationReviewOut.dummy())
 
 
 class ResponseDeleteReview(BaseResponse):

@@ -9,8 +9,8 @@ from .database.setup import close_db_client, setup_db_client
 from .mail.send import send_email
 from .profiles.routes import router as profile_router
 from .review_tool.routes import router as review_tool_router
+from .security.auth0 import init_auth0
 from .security.decorators import ensure_authenticated, ensure_authorization
-from .security.firebase_auth import init_firebase_auth
 from .utils.config import CONFIG
 from .utils.error_handlers import error_handlers
 from .utils.log import log
@@ -19,7 +19,7 @@ app = FastAPI()
 db_client = None
 
 # --------------------------------- synchronous setup -------------------------------- #
-init_firebase_auth()
+app.state.auth0 = init_auth0()
 
 allowed_origins = CONFIG.get("AUTH_ALLOWED_ORIGINS")
 allowed_origins += CONFIG.get("CERTIFICATE_ALLOWED_ORIGINS")
@@ -91,9 +91,7 @@ def email_test(
     subject: str,
     body: str,
 ) -> dict:
-    send_email(receipient="admin+tumaispacedev@tum-ai.com",
-               subject=subject,
-               body=body)
+    send_email(receipient="admin+tumaispacedev@tum-ai.com", subject=subject, body=body)
     return {"msg": "Send success!"}
 
 

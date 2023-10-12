@@ -25,16 +25,13 @@ class SaBaseModel(DeclarativeBase):
 
 
 class MixinAsDict:
-
     def as_dict(self):
         return {
-            c.name: getattr(self, c.name)
-            for c in getattr(self, "__table__").columns
+            c.name: getattr(self, c.name) for c in getattr(self, "__table__").columns
         }
 
 
-PositionType = Literal["teamlead", "president", "member", "alumni",
-                       "applicant"]
+PositionType = Literal["teamlead", "president", "member", "alumni", "applicant"]
 
 
 class Department(MixinAsDict, SaBaseModel):
@@ -47,13 +44,13 @@ class Department(MixinAsDict, SaBaseModel):
 
     # ---------------------------- USER CHANGEABLE FIELDS ---------------------------- #
     name: Mapped[str] = mapped_column(String(80), unique=True, nullable=False)
-    description: Mapped[str | None] = mapped_column(String(2048),
-                                                    nullable=True)
+    description: Mapped[str | None] = mapped_column(String(2048), nullable=True)
 
     # ----------------------------- RELATIONAL FK FIELDS ----------------------------- #
     # back reference from DepartmentMembership
     memberships: Mapped[list["DepartmentMembership"]] = relationship(
-        "DepartmentMembership", back_populates="department")
+        "DepartmentMembership", back_populates="department"
+    )
 
     def __repr__(self) -> str:
         return f"Department(id={self.handle!r}, name={self.name!r})"
@@ -68,7 +65,8 @@ class JobHistoryElement(BaseModel):
                 "date_from": "15.01.2023",
                 "date_to": "31.03.2023",
             }
-        })
+        }
+    )
 
     employer: str
     position: str
@@ -88,16 +86,16 @@ class Profile(MixinAsDict, SaBaseModel):
 
     # -------------------------------- MANAGED FIELDS -------------------------------- #
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    firebase_uid: Mapped[str] = mapped_column(String,
-                                              unique=True,
-                                              index=True,
-                                              nullable=False)
+    firebase_uid: Mapped[str] = mapped_column(
+        String, unique=True, index=True, nullable=True
+    )
+    auth0_uid: Mapped[str] = mapped_column(
+        String, unique=True, index=True, nullable=True
+    )
 
     # ---------------------------- USER CHANGEABLE FIELDS ---------------------------- #
     email: Mapped[str] = mapped_column(String(200), index=True, nullable=False)
-    phone: Mapped[str | None] = mapped_column(String(50),
-                                              index=True,
-                                              nullable=True)
+    phone: Mapped[str | None] = mapped_column(String(50), index=True, nullable=True)
 
     first_name: Mapped[str] = mapped_column(String(50), nullable=False)
     last_name: Mapped[str] = mapped_column(String(50), nullable=False)
@@ -108,8 +106,7 @@ class Profile(MixinAsDict, SaBaseModel):
 
     profile_picture: Mapped[str | None] = mapped_column(TEXT, nullable=True)
 
-    activity_status: Mapped[str | None] = mapped_column(String(50),
-                                                        nullable=True)
+    activity_status: Mapped[str | None] = mapped_column(String(50), nullable=True)
 
     degree_level: Mapped[str | None] = mapped_column(String(20), nullable=True)
     degree_name: Mapped[str | None] = mapped_column(String(80), nullable=True)
@@ -126,20 +123,23 @@ class Profile(MixinAsDict, SaBaseModel):
     # ----------------------------- RELATIONAL FK FIELDS ----------------------------- #
     # back reference from SocialNetwork
     social_networks: Mapped[list["SocialNetwork"]] = relationship(
-        "SocialNetwork", back_populates="profile")
+        "SocialNetwork", back_populates="profile"
+    )
 
     # back reference from DepartmentMembership
-    department_memberships: Mapped[
-        list["DepartmentMembership"]] = relationship("DepartmentMembership",
-                                                     back_populates="profile")
+    department_memberships: Mapped[list["DepartmentMembership"]] = relationship(
+        "DepartmentMembership", back_populates="profile"
+    )
 
     # back reference from RoleHoldership
     role_holderships: Mapped[list["RoleHoldership"]] = relationship(
-        "RoleHoldership", back_populates="profile")
+        "RoleHoldership", back_populates="profile"
+    )
 
     # back reference from ApplicationReview
     reviews: Mapped[list["ApplicationReview"]] = relationship(
-        "ApplicationReview", back_populates="reviewer")
+        "ApplicationReview", back_populates="reviewer"
+    )
 
     # back reference from MembershipApplicationReferral
     referrals_given: Mapped[list["ApplicationReferral"]] = relationship(
@@ -155,8 +155,7 @@ class Profile(MixinAsDict, SaBaseModel):
     @hybrid_property
     def tum_ai_semester(self) -> int:
         """automatically computed by python from db model"""
-        return relativedelta(datetime.now(),
-                             self.time_joined).years * 2  # type: ignore
+        return relativedelta(datetime.now(), self.time_joined).years * 2  # type: ignore
 
     @hybrid_property
     def full_name(self) -> str:
@@ -177,7 +176,8 @@ class Profile(MixinAsDict, SaBaseModel):
                         position=fields[1],
                         date_from=fields[2],
                         date_to=fields[3],
-                    ))
+                    )
+                )
         print("decoded new job history: ", new_job_history)
         return new_job_history
 
@@ -185,15 +185,15 @@ class Profile(MixinAsDict, SaBaseModel):
         return f"Profile(id={self.id}, fullname={self.full_name})"
 
     @classmethod
-    def encode_job_history(cls,
-                           job_history: list[JobHistoryElement]) -> str | None:
+    def encode_job_history(cls, job_history: list[JobHistoryElement]) -> str | None:
         # encode job_history in csv of <employer:position:from:to>
         encoded_history: str = ""
         for hist in job_history:
             # TODO abstraction
             encoded_history = (
-                f"{encoded_history}{hist.employer}:{hist.position}:" +
-                f"{hist.date_from}:{hist.date_to},")
+                f"{encoded_history}{hist.employer}:{hist.position}:"
+                + f"{hist.date_from}:{hist.date_to},"
+            )
         if len(encoded_history or "") > 0:
             return encoded_history[:-1]  # strip trailing comma
         else:
@@ -210,8 +210,9 @@ class Profile(MixinAsDict, SaBaseModel):
                 raise KeyError
 
 
-SocialNetworkType = Literal["slack", "linkedin", "github", "phone",
-                            "instagram", "telegram", "discord", "other"]
+SocialNetworkType = Literal[
+    "slack", "linkedin", "github", "phone", "instagram", "telegram", "discord", "other"
+]
 
 
 class SocialNetwork(MixinAsDict, SaBaseModel):
@@ -220,9 +221,9 @@ class SocialNetwork(MixinAsDict, SaBaseModel):
     __tablename__ = "social_network"
 
     # -------------------------------- MANAGED FIELDS -------------------------------- #
-    profile_id: Mapped[int] = mapped_column(ForeignKey(Profile.id,
-                                                       ondelete="CASCADE"),
-                                            primary_key=True)
+    profile_id: Mapped[int] = mapped_column(
+        ForeignKey(Profile.id, ondelete="CASCADE"), primary_key=True
+    )
     type = Column(String, primary_key=True)
 
     # ---------------------------- USER CHANGEABLE FIELDS ---------------------------- #
@@ -230,17 +231,19 @@ class SocialNetwork(MixinAsDict, SaBaseModel):
     link: Mapped[str | None] = mapped_column(String(1024), nullable=True)
 
     # ----------------------------- RELATIONAL FK FIELDS ----------------------------- #
-    profile: Mapped["Profile"] = relationship("Profile",
-                                              back_populates="social_networks",
-                                              cascade="all,delete")
+    profile: Mapped["Profile"] = relationship(
+        "Profile", back_populates="social_networks", cascade="all,delete"
+    )
 
-    __table_args__ = ((CheckConstraint("(handle IS NULL) <> (link IS NULL)",
-                                       name="handle_xor_link")), )
+    __table_args__ = (
+        (CheckConstraint("(handle IS NULL) <> (link IS NULL)", name="handle_xor_link")),
+    )
 
     def __repr__(self) -> str:
         return (
             f"SocialNetwork(profile_id={self.profile_id!r}, type={self.type!r}, "
-            f"fullname={self.handle!r}, link={self.link!r})")
+            f"fullname={self.handle!r}, link={self.link!r})"
+        )
 
 
 class DepartmentMembership(MixinAsDict, SaBaseModel):
@@ -257,24 +260,26 @@ class DepartmentMembership(MixinAsDict, SaBaseModel):
     time_to = Column(DateTime, nullable=True)
 
     # ----------------------------- RELATIONAL FK FIELDS ----------------------------- #
-    profile_id: Mapped[int] = mapped_column(ForeignKey(Profile.id,
-                                                       ondelete="CASCADE"),
-                                            nullable=False)
+    profile_id: Mapped[int] = mapped_column(
+        ForeignKey(Profile.id, ondelete="CASCADE"), nullable=False
+    )
     profile: Mapped["Profile"] = relationship(
-        "Profile",
-        back_populates="department_memberships",
-        cascade="all,delete")
+        "Profile", back_populates="department_memberships", cascade="all,delete"
+    )
 
-    department_handle: Mapped[str] = mapped_column(ForeignKey(
-        Department.handle),
-                                                   nullable=False)
+    department_handle: Mapped[str] = mapped_column(
+        ForeignKey(Department.handle), nullable=False
+    )
     department: Mapped["Department"] = relationship(
-        "Department", back_populates="memberships")
+        "Department", back_populates="memberships"
+    )
 
     def __repr__(self) -> str:
-        return (f"DepartmentMembership(id={self.profile_id!r} " +
-                f"({self.profile.first_name} {self.profile.last_name})" +
-                ", department_handle={self.department_handle!r})")
+        return (
+            f"DepartmentMembership(id={self.profile_id!r} "
+            + f"({self.profile.first_name} {self.profile.last_name})"
+            + ", department_handle={self.department_handle!r})"
+        )
 
     def force_load(self) -> None:
         if not self.profile_id or not self.profile.id:
@@ -296,7 +301,8 @@ class Role(MixinAsDict, SaBaseModel):
 
     # back reference from RoleHoldership
     holderships: Mapped[list["RoleHoldership"]] = relationship(
-        "RoleHoldership", back_populates="role")
+        "RoleHoldership", back_populates="role"
+    )
 
     def __repr__(self) -> str:
         return f"Role(handle={self.handle!r}, description={self.description})"
@@ -308,23 +314,25 @@ class RoleHoldership(MixinAsDict, SaBaseModel):
     __tablename__ = "role_holdership"
 
     # ----------------------------- RELATIONAL FK FIELDS ----------------------------- #
-    profile_id: Mapped[int] = mapped_column(ForeignKey(Profile.id,
-                                                       ondelete="CASCADE"),
-                                            primary_key=True,
-                                            nullable=False)
+    profile_id: Mapped[int] = mapped_column(
+        ForeignKey(Profile.id, ondelete="CASCADE"), primary_key=True, nullable=False
+    )
     profile: Mapped["Profile"] = relationship(
-        "Profile", back_populates="role_holderships", cascade="all,delete")
+        "Profile", back_populates="role_holderships", cascade="all,delete"
+    )
 
-    role_handle: Mapped[str] = mapped_column(ForeignKey(Role.handle),
-                                             primary_key=True,
-                                             nullable=False)
-    role: Mapped["Role"] = relationship("Role",
-                                        back_populates="holderships",
-                                        cascade="all,delete")
+    role_handle: Mapped[str] = mapped_column(
+        ForeignKey(Role.handle), primary_key=True, nullable=False
+    )
+    role: Mapped["Role"] = relationship(
+        "Role", back_populates="holderships", cascade="all,delete"
+    )
 
     def __repr__(self) -> str:
-        return (f"RoleHoldership(profile_id={self.profile_id!r}, "
-                f"role_handle={self.role_handle!r})")
+        return (
+            f"RoleHoldership(profile_id={self.profile_id!r}, "
+            f"role_handle={self.role_handle!r})"
+        )
 
     def force_load(self) -> None:
         if not self.profile_id or not self.profile.id:
@@ -346,9 +354,8 @@ class Application(MixinAsDict, SaBaseModel):
     # ----------------------------- RELATIONAL FK FIELDS ----------------------------- #
     # back reference from ApplicationReview
     reviews: Mapped[list["ApplicationReview"]] = relationship(
-        "ApplicationReview",
-        back_populates="application",
-        cascade="all, delete")
+        "ApplicationReview", back_populates="application", cascade="all, delete"
+    )
 
     def __repr__(self) -> str:
         return f"Application(id={self.id!r}"
@@ -377,18 +384,17 @@ class ApplicationReview(MixinAsDict, SaBaseModel):
     finalscore: Mapped[float] = mapped_column(Float, nullable=False)
 
     # ----------------------------- RELATIONAL FK FIELDS ----------------------------- #
-    reviewer_id: Mapped[int] = mapped_column(ForeignKey(Profile.id),
-                                             nullable=False,
-                                             primary_key=True)
-    reviewer: Mapped["Profile"] = relationship("Profile",
-                                               back_populates="reviews")
+    reviewer_id: Mapped[int] = mapped_column(
+        ForeignKey(Profile.id), nullable=False, primary_key=True
+    )
+    reviewer: Mapped["Profile"] = relationship("Profile", back_populates="reviews")
 
-    reviewee_id: Mapped[int] = mapped_column(ForeignKey(Application.id,
-                                                        ondelete="CASCADE"),
-                                             nullable=False,
-                                             primary_key=True)
-    application: Mapped["Application"] = relationship("Application",
-                                                      back_populates="reviews")
+    reviewee_id: Mapped[int] = mapped_column(
+        ForeignKey(Application.id, ondelete="CASCADE"), nullable=False, primary_key=True
+    )
+    application: Mapped["Application"] = relationship(
+        "Application", back_populates="reviews"
+    )
 
     def __repr__(self) -> str:
         return f"ApplicationReview(reviewer_id=\
@@ -410,14 +416,12 @@ class ApplicationReferral(MixinAsDict, SaBaseModel):
     first_name: Mapped[str] = mapped_column(String(50), nullable=False)
     last_name: Mapped[str] = mapped_column(String(50), nullable=False)
     comment: Mapped[str] = mapped_column(String, nullable=False)
-    email: Mapped[str] = mapped_column(String,
-                                       primary_key=True,
-                                       nullable=False)
+    email: Mapped[str] = mapped_column(String, primary_key=True, nullable=False)
 
     # ----------------------------- RELATIONAL FK FIELDS ----------------------------- #
-    referer_id: Mapped[int] = mapped_column(ForeignKey(Profile.id),
-                                            primary_key=True,
-                                            nullable=False)
+    referer_id: Mapped[int] = mapped_column(
+        ForeignKey(Profile.id), primary_key=True, nullable=False
+    )
     referer: Mapped["Profile"] = relationship(
         "Profile",
         back_populates="referrals_given",
