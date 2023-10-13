@@ -1,13 +1,13 @@
 "use client";
-import { Button } from "@/components/Button";
-import Input from "@/components/Input";
-import ProtectedItem from "@/components/ProtectedItem";
-import { Section } from "@/components/Section";
-import Select from "@/components/Select";
+import { Button } from "@components/ui/button";
+import Input from "@components/Input";
+import ProtectedItem from "@components/ProtectedItem";
+import { Section } from "@components/Section";
+import Select from "@components/Select";
 import { UserPlusIcon, PlusIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import axios, { AxiosError } from "axios";
 import { Field, FieldArray, Form, Formik, FormikValues } from "formik";
-import ErrorMessage from "@/components/ErrorMessage";
+import ErrorMessage from "@components/ErrorMessage";
 import toast from "react-hot-toast";
 import * as Yup from "yup";
 

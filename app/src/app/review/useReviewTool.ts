@@ -1,71 +1,107 @@
 "use client";
 import { useState } from "react";
-import { Application, Review } from "@models/application";
-import { Filter } from "util/types/filter";
+import { Application } from "@models/application";
+import { Filter } from "@lib/types/filter";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 
-export const useReviewTool = (page_size = 100) => {
-  type Filters = Record<string, Filter<Application>>;
-  const [filters, setFilters] = useState<Filters>({});
-  const [search, setSearch] = useState("");
+interface Params {
+  pageSize: number;
+  formType: string;
+  page: string;
+}
 
-  const [page, setPage] = useState(1);
-  const query = useQuery({
-    queryKey: ["applications", page],
+export const useReviewTool = ({ pageSize = 50, formType, page }: Params) => {
+  type Filters = Record<string, Filter<Application>>;
+  const [serverSearching, setServerSearching] = useState(false);
+  const [filters, setFilters] = useState<Filters>({});
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const updateFilter = (
+    filterName: string,
+    name: string,
+    predicate: (app: Application) => boolean,
+  ) => {
+    setFilters((old) => ({
+      ...old,
+      [filterName]: {
+        name,
+        predicate,
+      },
+    }));
+  };
+
+  const applicationsQuery = useQuery({
+    queryKey: [
+      "applications",
+      page,
+      serverSearching && searchTerm,
+      filters["formName"],
+    ],
     queryFn: () =>
       axios
-        .get("/applications/", { params: { page, page_size } })
+        .get("/applications/", {
+          params: {
+            page,
+            page_size: serverSearching ? null : pageSize,
+            form_type: formType,
+            search: serverSearching ? searchTerm : null,
+          },
+        })
         .then((res) => res.data.data as Application[]),
   });
 
-  const increasePage = () => setPage((old) => old + 1);
-  const decreasePage = () => setPage((old) => Math.max(old - 1, 1));
-
-  const filterPredicate = (application: Application) =>
-    Object.values(filters).every((filter: Filter<Application>) =>
-      filter.predicate(application),
-    );
-
-  const searchFilter = (application: Application) =>
-    search === "" || JSON.stringify(application).toLowerCase().includes(search);
-
-  const finalScoreComparator = (a: Application, b: Application): any => {
-    const finalScoresA = a.reviews.map((review: Review) => review.finalscore);
-    const finalScoresB = b.reviews.map((review: Review) => review.finalscore);
-    const sumA = finalScoresA.reduce((a, b) => a + b, 0);
-    const avgA = sumA / finalScoresA.length || 0;
-    const sumB = finalScoresB.reduce((a, b) => a + b, 0);
-    const avgB = sumB / finalScoresB.length || 0;
-    return avgB - avgA;
+  const filterPredicate = (application: Application) => {
+    return Object.values(filters).every((filter: Filter<Application>) => {
+      return filter.predicate(application);
+    });
   };
 
-  const applications = query.data
-    ?.filter(filterPredicate)
-    .filter(searchFilter)
-    .sort(finalScoreComparator);
+  const setSearch = (searchTerm: string) => {
+    setServerSearching(false);
 
-  const getFormNames = () => {
-    return [
-      ...new Set(
-        query.data?.map((application) => {
-          return application.submission?.data?.formName;
-        }),
-      ),
-    ];
+    if (searchTerm === "") {
+      setFilters(({ ["search"]: _, ...rest }) => rest);
+      setSearchTerm("");
+      return;
+    }
+
+    setSearchTerm(searchTerm);
+    const predicate = (application: Application) => {
+      const relevant_idxs = ["first name", "last name"].map(
+        (keyword) =>
+          applicationsQuery.data
+            ?.at(0)
+            ?.submission.data.fields.findIndex((field) => {
+              return field.label?.toLowerCase().trim() === keyword;
+            }),
+      );
+      return relevant_idxs.some((relevant_idx) => {
+        const value = application.submission.data.fields[relevant_idx]?.value;
+
+        return (
+          typeof value === "string" &&
+          value?.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+      });
+    };
+
+    updateFilter("search", searchTerm, predicate);
   };
+
+  const applications = applicationsQuery.data?.filter(filterPredicate);
 
   return {
     applications,
-    search,
+    search: searchTerm,
     setSearch,
+    handleSearch: () => {
+      setServerSearching(true);
+      applicationsQuery.refetch();
+    },
     filters,
-    setFilters,
-    isLoading: query.isLoading,
-    error: query.error,
-    getFormNames,
-    page,
-    increasePage,
-    decreasePage,
+    updateFilter,
+    isLoading: applicationsQuery.isLoading,
+    error: applicationsQuery.error,
   };
 };

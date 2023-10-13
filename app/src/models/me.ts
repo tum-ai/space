@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { auth } from "@/config/firebase";
+import { auth } from "@config/firebase";
 import axios, { AxiosError } from "axios";
 import { signOut } from "firebase/auth";
 import { makeAutoObservable } from "mobx";
@@ -10,10 +10,6 @@ export class MeModel {
   root: RootModel;
   editorProfile: any = {};
   user = undefined;
-  credentials: { email: string; password: string } = {
-    email: "",
-    password: "",
-  };
   resetEmail: string = "";
 
   constructor(root: RootModel) {
@@ -47,10 +43,6 @@ export class MeModel {
     });
   }
 
-  setCredentials(credentials: { email: string; password: string }) {
-    this.credentials = credentials;
-  }
-
   setResetEmail(resetEmail: string) {
     this.resetEmail = resetEmail;
   }
@@ -73,19 +65,6 @@ export class MeModel {
     const user_roles = user.profile.role_holderships.map((obj) => obj.handle);
     const intersection = user_roles.filter((value) => roles.includes(value));
     return intersection.length > 0;
-  }
-
-  // Api
-
-  async sendPasswordResetLink() {
-    await axios
-      .post("/resetPassword?email=" + this.resetEmail)
-      .then(() => {
-        toast.success(`Password reset link sent.`);
-      })
-      .catch((err: AxiosError) => {
-        toast.error(`Failed to get my profile: ${err.message}`);
-      });
   }
 
   async logout() {

@@ -1,19 +1,21 @@
 "use client";
 
+import { useStores } from "@providers/StoreProvider";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import ProfileOverview from "../profile/components/ProfileOverview";
-import { useUser } from "@auth0/nextjs-auth0/client";
 
 const Me = () => {
+  const { meModel } = useStores();
   const profileQuery = useQuery({
     queryKey: ["me"],
     queryFn: () => axios("/me"),
   });
-  const { user, error, isLoading } = useUser();
-  if (!user) return "TODO";
-  if (isLoading) return <p>TODO Loading</p>;
-  if (error) return <p>Error: {error.message}</p>;
+
+  // Set editorProfile as soon as data is available
+  if (profileQuery.data?.data?.data) {
+    meModel.editorProfile = { ...profileQuery.data.data.data };
+  }
 
   if (profileQuery.isLoading) {
     return <h1>Loading profile</h1>;

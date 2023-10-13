@@ -2,13 +2,13 @@ import { VariantProps, cva } from "class-variance-authority";
 
 interface Props
   extends VariantProps<typeof styles>,
-    React.InputHTMLAttributes<HTMLInputElement> {
+  React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;
   className?: string;
 }
 
 const styles = cva(
-  "flex min-h-[2.75rem] rounded-lg border-2 px-2 outline-none",
+  "flex h-10 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
   {
     variants: {
       state: {

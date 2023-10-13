@@ -34,7 +34,7 @@ router = APIRouter()
 
 @router.post(
     "/review_tool/application_review",
-    response_description="Submit a review of a  application.",
+    response_description="Submit a review of a application.",
     response_model=ResponseSubmitReview,
 )
 @error_handlers
@@ -102,7 +102,7 @@ def get_application_reviews_for_reviewer(request: Request) -> dict:
 @router.get(
     "/review_tool/reviews/",
     response_description=
-    "List all membership applications reviews, pagging support",
+    "List all membership applications reviews, paging support",
     response_model=ResponseApplicationReviewList | ErrorResponse,
 )
 @enable_paging(max_page_size=100)

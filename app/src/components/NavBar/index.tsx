@@ -1,12 +1,12 @@
-import ProtectedItem from "@/components/ProtectedItem";
-import { Section } from "@/components/Section";
+import ProtectedItem from "@components/ProtectedItem";
+import { Section } from "@components/Section";
 import * as NavigationMenu from "@radix-ui/react-navigation-menu";
 import clsx from "clsx";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Logo from "./components/Logo";
 import User from "./components/User";
-import { Button } from "@/components/Button";
+import { Button } from "@components/ui/button";
 
 function NavBar() {
   const pathname = usePathname();

@@ -1,14 +1,14 @@
 "use client";
-import { Button } from "@/components/Button";
-import Dialog from "@/components/Dialog";
-import Input from "@/components/Input";
-import ProtectedItem from "@/components/ProtectedItem";
-import { Section } from "@/components/Section";
-import Textarea from "@/components/Textarea";
+import { Button } from "@components/ui/button";
+import Dialog from "@components/Dialog";
+import Input from "@components/Input";
+import ProtectedItem from "@components/ProtectedItem";
+import { Section } from "@components/Section";
+import Textarea from "@components/Textarea";
 import * as DialogRadix from "@radix-ui/react-dialog";
 import { useQueryClient } from "@tanstack/react-query";
 import axios, { AxiosError } from "axios";
-import { ErrorMessage, Field, Form, Formik, FormikValues } from "formik";
+import { Field, Form, Formik, FormikValues } from "formik";
 import { observer } from "mobx-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
@@ -19,6 +19,7 @@ import {
   ArrowLeftIcon,
   ArrowRightIcon,
 } from "@radix-ui/react-icons";
+import ErrorMessage from "@components/ErrorMessage";
 
 const ReferralsPage = observer(() => {
   const queryClient = useQueryClient();
@@ -166,16 +167,16 @@ const SubmitReferral = () => {
             });
         }}
       >
-        {() => (
+        {({ errors, touched }) => (
           <Form>
             <div className="space-y-4">
               <DialogRadix.Title className="col-span-2 flex items-center justify-between">
                 <h1 className="text-3xl">Submit Referral</h1>
                 <div className="col-span-2 flex space-x-2">
-                  <Button type="submit">refer</Button>
+                  <Button type="submit">Refer</Button>
 
                   <DialogRadix.Close>
-                    <Button variant="secondary">cancel</Button>
+                    <Button variant="secondary">Cancel</Button>
                   </DialogRadix.Close>
                 </div>
               </DialogRadix.Title>
@@ -185,13 +186,11 @@ const SubmitReferral = () => {
                   label="Email"
                   name={`email`}
                   placeholder="daniel.korth@tum.de"
+                  state={touched.email && errors.email && "error"}
                   type="text"
+                  fullWidth
                 />
-                <ErrorMessage
-                  component="p"
-                  className="text-red-500"
-                  name={`email`}
-                />
+                <ErrorMessage name={`email`} />
               </div>
               <div className="flex flex-col">
                 <Field
@@ -200,12 +199,10 @@ const SubmitReferral = () => {
                   name={`first_name`}
                   placeholder="Daniel"
                   type="text"
+                  state={touched.first_name && errors.first_name && "error"}
+                  fullWidth
                 />
-                <ErrorMessage
-                  component="p"
-                  className="text-red-500"
-                  name={`first_name`}
-                />
+                <ErrorMessage name={`first_name`} />
               </div>
               <div className="flex flex-col">
                 <Field
@@ -214,12 +211,10 @@ const SubmitReferral = () => {
                   name={`last_name`}
                   placeholder="Korth"
                   type="text"
+                  state={touched.last_name && errors.last_name && "error"}
+                  fullWidth
                 />
-                <ErrorMessage
-                  component="p"
-                  className="text-red-500"
-                  name={`last_name`}
-                />
+                <ErrorMessage name={`last_name`} />
               </div>
               <div className="flex flex-col">
                 <Field
@@ -227,13 +222,10 @@ const SubmitReferral = () => {
                   label="Comment"
                   name={`comment`}
                   placeholder="Why is this person a good fit?"
+                  state={touched.comment && errors.comment && "error"}
                   type="text"
                 />
-                <ErrorMessage
-                  component="p"
-                  className="text-red-500"
-                  name={`comment`}
-                />
+                <ErrorMessage name={`comment`} />
               </div>
             </div>
           </Form>

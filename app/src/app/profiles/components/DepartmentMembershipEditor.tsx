@@ -1,8 +1,8 @@
-import { Button } from "@/components/Button";
-import Dialog from "@/components/Dialog";
-import Input from "@/components/Input";
-import ProtectedItem from "@/components/ProtectedItem";
-import Select from "@/components/Select";
+import { Button } from "@components/ui/button";
+import Dialog from "@components/Dialog";
+import Input from "@components/Input";
+import ProtectedItem from "@components/ProtectedItem";
+import Select from "@components/Select";
 import { useStores } from "@providers/StoreProvider";
 import * as DialogRadix from "@radix-ui/react-dialog";
 import { observer } from "mobx-react";

@@ -22,6 +22,9 @@ const initStore = (initialData?: any): RootModel => {
   return store;
 };
 
+/*
+ * @Deprecated - Don't use Mobx anymore. If global state REALLY is required setup zustand
+ */
 export const useStores = (initData?: any) => {
   return initStore(initData);
 };

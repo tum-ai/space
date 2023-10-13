@@ -1,15 +1,16 @@
 "use client";
-import Select from "@/components/Select";
+import Select from "@components/Select";
 import { MembershipReviewForm } from "./MembershipReviewForm";
 import { VentureReviewForm } from "./VentureReviewForm";
 import { Application } from "@models/application";
 import { useState } from "react";
+import { ReviewForm } from "@models/review";
 
 export interface FormProps {
   application: Application;
+  form?: ReviewForm;
 }
-export const ReviewForm = ({ application }: FormProps) => {
-  // TODO: add other forms
+export const ReviewFormComponent = ({ application, form }: FormProps) => {
   const formNames = {
     "TUM.ai Application WS23": "MEMBERSHIP",
   };
@@ -18,8 +19,8 @@ export const ReviewForm = ({ application }: FormProps) => {
   );
 
   const forms = {
-    MEMBERSHIP: <MembershipReviewForm application={application} />,
-    VENTURE: <VentureReviewForm application={application} />,
+    MEMBERSHIP: <MembershipReviewForm application={application} form={form} />,
+    VENTURE: <VentureReviewForm application={application} form={form} />,
   };
 
   let reviewFormComponent = forms[formType];

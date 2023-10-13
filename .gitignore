@@ -19,7 +19,6 @@ dist/
 downloads/
 eggs/
 .eggs/
-lib/
 lib64/
 parts/
 sdist/
@@ -515,3 +514,4 @@ api/playground.ipynb
 
 .debug
 apps
+.vercel

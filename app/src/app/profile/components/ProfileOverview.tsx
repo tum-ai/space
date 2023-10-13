@@ -1,13 +1,13 @@
 "use client";
-import Icon from "@/components/Icon";
-import { MeModel } from "@/models/me";
-import { Profile } from "@/models/profile";
+import { Button } from "@components/ui/button";
+import Icon from "@components/Icon";
+import { MeModel } from "@models/me";
+import { Profile } from "@models/profile";
 import ProfileEditor from "../../me/components/ProfileEditor";
 import { observer } from "mobx-react";
 import Image from "next/image";
 import Link from "next/link";
 import { PencilSquareIcon } from "@heroicons/react/24/outline";
-import { Button } from "@/components/Button";
 
 interface Props {
   profile: Profile;

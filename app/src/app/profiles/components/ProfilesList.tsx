@@ -1,11 +1,11 @@
 "use client";
-import Icon from "@/components/Icon";
-import Select from "@/components/Select";
+import Icon from "@components/Icon";
+import Select from "@components/Select";
 import { useStores } from "@providers/StoreProvider";
 import { observer } from "mobx-react";
 import ProfileCard from "./ProfileCard";
 import { Profile } from "@models/profile";
-import LoadingWheel from "@/components/LoadingWheel";
+import LoadingWheel from "@components/LoadingWheel";
 import { useProfiles } from "./useProfiles";
 
 function ProfilesList() {

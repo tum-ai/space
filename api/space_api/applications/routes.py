@@ -1,4 +1,4 @@
-from typing import Annotated
+from typing import Annotated, Any
 
 from fastapi import APIRouter, Body, HTTPException, Request
 
@@ -7,6 +7,7 @@ from space_api.database.application_connector import (
     create_db_referral,
     delete_db_application,
     delete_db_referral,
+    get_db_form_types,
     list_db_application,
     list_db_applications,
     list_db_referrals,
@@ -30,22 +31,81 @@ from .response_models import (
 router = APIRouter()
 
 
-@router.get(
-    "/applications/",
-    response_description="List all applications",
-    response_model=ResponseRetrieveApplications | ErrorResponse,
-)
-@enable_paging(max_page_size=100)
+@router.get("/applications/info",
+            summary="Get information about available forms")
 @error_handlers
 @ensure_authorization(any_of_roles=["submit_reviews"], )
-def list_applications(request: Request,
-                      page: int = 1,
-                      page_size: int = 100) -> dict:
-    db_applications = list_db_applications(request.app.state.sql_engine, page,
-                                           page_size)
+def get_form_types(request: Request) -> dict:
+    db_form_types = get_db_form_types(request.app.state.sql_engine)
+    for form_type in db_form_types:
+        print(form_type)
+    out_form_types = {name for name, in db_form_types}
+
+    return {
+        "status_code": 200,
+        "response_type": "success",
+        "description": "PublicProfile list successfully received",
+        "data": out_form_types,
+    }
+
+
+def find_tally_index_by_label(label: str, submission: dict[str,
+                                                           Any]) -> int | None:
+    for i, field in enumerate(submission["data"]["fields"]):
+        if field["label"] and field["label"].lower() == label.lower():
+            return i
+    return None
+
+
+@router.get(
+    "/applications/",
+    summary="List all applications",
+    description="List all applications from all forms",
+    response_description="A list of all applications including reviews",
+    response_model=ResponseRetrieveApplications | ErrorResponse,
+)
+@error_handlers
+@ensure_authorization(any_of_roles=["submit_reviews"], )
+def list_applications(
+    request: Request,
+    page: int | None = None,
+    page_size: int | None = None,
+    form_type: str | None = None,
+    search: str | None = None,
+    with_pictures: bool = False,
+) -> dict:
+    applications = list_db_applications(request.app.state.sql_engine, page,
+                                        page_size, form_type)
+
+    if (not with_pictures):
+        for application in applications:
+            for review in application.reviews:
+                review.reviewer.profile_picture = None
+
+    if (search):
+        # TODO: if no applications return 204 - no content
+        first_application = applications[0]
+        relevant_idxs = [
+            find_tally_index_by_label(keyword, first_application.submission)
+            for keyword in ["first name", "last name"]
+        ]
+
+        def search_predicate(submission) -> bool:
+            for idx in relevant_idxs:
+                if search.lower() \
+                        in submission["data"]["fields"][idx]["value"].lower():
+                    return True
+            return False
+
+        applications = [
+            application for application in applications
+            if search_predicate(application.submission)
+        ]
+
     out_applications: list[ApplicationOut] = [
-        ApplicationOut.from_db_model(p) for p in db_applications
+        ApplicationOut.from_db_model(p) for p in applications
     ]
+
     return {
         "status_code": 200,
         "response_type": "success",

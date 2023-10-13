@@ -1,15 +1,17 @@
 "use client";
-import { Button } from "@/components/Button";
-import Input from "@/components/Input";
-import Select from "@/components/Select";
+import { Button } from "@components/ui/button";
+import Input from "@components/Input";
+import Select from "@components/Select";
 import { ErrorMessage, Field, Form, Formik, FormikValues } from "formik";
 import * as Yup from "yup";
 import { FormProps } from "./ReviewForm";
 import toast from "react-hot-toast";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 
-export const MembershipReviewForm = ({ application }: FormProps) => {
-  const initialValues = {
+export const MembershipReviewForm = ({ application, form }: FormProps) => {
+  const applicationId = application?.id;
+  const initialValues: any = form || {
     motivation: null,
     skill: null,
     fit: null,
@@ -53,28 +55,56 @@ export const MembershipReviewForm = ({ application }: FormProps) => {
     No: "NO",
   };
 
+  const router = useRouter();
+  const submitReview = async (values: FormikValues) => {
+    await toast.promise(
+      axios.post("/review_tool/application_review", {
+        data: {
+          form: values,
+          review_type: "MEMBERSHIP",
+          reviewee_id: application?.id,
+        },
+      }),
+      {
+        loading: "Submitting review",
+        success: "Successfully submitted review",
+        error: "Failed to submit review",
+      },
+    );
+
+    router.push("/review");
+  };
+
+  const updateReview = (values: FormikValues, id: number) => {
+    toast.promise(
+      axios.patch(`/review_tool/update_review/${id}`, {
+        data: {
+          form: values,
+          review_type: "MEMBERSHIP",
+          reviewee_id: application?.id,
+        },
+      }),
+      {
+        loading: "Updating review",
+        success: "Successfully updated review",
+        error: "Failed to update review",
+      },
+    );
+  };
+
   return (
     <Formik
       initialValues={initialValues}
       validationSchema={schema}
-      onSubmit={(values: FormikValues) =>
-        toast.promise(
-          axios.post("/review_tool/application_review", {
-            data: {
-              form: values,
-              review_type: "MEMBERSHIP",
-              reviewee_id: application?.id,
-            },
-          }),
-          {
-            loading: "Submitting review",
-            success: "Successfully submitted review",
-            error: "Failed to submit review",
-          },
-        )
-      }
+      onSubmit={(values: FormikValues) => {
+        if (form) {
+          updateReview(values, applicationId);
+        } else {
+          submitReview(values);
+        }
+      }}
     >
-      {({ values, setFieldValue }) => (
+      {({ touched, errors, values, setFieldValue }) => (
         <Form className="grid h-fit gap-4 rounded-lg bg-gray-200 p-8 dark:bg-gray-600 md:grid-cols-2">
           <h2 className="text-2xl lg:col-span-2">Submit Review</h2>
           <div>
@@ -83,6 +113,7 @@ export const MembershipReviewForm = ({ application }: FormProps) => {
               label="Motivation"
               type="number"
               name="motivation"
+              state={touched.motivation && errors.motivation && "error"}
               fullWidth
             />
             <ErrorMessage
@@ -98,6 +129,7 @@ export const MembershipReviewForm = ({ application }: FormProps) => {
               label="Skill"
               type="number"
               name="skill"
+              state={touched.skill && errors.skill && "error"}
               fullWidth
             />
             <ErrorMessage component="p" className="text-red-500" name="skill" />
@@ -109,6 +141,7 @@ export const MembershipReviewForm = ({ application }: FormProps) => {
               label="Overall fit"
               type="number"
               name="fit"
+              state={touched.fit && errors.fit && "error"}
               fullWidth
             />
             <ErrorMessage component="p" className="text-red-500" name="fit" />
@@ -118,6 +151,7 @@ export const MembershipReviewForm = ({ application }: FormProps) => {
             <Field
               label={"Fit in TUM.ai?"}
               name={`in_tumai`}
+              state={touched.in_tumai && errors.in_tumai && "error"}
               as={Select}
               placeholder={"select"}
               options={Object.entries(likeToSee).map(([key, value]) => ({
@@ -145,6 +179,9 @@ export const MembershipReviewForm = ({ application }: FormProps) => {
               label="Tum.ai fit comment"
               type="text"
               name="comment_fit_tumai"
+              state={
+                touched.comment_fit_tumai && errors.comment_fit_tumai && "error"
+              }
               fullWidth
             />
             <ErrorMessage
@@ -160,6 +197,7 @@ export const MembershipReviewForm = ({ application }: FormProps) => {
               label="Time commitment"
               type="text"
               name="timecommit"
+              state={touched.timecommit && errors.timecommit && "error"}
               fullWidth
             />
             <ErrorMessage
@@ -175,6 +213,7 @@ export const MembershipReviewForm = ({ application }: FormProps) => {
               label="Department 1 score"
               type="number"
               name="dept1_score"
+              state={touched.dept1_score && errors.dept1_score && "error"}
               fullWidth
             />
             <ErrorMessage
@@ -190,6 +229,7 @@ export const MembershipReviewForm = ({ application }: FormProps) => {
               label="Department 2 score"
               type="number"
               name="dept2_score"
+              state={touched.dept2_score && errors.dept2_score && "error"}
               fullWidth
             />
             <ErrorMessage
@@ -205,6 +245,7 @@ export const MembershipReviewForm = ({ application }: FormProps) => {
               label="Department 3 score"
               type="number"
               name="dept3_score"
+              state={touched.dept3_score && errors.dept3_score && "error"}
               fullWidth
             />
             <ErrorMessage
@@ -220,6 +261,7 @@ export const MembershipReviewForm = ({ application }: FormProps) => {
               label="Good fit?"
               type="text"
               name="maybegoodfit"
+              state={touched.maybegoodfit && errors.maybegoodfit && "error"}
               fullWidth
             />
             <ErrorMessage
@@ -235,6 +277,9 @@ export const MembershipReviewForm = ({ application }: FormProps) => {
               label="Further comments"
               type="text"
               name="furthercomments"
+              state={
+                touched.furthercomments && errors.furthercomments && "error"
+              }
               fullWidth
             />
             <ErrorMessage
