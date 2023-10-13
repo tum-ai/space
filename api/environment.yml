@@ -41,6 +41,7 @@ dependencies:
     - chardet
     - pre_commit
     - pyjwt
+    - python-jose
 
     - pip:
           # linting
