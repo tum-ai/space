@@ -1,5 +1,4 @@
 // @ts-nocheck
-import { auth } from "@config/firebase";
 import axios, { AxiosError } from "axios";
 import { signOut } from "firebase/auth";
 import { makeAutoObservable } from "mobx";
@@ -15,32 +14,32 @@ export class MeModel {
   constructor(root: RootModel) {
     this.root = root;
     makeAutoObservable(this);
-    auth.onAuthStateChanged(async (user) => {
-      if (user) {
-        axios.defaults.headers = {
-          authorization: `bearer ${user.accessToken}`,
-        };
-        const profile = (await axios("/me")).data.data;
-        const roles = (await axios("/me/role/holderships")).data.data;
-        profile["role_holderships"] = roles.map((obj) => obj["role"]);
-        this.setUser({
-          uid: user.uid,
-          email: user.email,
-          displayName: user.displayName,
-          profile: { ...profile },
-        });
-        // fetch stuff that you are authorized for
-        if (
-          profile["role_holderships"].find((role) => role["handle"] == "admin")
-        ) {
-          this.root.rolesModel.getRoles();
-          this.root.rolesModel.getRoleHolderships();
-          this.root.departmentMembershipsModel.fetchDepartments();
-        }
-      } else {
-        this.setUser(null);
-      }
-    });
+    // auth.onAuthStateChanged(async (user) => {
+    //   if (user) {
+    //     axios.defaults.headers = {
+    //       authorization: `bearer ${user.accessToken}`,
+    //     };
+    //     const profile = (await axios("/me")).data.data;
+    //     const roles = (await axios("/me/role/holderships")).data.data;
+    //     profile["role_holderships"] = roles.map((obj) => obj["role"]);
+    //     this.setUser({
+    //       uid: user.uid,
+    //       email: user.email,
+    //       displayName: user.displayName,
+    //       profile: { ...profile },
+    //     });
+    //     // fetch stuff that you are authorized for
+    //     if (
+    //       profile["role_holderships"].find((role) => role["handle"] == "admin")
+    //     ) {
+    //       this.root.rolesModel.getRoles();
+    //       this.root.rolesModel.getRoleHolderships();
+    //       this.root.departmentMembershipsModel.fetchDepartments();
+    //     }
+    //   } else {
+    //     this.setUser(null);
+    //   }
+    // });
   }
 
   setResetEmail(resetEmail: string) {

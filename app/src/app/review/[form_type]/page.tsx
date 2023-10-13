@@ -1,8 +1,8 @@
 "use client";
-import { Button } from "@components/ui/button";
-import Icon from "@components/Icon";
+import { Button } from "@/components/ui/button";
+import Icon from "@/components/Icon";
 import { useReviewTool } from "../useReviewTool";
-import LoadingWheel from "@components/LoadingWheel";
+import LoadingWheel from "@/components/LoadingWheel";
 import {
   ArrowLeftIcon,
   ArrowRightIcon,
@@ -13,7 +13,7 @@ import toast from "react-hot-toast";
 import axios from "axios";
 import download from "downloadjs";
 import { ApplicationRow } from "../components/applicationRow";
-import { Section } from "@components/Section";
+import { Section } from "@/components/Section";
 import { usePathname, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import {
@@ -24,7 +24,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@components/ui/table";
+} from "@/components/ui/table";
 
 const ReviewTool = ({ params }) => {
   const formType = decodeURIComponent(params.form_type);

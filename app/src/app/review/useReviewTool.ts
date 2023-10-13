@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { Application } from "@models/application";
-import { Filter } from "@lib/types/filter";
+import { Filter } from "@/lib/types/filter";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 

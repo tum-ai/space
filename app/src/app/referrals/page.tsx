@@ -1,10 +1,10 @@
 "use client";
-import { Button } from "@components/ui/button";
-import Dialog from "@components/Dialog";
-import Input from "@components/Input";
-import ProtectedItem from "@components/ProtectedItem";
-import { Section } from "@components/Section";
-import Textarea from "@components/Textarea";
+import { Button } from "@/components/ui/button";
+import Dialog from "@/components/Dialog";
+import Input from "@/components/Input";
+import ProtectedItem from "@/components/ProtectedItem";
+import { Section } from "@/components/Section";
+import Textarea from "@/components/Textarea";
 import * as DialogRadix from "@radix-ui/react-dialog";
 import { useQueryClient } from "@tanstack/react-query";
 import axios, { AxiosError } from "axios";
@@ -19,7 +19,7 @@ import {
   ArrowLeftIcon,
   ArrowRightIcon,
 } from "@radix-ui/react-icons";
-import ErrorMessage from "@components/ErrorMessage";
+import ErrorMessage from "@/components/ErrorMessage";
 
 const ReferralsPage = observer(() => {
   const queryClient = useQueryClient();

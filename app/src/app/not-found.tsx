@@ -1,10 +1,5 @@
-<<<<<<< HEAD:app/src/app/not-found.tsx
-import { Button } from "@/components/Button";
 import { Section } from "@/components/Section";
-=======
-import { Button } from "@components/ui/button";
-import { Section } from "@components/Section";
->>>>>>> dev:app/app/not-found.tsx
+import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
 export default function NotFound() {

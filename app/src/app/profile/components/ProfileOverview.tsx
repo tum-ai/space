@@ -1,6 +1,6 @@
 "use client";
-import { Button } from "@components/ui/button";
-import Icon from "@components/Icon";
+import { Button } from "@/components/ui/button";
+import Icon from "@/components/Icon";
 import { MeModel } from "@models/me";
 import { Profile } from "@models/profile";
 import ProfileEditor from "../../me/components/ProfileEditor";

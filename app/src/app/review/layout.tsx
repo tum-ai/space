@@ -1,6 +1,6 @@
-import { Button } from "@components/ui/button";
-import ProtectedItem from "@components/ProtectedItem";
-import { Section } from "@components/Section";
+import { Button } from "@/components/ui/button";
+import ProtectedItem from "@/components/ProtectedItem";
+import { Section } from "@/components/Section";
 import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
 import Link from "next/link";
 

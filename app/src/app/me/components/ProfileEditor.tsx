@@ -1,10 +1,10 @@
 "use client";
-import { Button } from "@components/ui/button";
-import ErrorMessage from "@components/ErrorMessage";
-import Dialog from "@components/Dialog";
-import Input from "@components/Input";
-import Select from "@components/Select";
-import { useStores } from "@providers/StoreProvider";
+import { Button } from "@/components/ui/button";
+import ErrorMessage from "@/components/ErrorMessage";
+import Dialog from "@/components/Dialog";
+import Input from "@/components/Input";
+import Select from "@/components/Select";
+import { useStores } from "@/providers/StoreProvider";
 import { useQueryClient } from "@tanstack/react-query";
 import { Field, FieldArray, Form, Formik, useFormikContext } from "formik";
 import * as Yup from "yup";

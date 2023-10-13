@@ -1,4 +1,4 @@
-import Dialog from "@components/Dialog";
+import Dialog from "@/components/Dialog";
 import { DialogClose } from "@radix-ui/react-dialog";
 import { Cross1Icon } from "@radix-ui/react-icons";
 import { Review } from "@models/review";

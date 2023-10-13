@@ -1,8 +1,7 @@
 "use client";
-import { Avatar } from "@components/Avatar";
-import { Button } from "@components/ui/button";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@components/ui/dropdown-menu";
-import { useStores } from "@providers/StoreProvider";
+import { Avatar } from "@/components/Avatar";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { useStores } from "@/providers/StoreProvider";
 import { EnterIcon } from "@radix-ui/react-icons";
 import { LogOut, Moon, Sun, User as UserIcon } from "lucide-react";
 import { observer } from "mobx-react";

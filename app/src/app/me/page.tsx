@@ -1,6 +1,6 @@
 "use client";
 
-import { useStores } from "@providers/StoreProvider";
+import { useStores } from "@/providers/StoreProvider";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import ProfileOverview from "../profile/components/ProfileOverview";

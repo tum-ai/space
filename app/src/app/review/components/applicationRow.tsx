@@ -1,7 +1,7 @@
 "use client";
-import { Button } from "@components/ui/button";
-import ProtectedItem from "@components/ProtectedItem";
-import Tooltip from "@components/Tooltip";
+import { Button } from "@/components/ui/button";
+import ProtectedItem from "@/components/ProtectedItem";
+import Tooltip from "@/components/Tooltip";
 import { ViewReview } from "./viewReview";
 import { Review } from "@models/review";
 import Link from "next/link";
@@ -10,7 +10,7 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import { DocumentMagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { usePathname } from "next/navigation";
-import { TableCell, TableRow } from "@components/ui/table";
+import { TableCell, TableRow } from "@/components/ui/table";
 
 export function ApplicationRow({ application }) {
   const pathname = usePathname();

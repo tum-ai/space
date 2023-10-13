@@ -1,5 +1,5 @@
-import ProtectedItem from "@components/ProtectedItem";
-import { Section } from "@components/Section";
+import ProtectedItem from "@/components/ProtectedItem";
+import { Section } from "@/components/Section";
 import Script from "next/script";
 
 export default function Feedback() {

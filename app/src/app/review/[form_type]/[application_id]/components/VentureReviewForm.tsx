@@ -1,8 +1,8 @@
 "use client";
-import { Button } from "@components/ui/button";
-import Input from "@components/Input";
-import Select from "@components/Select";
-import Textarea from "@components/Textarea";
+import { Button } from "@/components/ui/button";
+import Input from "@/components/Input";
+import Select from "@/components/Select";
+import Textarea from "@/components/Textarea";
 import { ErrorMessage, Field, Form, Formik, FormikValues } from "formik";
 import * as Yup from "yup";
 import { FormProps } from "./ReviewForm";

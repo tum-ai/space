@@ -1,13 +1,8 @@
 "use client";
 
-<<<<<<< HEAD:app/src/app/error.tsx
-=======
-import { Button } from "@components/ui/button";
-import { Section } from "@components/Section";
->>>>>>> dev:app/app/error.tsx
 import { useEffect } from "react";
 import { Section } from "@/components/Section";
-import { Button } from "@/components/Button";
+import { Button } from "@/components/ui/button";
 
 export default function Error({
   error,

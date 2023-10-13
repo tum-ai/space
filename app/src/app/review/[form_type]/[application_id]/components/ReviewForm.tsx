@@ -1,5 +1,5 @@
 "use client";
-import Select from "@components/Select";
+import Select from "@/components/Select";
 import { MembershipReviewForm } from "./MembershipReviewForm";
 import { VentureReviewForm } from "./VentureReviewForm";
 import { Application } from "@models/application";

@@ -1,8 +1,8 @@
-import { Avatar } from "@components/Avatar";
-import { Checkbox } from "@components/Checkbox";
-import { Popover } from "@components/Popover";
-import ProtectedItem from "@components/ProtectedItem";
-import { useStores } from "@providers/StoreProvider";
+import { Avatar } from "@/components/Avatar";
+import { Checkbox } from "@/components/Checkbox";
+import { Popover } from "@/components/Popover";
+import ProtectedItem from "@/components/ProtectedItem";
+import { useStores } from "@/providers/StoreProvider";
 import { observer } from "mobx-react";
 import Link from "next/link";
 import DepartmentMembershipEditor from "./DepartmentMembershipEditor";

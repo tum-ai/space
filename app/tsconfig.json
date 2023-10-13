@@ -20,21 +20,6 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
-<<<<<<< HEAD
-=======
-    "noUncheckedIndexedAccess": true,
-    "baseUrl": ".",
-    "paths": {
-      "@styles/*": ["./styles/*"],
-      "@components/*": ["./components/*"],
-      "@lib/*": ["./lib/*"],
-      "@models/*": ["./models/*"],
-      "@providers/*": ["./providers/*"],
-      "@hooks/*": ["./hooks/*"],
-      "@config/*": ["./config/*"],
-    },
-    "strict": false,
->>>>>>> dev
     "plugins": [
       {
         "name": "next"

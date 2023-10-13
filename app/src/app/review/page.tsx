@@ -1,7 +1,7 @@
 "use client";
-import { Section } from "@components/Section";
-import { Button } from "@components/ui/button";
-import { Card, CardFooter, CardHeader } from "@components/ui/card";
+import { Section } from "@/components/Section";
+import { Button } from "@/components/ui/button";
+import { Card, CardFooter, CardHeader } from "@/components/ui/card";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import Link from "next/link";
