@@ -28,20 +28,26 @@ For instructions on working and developing a Linear ticket, please refer to [thi
 
 ### Prerequisites
 
-Make sure to have the following installed before running `make`:
-
-- Linux build/dev tools, mainly for make
-- Python 3.10, consider using [pyenv](https://github.com/pyenv/pyenv), see [here](https://github.com/pyenv/pyenv#automatic-installer) for installation
-- Brew, see [here](https://brew.sh) for installation
-- Docker with the Compose plugin, see [here](https://docs.docker.com/get-docker/) for installation
+Consider the following as an ordered checklist of prerequisites for running TUM.ai Space [running the project](#running-the-project)
+- Linux Only: build/dev tools, mainly for make
+1. Brew: See [here](https://brew.sh)
+2. Node + NPM: See [here](https://nodejs.org/en/download/package-manager)
+3. Docker + Docker Compose: See [here](https://docs.docker.com/get-docker/)
+4. Python 3.10: See [here](https://www.python.org/downloads/)
+5. Pre-Commit: See [pre-commit](https://pre-commit.com) and run `pre-commit install` once in the root of this project
+6. Micromamba or Anaconda: See (recommended) [Micromamba](https://mamba.readthedocs.io/en/latest/micromamba-installation.html) or [Anaconda](https://docs.anaconda.com/free/anaconda/install/index.html)
+6. (Optional but recommended) Pyenv: See [documentation](https://github.com/pyenv/pyenv) and [installer](https://github.com/pyenv/pyenv#automatic-installer)
 - **Signing your commits with GPG** is highly encouraged. It is not enforced though!
 
-Also make sure to have [pre-commit](https://pre-commit.com) installed by running `pre-commit install` once.
-
-Create conda environment for the API:
+For Anaconda: 
 ```
 cd api
 conda env create -f environment.yml
+```
+For Micromamba:
+```
+cd api
+micromamba env create -f environment.yml
 ```
 
 ### Running the project
