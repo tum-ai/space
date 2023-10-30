@@ -1,10 +1,13 @@
-# TUM.ai space 🚀
+# TUM.ai Space 🚀
+TUM.ai Spacean all-in-one platform with the purpose of tracking all internal processes related to members. This entails: development, performance, projects, and recruitment.
 
-TUM.ai space is a system that tackles and solves three main issues:
+TUM.ai Space solves the following issues:
+- Lack of a clear, systematic, observable overview of members' achievements
+- Decoupled nature of the existing systems and the lack of extensibility thereof
 
-1. Increasing observability of members and projects both internally and externally by providing a way to show ones efforts and achievements at TUM.ai
-2. Increasing clarity, visibility and linking of internal information that is otherwise hard to find (ie a slack message) as a single source of truth
-3. Combine existing systems like application systems into a more managable and extensible format
+Hence, TUM.ai Space facilitates the following: 
+- Increasing observability of TUM.ai's existing stakeholder data and projects in addition to prospective stakeholder data
+- Centralized organization of internal information that is setup in an extensible and and manageable format
 
 ## Organization
 
