@@ -52,25 +52,21 @@ micromamba env create -f environment.yml
 
 ### Running the project
 
-**Initial setup**
+**Initial setup** \
+For MacOS: 
+1. Find your python version 
+2. open /Applications/Python\ [python version]/Install\ Certificate.command
 
-- Copy the content from [here](https://www.notion.so/tum-ai/Space-API-env-e491aeb6ca324387bf46fc453412eba7?pvs=4) and put it into `/api/.env`
-
-  On MacOS:
-
-  ```
-  open /Applications/Python\ <YOUR PYTHON VERSION>/Install\ Certificate.command
-  ```
-
-- Create `/app/.env`
-  ```
-  NEXT_PUBLIC_ENVIRONMENT=development
-  NEXT_PUBLIC_API_URL=http://localhost:8000/
-  ```
-- Add Firebase Admin SDK Certificate (for staging env): Dev environment will use authentication of Staging Firebase project [Secrets file on Notion](https://www.notion.so/tum-ai/c893a21fc7034d3aa44f40d28fd71373?v=65bb26a99f124632ac28a8eabe3bf066)
-  ```bash
-  # store as /api/.secrets/tumai-space-firebase-adminsdk.json
-  ```
+For Linux, MacOS, Windows: 
+1. Create .env within /api
+2. Paste [this](https://tum-ai-internal.slack.com/archives/C02787QJ95W/p1698584387138569) into /api/.env
+3. Create .env within /app and paste in the following:
+```
+NEXT_PUBLIC_ENVIRONMENT=development
+NEXT_PUBLIC_API_URL=http://localhost:8000/
+```
+4. Create /api/.secrets and then /api/.secrets/tumai-space-firebase-adminsdk.json
+5. Paste [this](https://tum-ai-internal.slack.com/archives/C02787QJ95W/p1698583880296439) into /api/.secrets/tumai-space-firebase-adminsdk.json - Add Firebase Admin SDK Certificate (for staging env): Dev environment will use authentication of Staging Firebase project 
 
 ### Running it
 
