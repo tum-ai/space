@@ -26,7 +26,7 @@ For instructions on working and developing a Linear ticket, please refer to [thi
 
 ## Development
 
-### Prerequisites
+### Installation and Prerequisites
 
 Consider the following as an ordered checklist of prerequisites for running TUM.ai Space [running the project](#running-the-project)
 - Linux Only: build/dev tools, mainly for make
@@ -50,7 +50,7 @@ For Micromamba:
 ~ micromamba env create -f environment.yml
 ```
 
-### Running the project
+### Setup
 
 **Initial setup** \
 For MacOS: 
@@ -68,7 +68,7 @@ NEXT_PUBLIC_API_URL=http://localhost:8000/
 4. Create /api/.secrets and then /api/.secrets/tumai-space-firebase-adminsdk.json
 5. Paste [this](https://tum-ai-internal.slack.com/archives/C02787QJ95W/p1698583880296439) into /api/.secrets/tumai-space-firebase-adminsdk.json - Add Firebase Admin SDK Certificate (for staging env): Dev environment will use authentication of Staging Firebase project 
 
-### Running it
+### Running the Project
 
 **Backend** in `/api/`
 1. Change into the api directory:
