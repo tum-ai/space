@@ -70,19 +70,31 @@ NEXT_PUBLIC_API_URL=http://localhost:8000/
 
 ### Running it
 
-**Backend**
+**Backend** in `/api/`
+1. Change into the api directory:
+```bash
+cd api
+```
+2. Activate the Conda environment using either Micromamba or Anaconda:
+```bash
+micromamba activate space
+```
+or
+```bash
+conda activate space
+```
+3. Run the backend
 
+(Recommended):
+```bash
+uvicorn space_api.main:app --host 0.0.0.0 --reload --port 8000
+```
+or
 ```bash
 make run  # in root dir (launch api in docker container)
 ```
 
-or (recommended):
-
-```bash
-uvicorn space_api.main:app --host 0.0.0.0 --reload --port 8000
-```
-
-**Frontend** in `app/`
+**Frontend** in `/app/`
 
 ```bash
 npm run dev
