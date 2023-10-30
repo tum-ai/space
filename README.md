@@ -11,9 +11,9 @@ Hence, TUM.ai Space facilitates the following:
 
 ## Organization
 
-Project planning is done over [Linear](https://linear.app/tum-ai/project/tumai-space-5b8716e29acb). All relevant issues and tasks are placed there, the GitHub issues in this repository are not relevant and will not be pursued.
+Project planning is conducted through [Linear](https://linear.app/tum-ai/project/tumai-space-5b8716e29acb). All relevant issues and tasks are managed there - Github Issues should not be considered for development.
 
-See [here](#working-on-a-linear-ticket) for how to work and develop on a Linear ticket.
+For instructions on working and developing a Linear ticket, please refer to [this section](#working-on-a-linear-ticket).
 
 ## Repo Structure
 
