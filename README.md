@@ -36,18 +36,18 @@ Consider the following as an ordered checklist of prerequisites for running TUM.
 4. Python 3.10: See [here](https://www.python.org/downloads/)
 5. Pre-Commit: See [pre-commit](https://pre-commit.com) and run `pre-commit install` once in the root of this project
 6. Micromamba or Anaconda: See (recommended) [Micromamba](https://mamba.readthedocs.io/en/latest/micromamba-installation.html) or [Anaconda](https://docs.anaconda.com/free/anaconda/install/index.html)
-6. (Optional but recommended) Pyenv: See [documentation](https://github.com/pyenv/pyenv) and [installer](https://github.com/pyenv/pyenv#automatic-installer)
+8. (Optional but recommended) Pyenv: See [documentation](https://github.com/pyenv/pyenv) and [installer](https://github.com/pyenv/pyenv#automatic-installer)
 - **Signing your commits with GPG** is highly encouraged. It is not enforced though!
 
 For Anaconda: 
-```
-cd api
-conda env create -f environment.yml
+```bash
+~ cd api
+~ conda env create -f environment.yml
 ```
 For Micromamba:
-```
-cd api
-micromamba env create -f environment.yml
+```bash
+~ cd api
+~ micromamba env create -f environment.yml
 ```
 
 ### Running the project
@@ -73,31 +73,31 @@ NEXT_PUBLIC_API_URL=http://localhost:8000/
 **Backend** in `/api/`
 1. Change into the api directory:
 ```bash
-cd api
+~ cd api
 ```
 2. Activate the Conda environment using either Micromamba or Anaconda:
 ```bash
-micromamba activate space
+~ micromamba activate space
 ```
 or
 ```bash
-conda activate space
+~ conda activate space
 ```
 3. Run the backend
 
 (Recommended):
 ```bash
-uvicorn space_api.main:app --host 0.0.0.0 --reload --port 8000
+~ uvicorn space_api.main:app --host 0.0.0.0 --reload --port 8000
 ```
 or
 ```bash
-make run  # in root dir (launch api in docker container)
+~ make run  # in root dir (launch api in docker container)
 ```
 
 **Frontend** in `/app/`
 
 ```bash
-npm run dev
+~ npm run dev
 ```
 
 **Using the precommit hook**
@@ -105,13 +105,13 @@ npm run dev
 to trigger this manually:
 
 ```bash
-pre-commit run --all
+~ pre-commit run --all
 ```
 
 trigger this on every commit:
 
 ```bash
-pre-commit install
+~ pre-commit install
 ```
 
 **Deploying to Firebase (hosting) manually / using Firebase local emulators:**
@@ -130,13 +130,13 @@ It works as follows:
 3. Now locate the space repository and create a new branch
 
 ```bash
-git switch -c <branch-name>
+~ git switch -c <branch-name>
 ```
 
 4. Now push the branch and changes at first with
 
 ```bash
-git push --set-upstream origin <branch-name>
+~ git push --set-upstream origin <branch-name>
 ```
 
 ### Technical Stack
