@@ -39,6 +39,9 @@ dependencies:
     - uvloop
     - pre_commit
 
+    # database migrations
+    - alembic
+
     - pip:
           # linting
           - types-pyyaml
