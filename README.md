@@ -148,7 +148,7 @@ It works as follows:
 ~ git push --set-upstream origin <branch-name>
 ```
 
-### Technical Stack
+### Technology Stack
 
 In the beginning of the project the team formed and chose a technical stack. This will not be changed and is a final decision.
 
