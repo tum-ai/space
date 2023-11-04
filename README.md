@@ -35,20 +35,21 @@ Consider the following as an ordered checklist of prerequisites for [running TUM
 3. Docker + Docker Compose: See [here](https://docs.docker.com/get-docker/)
 4. Python 3.10: See [here](https://www.python.org/downloads/)
 5. Pre-Commit Hook : See [pre-commit](https://pre-commit.com) and run `pre-commit install` once in the root of this project
-6. Micromamba or Anaconda: See (recommended) [Micromamba](https://mamba.readthedocs.io/en/latest/micromamba-installation.html) or [Anaconda](https://docs.anaconda.com/free/anaconda/install/index.html)
-8. (Optional but recommended) Pyenv: See [documentation](https://github.com/pyenv/pyenv) and [installer](https://github.com/pyenv/pyenv#automatic-installer)
-- **Signing your commits with GPG** is highly encouraged but not necessary, however.
+6. Micromamba or Anaconda: See (recommended) [Micromamba](https://mamba.readthedocs.io/en/latest/micromamba-installation.html) or [Anaconda](https://docs.anaconda.com/free/anaconda/install/index.html) <br>
 
-For Anaconda: 
+If you have Anaconda: 
 ```bash
 ~ cd api
 ~ conda env create -f environment.yml
 ```
-For Micromamba:
+If you have Micromamba:
 ```bash
 ~ cd api
 ~ micromamba env create -f environment.yml
 ```
+
+7. (Optional but recommended) Pyenv: See [documentation](https://github.com/pyenv/pyenv) and [installer](https://github.com/pyenv/pyenv#automatic-installer)
+- **Signing your commits with GPG** is highly encouraged but not necessary, however.
 
 ### Setup
 
@@ -69,7 +70,7 @@ NEXT_PUBLIC_ENVIRONMENT=development
 NEXT_PUBLIC_API_URL=http://localhost:8000/
 ```
 4. Create /api/.secrets and then /api/.secrets/tumai-space-firebase-adminsdk.json
-5. Paste [this](https://tum-ai-internal.slack.com/archives/C02787QJ95W/p1698583880296439) into /api/.secrets/tumai-space-firebase-adminsdk.json - Add Firebase Admin SDK Certificate (for staging env): Dev environment will use authentication of Staging Firebase project 
+5. Paste [this](https://tum-ai-internal.slack.com/archives/C02787QJ95W/p1698583880296439) into /api/.secrets/tumai-space-firebase-adminsdk.json - Add Firebase Admin SDK Certificate (for staging env): the development environment will use authentication of the Staging Firebase project 
 
 ### Running the Project
 
@@ -130,13 +131,13 @@ It works as follows:
 
 1. Start by clicking on the chosen ticket.
 2. Click on the branch icon in the top left corner to copy the branch name - this allows Linear to track the ticket status and progress.
-3. Now locate the space repository and create a new branch.
+3. Now locate the space repository and create a new branch:
 
 ```bash
 ~ git switch -c <branch-name>
 ```
 
-4. Now push the branch and changes at first with
+4. Now push the branch and changes at first with:
 
 ```bash
 ~ git push --set-upstream origin <branch-name>
@@ -159,20 +160,20 @@ In the beginning of the project the team formed and chose a technical stack. Thi
 
 **Deployment**:
 
-- Backend and DB on Azure - this will be moved to Google Cloud in the future
+- Backend and Database (DB) on Azure - this will be moved to Google Cloud in the future
 - Firebase Authentication for managing authentication, authorization and roles
 - [`Docker`](https://www.docker.com/) with [`Docker Compose`](https://docs.docker.com/compose/) for containerization and orchestration of the backend and DB
 
 ## Documentation
 
-To view an ERD of the system, paste `api/docs/erDiagram` file into a mermaid-style viewer like [this](https://mermaid.live/).
+To view an Entity-Relationship Diagram (ERD) of the system, paste `api/docs/erDiagram` file into a mermaid-style viewer like [this](https://mermaid.live/).
 Alternatively, checkout the [/api/README.md](https://github.com/tum-ai/space/tree/main/api) on GitHub.
 
 Documentation on the [frontend](https://www.notion.so/tum-ai/Frontend-Development-Guide-Documentation-259fdf1c5c1446d29fee4f16a39d4c0c?pvs=4) and [backend](https://www.notion.so/tum-ai/Backend-Development-Guide-Documentation-4c408603fb65439d94293c5189435770?pvs=4) as well as instructions on how to add services, pages, etc. can be seen on the linked Notion pages.
 
 ### FAQ
 
-A FAQ section with common errors and how to solve them can be found on [this](https://www.notion.so/tum-ai/Space-10953cc88e334d61a1fb37744bc72291?pvs=4) Notion page, documenting the project.
+A section with common errors and how to solve them can be found on [this](https://www.notion.so/tum-ai/Space-10953cc88e334d61a1fb37744bc72291?pvs=4) Notion page, documenting the project.
 
 **DevOps**:
 
@@ -186,7 +187,7 @@ A FAQ section with common errors and how to solve them can be found on [this](ht
   - Frontend deployed to Firebase staging project ("tumai-space-staging")
   - Backend deployed to Azure Staging
   - Uses an Azure Staging DB
-- CI Action is triggered on PR creation into main
+- Continuous-Integration (CI) Action is triggered on Pull-Request (PR) creation into main
 
 **3. Production**:
 
