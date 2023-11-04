@@ -33,9 +33,8 @@ Consider the following as an ordered checklist of prerequisites for [running TUM
 1. Homebrew: See [here](https://brew.sh)
 2. Node + NPM: See [here](https://nodejs.org/en/download/package-manager)
 3. Docker + Docker Compose: See [here](https://docs.docker.com/get-docker/)
-4. Python 3.10: See [here](https://www.python.org/downloads/)
-5. Pre-Commit Hook : See [pre-commit](https://pre-commit.com) and run `pre-commit install` once in the root of this project
-6. Micromamba or Anaconda: See (recommended) [Micromamba](https://mamba.readthedocs.io/en/latest/micromamba-installation.html) or [Anaconda](https://docs.anaconda.com/free/anaconda/install/index.html) <br>
+4. Micromamba or Anaconda: See (recommended) [Micromamba](https://mamba.readthedocs.io/en/latest/micromamba-installation.html) or [Anaconda](https://docs.anaconda.com/free/anaconda/install/index.html)
+5. Create the development environment using environment.yml: <br>
 
 If you have Anaconda: 
 ```bash
@@ -48,8 +47,8 @@ If you have Micromamba:
 ~ micromamba env create -f environment.yml
 ```
 
-7. (Optional but recommended) Pyenv: See [documentation](https://github.com/pyenv/pyenv) and [installer](https://github.com/pyenv/pyenv#automatic-installer)
-- **Signing your commits with GPG** is highly encouraged but not necessary, however.
+6. (Optional but recommended) Pyenv: See [documentation](https://github.com/pyenv/pyenv) and [installer](https://github.com/pyenv/pyenv#automatic-installer)
+7. **Signing your commits with GPG**: See [here](https://docs.github.com/en/authentication/managing-commit-signature-verification/signing-commits) - this is highly encouraged but not necessary
 
 ### Setup
 
@@ -87,9 +86,9 @@ or
 ```bash
 ~ conda activate space
 ```
-3. Run the backend
+3. Run the backend:
 
-(Recommended):
+(Recommended)
 ```bash
 ~ uvicorn space_api.main:app --host 0.0.0.0 --reload --port 8000
 ```
