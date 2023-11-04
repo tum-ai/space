@@ -31,7 +31,7 @@ For instructions on working and developing a Linear ticket, please refer to [thi
 Consider the following as an ordered checklist of prerequisites for [running TUM.ai Space](#running-the-project)
 - Linux Only: build/dev tools, mainly for make
 1. Homebrew: See [here](https://brew.sh)
-2. Node + NPM: See [here](https://nodejs.org/en/download/package-manager)
+2. Node + NPM: See [here](https://nodejs.org/en/download/package-manager) <br>
 3. Docker + Docker Compose: See [here](https://docs.docker.com/get-docker/)
 4. Micromamba or Anaconda: See (recommended) [Micromamba](https://mamba.readthedocs.io/en/latest/micromamba-installation.html) or [Anaconda](https://docs.anaconda.com/free/anaconda/install/index.html)
 5. Create the development environment using environment.yml: <br>
@@ -98,7 +98,13 @@ or
 ```
 
 **Frontend** in `/app/`
+1. Install the project's frontend dependencies listed in the package.json file, create a node_modules directory and ensuring the correct package versions are used:
+```bash
+~ cd app
+~ npm install
+```
 
+2. Start a development server for the frontend using npm:
 ```bash
 ~ npm run dev
 ```
@@ -128,8 +134,8 @@ Consider checking out the commands listed in /app/Makefile.
 Working with Linear tickets is very similar to working with GitHub issues.
 It works as follows:
 
-1. Start by clicking on the chosen ticket.
-2. Click on the branch icon in the top left corner to copy the branch name - this allows Linear to track the ticket status and progress.
+1. Start by clicking on the chosen ticket
+2. Click on the branch icon in the top left corner to copy the branch name - this allows Linear to track the ticket status and progress
 3. Now locate the space repository and create a new branch:
 
 ```bash
@@ -172,7 +178,7 @@ Documentation on the [frontend](https://www.notion.so/tum-ai/Frontend-Developmen
 
 ### FAQ
 
-A section with common errors and how to solve them can be found on [this](https://www.notion.so/tum-ai/Space-10953cc88e334d61a1fb37744bc72291?pvs=4) Notion page, documenting the project.
+**A section with common errors and how to solve them can be found on [this](https://www.notion.so/tum-ai/Space-10953cc88e334d61a1fb37744bc72291?pvs=4) Notion page, documenting the project.**
 
 **DevOps**:
 
