@@ -10,7 +10,7 @@ services:
     volumes:
       - .data/space_db/postgresql:/var/lib/postgresql/data/
     ports:
-      - "15432:5432"
+      - '15432:5432'
     environment:
       POSTGRES_USER: space-db
       POSTGRES_PASSWORD: space-db
@@ -29,7 +29,7 @@ services:
       - ./.fileserver:/usr/local/apache2/htdocs
     networks:
       - backend-net
-  
+
   cert:
     hostname: cert
     image: tum-ai-space-tools-certification-server

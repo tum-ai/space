@@ -1,1 +1,17 @@
-Generic single-database configuration.
+# Migration guide
+
+## Migration creation
+
+Migrations files can be created using
+`alembic revision --autogenerate -m "<comment>"`. This command will compare the
+schema from `api/space_api/database/db_models.py` with the one of the configured
+database and track changes. **Therefore no colums, constraints, … should be added manually in the database, only through the change of db_models.** \
+After running the command, new migration files are created in `./alembic/versions`
+containing the changes for upgrade or downgrade from or to the desired version.
+
+## Apply migrations
+
+Migrations can be applied using `alembic upgrade head` for the latest version or `alembic upgrade <revision_id>`, where revision id can be found in the respective version you want to migrate to. \
+Similarly, `alembic downgrade <revision_id>` downgrades to the specified version. \
+**Keep in mind, that deleting columns can delete data and should be done with caution.** \
+Furthermore `alembic history` provides an overview about all migrations.
