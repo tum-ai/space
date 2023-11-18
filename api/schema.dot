@@ -1,7 +1,7 @@
 digraph G {
     node [shape=record];
 
-    department [label="{Department|+ department_id: int (PK)\l| name: varchar\l mission: text\l department_type: varchar\l creation_date: date\l advisor_id: int (FK)\l created_at: timestamp\l updated_at: timestamp\l}"];
+    department [label="{Department|+ department_id: int (PK)\l| name: varchar\l mission: text\l department_type: varchar\l creation_date: date\l created_at: timestamp\l updated_at: timestamp\l}"];
     department_membership [label="{Department Membership|+ department_membership_id: int (PK)\l| user_id: int (FK) (@onDelete=SetNull)\l department_id: int (FK) (@onDelete=SetNull)\l membership_start: date\l membership_end: date\l position: enum\l created_at: timestamp\l updated_at: timestamp\l}"];
     user [label="{User|+ user_id: int (PK)\l| email: varchar\l password: varchar\l first_name: varchar\l last_name: varchar\l permission: enum\l created_at: timestamp\l updated_at: timestamp\l}"];
     profile [label="{Profile|+ profile_id: int (PK)\l| user_id: int (FK)\l phone: varchar\l birthday: date\l nationality: varchar\l description: text\l activity_status: varchar\l degree_level: varchar\l degree_name: varchar\l degree_semester: int\l degree_last_update: timestamp\l university: varchar\l full_name: varchar\l profile_picture: text\l created_at: timestamp\l updated_at: timestamp\l}"];
@@ -28,7 +28,6 @@ digraph G {
     opportunity_participation -> opportunity_permission_enum [label="permission"];
     review -> opportunity [label="opportunity_id"];
     review -> user [label="assignee_id"];
-    department -> user [label="advisor_id"];
     department_membership -> department [label="department_id"];
     department_membership -> user [label="user_id"];
     department_membership -> department_position_enum [label="position"];
