@@ -6,3 +6,95 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model Department {
+  department_id        Int                    @id @default(autoincrement())
+  name                 String
+  mission              String
+  department_type      String
+  creation_date        DateTime
+  created_at           DateTime               @default(now())
+  updated_at           DateTime               @updatedAt
+  DepartmentMembership DepartmentMembership[]
+  //TODO Add opportunities
+}
+
+model DepartmentMembership {
+  department_membership_id Int                @id @default(autoincrement())
+  user_id                  Int?               @map("user_id")
+  department_id            Int?               @map("department_id")
+  membership_start         DateTime
+  membership_end           DateTime
+  position                 DepartmentPosition
+  created_at               DateTime           @default(now())
+  updated_at               DateTime           @updatedAt
+  User                     User?              @relation(fields: [user_id], references: [user_id], onDelete: SetNull)
+  Department               Department?        @relation(fields: [department_id], references: [department_id], onDelete: SetNull)
+}
+
+model User {
+  user_id              Int                    @id @default(autoincrement())
+  email                String
+  password             String
+  first_name           String
+  last_name            String
+  //TODO Add user permission
+  created_at           DateTime               @default(now())
+  updated_at           DateTime               @updatedAt
+  Profile              Profile?
+  DepartmentMembership DepartmentMembership[]
+  //TODO add opportunity participation
+  //TODO add reviews
+  //TODO add createdOpportunities
+}
+
+model Profile {
+  profile_id         Int       @id @default(autoincrement())
+  user_id            Int       @unique
+  phone              String?
+  birthday           DateTime?
+  nationality        String?
+  description        String?
+  activity_status    String
+  degree_level       String?
+  degree_name        String?
+  degreesemester     Int?
+  degree_last_update DateTime?
+  university         String?
+  full_name          String?
+  profile_picture    String?
+  created_at         DateTime  @default(now())
+  updated_at         DateTime  @updatedAt
+  Contacts           Contact[]
+  User               User      @relation(fields: [user_id], references: [user_id])
+}
+
+model Contact {
+  contact_id       Int         @id @default(autoincrement())
+  profile_id       Int
+  contact_type     ContactType
+  contact_username String
+  created_at       DateTime    @default(now())
+  updated_at       DateTime    @updatedAt
+  Profile          Profile     @relation(fields: [profile_id], references: [profile_id])
+}
+
+enum DepartmentPosition {
+  president
+  head_of_department
+  board_member
+  advisor
+  taskforce_lead
+  project_lead
+  active_member
+  alumni
+}
+
+enum ContactType {
+  email
+  slack
+  github
+  facebook
+  instagram
+  phone
+}
