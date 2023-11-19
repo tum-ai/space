@@ -7,76 +7,93 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Department {
-  department_id        Int                    @id @default(autoincrement())
-  name                 String
-  mission              String
-  department_type      String
-  creation_date        DateTime
-  created_at           DateTime               @default(now())
-  updated_at           DateTime               @updatedAt
-  DepartmentMembership DepartmentMembership[]
-  //TODO Add opportunities
-}
-
-model DepartmentMembership {
-  department_membership_id Int                @id @default(autoincrement())
-  user_id                  Int?               @map("user_id")
-  department_id            Int?               @map("department_id")
-  membership_start         DateTime
-  membership_end           DateTime
-  position                 DepartmentPosition
-  created_at               DateTime           @default(now())
-  updated_at               DateTime           @updatedAt
-  User                     User?              @relation(fields: [user_id], references: [user_id], onDelete: SetNull)
-  Department               Department?        @relation(fields: [department_id], references: [department_id], onDelete: SetNull)
-}
-
 model User {
-  user_id              Int                    @id @default(autoincrement())
-  email                String
-  password             String
-  first_name           String
-  last_name            String
-  //TODO Add user permission
-  created_at           DateTime               @default(now())
-  updated_at           DateTime               @updatedAt
-  Profile              Profile?
-  DepartmentMembership DepartmentMembership[]
-  //TODO add opportunity participation
-  //TODO add reviews
-  //TODO add createdOpportunities
+  user_id                   Int                        @id @default(autoincrement())
+  profile_id                Int                        @unique
+  profile                   Profile                    @relation(fields: [profile_id], references: [profile_id])
+  email                     String                     @unique
+  password                  String
+  first_name                String
+  last_name                 String
+  permission                UserPermission
+  department_memberships    DepartmentMembership[]
+  created_oportunities      Opportunity[]
+  opportunity_participation OpportunityParticipation[]
+  reviews                   Review[]
+  created_at                DateTime                   @default(now())
+  updated_at                DateTime                   @updatedAt
+}
+
+enum UserPermission {
+  admin
+  member
 }
 
 model Profile {
   profile_id         Int       @id @default(autoincrement())
-  user_id            Int       @unique
-  phone              String?
+  user_id            Int
+  user               User?
   birthday           DateTime?
   nationality        String?
   description        String?
   activity_status    String
   degree_level       String?
   degree_name        String?
-  degreesemester     Int?
+  degree_semester    Int?
   degree_last_update DateTime?
   university         String?
-  full_name          String?
   profile_picture    String?
+  contacts           Contact[]
   created_at         DateTime  @default(now())
   updated_at         DateTime  @updatedAt
-  Contacts           Contact[]
-  User               User      @relation(fields: [user_id], references: [user_id])
 }
 
 model Contact {
-  contact_id       Int         @id @default(autoincrement())
-  profile_id       Int
-  contact_type     ContactType
-  contact_username String
-  created_at       DateTime    @default(now())
-  updated_at       DateTime    @updatedAt
-  Profile          Profile     @relation(fields: [profile_id], references: [profile_id])
+  contact_id Int         @id @default(autoincrement())
+  profile_id Int
+  profile    Profile     @relation(fields: [profile_id], references: [profile_id])
+  type       ContactType
+  username   String      @unique
+  created_at DateTime    @default(now())
+  updated_at DateTime    @updatedAt
+}
+
+enum ContactType {
+  email
+  slack
+  github
+  facebook
+  instagram
+  phone
+}
+
+model Department {
+  department_id         Int                    @id @default(autoincrement())
+  name                  String
+  type                  DepartmentType
+  creation_date         DateTime
+  departmen_memberships DepartmentMembership[]
+  opportunities         Opportunity[]
+  created_at            DateTime               @default(now())
+  updated_at            DateTime               @updatedAt
+}
+
+enum DepartmentType {
+  functional
+  mission_based
+}
+
+model DepartmentMembership {
+  department_membership_id Int                @id @default(autoincrement())
+  user_id                  Int?
+  user                     User?              @relation(fields: [user_id], references: [user_id], onDelete: SetNull)
+  department_id            Int?
+  department               Department?        @relation(fields: [department_id], references: [department_id], onDelete: SetNull)
+  membership_start         DateTime
+  membership_end           DateTime?
+  department_position      DepartmentPosition
+  created_at               DateTime           @default(now())
+  updated_at               DateTime           @updatedAt
 }
 
 enum DepartmentPosition {
@@ -90,11 +107,49 @@ enum DepartmentPosition {
   alumni
 }
 
-enum ContactType {
-  email
-  slack
-  github
-  facebook
-  instagram
-  phone
+model Opportunity {
+  opportunity_id            Int                        @id @default(autoincrement())
+  creator_id                Int?
+  creator                   User?                      @relation(fields: [creator_id], references: [user_id], onDelete: SetNull)
+  title                     String
+  description               String
+  department_id             Int
+  department                Department                 @relation(fields: [department_id], references: [department_id])
+  opportunity_start         DateTime
+  opportunity_end           DateTime?
+  reviews                   Review[]
+  opportunity_participation OpportunityParticipation[]
+  created_at                DateTime                   @default(now())
+  updated_at                DateTime                   @updatedAt
+}
+
+model OpportunityParticipation {
+  user_id        Int
+  user           User                  @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
+  opportunity_id Int
+  opportunity    Opportunity           @relation(fields: [opportunity_id], references: [opportunity_id], onDelete: Cascade)
+  permission     OpportunityPermission
+  created_at     DateTime              @default(now())
+  updated_at     DateTime              @updatedAt
+
+  @@id([user_id, opportunity_id])
+}
+
+enum OpportunityPermission {
+  owner
+  admin
+  member
+  guest
+}
+
+model Review {
+  review_id      Int         @id @default(autoincrement())
+  opportunity_id Int
+  opportunity    Opportunity @relation(fields: [opportunity_id], references: [opportunity_id], onDelete: Cascade)
+  assignee_id    Int
+  assignee       User        @relation(fields: [assignee_id], references: [user_id])
+  review_text    String
+  content        Json
+  created_at     DateTime    @default(now())
+  updated_at     DateTime    @updatedAt
 }
