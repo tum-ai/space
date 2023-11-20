@@ -8,13 +8,20 @@ export const authOptions: NextAuthOptions = {
     adapter: PrismaAdapter(db),
     secret: process.env.NEXTAUTH_SECRET,
     session: {
-        strategy: 'jwt' 
+        strategy: 'jwt' //change to session in db?
     },
     pages: {
-        signIn: '/sign-in'
+        signIn: '/auth'
+        /*
+        signOut: '/auth/signout',
+        error: '/auth/error', // Error code passed in query string as ?error=
+        verifyRequest: '/auth/verify-request', // (used for check email message)
+        newUser: '/auth/new-user'
+        */
         //TODO: add signOut, error pages
     },
-    providers: [
+    providers: [ 
+        //TODO: add email provider setup
         CredentialsProvider({
           name: "Credentials",
           credentials: {
@@ -49,7 +56,7 @@ export const authOptions: NextAuthOptions = {
         })
     ],
     callbacks: {
-        //add more?
+        //TODO: add more callbacks, setup proper session management
         async jwt({ token, user }) {
             console.log(token, user);
 
