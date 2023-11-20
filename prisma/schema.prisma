@@ -9,13 +9,13 @@ datasource db {
 
 model User {
   user_id                   Int                        @id @default(autoincrement())
-  profile_id                Int                        @unique
-  profile                   Profile                    @relation(fields: [profile_id], references: [profile_id])
+  profile_id                Int?                        @unique
+  profile                   Profile?                    @relation(fields: [profile_id], references: [profile_id])
   email                     String                     @unique
   password                  String
-  first_name                String
-  last_name                 String
-  permission                UserPermission
+  first_name                String?
+  last_name                 String?
+  permission                UserPermission?
   department_memberships    DepartmentMembership[]
   created_oportunities      Opportunity[]
   opportunity_participation OpportunityParticipation[]
