@@ -11,7 +11,7 @@ export const authOptions: NextAuthOptions = {
         strategy: 'jwt' //change to session in db?
     },
     pages: {
-        signIn: '/auth'
+        signIn: '/signin'
         /*
         signOut: '/auth/signout',
         error: '/auth/error', // Error code passed in query string as ?error=
