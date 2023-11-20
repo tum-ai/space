@@ -7,7 +7,7 @@ import { createContext } from "react";
 import { Toaster } from "react-hot-toast";
 import { useStores } from "../providers/StoreProvider";
 import { ThemeProvider } from "@components/theme-provider";
-import { env } from "env.mjs";
+import { env } from "app/env.mjs";
 
 const StoresContext = createContext(null);
 const queryClient = new QueryClient();

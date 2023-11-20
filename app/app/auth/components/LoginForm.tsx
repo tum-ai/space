@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { Field, Form, Formik } from "formik";
 import ErrorMessage from "@components/ErrorMessage";
+import { signIn } from 'next-auth/react';
 
 export const LoginForm = ({ setResetPassword }) => {
   const router = useRouter();
@@ -23,16 +24,17 @@ export const LoginForm = ({ setResetPassword }) => {
           email: "",
           password: "",
         }}
-        onSubmit={async (values) => {
-          await toast.promise(
-            signInWithEmailAndPassword(auth, values.email, values.password),
-            {
-              loading: "Signing in",
-              success: "Welcome!",
-              error: "Failed to sign in",
-            },
-          );
-          return router.push("/");
+        onSubmit = {async (values) => {
+          const signInData = await signIn('credentials', {
+            email: values.email,
+            password: values.password,
+            redirect: false
+          });
+          if(signInData?.error) {
+            console.log(signInData.error);
+          } else {
+            return router.push("/");
+          }
         }}
       >
         {({ errors, touched }) => (
