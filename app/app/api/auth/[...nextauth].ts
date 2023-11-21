@@ -13,11 +13,11 @@ export const authOptions: NextAuthOptions = {
     },
     pages: {
         signIn: '/auth',
+        newUser: '/auth/signup',
         /*
         signOut: '/auth/signout',
         error: '/auth/error', // Error code passed in query string as ?error=
         verifyRequest: '/auth/verify-request', // (used for check email message)
-        newUser: '/auth/new-user'
         */
         //TODO: add signOut, error pages
     },
