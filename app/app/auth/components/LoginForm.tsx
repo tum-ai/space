@@ -38,41 +38,13 @@ export const LoginForm = ({ setResetPassword }) => {
         }}
       >
         {({ errors, touched }) => (
-          <Form className="m-auto flex max-w-[500px] flex-col gap-4">
-            <h2 className="text-3xl">Login</h2>
-            <div>
-              <Field
-                as={Input}
-                label="Email"
-                type="email"
-                name="email"
-                placeholder="daniel.korth@tum.com"
-                state={touched.email && errors.email && "error"}
-                fullWidth
-              />
-              <ErrorMessage name="email" />
-            </div>
-            <div>
-              <Field
-                as={Input}
-                label="Password"
-                type="password"
-                name="password"
-                state={touched.password && errors.password && "error"}
-                fullWidth
-              />
-              <ErrorMessage name="password" />
-            </div>
+          <Form className="m-auto flex max-w-[500px] flex-col gap-4 ">
+            <h2 className="text-3xl flex justify-center">Login</h2>
             <hr className="col-span-2" />
-            <Button type="submit">Log in</Button>
-
-            <Button
-              variant="link"
-              type="button"
-              onClick={() => setResetPassword(true)}
-            >
-              Forgot password?
-            </Button>
+            <button className="flex items-center justify-center px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-black bg-white">
+              <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d5/Slack_icon_2019.svg/2048px-Slack_icon_2019.svg.png" alt="Slack logo" className="h-6 w-6 mr-2"/>
+              Log in with Slack
+            </button>
           </Form>
         )}
       </Formik>
