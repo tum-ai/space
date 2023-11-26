@@ -1,18 +1,19 @@
 "use client";
 import { Button } from "@components/ui/button";
-import Input from "@components/Input";
 import { Section } from "@components/Section";
-import { auth } from "@config/firebase";
 import * as Yup from "yup";
-import { signInWithEmailAndPassword } from "firebase/auth";
 import { useRouter } from "next/navigation";
-import toast from "react-hot-toast";
 import { Field, Form, Formik } from "formik";
-import ErrorMessage from "@components/ErrorMessage";
-import { signIn } from 'next-auth/react';
+import { signIn } from "next-auth/react";
 
-export const LoginForm = ({ setResetPassword }) => {
+
+export const LoginForm = async ({ setResetPassword }) => {
   const router = useRouter();
+
+  const profileRoute = () => {
+    router.push('/profile');
+  }
+
   return (
     <Section>
       <Formik
@@ -41,10 +42,11 @@ export const LoginForm = ({ setResetPassword }) => {
           <Form className="m-auto flex max-w-[500px] flex-col gap-4 ">
             <h2 className="text-3xl flex justify-center">Login</h2>
             <hr className="col-span-2" />
-            <button className="flex items-center justify-center px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-black bg-white">
+            <Button className="flex items-center justify-center px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-black bg-white" onClick={() => signIn('slack')}>
               <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d5/Slack_icon_2019.svg/2048px-Slack_icon_2019.svg.png" alt="Slack logo" className="h-6 w-6 mr-2"/>
               Log in with Slack
-            </button>
+            </Button>
+            <button onClick={profileRoute}>View Profile</button>
           </Form>
         )}
       </Formik>
