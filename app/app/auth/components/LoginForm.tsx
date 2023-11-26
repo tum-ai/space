@@ -5,6 +5,10 @@ import * as Yup from "yup";
 import { useRouter } from "next/navigation";
 import { Field, Form, Formik } from "formik";
 import { signIn } from "next-auth/react";
+import { getServerSession } from "next-auth";
+import { authOptions } from "app/api/auth/[...nextauth]";
+import { signOut } from 'next-auth/react';
+
 
 
 export const LoginForm = async ({ setResetPassword }) => {
@@ -13,6 +17,11 @@ export const LoginForm = async ({ setResetPassword }) => {
   const profileRoute = () => {
     router.push('/profile');
   }
+
+  const handleButtonClick = () => {
+    const sessionData = getServerSession(authOptions);
+    console.log(sessionData);
+  };
 
   return (
     <Section>
@@ -46,7 +55,8 @@ export const LoginForm = async ({ setResetPassword }) => {
               <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d5/Slack_icon_2019.svg/2048px-Slack_icon_2019.svg.png" alt="Slack logo" className="h-6 w-6 mr-2"/>
               Log in with Slack
             </Button>
-            <button onClick={profileRoute}>View Profile</button>
+            <Button onClick={() => signOut()}> Sign out</Button>
+            <Button onClick={profileRoute}>View Profile</Button>
           </Form>
         )}
       </Formik>
