@@ -1,28 +1,15 @@
-"use client";
+import { getServerSession } from "next-auth";
+import React from "react";
+import { authOptions } from "../api/auth/[...nextauth]";
 
-import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
-import { observer } from "mobx-react";
-import { useSearchParams } from "next/navigation";
-import ProfileOverview from "./components/ProfileOverview";
+const ProfilePage = async () => {
+  const session = await getServerSession(authOptions);
 
-const Profile = () => {
-  const id = useSearchParams().get("id");
-
-  const profileQuery = useQuery({
-    queryKey: [`profile-${id}`],
-    queryFn: () => axios.get(`/profile/${id}`).then((res) => res.data),
-  });
-
-  if (profileQuery.isLoading) {
-    return <h1>Loading...</h1>;
-  }
-
-  if (profileQuery.error) {
-    return <h1>Profile not found.</h1>;
-  }
-
-  return <ProfileOverview profile={profileQuery.data.data} publicView={true} />;
+  return (
+    <div className="flex items-center justify-center">
+        <h1 className="flex align-center"> Welcome to TUM.ai Space, {session?.user.name}</h1>
+    </div>
+  );
 };
 
-export default observer(Profile);
+export default ProfilePage;
