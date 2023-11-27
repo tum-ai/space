@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { Field, Form, Formik } from "formik";
 import { signIn } from "next-auth/react";
 import { getServerSession } from "next-auth";
-import { authOptions } from "app/api/auth/[...nextauth]";
+import { authOptions } from "app/api/auth/[...nextauth]/route";
 import { signOut } from 'next-auth/react';
 
 
