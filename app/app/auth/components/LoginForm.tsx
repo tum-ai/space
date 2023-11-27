@@ -5,8 +5,6 @@ import * as Yup from "yup";
 import { useRouter } from "next/navigation";
 import { Field, Form, Formik } from "formik";
 import { signIn } from "next-auth/react";
-import { getServerSession } from "next-auth";
-import { authOptions } from "app/api/auth/[...nextauth]/route";
 import { signOut } from 'next-auth/react';
 
 
@@ -17,11 +15,6 @@ export const LoginForm = async ({ setResetPassword }) => {
   const profileRoute = () => {
     router.push('/profile');
   }
-
-  const handleButtonClick = () => {
-    const sessionData = getServerSession(authOptions);
-    console.log(sessionData);
-  };
 
   return (
     <Section>
