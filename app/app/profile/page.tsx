@@ -7,7 +7,7 @@ const ProfilePage = async () => {
 
   return (
     <div className="flex items-center justify-center">
-        <h1 className="flex align-center"> Welcome to TUM.ai Space, {session?.user.name}</h1>
+        <h1 className="flex align-center"> Welcome to TUM.ai Space, {session?.user.first_name}</h1>
     </div>
   );
 };
