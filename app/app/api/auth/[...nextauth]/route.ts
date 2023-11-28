@@ -16,14 +16,15 @@ export const authOptions: NextAuthOptions = {
                 clientId: process.env.SLACK_CLIENT_ID,
                 clientSecret: process.env.SLACK_CLIENT_SECRET,
                 profile(profile, tokens) {
+                    console.log(new Date(profile.date_email_verified*1000))
                     return {
                         id: profile["https://slack.com/user_id"] || profile.sub,
                         email: profile.email,
-                        image: profile["https://slack.com/user_image_192"],
+                        image: profile.picture,
                         first_name: profile.given_name,
                         permission: 'member',
                         last_name: profile.family_name,
-                        emailVerified: profile.email_verified
+                        emailVerified: profile.date_email_verified
                     };
                 },
             },
