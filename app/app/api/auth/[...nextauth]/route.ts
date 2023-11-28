@@ -19,7 +19,6 @@ export const authOptions: NextAuthOptions = {
                 clientId: process.env.SLACK_CLIENT_ID,
                 clientSecret: process.env.SLACK_CLIENT_SECRET,
                 profile(profile, tokens) {
-                    console.log(new Date(profile.date_email_verified*1000))
                     return {
                         id: profile["https://slack.com/user_id"] || profile.sub,
                         email: profile.email,
