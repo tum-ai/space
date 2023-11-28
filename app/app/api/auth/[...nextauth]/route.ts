@@ -5,6 +5,9 @@ import { PrismaAdapter } from "@next-auth/prisma-adapter"
 import prisma from "database/db";
 
 export const authOptions: NextAuthOptions = {
+    session:{
+        strategy:"jwt",
+    },
     adapter: PrismaAdapter(prisma),
     secret: process.env.NEXTAUTH_SECRET,
     pages: {
@@ -30,6 +33,16 @@ export const authOptions: NextAuthOptions = {
             },
         ),
     ],
+    callbacks:{
+        async jwt({token,user}){
+            return{...token,...user}
+        },
+        async session({session,token}){
+            session.user.first_name = token.first_name
+            session.user.permission = token.permission
+            return session
+        }
+    }
 }
 
 const handler = NextAuth(authOptions)
