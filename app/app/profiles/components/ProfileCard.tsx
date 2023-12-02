@@ -25,7 +25,7 @@ const ProfileCard = observer(({ profile }) => {
           </div>
           <Avatar
             variant={"circle"}
-            profilePicture={profile.profile_picture}
+            profilePicture={profile?.image}
             initials={(
               "" +
               profile.first_name[0] +

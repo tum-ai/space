@@ -9,10 +9,11 @@ export const useProfiles = () => {
   type Filters = Record<string, Filter<Profile>>;
   const [filters, setFilters] = useState<Filters>({});
   const [search, setSearch] = useState("");
+
   const query = useQuery({
     queryKey: ["profiles"],
     queryFn: () =>
-      axios.get("/profiles/").then((res) => res.data.data as Profile[]),
+      axios.get("http://localhost:3000/api/profiles/").then((res) => res.data.profiles as Profile[]),
   });
 
   // TODO: Search is not implemented
