@@ -9,6 +9,7 @@ export async function GET(request: Request, context: { params }) {
             last_name: true,
             email: true,
             image: true,
+            permission: true,
             department_memberships: {
                 select: {
                     department: {

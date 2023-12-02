@@ -17,7 +17,7 @@ const ProfileCard = observer(({ profile }) => {
         <div className="flex w-full justify-between gap-2">
           <div className="flex flex-col overflow-hidden">
             <p className="overflow-hidden text-ellipsis whitespace-nowrap font-bold">
-              {profile?.first_name + " " + profile?.last_name}
+              {profile?.first_name + " " + profile?.last_name} 
             </p>
             <p className="overflow-hidden text-ellipsis whitespace-nowrap">
               {profile.email}

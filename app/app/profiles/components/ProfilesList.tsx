@@ -4,9 +4,9 @@ import Select from "@components/Select";
 import { useStores } from "@providers/StoreProvider";
 import { observer } from "mobx-react";
 import ProfileCard from "./ProfileCard";
-import { Profile } from "@models/profile";
 import LoadingWheel from "@components/LoadingWheel";
 import { useProfiles } from "./useProfiles";
+import { User, UserPermission } from "@prisma/client"; 
 
 function ProfilesList() {
   const { rolesModel } = useStores();
@@ -27,37 +27,28 @@ function ProfilesList() {
             <div className="flex items-center space-x-4">
               <div className="space-x-2">
                 <span className="font-thin">filters: </span>
-                {profilesModel.hasFilters && (
-                  <button onClick={() => profilesModel.setFilters({})}>
-                    reset
-                  </button>
-                )}
               </div>
+              
               <Select
                 placeholder={"Role"}
-                options={[
-                  { key: "all", value: "all" },
-                  ...rolesModel.roles?.map((role) => ({
-                    key: role["handle"],
-                    value: role["handle"],
-                  })),
-                ]}
+                options={
+                  [{ key: "All", value: "all" }].concat(
+                  Object.values(UserPermission).filter(role => role !== undefined)
+                  .map((role, index) => ({
+                    key: role.charAt(0).toUpperCase() + role.slice(1),
+                    value: role,
+                  })))
+                }
                 value={profilesModel.filters?.role?.name}
                 setSelectedItem={(item) => {
-                  const roleFilter =
-                    item === "all"
-                      ? { name: "all", predicate: () => true }
-                      : {
-                          name: item,
-                          predicate: (profile: Profile) =>
-                            rolesModel.roleHolderships[profile.id]?.includes(
-                              item,
-                            ),
-                        };
-
                   profilesModel.setFilters((filters) => ({
                     ...filters,
-                    role: roleFilter,
+                    permission: item === "all"
+                      ? { name: "all", predicate: () => true }: {
+                        name: item,
+                        predicate: (profile: User) =>
+                          profile?.permission?.includes(item),
+                      },
                   }));
                 }}
               />
