@@ -38,15 +38,15 @@ const ProfileCard = observer(({ profile }) => {
         <button className="px-4 py-2 duration-200 hover:bg-gray-500/90">
           <Link href={"/profile?id=" + profile?.id}>View</Link>
         </button>
-        <ProtectedItem roles={["admin"]}>
-          <DepartmentMembershipEditor
-            trigger={
-              <button className="px-4 py-2 duration-200 hover:bg-gray-500/90">
-                Edit membership
-              </button>
-            }
-            profile_id={profile?.id}
-          />
+          <ProtectedItem roles={["admin"]}>
+            <DepartmentMembershipEditor
+              trigger={
+                <button className="px-4 py-2 duration-200 hover:bg-gray-500/90">
+                  Edit membership
+                </button>
+              }
+              profile_id={profile?.id}
+            />
           <Popover
             trigger={
               <button className="px-4 py-2 duration-200 hover:bg-gray-500/90">
@@ -77,7 +77,6 @@ const ProfileCard = observer(({ profile }) => {
                       }}
                     />
                   </div>
-
                   <div>
                     <p>
                       <b>{role.handle}</b>: {role.description}
