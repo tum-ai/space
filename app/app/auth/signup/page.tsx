@@ -10,6 +10,25 @@ import ErrorMessage from "@components/ErrorMessage";
 const SignUp = () => {
   const router = useRouter();
 
+  const registerUser = async (values) => {
+    const response = await fetch("/api/auth/signup", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email: values.email,
+        password: values.password
+    })
+    })
+
+    if(response.ok) {
+      router.push('/auth');
+    } else {
+      console.error('Something went wrong!');
+    }
+  };
+
   return (
     <Section>
     <Formik
@@ -23,22 +42,7 @@ const SignUp = () => {
         password: "",
         password2: "",
       }}
-      onSubmit = {async (values) => {
-        const data = {
-          email: values.email,
-          password: values.password
-        }
-        const response = await fetch("/api/auth/signup", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(data),
-        });
-        if (response.ok) {
-          router.push("/auth");
-        }
-      }}
+      onSubmit = {(values => registerUser(values))}
     >
       {({ errors, touched }) => (
         <Form className="m-auto flex max-w-[500px] flex-col gap-4">

@@ -12,6 +12,14 @@ export const LoginForm = async ({ setResetPassword }) => {
     router.push('/profile');
   }
 
+  const signUpRoute = () => {
+    router.push('/auth/signup');
+  }
+
+  const signInRoute = () => {
+    router.push('/auth/signin');
+  }
+
   return (
     <div className="m-auto flex max-w-[500px] flex-col gap-4 ">
       <h2 className="text-3xl flex justify-center">Login</h2>
@@ -20,6 +28,8 @@ export const LoginForm = async ({ setResetPassword }) => {
         <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d5/Slack_icon_2019.svg/2048px-Slack_icon_2019.svg.png" alt="Slack logo" className="h-6 w-6 mr-2"/>
         Log in with Slack
       </Button>
+      <Button onClick={signInRoute}>Sign in with Credentials</Button>
+      <Button onClick={signUpRoute}>Sign up</Button>
       <Button onClick={() => signOut()}> Sign out</Button>
       <Button onClick={profileRoute}>View Profile</Button>
     </div>
