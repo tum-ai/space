@@ -8,7 +8,7 @@ import { Field, Form, Formik } from "formik";
 import ErrorMessage from "@components/ErrorMessage";
 import { signIn, signOut } from "next-auth/react";
 
-export const SignIn = ({ setResetPassword }) => {
+export const SignIn = () => {
   const router = useRouter();
   return (
     <Section>
@@ -62,14 +62,6 @@ export const SignIn = ({ setResetPassword }) => {
             </div>
             <hr className="col-span-2" />
             <Button type="submit">Log in</Button>
-
-            <Button
-              variant="link"
-              type="button"
-              onClick={() => setResetPassword(true)}
-            >
-              Forgot password?
-            </Button>
           </Form>
         )}
       </Formik>
