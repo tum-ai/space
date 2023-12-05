@@ -22,7 +22,7 @@ function Dialog({ trigger, isOpenOutside, setIsOpenOutside, children }: Props) {
         <DialogRadix.Content
           className={clsx(
             "fixed z-50 overflow-auto",
-            "w-[95vw] max-w-[600px] rounded-lg p-8 md:w-full",
+            "w-[95vw] max-w-[550px] rounded-lg p-8 md:w-full",
             "max-h-[90%]",
             "left-[50%] top-[50%] -translate-x-[50%] -translate-y-[50%]",
             "bg-gray-200 dark:bg-gray-800",

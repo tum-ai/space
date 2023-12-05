@@ -5,9 +5,18 @@ import {Cross1Icon} from "@radix-ui/react-icons";
 import {Field, Form, Formik} from "formik";
 import Input from "@components/Input";
 import {Button} from "@components/ui/button";
+import {
+    Select,
+    SelectContent,
+    SelectGroup,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@components/ui/select"
 
 export default function FormDialog(props:any){
-    //TODO map the fields and define the props
+    //TODO make a reactive state, define the values to be stored/sent, define submitData()
+
     return <div>
         <Dialog trigger={<Button>Button</Button>}>
             <DialogClose className="float-right">
@@ -19,43 +28,47 @@ export default function FormDialog(props:any){
                 <Formik initialValues={null} onSubmit={props.onSubmit}>
                     <Form className="flex flex-col gap-3 mt-8">
                         <span className="flex items-center gap-5">
-                                <p className="w-20">Name</p>
-                                <Field
-                                    as={Input}
-                                    type="name"
-                                    name="name"
-                                    placeholder="Bryan Alvin"
-                                    state={true}
-                                    className="p-1 w-48"
-                                />
+                            <p className="w-20">Name</p>
+                            <Field
+                                as={Input}
+                                type="name"
+                                name="name"
+                                placeholder="Name"
+                                state={true}
+                                className="w-52"
+                            />
                         </span>
                         <span className="flex items-center gap-5 ">
-                                <p className="w-20">Question</p>
-                                <Field
-                                    as={Input}
-                                    type="question"
-                                    name="question"
-                                    placeholder="Bryan Alvin"
-                                    state={true}
-                                    className="p-1 w-48"
-                                />
+                            <p className="w-20">Question</p>
+                            <Field
+                                as={Input}
+                                type="question"
+                                name="question"
+                                placeholder="Question"
+                                state={true}
+                                className="w-52"
+                            />
                         </span>
                         <span className="flex items-center gap-5">
-                                <p className="w-20">Type</p>
-                                <Field
-                                    as="Select"
-                                    name="type"
-                                    className="p-1 py-2 w-48 rounded-md"
-                                >
-                                    <option value="red">Red</option>
-                                    <option value="green">Green</option>
-                                    <option value="blue">Blue</option>
-                                </Field>
-                            </span>
+                            <p className="w-20">Type</p>
+                            <Select>
+                                <SelectTrigger className="w-52">
+                                    <SelectValue placeholder="Select a type"/>
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectGroup>
+                                      <SelectItem value="text">Text</SelectItem>
+                                      <SelectItem value="binary">Binary</SelectItem>
+                                      <SelectItem value="multiple">Multiple</SelectItem>
+                                      <SelectItem value="slider">Slider</SelectItem>
+                                    </SelectGroup>
+                                </SelectContent>
+                            </Select>
+                        </span>
                         <span className="flex gap-4 mt-8">
-                                <Button type="submit" variant="outline">Cancel</Button>
-                                <Button type="submit">Save Changes</Button>
-                            </span>
+                            <Button type="submit" variant="outline">Cancel</Button>
+                            <Button type="submit">Save Changes</Button>
+                        </span>
                     </Form>
                 </Formik>
             </div>
