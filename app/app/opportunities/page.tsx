@@ -41,10 +41,7 @@ export default function Main() {
                     return (
                         <OpportunityCard
                             key={index}
-                            title={item.title}
-                            description={item.description}
-                            date={item.date}
-                            participants={item.participants}
+                            opportunity={item}
                         />
                     )
                 })}
