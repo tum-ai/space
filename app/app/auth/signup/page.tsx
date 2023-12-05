@@ -17,6 +17,8 @@ const SignUp = () => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
+        first_name: values.first_name,
+        last_name: values.last_name,
         email: values.email,
         password: values.password
     })
@@ -33,11 +35,15 @@ const SignUp = () => {
     <Section>
     <Formik
       validationSchema={Yup.object().shape({
+        first_name: Yup.string().required(),
+        last_name: Yup.string().required(),
         email: Yup.string().email().required(),
         password: Yup.string().required(),
         password2: Yup.string().oneOf([Yup.ref('password'), null], 'Passwords must match').required()
       })}
       initialValues={{
+        first_name: "",
+        last_name: "",
         email: "",
         password: "",
         password2: "",
@@ -47,6 +53,30 @@ const SignUp = () => {
       {({ errors, touched }) => (
         <Form className="m-auto flex max-w-[500px] flex-col gap-4">
           <h2 className="text-3xl">Sign Up</h2>
+          <div>
+            <Field
+              as={Input}
+              label="First name"
+              type="first_name"
+              name="first_name"
+              placeholder=""
+              state={touched.first_name && errors.first_name && "error"}
+              fullWidth
+            />
+            <ErrorMessage name="first_name" />
+          </div>
+          <div>
+            <Field
+              as={Input}
+              label="Last name"
+              type="last_name"
+              name="last_name"
+              placeholder=""
+              state={touched.last_name && errors.last_name && "error"}
+              fullWidth
+            />
+            <ErrorMessage name="last_name" />
+          </div>
           <div>
             <Field
               as={Input}
