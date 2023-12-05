@@ -1,142 +1,145 @@
 ```mermaid
-classDiagram
-  class Department {
-    + department_id: int (PK)
-    name: varchar
-    mission: text
-    department_type: varchar
-    creation_date: date
-    created_at: timestamp
-    updated_at: timestamp
-  }
+erDiagram
+    Account ||--o{ User : ""
+    Account {
+        String id PK
+        String userId FK
+        String type
+        String provider
+        String providerAccountId
+        Boolean ok
+        String state
+        String refresh_token
+        String access_token
+        Int expires_at
+        String token_type
+        String scope
+        String id_token
+        DateTime createdAt
+        DateTime updatedAt
+        String session_state
+    }
 
-  class DepartmentMembership {
-    + department_membership_id: int (PK)
-    user_id: int (FK) (@onDelete=SetNull)
-    department_id: int (FK) (@onDelete=SetNull)
-    membership_start: date
-    membership_end: date
-    position: enum
-    created_at: timestamp
-    updated_at: timestamp
-  }
+    Session ||--o{ User : ""
+    Session {
+        String id PK
+        String sessionToken
+        String userId FK
+        DateTime expires
+        DateTime createdAt
+        DateTime updatedAt
+    }
 
-  class User {
-    + user_id: int (PK)
-    email: varchar
-    password: varchar
-    first_name: varchar
-    last_name: varchar
-    permission: enum
-    created_at: timestamp
-    updated_at: timestamp
-  }
+    User ||--|{ VerificationToken : ""
+    User ||--o{ Profile : ""
+    User ||--o{ DepartmentMembership : ""
+    User ||--o{ Opportunity : ""
+    User ||--o{ OpportunityParticipation : ""
+    User ||--o{ Review : ""
+    User ||--o{ Account : ""
+    User ||--o{ Session : ""
+    User {
+        String id PK
+        Int profileId FK
+        String email
+        String password
+        String first_name
+        String last_name
+        String image
+        UserPermission permission
+        DateTime emailVerified
+        DateTime createdAt
+        DateTime updatedAt
+    }
 
-  class Profile {
-    + profile_id: int (PK)
-    user_id: int (FK)
-    phone: varchar
-    birthday: date
-    nationality: varchar
-    description: text
-    activity_status: varchar
-    degree_level: varchar
-    degree_name: varchar
-    degree_semester: int
-    degree_last_update: timestamp
-    university: varchar
-    full_name: varchar
-    profile_picture: text
-    created_at: timestamp
-    updated_at: timestamp
-  }
+    VerificationToken {
+        String id PK
+        String identifier
+        String token
+        DateTime expires
+        DateTime createdAt
+        DateTime updatedAt
+    }
 
-  class Contact {
-    + contact_id: int (PK)
-    profile_id: int (FK)
-    contact_type: enum
-    contact_username: varchar
-    created_at: timestamp
-    updated_at: timestamp
-  }
+    Profile ||--|{ Contact : ""
+    Profile ||--o{ User : ""
+    Profile {
+        Int id PK
+        Int userId FK
+        DateTime birthday
+        String nationality
+        String description
+        String activity_status
+        String degree_level
+        String degree_name
+        Int degree_semester
+        DateTime degree_last_update
+        String university
+        String profile_picture
+        DateTime createdAt
+        DateTime updatedAt
+    }
 
-  class Opportunity {
-    + opportunity_id: int (PK)
-    title: varchar
-    description: text
-    department_id: int (FK)
-    opportunity_start: date
-    opportunity_end: date
-    created_at: timestamp
-    created_by: int (FK) (@onDelete=SetNull)
-    commands: json
-    questions: json
-  }
+    Contact {
+        Int id PK
+        Int profileId FK
+        ContactType type
+        String username
+        DateTime createdAt
+        DateTime updatedAt
+    }
 
-  class OpportunityParticipation {
-    + user_id: int (PK, FK) (@onDelete=Cascade)
-    + opportunity_id: int (PK, FK) (@onDelete=Cascade)
-    permission: enum
-    created_at: timestamp
-  }
+    Department ||--|{ DepartmentMembership : ""
+    Department ||--|{ Opportunity : ""
+    Department {
+        Int id PK
+        String name
+        DepartmentType type
+        DateTime creation_date
+        DateTime createdAt
+        DateTime updatedAt
+    }
 
-  class Review {
-    + review_id: int (PK)
-    opportunity_id: int (FK) (@onDelete=Cascade)
-    assignee_id: int (FK, nullable)
-    review_text: text
-    created_at: timestamp
-    content: json
-  }
+    DepartmentMembership {
+        Int id PK
+        String userId FK
+        Int departmentId FK
+        DateTime membership_start
+        DateTime membership_end
+        DepartmentPosition department_position
+        DateTime createdAt
+        DateTime updatedAt
+    }
 
-  class UserPermission {
-    <<enumeration>>
-    admin
-    member
-  }
+    Opportunity ||--|{ Review : ""
+    Opportunity ||--|{ OpportunityParticipation : ""
+    Opportunity {
+        Int id PK
+        String creatorId FK
+        String title
+        String description
+        Int departmentId FK
+        DateTime opportunity_start
+        DateTime opportunity_end
+        DateTime createdAt
+        DateTime updatedAt
+    }
 
-  class OpportunityPermission {
-    <<enumeration>>
-    owner
-    admin
-    member
-    guest
-  }
+    OpportunityParticipation {
+        String userId FK
+        Int opportunityId FK
+        OpportunityPermission permission
+        DateTime createdAt
+        DateTime updatedAt
+    }
 
-  class DepartmentPosition {
-    <<enumeration>>
-    president
-    head_of_department
-    board_member
-    advisor
-    taskforce_lead
-    project_lead
-    active_member
-    alumni
-  }
-
-  class ContactType {
-    <<enumeration>>
-    email
-    slack
-    github
-    facebook
-    instagram
-    phone
-  }
-
-  User --|> UserPermission : permission
-  Profile --|> User : user_id
-  Contact --|> Profile : profile_id
-  Contact --|> ContactType : contact_type
-  Opportunity --|> User : created_by
-  Opportunity --|> Department : department_id
-  OpportunityParticipation --|> Opportunity : opportunity_id
-  OpportunityParticipation --|> User : user_id
-  OpportunityParticipation --|> OpportunityPermission : permission
-  Review --|> Opportunity : opportunity_id
-  Review --|> User : assignee_id
-  DepartmentMembership --|> Department : department_id
-  DepartmentMembership --|> User : user_id
-  DepartmentMembership --|> DepartmentPosition : position
+    Review {
+        Int id PK
+        Int opportunityId FK
+        Int assigneeId FK
+        String review_text
+        Json content
+        DateTime createdAt
+        DateTime updatedAt
+    }
 ```
