@@ -5,7 +5,7 @@ import Select from "@components/Select";
 import {useState} from "react";
 import ClickableInfoCard from "../components/ClickableInfoCard";
 import {PersonIcon} from "@radix-ui/react-icons";
-import { Card, CardFooter, CardHeader, CardContent } from "@components/ui/card";
+import { Card } from "@components/ui/card";
 import {Button} from "@components/ui/button"
 export default function Dashboard({ params }) {
     const opportunityId = decodeURIComponent(params.opportunity_id);

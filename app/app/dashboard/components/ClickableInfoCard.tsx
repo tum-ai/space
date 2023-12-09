@@ -1,4 +1,4 @@
-import { Card, CardFooter, CardHeader, CardContent } from "@components/ui/card";
+import { Card } from "@components/ui/card";
 
 export default function ClickableInfoCard(props:any) {
     return (

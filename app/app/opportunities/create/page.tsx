@@ -1,5 +1,4 @@
 "use client"
-import { Button } from "@components/ui/button";
 export default function CreateOpportunity() {
     return (
         <div className="flex flex-col gap-8 container">

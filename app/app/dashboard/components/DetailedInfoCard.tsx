@@ -1,6 +1,4 @@
 import { Card, CardFooter, CardHeader, CardContent } from "@components/ui/card";
-
-import {PersonIcon} from "@radix-ui/react-icons"
 export default function DetailedInfoCard(props:any) {
     return (
         <Card className="flex flex-col">
