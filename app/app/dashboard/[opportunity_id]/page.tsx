@@ -9,7 +9,7 @@ import { Card } from "@components/ui/card";
 import {Button} from "@components/ui/button"
 export default function Dashboard({ params }) {
     const opportunityId = decodeURIComponent(params.opportunity_id);
-    //TODO get data based of the id (possibly make a hook for this)
+
     const [selectedPhase, setSelectedPhase] = useState("SCREENING")
     return (
         <div className="flex flex-col gap-8 container">

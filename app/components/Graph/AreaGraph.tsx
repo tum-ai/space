@@ -3,7 +3,6 @@ import { AreaChart, Card, Title } from "@tremor/react";
 import React from "react";
 
 export const AreaGraph = (props:any) => {
-    //TODO get the values of the graph based on the ID
     const mockData = [
         {
             date: "Jan 22",
