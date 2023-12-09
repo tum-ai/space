@@ -1,81 +1,142 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import prisma from "database/db";
-import { error } from 'console';
+import { checkPermission } from "@lib/auth/checkUserPermission";
+import { getServerSession } from 'next-auth';
 
-export async function GET(request: Request, context: { params }) {
-    const profiles = await prisma.user.findMany({
+const complete_view = {
+    id: true,
+    first_name: true,
+    last_name: true,
+    email: true,
+    permission: true,
+    image: true,
+    department_memberships: {
         select: {
-            id: true,
-            first_name: true,
-            last_name: true,
-            email: true,
-            image: true,
-            permission: true,
-            department_memberships: {
+            department: {
                 select: {
-                    department: {
-                        select: {
-                            name: true,
-                        }
-                    },
-                    department_position: true,
+                    name: true,
                 }
-            }
+            },
+            department_position: true,
         }
-    });
-       
-    return NextResponse.json({"profiles": profiles}, { status: 200 })
+    }
+}
+
+const partial_view = {
+    id: true,
+    first_name: true,
+    last_name: true,
+    email: true,
+    permission: true,
+    image: true,
 }
 
 
-export async function PUT(req: Request, params: { id: string }) {
-    
 
-    let payload;
-    console.log(req.body);
-    try {
-        payload = await req.json();
-    } catch (err) {
-        return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
+
+export async function GET(req: NextRequest) {
+
+    //authorization
+    const session = await getServerSession();
+    const user_permission = session?.user?.permission;
+  
+    const has_permission = await checkPermission(['user'], user_permission);
+  
+    if (!has_permission) {
+        return NextResponse.json({ error: "Missing permission " }, { status: 400 });
     }
 
+    // _________________________________________________________
 
-    const { id } = await params;
+    const id  = req.nextUrl.searchParams.get('id');
+
+    if (id) {
+        const profiles = await prisma.user.findUnique({
+            where: {
+                id: String(id),
+            },
+            select: complete_view
+        });
+        return NextResponse.json({"profiles": profiles}, { status: 200 })
+    } else {
+        const profiles = await prisma.user.findMany({
+            select: partial_view
+        });
+        return NextResponse.json({"profiles": profiles}, { status: 200 })
+    }
+};
+
+
+export async function PUT(req: NextRequest) {
+     //authorization
+     const session = await getServerSession();
+     const user_permission = session?.user?.permission;
+   
+     const has_permission = user_permission && await checkPermission(['user'], user_permission);
+     const has_admin_permission = user_permission && await checkPermission(['admin'], user_permission);
+   
+     if (!has_permission) {
+         return NextResponse.json({ error: "Missing permission " }, { status: 400 });
+     }
+ 
+     // _________________________________________________________
+
+     let body = await req.json()
+     const id  = req.nextUrl.searchParams.get('id');
+    
     if (!id) {
         return NextResponse.json({ error: "Missing id " }, { status: 400 });
     }
-    const { first_name, last_name, email, permission, department_memberships } = payload;
 
-    const data: any = {};
+    let data;
+    
+    if (has_admin_permission) {
+        data = body;
+    } else {
+        // if not admin only this
+        const { first_name, last_name, email, image } = body;
 
-    if (first_name) data.first_name = first_name;
-    if (last_name) data.last_name = last_name;
-    if (email) data.email = email;
-    if (permission) data.permission = permission;
+        if (first_name) data.first_name = first_name;
+        if (last_name) data.last_name = last_name;
+        if (email) data.email = email;
+        if (image) data.image = image;
+    }
 
     const profiles = await prisma.user.update({
         where: {
             id: String(id),
         },
-        data: {
-            first_name,
-            last_name,
-            email,
-            permission,
-        },
-        select: {
-            id: true,
-            first_name: true,
-            last_name: true,
-            email: true,
-            image: true,
-            permission: true,
-        }
+        data: data,
+        select: complete_view
     });
 
     return NextResponse.json({"profiles": profiles}, { status: 200 })
 }
 
+export async function DELETE(req: NextRequest) {
 
+     //authorization
+     const session = await getServerSession();
+     const user_permission = session?.user?.permission;
+   
+     const has_permission = user_permission && await checkPermission(['admin'], user_permission);
+   
+     if (!has_permission) {
+         return NextResponse.json({ error: "Missing permission " }, { status: 400 });
+     }
+ 
+     // _________________________________________________________
 
-// Path: app/app/api/profiles/[id]/route.ts
+    const id  = req.nextUrl.searchParams.get('id');
+
+    if (!id) {
+        return NextResponse.json({ error: "Missing id " }, { status: 400 });
+    }
+    const profiles = await prisma.user.delete({
+        where: {
+            id: String(id),
+        },
+        select: complete_view
+    });
+    return NextResponse.json({"profiles": profiles}, { status: 200 })
+}

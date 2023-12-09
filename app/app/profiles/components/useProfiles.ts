@@ -15,7 +15,7 @@ export const useProfiles = () => {
   const query = useQuery({
     queryKey: ["profiles"],
     queryFn: () =>
-      axios.get("http://localhost:3000/api/profiles/").then((res) => res.data.profiles as User[]),
+      axios.get("http://localhost:3000/api/profiles/").then((res) => res.data.profiles as User[]).catch((err) => []),
   });
 
   // TODO: Search is not implemented
@@ -24,7 +24,11 @@ export const useProfiles = () => {
       filter.predicate(profile),
     );
 
-  const filteredProfiles = query.data?.filter(filterPredicate);
+  
+  let filteredProfiles = query.data?.filter(filterPredicate);
+  if (filteredProfiles === undefined) {
+    filteredProfiles = [];
+  }
 
   return {
     profiles: filteredProfiles,

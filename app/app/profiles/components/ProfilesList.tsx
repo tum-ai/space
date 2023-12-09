@@ -9,7 +9,6 @@ import { useProfiles } from "./useProfiles";
 import { User, UserPermission } from "@prisma/client"; 
 
 function ProfilesList() {
-  const { rolesModel } = useStores();
   const profilesModel = useProfiles();
 
   if (profilesModel.isLoading) {
@@ -21,7 +20,7 @@ function ProfilesList() {
       <div className="flex flex-col justify-end space-y-10">
         <div className="flex flex-col justify-between md:flex-row md:items-center">
           <div className="mt-2 font-light text-gray-500">
-            Total {profilesModel.profiles?.length} members
+            Total {profilesModel.profiles?.length} members 
           </div>
           <div className="flex flex-col items-end space-y-2 lg:flex-row lg:space-x-4">
             <div className="flex items-center space-x-4">
