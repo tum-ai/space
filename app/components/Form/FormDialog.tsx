@@ -15,8 +15,6 @@ import {
 } from "@components/ui/select"
 
 export default function FormDialog(props:any){
-    //TODO make a reactive state, define the values to be stored/sent, define submitData()
-
     return <div>
         <Dialog trigger={<Button>Button</Button>}>
             <DialogClose className="float-right">

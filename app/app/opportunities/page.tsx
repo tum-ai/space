@@ -3,6 +3,7 @@ import OpportunityCard from "./components/opportunityCard";
 import { useState } from "react";
 import { Opportunity } from "@models/opportunity";
 import { Button } from "@components/ui/button";
+import {Section} from "@components/Section"
 export default function Main() {
     const [opportunities, setOpportunities] = useState<Opportunity[]>([
         {
@@ -30,22 +31,23 @@ export default function Main() {
     ])
 
     return (
-        <div className="flex flex-col gap-8 container">
-            <div className="flex justify-between">
-                <h1 className="font-thin text-5xl">Opportunities</h1>
-                <Button>Create Opportunity</Button>
+        <Section>
+            <div className="flex flex-col gap-8">
+                <div className="flex justify-between">
+                    <h1 className="font-thin text-5xl">Opportunities</h1>
+                    <Button>Create Opportunity</Button>
+                </div>
+                <div className="grid grid-cols-3 gap-4">
+                    {opportunities?.map((item,index)=>{
+                        return (
+                            <OpportunityCard
+                                key={index}
+                                opportunity={item}
+                            />
+                        )
+                    })}
+                </div>
             </div>
-
-            <div className="grid grid-cols-3 gap-4">
-                {opportunities?.map((item,index)=>{
-                    return (
-                        <OpportunityCard
-                            key={index}
-                            opportunity={item}
-                        />
-                    )
-                })}
-            </div>
-        </div>
+        </Section>
     );
 }
