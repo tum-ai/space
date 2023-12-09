@@ -38,7 +38,7 @@ const ProfileCard = observer(({ profile }) => {
         <button className="px-4 py-2 duration-200 hover:bg-gray-500/90">
           <Link href={"/profile?id=" + profile?.id}>View</Link>
         </button>
-          <ProtectedItem roles={["admin"]}>
+          <ProtectedItem roles={[]}>
             <DepartmentMembershipEditor
               trigger={
                 <button className="px-4 py-2 duration-200 hover:bg-gray-500/90">

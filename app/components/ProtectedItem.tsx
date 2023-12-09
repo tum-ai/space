@@ -3,7 +3,7 @@ import { useStores } from "@providers/StoreProvider";
 import NotFound from "app/not-found";
 import { observer } from "mobx-react";
 import { useRouter } from "next/navigation";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { hasPermission } from "hooks/useUserPermission"
 
 interface Props {
@@ -23,15 +23,21 @@ function ProtectedItem({
   const user = meModel.user;
   const router = useRouter();
   
+  const [permission, setPermission] = useState(null);
+
   useEffect(() => {
     if (!user && redirectToAuth && !showNotFound) {
       router.push("/auth");
     }
   }, [user, redirectToAuth, showNotFound, router]);
 
-  const permission = hasPermission(roles);
+  useEffect(() => {
+    if (roles !== undefined) {
+      hasPermission(roles).then((res) => setPermission(res));
+    }
+  }, [roles]);
   
-  if (permission) {
+  if (permission === true) {
     return <>{children}</>;
   }
 

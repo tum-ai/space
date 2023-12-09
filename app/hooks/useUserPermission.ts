@@ -6,17 +6,25 @@ enum Permissions {
   user = "user"
 }
 
-export async function hasPermission(required_permissions) {
+export async function hasPermission(required_permissions = []) {
   const session = await getSession();
-
-
+  
   // if the user is not logged in
-  if (!session) return false;
 
+  if (required_permissions.length < 1) {
+    return true;
+  }
+  
+  if (!session) { 
+    return false;
+  }
   const userPermission = session.user.permission;
+  
+  //wait for the session to be loaded
+  if (!userPermission) return false;
 
   // check if the user_permission is not known
-  if (!Permissions[userPermission]) {
+  if (Permissions[userPermission] === undefined) {
     return false;
   }
 
