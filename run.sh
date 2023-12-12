@@ -1,3 +1,3 @@
 docker rmi -f space_space postgres
 docker-compose down
-docker-compose up --build
+docker-compose up --build 
