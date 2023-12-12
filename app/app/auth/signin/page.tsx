@@ -30,7 +30,7 @@ export const SignIn = () => {
           if(signInData?.error) {
             console.log(signInData.error);
           } else {
-            return router.push("/");
+            return router.push("/profile");
           }
         }}
       >
