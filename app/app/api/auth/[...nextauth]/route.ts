@@ -70,7 +70,9 @@ export const authOptions: NextAuthOptions = {
               return {
                   id: `${existingUser.id}`,
                   first_name: existingUser.first_name, //do we really need this here? 
-                  email: existingUser.email
+                  email: existingUser.email,
+                  permission: existingUser.permission,
+                  image: existingUser.image
               }
             }
           }),
