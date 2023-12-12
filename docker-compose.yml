@@ -1,5 +1,6 @@
 version: '3.8'
 
+# TODO docker ignore node_modules
 services:
   space:
     build:
@@ -12,7 +13,7 @@ services:
     depends_on:
       - db
     environment:
-      - DATABASE_URL=postgres://postgres:password@db:5432/spacedb
+      - DATABASE_URL=postgres://postgres:password@host.docker.internal:15432/spacedb
     networks:
       - app-network
 
