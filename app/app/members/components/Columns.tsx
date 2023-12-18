@@ -152,9 +152,13 @@ export const columns: ColumnDef<User>[] = [
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
               <DropdownMenuItem
-                onClick={() => navigator.clipboard.writeText(profil.id)}
+                onClick={() => {
+                  if (!profil.email) {
+                    return
+                  }
+                  navigator.clipboard.writeText(profil.email)}}
               >
-                Copy ID
+                Copy Email
               </DropdownMenuItem>
               <DropdownMenuItem>View Member</DropdownMenuItem>
             </DropdownMenuContent>

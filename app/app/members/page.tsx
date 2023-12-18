@@ -5,7 +5,7 @@ import { DataTable } from "./components/DataTable"
 import { Section } from "@components/Section"
 
 export const metadata: Metadata = {
-  title: "Tasks",
+  title: "Members",
   description: "A task and issue tracker build using Tanstack Table.",
 }
 
