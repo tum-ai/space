@@ -1,5 +1,6 @@
 generator client {
   provider = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
 }
 
 datasource db {
@@ -7,21 +8,47 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Account {
+  id                String   @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  ok                Boolean
+  state             String
+  refresh_token     String?  @db.Text
+  access_token      String?  @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  session_state     String?
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+}
+
 model User {
-  user_id                   Int                        @id @default(autoincrement())
-  profile_id                Int?                        @unique
-  profile                   Profile?                    @relation(fields: [profile_id], references: [profile_id])
-  email                     String                     @unique
-  password                  String
+  id                        String                     @id @default(cuid())
+  profileId                 Int?                       @unique
+  profile                   Profile?                   @relation(fields: [profileId], references: [id])
+  email                     String?                    @unique
+  password                  String?
   first_name                String?
   last_name                 String?
+  image                     String?
   permission                UserPermission?
   department_memberships    DepartmentMembership[]
   created_oportunities      Opportunity[]
   opportunity_participation OpportunityParticipation[]
   reviews                   Review[]
-  created_at                DateTime                   @default(now())
-  updated_at                DateTime                   @updatedAt
+  emailVerified             DateTime?
+  createdAt                 DateTime                   @default(now())
+  updatedAt                 DateTime                   @updatedAt
+  accounts                  Account[]
 }
 
 enum UserPermission {
@@ -30,8 +57,8 @@ enum UserPermission {
 }
 
 model Profile {
-  profile_id         Int       @id @default(autoincrement())
-  user_id            Int
+  id                 Int       @id @default(autoincrement())
+  userId             Int
   user               User?
   birthday           DateTime?
   nationality        String?
@@ -44,18 +71,18 @@ model Profile {
   university         String?
   profile_picture    String?
   contacts           Contact[]
-  created_at         DateTime  @default(now())
-  updated_at         DateTime  @updatedAt
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
 }
 
 model Contact {
-  contact_id Int         @id @default(autoincrement())
-  profile_id Int
-  profile    Profile     @relation(fields: [profile_id], references: [profile_id])
-  type       ContactType
-  username   String      @unique
-  created_at DateTime    @default(now())
-  updated_at DateTime    @updatedAt
+  id        Int         @id @default(autoincrement())
+  profileId Int
+  profile   Profile     @relation(fields: [profileId], references: [id])
+  type      ContactType
+  username  String      @unique
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
 }
 
 enum ContactType {
@@ -68,14 +95,14 @@ enum ContactType {
 }
 
 model Department {
-  department_id         Int                    @id @default(autoincrement())
+  id                    Int                    @id @default(autoincrement())
   name                  String
   type                  DepartmentType
   creation_date         DateTime
   departmen_memberships DepartmentMembership[]
   opportunities         Opportunity[]
-  created_at            DateTime               @default(now())
-  updated_at            DateTime               @updatedAt
+  createdAt             DateTime               @default(now())
+  updatedAt             DateTime               @updatedAt
 }
 
 enum DepartmentType {
@@ -84,16 +111,16 @@ enum DepartmentType {
 }
 
 model DepartmentMembership {
-  department_membership_id Int                @id @default(autoincrement())
-  user_id                  Int?
-  user                     User?              @relation(fields: [user_id], references: [user_id], onDelete: SetNull)
-  department_id            Int?
-  department               Department?        @relation(fields: [department_id], references: [department_id], onDelete: SetNull)
-  membership_start         DateTime
-  membership_end           DateTime?
-  department_position      DepartmentPosition
-  created_at               DateTime           @default(now())
-  updated_at               DateTime           @updatedAt
+  id                  Int                @id @default(autoincrement())
+  userId              String?
+  user                User?              @relation(fields: [userId], references: [id], onDelete: SetNull)
+  departmentId        Int?
+  department          Department?        @relation(fields: [departmentId], references: [id], onDelete: SetNull)
+  membership_start    DateTime
+  membership_end      DateTime?
+  department_position DepartmentPosition
+  createdAt           DateTime           @default(now())
+  updatedAt           DateTime           @updatedAt
 }
 
 enum DepartmentPosition {
@@ -108,31 +135,31 @@ enum DepartmentPosition {
 }
 
 model Opportunity {
-  opportunity_id            Int                        @id @default(autoincrement())
-  creator_id                Int?
-  creator                   User?                      @relation(fields: [creator_id], references: [user_id], onDelete: SetNull)
+  id                        Int                        @id @default(autoincrement())
+  creatorId                 String?
+  creator                   User?                      @relation(fields: [creatorId], references: [id], onDelete: SetNull)
   title                     String
   description               String
-  department_id             Int
-  department                Department                 @relation(fields: [department_id], references: [department_id])
+  departmentId              Int
+  department                Department                 @relation(fields: [departmentId], references: [id])
   opportunity_start         DateTime
   opportunity_end           DateTime?
   reviews                   Review[]
   opportunity_participation OpportunityParticipation[]
-  created_at                DateTime                   @default(now())
-  updated_at                DateTime                   @updatedAt
+  createdAt                 DateTime                   @default(now())
+  updatedAt                 DateTime                   @updatedAt
 }
 
 model OpportunityParticipation {
-  user_id        Int
-  user           User                  @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
-  opportunity_id Int
-  opportunity    Opportunity           @relation(fields: [opportunity_id], references: [opportunity_id], onDelete: Cascade)
-  permission     OpportunityPermission
-  created_at     DateTime              @default(now())
-  updated_at     DateTime              @updatedAt
+  userId        String
+  user          User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  opportunityId Int
+  opportunity   Opportunity           @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
+  permission    OpportunityPermission
+  createdAt     DateTime              @default(now())
+  updatedAt     DateTime              @updatedAt
 
-  @@id([user_id, opportunity_id])
+  @@id([userId, opportunityId])
 }
 
 enum OpportunityPermission {
@@ -143,13 +170,13 @@ enum OpportunityPermission {
 }
 
 model Review {
-  review_id      Int         @id @default(autoincrement())
-  opportunity_id Int
-  opportunity    Opportunity @relation(fields: [opportunity_id], references: [opportunity_id], onDelete: Cascade)
-  assignee_id    Int
-  assignee       User        @relation(fields: [assignee_id], references: [user_id])
-  review_text    String
-  content        Json
-  created_at     DateTime    @default(now())
-  updated_at     DateTime    @updatedAt
+  id            Int         @id @default(autoincrement())
+  opportunityId Int
+  opportunity   Opportunity @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
+  assigneeId    Int
+  assignee      User        @relation(fields: [assigneeId], references: [profileId])
+  review_text   String
+  content       Json
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
 }

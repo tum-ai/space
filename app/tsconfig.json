@@ -41,6 +41,6 @@
     "**/*.mjs",
     "build/types/**/*.ts",
     ".next/types/**/*.ts"
-  ],
+, "app/profile/page.tsx.client"  ],
   "exclude": ["node_modules"]
 }
