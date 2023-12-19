@@ -29,6 +29,16 @@ const partial_view = {
     email: true,
     permission: true,
     image: true,
+    department_memberships: {
+        select: {
+            department: {
+                select: {
+                    name: true,
+                }
+            },
+            department_position: true,
+        }
+    }
 }
 
 

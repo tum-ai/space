@@ -13,15 +13,9 @@ import {
   useReactTable,
 } from "@tanstack/react-table"
 import { ChevronDown } from "lucide-react"
+import { DataTableToolbar } from "./DataTableToolbar"
 
 import { Button } from "@components/ui/button"
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from "@components/ui/dropdown-menu"
-import { Input } from "@components/ui/input"
 import {
   Table,
   TableBody,
@@ -30,11 +24,11 @@ import {
   TableHeader,
   TableRow,
 } from "@components/ui/table"
+
 import { columns } from "./Columns"
-import { User } from "prisma/prisma-client"
 
 export function DataTable() {
-  const [data, setData] = React.useState<User[]>([]);
+  const [data, setData] = React.useState([]);
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -47,7 +41,16 @@ export function DataTable() {
     fetch("http://localhost:3000/api/profiles")
       .then((res) => res.json())
       .then((data) => {
-        setData(data.profiles)})
+        const profile_data = data.profiles.map((profile) => {
+          return {
+            ...profile,
+            departmentname: profile?.department_memberships[0]?.department.name,
+            departmentposition: profile?.department_memberships[0]?.department_position
+          }
+        })
+        console.log(profile_data)
+        setData(profile_data)
+        })
   }, [])
 
   const table = useReactTable({
@@ -70,43 +73,8 @@ export function DataTable() {
   })
 
   return (
-    <div className="w-full">
-      <div className="flex items-center py-4">
-        <Input
-          placeholder="Filter emails..."
-          value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
-          onChange={(event) =>
-            table.getColumn("email")?.setFilterValue(event.target.value)
-          }
-          className="max-w-sm"
-        />
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="ml-auto">
-              Columns <ChevronDown className="ml-2 h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            {table
-              .getAllColumns()
-              .filter((column) => column.getCanHide())
-              .map((column) => {
-                return (
-                  <DropdownMenuCheckboxItem
-                    key={column.id}
-                    className="capitalize"
-                    checked={column.getIsVisible()}
-                    onCheckedChange={(value) =>
-                      column.toggleVisibility(!!value)
-                    }
-                  >
-                    {column.id}
-                  </DropdownMenuCheckboxItem>
-                )
-              })}
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
+    <div className="space-y-4">
+      <DataTableToolbar table={table} />
       <div className="rounded-md border">
         <Table>
           <TableHeader>
@@ -114,7 +82,7 @@ export function DataTable() {
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   return (
-                    <TableHead key={header.id}>
+                    <TableHead key={header.id} colSpan={header.colSpan}>
                       {header.isPlaceholder
                         ? null
                         : flexRender(

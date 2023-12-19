@@ -2,7 +2,7 @@ import * as React from "react"
 import {
   ColumnDef,
 } from "@tanstack/react-table"
-import { ArrowUpDown, MoreHorizontal } from "lucide-react"
+import { MoreHorizontal } from "lucide-react"
 
 import { Button } from "@components/ui/button"
 import { Checkbox } from "@components/ui/checkbox"
@@ -11,9 +11,9 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@components/ui/dropdown-menu"
+import { DataTableColumnHeader} from "./DataTabelHeader" 
 import { User } from "prisma/prisma-client"
 import { Avatar } from "@components/Avatar"
 
@@ -42,7 +42,6 @@ export const columns: ColumnDef<User>[] = [
     },
     {
       accessorKey: "Image",
-      header: "Picture",
       cell: ({ row }) => {
         const profil = row.original
 
@@ -62,78 +61,52 @@ export const columns: ColumnDef<User>[] = [
     },
     {
         accessorKey: "id",
-        header: ({ column }) => {
-          return (
-            <Button
-              variant="ghost"
-              onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-            >
-              Id
-              <ArrowUpDown className="ml-2 h-4 w-4" />
-            </Button>
-          )
-        },
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title="Id" />
+        ),
         cell: ({ row }) => <div className="lowercase">{row.getValue("id")}</div>,
       },
     {
       accessorKey: "email",
-      header: ({ column }) => {
-        return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            Email
-            <ArrowUpDown className="ml-2 h-4 w-4" />
-          </Button>
-        )
-      },
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Email" />
+      ),
       cell: ({ row }) => <div className="lowercase">{row.getValue("email")}</div>,
     },
     {
       accessorKey: "first_name",
-      header: ({ column }) => {
-        return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            First Name
-            <ArrowUpDown className="ml-2 h-4 w-4" />
-          </Button>
-        )
-      },
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="First Name" />
+      ),
       cell: ({ row }) => <div className="lowercase">{row.getValue("first_name")}</div>,
     },
     {
         accessorKey: "last_name",
-        header: ({ column }) => {
-          return (
-            <Button
-              variant="ghost"
-              onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-            >
-              Last Name
-              <ArrowUpDown className="ml-2 h-4 w-4" />
-            </Button>
-          )
-        },
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title="Last Name" />
+        ),
         cell: ({ row }) => <div className="lowercase">{row.getValue("last_name")}</div>,
       },
       {
         accessorKey: "permission",
-        header: ({ column }) => {
-          return (
-            <Button
-              variant="ghost"
-              onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-            >
-              Permission
-              <ArrowUpDown className="ml-2 h-4 w-4" />
-            </Button>
-          )
-        },
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title="Permission" />
+        ),
         cell: ({ row }) => <div className="lowercase">{row.getValue("permission")}</div>,
+      },
+      {
+        accessorKey: "departmentname",
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title="Department" />
+        ),
+        cell: ({ row }) => <div className="lowercase">{row.getValue("departmentname")}</div>,
+      },
+      {
+        accessorKey: "departmentposition",
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title="Position" />
+        ),
+        cell: ({ row }) => <div className="lowercase">{row.getValue("departmentposition")}</div>,
       },
     {
       id: "actions",
