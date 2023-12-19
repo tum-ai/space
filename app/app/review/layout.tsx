@@ -23,6 +23,6 @@ const ReviewLayout = ({ children }: Props) => (
 
     {children}
   </ProtectedItem>
-)
+);
 
 export default ReviewLayout;

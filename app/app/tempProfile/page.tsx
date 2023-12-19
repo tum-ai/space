@@ -7,8 +7,13 @@ const ProfilePage = async () => {
 
   return (
     <div className="pt-[50%] text-center sm:pt-40">
-        <h1 className="font-bold glow text-4xl">All&apos;s Well That Ends Well, <span className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-yellow-500 animate-slide fast-slide">{session?.user.first_name ?? "Oh, there's nobody here :(" }</span></h1>
-        <h2 className="font-thin p-8"> Welcome to TUM.ai </h2>
+      <h1 className="glow text-4xl font-bold">
+        All&apos;s Well That Ends Well,{" "}
+        <span className="animate-slide fast-slide bg-gradient-to-r from-pink-500 to-yellow-500 bg-clip-text text-4xl font-bold text-transparent">
+          {session?.user.first_name ?? "Oh, there's nobody here :("}
+        </span>
+      </h1>
+      <h2 className="p-8 font-thin"> Welcome to TUM.ai </h2>
     </div>
   );
 };
