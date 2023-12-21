@@ -1,3 +1,4 @@
+import { ButtonIcon } from "@components/IconButton";
 import Tag from "@components/Tag";
 import { Card, CardContent } from "@components/ui/card";
 import { TrashIcon } from "@radix-ui/react-icons";
@@ -13,9 +14,9 @@ interface DisplayMember {
   onDelete?: () => void;
 }
 
-export default function MemberBar(props: DisplayMember) {
+export function MemberBar(props: DisplayMember) {
   return (
-    <Card className="flex items-center justify-between px-4 py-3">
+    <Card className="flex items-center justify-between px-4 py-3 shadow">
       <div className="flex items-center gap-6">
         {props.photoUrl && (
           <Image
@@ -35,12 +36,11 @@ export default function MemberBar(props: DisplayMember) {
         </div>
       </div>
       {props.onDelete && (
-        <TrashIcon
+        <ButtonIcon
+          icon={<TrashIcon width={24} height={24} />}
           onClick={props.onDelete}
-          width={24}
-          height={24}
           className="text-gray-300"
-        />
+        ></ButtonIcon>
       )}
     </Card>
   );

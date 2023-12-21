@@ -6,10 +6,12 @@ import { Cross1Icon, QuestionMarkCircledIcon } from "@radix-ui/react-icons";
 import Select from "@components/Select";
 import { Field, Form, Formik } from "formik";
 import * as Yup from "yup";
-import MemberBar, { AddMemberBar } from "../components/MemberBar";
+import { MemberBar, AddMemberBar } from "../components/MemberBar";
 import Dialog from "@components/Dialog";
 import { useState } from "react";
 import ErrorMessage from "@components/ErrorMessage";
+import Textarea from "@components/Textarea";
+import Tooltip from "@components/Tooltip";
 
 const mockAdmins = [
   {
@@ -67,7 +69,8 @@ enum Roles {
 
 export default function CreateOpportunity() {
   return (
-    <div className="container mx-0 mb-12 flex flex-col gap-8 md:mx-24">
+    // center element
+    <div className="mx-0 mx-4 mb-12 flex flex-col gap-8 self-center md:mx-24">
       <div className="flex flex-col gap-3">
         <h1 className="text-6xl">Opportunity</h1>
         <p>Configure a new opportunity</p>
@@ -146,8 +149,9 @@ export default function CreateOpportunity() {
             </div>
             <div>
               <Field
-                as={Input}
+                as={Textarea}
                 label="Description"
+                variant="outlined"
                 name="description"
                 placeholder="Venture campaign for the winter semester 2023 in partnership with OpenAI."
                 state={touched.description && errors.description && "error"}
@@ -188,18 +192,30 @@ function MemberSection() {
   }
 
   const stakeholders = [
-    { title: "Admins", members: mockAdmins, role: Roles.ADMIN },
-    { title: "Screeners", members: mockScreeners, role: Roles.SCREENER },
+    {
+      title: "Admins",
+      members: mockAdmins,
+      role: Roles.ADMIN,
+      hint: "Admins can edit opportunities",
+    },
+    {
+      title: "Screeners",
+      members: mockScreeners,
+      role: Roles.SCREENER,
+      hint: "Screeners evaluate incoming applications",
+    },
   ];
 
   return (
-    <div className="flex flex-col gap-8 md:flex-row">
+    <div className="md :flex-row flex flex-col  gap-8">
       {stakeholders.map((stakeholder) => {
         return (
           <div key={stakeholder.role} className="flex flex-1 flex-col">
             <div className="mb-2 flex items-center gap-2">
               <h1 className="text-2xl">{stakeholder.role}s</h1>
-              <QuestionMarkCircledIcon />
+              <Tooltip trigger={<QuestionMarkCircledIcon />}>
+                {stakeholder.hint}
+              </Tooltip>
             </div>
             <div className="flex flex-col gap-2">
               {stakeholder.members.map((member) => {
