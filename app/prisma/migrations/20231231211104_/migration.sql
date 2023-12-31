@@ -1,17 +1,11 @@
 -- CreateEnum
-CREATE TYPE "UserPermission" AS ENUM ('admin', 'member');
-
--- CreateEnum
 CREATE TYPE "ContactType" AS ENUM ('email', 'slack', 'github', 'facebook', 'instagram', 'phone');
 
 -- CreateEnum
-CREATE TYPE "DepartmentType" AS ENUM ('functional', 'mission_based');
+CREATE TYPE "DepartmentType" AS ENUM ('FUNCTIONAL', 'MISSION_BASED');
 
 -- CreateEnum
 CREATE TYPE "DepartmentPosition" AS ENUM ('president', 'head_of_department', 'board_member', 'advisor', 'taskforce_lead', 'project_lead', 'active_member', 'alumni');
-
--- CreateEnum
-CREATE TYPE "OpportunityPermission" AS ENUM ('owner', 'admin', 'member', 'guest');
 
 -- CreateTable
 CREATE TABLE "Account" (
@@ -43,13 +37,32 @@ CREATE TABLE "User" (
     "password" TEXT,
     "first_name" TEXT,
     "last_name" TEXT,
+    "permission" TEXT,
     "image" TEXT,
-    "permission" "UserPermission",
+    "userRoleId" INTEGER,
     "emailVerified" TIMESTAMP(3),
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "UserRole" (
+    "id" SERIAL NOT NULL,
+    "name" TEXT NOT NULL,
+
+    CONSTRAINT "UserRole_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "UserPermission" (
+    "id" SERIAL NOT NULL,
+    "name" TEXT NOT NULL,
+    "description" TEXT NOT NULL,
+    "roleId" INTEGER NOT NULL,
+
+    CONSTRAINT "UserPermission_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -129,7 +142,7 @@ CREATE TABLE "Opportunity" (
 CREATE TABLE "OpportunityParticipation" (
     "userId" TEXT NOT NULL,
     "opportunityId" INTEGER NOT NULL,
-    "permission" "OpportunityPermission" NOT NULL,
+    "roleId" INTEGER NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -137,12 +150,39 @@ CREATE TABLE "OpportunityParticipation" (
 );
 
 -- CreateTable
+CREATE TABLE "OpportunityRole" (
+    "id" SERIAL NOT NULL,
+    "name" TEXT NOT NULL,
+
+    CONSTRAINT "OpportunityRole_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "OpportunityPermission" (
+    "id" SERIAL NOT NULL,
+    "name" TEXT NOT NULL,
+    "description" TEXT NOT NULL,
+    "roleId" INTEGER NOT NULL,
+
+    CONSTRAINT "OpportunityPermission_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Application" (
+    "id" SERIAL NOT NULL,
+    "opportunityId" INTEGER NOT NULL,
+    "content" JSONB NOT NULL,
+
+    CONSTRAINT "Application_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "Review" (
     "id" SERIAL NOT NULL,
     "opportunityId" INTEGER NOT NULL,
     "assigneeId" INTEGER NOT NULL,
-    "review_text" TEXT NOT NULL,
-    "content" JSONB NOT NULL,
+    "applicationId" INTEGER NOT NULL,
+    "review_text" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -162,13 +202,31 @@ CREATE UNIQUE INDEX "User_profileId_key" ON "User"("profileId");
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "UserRole_name_key" ON "UserRole"("name");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "UserPermission_name_key" ON "UserPermission"("name");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "Contact_username_key" ON "Contact"("username");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "OpportunityRole_name_key" ON "OpportunityRole"("name");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "OpportunityPermission_name_key" ON "OpportunityPermission"("name");
 
 -- AddForeignKey
 ALTER TABLE "Account" ADD CONSTRAINT "Account_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "User" ADD CONSTRAINT "User_profileId_fkey" FOREIGN KEY ("profileId") REFERENCES "Profile"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "User" ADD CONSTRAINT "User_userRoleId_fkey" FOREIGN KEY ("userRoleId") REFERENCES "UserRole"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "UserPermission" ADD CONSTRAINT "UserPermission_roleId_fkey" FOREIGN KEY ("roleId") REFERENCES "UserRole"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Contact" ADD CONSTRAINT "Contact_profileId_fkey" FOREIGN KEY ("profileId") REFERENCES "Profile"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -192,7 +250,19 @@ ALTER TABLE "OpportunityParticipation" ADD CONSTRAINT "OpportunityParticipation_
 ALTER TABLE "OpportunityParticipation" ADD CONSTRAINT "OpportunityParticipation_opportunityId_fkey" FOREIGN KEY ("opportunityId") REFERENCES "Opportunity"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "OpportunityParticipation" ADD CONSTRAINT "OpportunityParticipation_roleId_fkey" FOREIGN KEY ("roleId") REFERENCES "OpportunityRole"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "OpportunityPermission" ADD CONSTRAINT "OpportunityPermission_roleId_fkey" FOREIGN KEY ("roleId") REFERENCES "OpportunityRole"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Application" ADD CONSTRAINT "Application_opportunityId_fkey" FOREIGN KEY ("opportunityId") REFERENCES "Opportunity"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "Review" ADD CONSTRAINT "Review_opportunityId_fkey" FOREIGN KEY ("opportunityId") REFERENCES "Opportunity"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Review" ADD CONSTRAINT "Review_assigneeId_fkey" FOREIGN KEY ("assigneeId") REFERENCES "User"("profileId") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Review" ADD CONSTRAINT "Review_applicationId_fkey" FOREIGN KEY ("applicationId") REFERENCES "Application"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
