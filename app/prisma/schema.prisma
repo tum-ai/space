@@ -39,6 +39,7 @@ model User {
   password                  String?
   first_name                String?
   last_name                 String?
+  permission  String?
   image                     String?
   user_role                 UserRole?
   department_memberships    DepartmentMembership[]
@@ -173,6 +174,7 @@ model Application {
   opportunityId Int
   opportunity   Opportunity @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
   content       Json
+  reviews       Review[]
 }
 
 model Review {
@@ -181,8 +183,9 @@ model Review {
   opportunity   Opportunity @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
   assigneeId    Int
   assignee      User        @relation(fields: [assigneeId], references: [profileId])
+  applicationId      Int
+  application        Application      @relation(fields: [applicationId], references: [id])
   review_text   String?
-  content       Json
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
 }
