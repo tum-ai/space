@@ -98,12 +98,12 @@ model Contact {
 }
 
 enum ContactType {
-  email
-  slack
-  github
-  facebook
-  instagram
-  phone
+  EMAIL
+  SLACK
+  GITHUB
+  FACEBOOK
+  INSTAGRAM
+  PHONE
 }
 
 model Department {
@@ -136,14 +136,14 @@ model DepartmentMembership {
 }
 
 enum DepartmentPosition {
-  president
-  head_of_department
-  board_member
-  advisor
-  taskforce_lead
-  project_lead
-  active_member
-  alumni
+  PRESIDENT
+  HEAD_OF_DEPARTMENT
+  BOARD_MEMBER
+  ADVISOR
+  TASKFORCE_LEAD
+  PROJECT_LEAD
+  ACTIVE_MEMBER
+  ALUMNI
 }
 
 model Opportunity {
