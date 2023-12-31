@@ -157,16 +157,27 @@ model OpportunityParticipation {
   user          User            @relation(fields: [userId], references: [id], onDelete: Cascade)
   opportunityId Int
   opportunity   Opportunity     @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
-  role          OpportunityRole
+  roleId        Int
+  role          OpportunityRole @relation(fields: [roleId], references: [id])
   createdAt     DateTime        @default(now())
   updatedAt     DateTime        @updatedAt
 
   @@id([userId, opportunityId])
 }
 
-enum OpportunityRole {
-  admin
-  member
+model OpportunityRole {
+  id            Int       @id @default(autoincrement())
+  name          String    @unique
+  opportunityParticipations OpportunityParticipation[]
+  rolePermissions OpportunityPermission[]
+}
+
+model OpportunityPermission {
+  id          Int    @id @default(autoincrement())
+  name        String @unique
+  description String
+  roleId Int
+  opportunityRole OpportunityRole @relation(fields: [roleId], references: [id], onDelete: Cascade)
 }
 
 model Application {
