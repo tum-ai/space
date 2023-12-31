@@ -1,5 +1,5 @@
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
   binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
 }
 
@@ -40,7 +40,7 @@ model User {
   first_name                String?
   last_name                 String?
   image                     String?
-  permission                UserPermission?
+  user_role                 UserRole?
   department_memberships    DepartmentMembership[]
   created_oportunities      Opportunity[]
   opportunity_participation OpportunityParticipation[]
@@ -51,7 +51,7 @@ model User {
   accounts                  Account[]
 }
 
-enum UserPermission {
+enum UserRole {
   admin
   member
 }
@@ -95,14 +95,14 @@ enum ContactType {
 }
 
 model Department {
-  id                    Int                    @id @default(autoincrement())
-  name                  String
-  type                  DepartmentType
-  creation_date         DateTime
-  departmen_memberships DepartmentMembership[]
-  opportunities         Opportunity[]
-  createdAt             DateTime               @default(now())
-  updatedAt             DateTime               @updatedAt
+  id                     Int                    @id @default(autoincrement())
+  name                   String
+  type                   DepartmentType
+  creation_date          DateTime
+  department_memberships DepartmentMembership[]
+  opportunities          Opportunity[]
+  createdAt              DateTime               @default(now())
+  updatedAt              DateTime               @updatedAt
 }
 
 enum DepartmentType {
@@ -144,6 +144,7 @@ model Opportunity {
   department                Department                 @relation(fields: [departmentId], references: [id])
   opportunity_start         DateTime
   opportunity_end           DateTime?
+  applications              Application[]
   reviews                   Review[]
   opportunity_participation OpportunityParticipation[]
   createdAt                 DateTime                   @default(now())
@@ -152,21 +153,28 @@ model Opportunity {
 
 model OpportunityParticipation {
   userId        String
-  user          User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user          User            @relation(fields: [userId], references: [id], onDelete: Cascade)
   opportunityId Int
-  opportunity   Opportunity           @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
-  permission    OpportunityPermission
-  createdAt     DateTime              @default(now())
-  updatedAt     DateTime              @updatedAt
+  opportunity   Opportunity     @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
+  role          OpportunityRole
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
 
   @@id([userId, opportunityId])
 }
 
-enum OpportunityPermission {
+enum OpportunityRole {
   owner
   admin
   member
   guest
+}
+
+model Application {
+  id            Int         @id @default(autoincrement())
+  opportunityId Int
+  opportunity   Opportunity @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
+  content       Json
 }
 
 model Review {
