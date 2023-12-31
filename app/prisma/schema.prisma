@@ -39,9 +39,10 @@ model User {
   password                  String?
   first_name                String?
   last_name                 String?
-  permission  String?
+  permission                String?
   image                     String?
-  user_role                 UserRole?
+  userRoleId                Int
+  user_role                 UserRole?                  @relation(fields: [userRoleId], references: [id], onDelete: Cascade)
   department_memberships    DepartmentMembership[]
   created_oportunities      Opportunity[]
   opportunity_participation OpportunityParticipation[]
@@ -52,9 +53,19 @@ model User {
   accounts                  Account[]
 }
 
-enum UserRole {
-  admin
-  member
+model UserRole {
+  id              Int              @id @default(autoincrement())
+  name            String           @unique
+  users           User[]
+  userPermissions UserPermission[]
+}
+
+model UserPermission {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique
+  description String
+  roleId      Int
+  userRole    UserRole @relation(fields: [roleId], references: [id], onDelete: Cascade)
 }
 
 model Profile {
@@ -166,17 +177,17 @@ model OpportunityParticipation {
 }
 
 model OpportunityRole {
-  id            Int       @id @default(autoincrement())
-  name          String    @unique
+  id                        Int                        @id @default(autoincrement())
+  name                      String                     @unique
   opportunityParticipations OpportunityParticipation[]
-  rolePermissions OpportunityPermission[]
+  rolePermissions           OpportunityPermission[]
 }
 
 model OpportunityPermission {
-  id          Int    @id @default(autoincrement())
-  name        String @unique
-  description String
-  roleId Int
+  id              Int             @id @default(autoincrement())
+  name            String          @unique
+  description     String
+  roleId          Int
   opportunityRole OpportunityRole @relation(fields: [roleId], references: [id], onDelete: Cascade)
 }
 
@@ -194,8 +205,8 @@ model Review {
   opportunity   Opportunity @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
   assigneeId    Int
   assignee      User        @relation(fields: [assigneeId], references: [profileId])
-  applicationId      Int
-  application        Application      @relation(fields: [applicationId], references: [id])
+  applicationId Int
+  application   Application @relation(fields: [applicationId], references: [id])
   review_text   String?
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
