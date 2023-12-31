@@ -41,7 +41,7 @@ model User {
   last_name                 String?
   permission                String?
   image                     String?
-  userRoleId                Int
+  userRoleId                Int?
   user_role                 UserRole?                  @relation(fields: [userRoleId], references: [id], onDelete: Cascade)
   department_memberships    DepartmentMembership[]
   created_oportunities      Opportunity[]
@@ -118,8 +118,8 @@ model Department {
 }
 
 enum DepartmentType {
-  functional
-  mission_based
+  FUNCTIONAL
+  MISSION_BASED
 }
 
 model DepartmentMembership {
