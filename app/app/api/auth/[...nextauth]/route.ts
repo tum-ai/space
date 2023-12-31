@@ -6,6 +6,7 @@ import prisma from "database/db";
 import CredentialsProvider from "next-auth/providers/credentials";
 import EmailProvider from "next-auth/providers/email";
 import { compare } from "bcrypt";
+import Error from "next/error";
 
 export const authOptions: NextAuthOptions = {
   session: {
@@ -15,32 +16,20 @@ export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
   secret: process.env.NEXTAUTH_SECRET,
   pages: {
-    signIn: "/auth",
-    /*
-        newUser: '/auth/signup',
-        signOut: '/auth/signout',
-        error: '/auth/error', // Error code passed in query string as ?error=
-        verifyRequest: '/auth/verify-request', // (used for check email message)
-        */
-    //TODO: add signOut, error pages
+    signIn: "/auth"
   },
   providers: [
     SlackProvider({
       clientId: process.env.SLACK_CLIENT_ID,
       clientSecret: process.env.SLACK_CLIENT_SECRET,
-      profile(profile, tokens) {
+      async profile(profile) {
         return {
           id: profile["https://slack.com/user_id"] || profile.sub,
-          email: profile.email,
-          image: profile.picture,
-          first_name: profile.given_name,
-          permission: "member",
-          last_name: profile.family_name,
-          emailVerified: profile.date_email_verified,
+          email: profile.email
         };
       },
     }),
-    //TODO: add email provider setup
+
     CredentialsProvider({
       name: "Credentials",
       credentials: {
@@ -75,36 +64,81 @@ export const authOptions: NextAuthOptions = {
 
         return {
           id: `${existingUser.id}`,
-          username: existingUser.first_name + "_" + existingUser.last_name, //do we really need this here?
+          username: existingUser.firstName + "_" + existingUser.lastName,
           email: existingUser.email,
         };
       },
     }),
-    // EmailProvider({
-    //     server: process.env.EMAIL_SERVER,
-    //     from: process.env.EMAIL_FROM
-    // }),
   ],
   callbacks: {
+    async signIn({ user, profile, account }: {user, profile, account}) {
+      await prisma.$transaction(async (prisma) => {    
+        try {
+          const role = await prisma.userRole.upsert({
+            where: { name: "member" },
+            update: {},
+            create: { name: "member" }
+          });
+
+          const {email,given_name: firstName,family_name: lastName,picture: image, date_email_verified: emailVerifiedTimestamp} = profile;
+    
+          const persistedUser = await prisma.user.create({
+            data: {
+              email,
+              firstName,
+              lastName,
+              image,
+              emailVerified: new Date(emailVerifiedTimestamp * 1000),
+              createdAt: new Date(),
+              updatedAt: new Date(),
+              userRoles: { connect: [{ name: role.name }] }
+            }
+          });
+
+          const {id_token:idToken, type, provider, providerAccountId, ok, state, access_token:accessToken, token_type:tokenType} = account
+    
+          await prisma.account.create({
+            data: {
+              userId: persistedUser.id,
+              idToken,
+              type,
+              provider,
+              providerAccountId,
+              ok,
+              state,
+              accessToken,
+              tokenType,
+              createdAt: new Date(),
+              updatedAt: new Date()
+            }
+          });
+        } catch (Error) {
+          console.log("\n\n\n\n\n")
+        }
+      });
+      return true
+    },
     async jwt({ token, user }) {
-      return { ...token, ...user };
+      
+      console.log({...token, ...user})
+
+      if (user) {
+        return {...token, ...user}
+      }
+      return token;
     },
     async session({ session, token }) {
+      //TODO print this out
       return {
         ...session,
         user: {
           ...session.user,
           id: token.id,
-          first_name: token.first_name,
-          permission: token.permission,
-          image: token.image,
+          firstName: token.firstName,
+          lastName: token.lastName,
+          image: token.image
         },
       };
-      // session.user.id = token.id
-      // session.user.first_name = token.first_name
-      // session.user.permission = token.permission
-      // session.user.image = token.image
-      // return session
     },
   },
 };
