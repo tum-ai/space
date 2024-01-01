@@ -40,7 +40,7 @@ export function DataTableToolbar<TData>({
       const response = await axios.get("http://localhost:3000/api/departments");
       const departments = response.data.departments.map((department) => ({
         label: department.name[0].toUpperCase() + department.name.slice(1),
-        value: department.id,
+        value: department.name,
       }));
       setDepartments(departments);
     };
@@ -74,16 +74,16 @@ export function DataTableToolbar<TData>({
             options={permissions}
           />
         )}
-        {table.getColumn("departmentname") && (
+        {table.getColumn("current_department") && (
           <DataTableFacetedFilter
-            column={table.getColumn("departmentname")}
+            column={table.getColumn("current_department")}
             title="Department"
             options={departments}
           />
         )}
-        {table.getColumn("departmentposition") && (
+        {table.getColumn("current_department_position") && (
           <DataTableFacetedFilter
-            column={table.getColumn("departmentposition")}
+            column={table.getColumn("current_department_position")}
             title="Position"
             options={position}
           />

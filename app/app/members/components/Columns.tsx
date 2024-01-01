@@ -92,21 +92,58 @@ export const columns: ColumnDef<User>[] = [
         header: ({ column }) => (
           <DataTableColumnHeader column={column} title="Permission" />
         ),
+        filterFn: (row, id, filterValues) => {
+          for (let i = 0; i < filterValues.length; i++) {
+            const filterValue = filterValues[i].toLowerCase()
+            if (!row.getValue(id)) {
+              return false;
+            }
+            if (String(row.getValue(id)).toLowerCase().includes(filterValue)) {
+              return true;
+            }
+          }
+          return false;
+        },
         cell: ({ row }) => <div className="lowercase">{row.getValue("permission")}</div>,
       },
       {
-        accessorKey: "departmentname",
+        accessorKey: "current_department",
         header: ({ column }) => (
           <DataTableColumnHeader column={column} title="Department" />
         ),
-        cell: ({ row }) => <div className="lowercase">{row.getValue("departmentname")}</div>,
+        filterFn: (row, id, filterValues) => {
+          for (let i = 0; i < filterValues.length; i++) {
+            const filterValue = filterValues[i].toLowerCase()
+            if (!row.getValue(id)) {
+              return false;
+            }
+            if (String(row.getValue(id)).toLowerCase().includes(filterValue)) {
+              return true;
+            }
+          }
+          return false;
+        },
+        cell: ({ row }) => <div className="lowercase">{row.getValue("current_department")}</div>,
       },
       {
-        accessorKey: "departmentposition",
+        accessorKey: "current_department_position",
         header: ({ column }) => (
           <DataTableColumnHeader column={column} title="Position" />
         ),
-        cell: ({ row }) => <div className="lowercase">{row.getValue("departmentposition")}</div>,
+        filterFn: (row, id, filterValues) => {
+          for (let i = 0; i < filterValues.length; i++) {
+            const filterValue = filterValues[i].toLowerCase()
+            if (!row.getValue(id)) {
+              return false;
+            }
+            console.log(row.getValue(id) + ' ' + filterValue);
+            if (String(row.getValue(id)).toLowerCase().includes(filterValue)) {
+              return true;
+            }
+          }
+          return false;
+        },
+        cell: ({ row }) => <div className="lowercase">{row.getValue("current_department_position")}</div>,
       },
     {
       id: "actions",

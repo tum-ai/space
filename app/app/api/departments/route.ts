@@ -28,8 +28,6 @@ const partial_view = {
 }
 
 
-
-
 export async function GET(req: NextRequest) {
 
     //authorization

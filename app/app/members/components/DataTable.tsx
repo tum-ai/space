@@ -43,12 +43,9 @@ export function DataTable() {
       .then((data) => {
         const profile_data = data.profiles.map((profile) => {
           return {
-            ...profile,
-            departmentname: profile?.department_memberships[0]?.department.name,
-            departmentposition: profile?.department_memberships[0]?.department_position
+            ...profile
           }
         })
-        console.log(profile_data)
         setData(profile_data)
         })
   }, [])

@@ -18,6 +18,8 @@ const complete_view = {
                 }
             },
             department_position: true,
+            membership_end: true,
+            membership_start: true,
         }
     }
 }
@@ -28,20 +30,8 @@ const partial_view = {
     last_name: true,
     email: true,
     permission: true,
-    image: true,
-    department_memberships: {
-        select: {
-            department: {
-                select: {
-                    name: true,
-                }
-            },
-            department_position: true,
-        }
-    }
+    image: true
 }
-
-
 
 
 export async function GET(req: NextRequest) {
@@ -59,21 +49,24 @@ export async function GET(req: NextRequest) {
     // _________________________________________________________
 
     const id  = req.nextUrl.searchParams.get('id');
+    let profiles;
 
     if (id) {
-        const profiles = await prisma.user.findUnique({
+        profiles = await prisma.user.findUnique({
             where: {
                 id: String(id),
             },
             select: complete_view
-        });
-        return NextResponse.json({"profiles": profiles}, { status: 200 })
+        }); 
     } else {
-        const profiles = await prisma.user.findMany({
-            select: partial_view
+        profiles = await prisma.user.findMany({
+            select: complete_view,
         });
-        return NextResponse.json({"profiles": profiles}, { status: 200 })
     }
+
+    prepareMembershipData(profiles);
+
+    return NextResponse.json({"profiles": profiles}, { status: 200 })
 };
 
 
@@ -120,6 +113,8 @@ export async function PUT(req: NextRequest) {
         select: complete_view
     });
 
+    prepareMembershipData(profiles);
+
     return NextResponse.json({"profiles": profiles}, { status: 200 })
 }
 
@@ -148,5 +143,49 @@ export async function DELETE(req: NextRequest) {
         },
         select: complete_view
     });
+
+    prepareMembershipData(profiles);
+
     return NextResponse.json({"profiles": profiles}, { status: 200 })
+}
+
+
+
+function prepareMembershipData(profiles) {
+    // not possible to order by nested fields. function required.
+    // orderBy: {
+    //     membership_end: 'desc',
+    //     membership_start: 'desc'
+    // }
+    // in Prisma2 https://github.com/graphql-nexus/nexus-plugin-prisma/issues/458
+
+    if (!profiles) return;
+
+    if (!Array.isArray(profiles)) {
+        profiles = [profiles];
+    }
+
+    profiles.forEach(profile => {
+        if (profile.department_memberships && Array.isArray(profile.department_memberships)) {
+            profile.department_memberships.sort((a, b) => {
+                if (a.membership_end === b.membership_end) {
+                    return b.membership_start.getTime() - a.membership_start.getTime();
+                }
+                return b.membership_end.getTime() - a.membership_end.getTime();
+            });
+        }
+    });
+
+    //assign new fields
+    profiles.forEach(profile => {
+        if (profile.department_memberships && profile.department_memberships?.length > 0) {
+            profile['current_department'] = profile.department_memberships[0]?.department?.name;
+            profile['current_department_position'] = profile.department_memberships[0]?.department_position;
+        } else {
+            profile['current_department'] = null;
+            profile['current_department_position'] = null;
+        }
+    });
+
+    return;
 }
