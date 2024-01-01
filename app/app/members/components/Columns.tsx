@@ -17,9 +17,16 @@ import { DataTableColumnHeader} from "./DataTabelHeader"
 import { User } from "prisma/prisma-client"
 import { Avatar } from "@components/Avatar"
 
-export const columns: ColumnDef<User>[] = [
+// label for the column to have a human readable name, becaused Header is used for the header component
+type ExtendedColumnDef<T extends object> = ColumnDef<T> & {
+  label: string;
+};
+
+
+export const columns: ExtendedColumnDef<User>[] = [
     {
       id: "select",
+      label: "select",
       header: ({ table }) => (
         <Checkbox
           checked={
@@ -41,7 +48,11 @@ export const columns: ColumnDef<User>[] = [
       enableHiding: false,
     },
     {
-      accessorKey: "Image",
+      accessorKey: "image",
+      label: "Image",
+      header: ({ column }) => (
+        <div className="mr-2 ml-2">{column.columnDef["label"]}</div>
+      ),
       cell: ({ row }) => {
         const profil = row.original
 
@@ -61,36 +72,53 @@ export const columns: ColumnDef<User>[] = [
     },
     {
         accessorKey: "id",
+        label: "Id",
         header: ({ column }) => (
-          <DataTableColumnHeader column={column} title="Id" />
+          <DataTableColumnHeader column={column} title={column.columnDef["label"]} />
         ),
-        cell: ({ row }) => <div className="lowercase">{row.getValue("id")}</div>,
+        cell: ({ row }) => {
+          const value = row.getValue("id") as string;
+          return <div className="lowercase">{value ? value.replace(/_/g, ' ') : ''}</div>;
+        },
       },
     {
       accessorKey: "email",
+      label: "Email",
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Email" />
+        <DataTableColumnHeader column={column} title={column.columnDef["label"]} />
       ),
-      cell: ({ row }) => <div className="lowercase">{row.getValue("email")}</div>,
+      cell: ({ row }) => {
+        const value = row.getValue("email") as string;
+        return <div className="lowercase">{value ? value.replace(/_/g, ' ') : ''}</div>;
+      },
     },
     {
       accessorKey: "first_name",
+      label: "First Name",
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="First Name" />
+        <DataTableColumnHeader column={column} title={column.columnDef["label"]} />
       ),
-      cell: ({ row }) => <div className="lowercase">{row.getValue("first_name")}</div>,
+      cell: ({ row }) => {
+        const value = row.getValue("first_name") as string;
+        return <div className="lowercase">{value ? value.replace(/_/g, ' ') : ''}</div>;
+      },
     },
     {
         accessorKey: "last_name",
+        label: "Last Name",
         header: ({ column }) => (
-          <DataTableColumnHeader column={column} title="Last Name" />
+          <DataTableColumnHeader column={column} title={column.columnDef["label"]} />
         ),
-        cell: ({ row }) => <div className="lowercase">{row.getValue("last_name")}</div>,
+        cell: ({ row }) => {
+          const value = row.getValue("last_name") as string;
+          return <div className="lowercase">{value ? value.replace(/_/g, ' ') : ''}</div>;
+        },
       },
       {
         accessorKey: "permission",
+        label: "Permission",
         header: ({ column }) => (
-          <DataTableColumnHeader column={column} title="Permission" />
+          <DataTableColumnHeader column={column} title={column.columnDef["label"]} />
         ),
         filterFn: (row, id, filterValues) => {
           for (let i = 0; i < filterValues.length; i++) {
@@ -104,12 +132,16 @@ export const columns: ColumnDef<User>[] = [
           }
           return false;
         },
-        cell: ({ row }) => <div className="lowercase">{row.getValue("permission")}</div>,
+        cell: ({ row }) => {
+          const value = row.getValue("permission") as string;
+          return <div className="lowercase">{value ? value.replace(/_/g, ' ') : ''}</div>;
+        },
       },
       {
         accessorKey: "current_department",
+        label: "Department",
         header: ({ column }) => (
-          <DataTableColumnHeader column={column} title="Department" />
+          <DataTableColumnHeader column={column} title={column.columnDef["label"]} />
         ),
         filterFn: (row, id, filterValues) => {
           for (let i = 0; i < filterValues.length; i++) {
@@ -123,12 +155,16 @@ export const columns: ColumnDef<User>[] = [
           }
           return false;
         },
-        cell: ({ row }) => <div className="lowercase">{row.getValue("current_department")}</div>,
+        cell: ({ row }) => {
+          const value = row.getValue("current_department") as string;
+          return <div className="lowercase">{value ? value.replace(/_/g, ' ') : ''}</div>;
+        },
       },
       {
         accessorKey: "current_department_position",
+        label: "Position",
         header: ({ column }) => (
-          <DataTableColumnHeader column={column} title="Position" />
+          <DataTableColumnHeader column={column} title={column.columnDef["label"]} />
         ),
         filterFn: (row, id, filterValues) => {
           for (let i = 0; i < filterValues.length; i++) {
@@ -136,17 +172,20 @@ export const columns: ColumnDef<User>[] = [
             if (!row.getValue(id)) {
               return false;
             }
-            console.log(row.getValue(id) + ' ' + filterValue);
             if (String(row.getValue(id)).toLowerCase().includes(filterValue)) {
               return true;
             }
           }
           return false;
         },
-        cell: ({ row }) => <div className="lowercase">{row.getValue("current_department_position")}</div>,
+        cell: ({ row }) => {
+          const value = row.getValue("current_department_position") as string;
+          return <div className="lowercase">{value ? value.replace(/_/g, ' ') : ''}</div>;
+        },
       },
     {
       id: "actions",
+      label: "Actions",
       enableHiding: false,
       cell: ({ row }) => {
         const profil = row.original

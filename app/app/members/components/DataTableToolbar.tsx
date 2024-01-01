@@ -19,12 +19,12 @@ interface DataTableToolbarProps<TData> {
 
 
 const permissions = Object.keys(UserPermission).map((permission) => ({
-    label: permission[0].toUpperCase() + permission.slice(1),
+    label: String(permission[0].toUpperCase() + permission.slice(1)).replaceAll('_', ' '),
     value: permission,
 }));
 
 const position = Object.keys(DepartmentPosition).map((position) => ({
-    label: position[0].toUpperCase() + position.slice(1),
+    label: String(position[0].toUpperCase() + position.slice(1)).replaceAll('_', ' '),
     value: position,
 }));
 
@@ -37,9 +37,17 @@ export function DataTableToolbar<TData>({
 
   useEffect(() => {
     const fetchDepartments = async () => {
-      const response = await axios.get("http://localhost:3000/api/departments");
+      const response = await axios.get("http://localhost:3000/api/departments").catch((err) => {
+        if (err.status === 403) {
+          return;
+        }
+        throw err;
+      });
+      if (!response) {
+        return;
+      }
       const departments = response.data.departments.map((department) => ({
-        label: department.name[0].toUpperCase() + department.name.slice(1),
+        label: String(department.name[0].toUpperCase() + department.name.slice(1)).replaceAll('_', ' '),
         value: department.name,
       }));
       setDepartments(departments);
@@ -49,42 +57,42 @@ export function DataTableToolbar<TData>({
   }, []);
 
   return (
-    <div className="flex items-center justify-between">
-      <div className="flex flex-1 items-center space-x-2">
+    <div className="flex flex-col sm:flex-row items-center justify-between gap-2">
+      <div className="flex flex-1 flex-wrap items-center gap-2" style={{ maxWidth: '100%' }}>
         <Input
-          placeholder="Filter email..."
+          placeholder={`Filter ${table.getColumn("email")?.columnDef["label"]}...`}
           value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
             table.getColumn("email")?.setFilterValue(event.target.value)
           }
-          className="h-8 w-[150px] lg:w-[250px]"
+          className="h-8 w-full sm:w-[150px] lg:w-[250px]"
         />
         <Input
-          placeholder="Filter name..."
+          placeholder={`Filter ${table.getColumn("last_name")?.columnDef["label"]}...`}
           value={(table.getColumn("last_name")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
             table.getColumn("last_name")?.setFilterValue(event.target.value)
           }
-          className="h-8 w-[150px] lg:w-[250px]"
+          className="h-8 w-full sm:w-[150px] lg:w-[250px]"
         />
         {table.getColumn("permission") && (
           <DataTableFacetedFilter
             column={table.getColumn("permission")}
-            title="Permission"
+            title={table.getColumn("permission").columnDef["label"]}
             options={permissions}
           />
         )}
         {table.getColumn("current_department") && (
           <DataTableFacetedFilter
             column={table.getColumn("current_department")}
-            title="Department"
+            title={table.getColumn("current_department").columnDef["label"]}
             options={departments}
           />
         )}
         {table.getColumn("current_department_position") && (
           <DataTableFacetedFilter
             column={table.getColumn("current_department_position")}
-            title="Position"
+            title={table.getColumn("current_department_position").columnDef["label"]}
             options={position}
           />
         )}

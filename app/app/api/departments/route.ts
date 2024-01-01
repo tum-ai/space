@@ -34,12 +34,7 @@ export async function GET(req: NextRequest) {
     const session = await getServerSession();
     const user_permission = session?.user?.permission;
   
-    const has_permission = await checkPermission(['user'], user_permission);
     const has_admin_permission = user_permission && await checkPermission(['admin'], user_permission);
-  
-    if (!has_permission) {
-        return NextResponse.json({ error: "Missing permission " }, { status: 400 });
-    }
 
     // _________________________________________________________
 

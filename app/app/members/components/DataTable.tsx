@@ -12,7 +12,6 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table"
-import { ChevronDown } from "lucide-react"
 import { DataTableToolbar } from "./DataTableToolbar"
 
 import { Button } from "@components/ui/button"
@@ -26,6 +25,7 @@ import {
 } from "@components/ui/table"
 
 import { columns } from "./Columns"
+import LoadingWheel from "@components/LoadingWheel"
 
 export function DataTable() {
   const [data, setData] = React.useState([]);
@@ -34,12 +34,20 @@ export function DataTable() {
     []
   )
   const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>({})
+  React.useState<VisibilityState>({})
   const [rowSelection, setRowSelection] = React.useState({})
+  const [error, setError] = React.useState(null);
+  const [loading, setLoading] = React.useState(true);
+
 
   React.useEffect(() => {
     fetch("http://localhost:3000/api/profiles")
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error(res.status.toString());
+        }
+        return res.json();
+      })
       .then((data) => {
         const profile_data = data.profiles.map((profile) => {
           return {
@@ -47,7 +55,15 @@ export function DataTable() {
           }
         })
         setData(profile_data)
-        })
+      })
+      .catch((err) => {
+        if (err.message === '403') {
+          setError('Not allowed');
+          return;
+        }
+        throw err;
+      });
+      setLoading(false);
   }, [])
 
   const table = useReactTable({
@@ -115,7 +131,11 @@ export function DataTable() {
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  No results.
+                  {loading ? (
+                    <div className="flex items-center justify-center space-x-2">
+                        <LoadingWheel />
+                    </div>
+                  ) : error}
                 </TableCell>
               </TableRow>
             )}
