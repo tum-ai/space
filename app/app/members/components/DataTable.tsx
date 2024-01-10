@@ -11,7 +11,7 @@ import {
   getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
-} from "@tanstack/react-table"
+} from "@tanstack/react-table" 
 import { DataTableToolbar } from "./DataTableToolbar"
 
 import { Button } from "@components/ui/button"
@@ -47,7 +47,7 @@ export function DataTable() {
         const profiles = await getProfileData()
         setData(profiles);
       } catch(error) {
-        if (error.response.status === 403) {
+        if (error.response && error.response.status === 403) {
           setError('Not allowed');
         } else {
           setError('Something went wrong');

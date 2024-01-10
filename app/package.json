@@ -30,6 +30,7 @@
     "@radix-ui/react-tooltip": "^1.0.6",
     "@t3-oss/env-nextjs": "^0.7.0",
     "@tanstack/react-query": "^4.33.0",
+    "@tanstack/react-table": "^8.11.3",
     "@tremor/cli": "^1.1.0",
     "@tremor/react": "^3.11.1",
     "@types/node": "^20.8.2",

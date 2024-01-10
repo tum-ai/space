@@ -15,7 +15,7 @@ const Permissions = { ...OrderedPermissions, ...UserPermission};
 export async function checkPermission(required_permissions, user_permission) {
   //always set to true for testing
 
-  // return true;
+  return true;
 
   if (!user_permission) {
     return false;

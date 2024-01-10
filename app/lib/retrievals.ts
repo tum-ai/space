@@ -17,7 +17,7 @@ export async function getPositionsMap() {
 
 export async function getDepartmentsMap() {
   try {
-    const response = await axios.get('http://localhost:3000/api/departments');
+    const response = await axios.get('/api/departments');
     if (response.status !== 200) {
       throw new Error('Failed to fetch departments');
     }
@@ -34,7 +34,7 @@ export async function getDepartmentsMap() {
 // if there is a change to the provided profile data you need to update app/members/components/Columns.tsx accordingly
 export async function getProfileData() {
   try {
-    const response = await axios.get('http://localhost:3000/api/profiles');
+    const response = await axios.get('/api/profiles');
     if (response.status !== 200) {
       throw new Error('Failed to fetch profiles');
     }
