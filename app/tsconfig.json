@@ -23,7 +23,7 @@
       "@models/*": ["./models/*"],
       "@providers/*": ["./providers/*"],
       "@hooks/*": ["./hooks/*"],
-      "@config/*": ["./config/*"],
+      "@config/*": ["./config/*"]
     },
     "strict": false,
     "plugins": [
@@ -40,7 +40,8 @@
     "**/*.cjs",
     "**/*.mjs",
     "build/types/**/*.ts",
-    ".next/types/**/*.ts"
-, "app/profile/page.tsx.client"  ],
+    ".next/types/**/*.ts",
+    "app/profile/page.tsx.client"
+  ],
   "exclude": ["node_modules"]
 }

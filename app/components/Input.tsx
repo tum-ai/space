@@ -2,7 +2,7 @@ import { VariantProps, cva } from "class-variance-authority";
 
 interface Props
   extends VariantProps<typeof styles>,
-  React.InputHTMLAttributes<HTMLInputElement> {
+    React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;
   className?: string;
 }

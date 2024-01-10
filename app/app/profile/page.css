@@ -1,10 +1,15 @@
 @keyframes slide {
-    0% { transform: translateX(0); }
-    50% { transform: translateX(10px); }
-    100% { transform: translateX(0); }
+  0% {
+    transform: translateX(0);
   }
-  
-  .fast-slide {
-    animation: slide 0.5s ease-in-out infinite;
+  50% {
+    transform: translateX(10px);
   }
-  
+  100% {
+    transform: translateX(0);
+  }
+}
+
+.fast-slide {
+  animation: slide 0.5s ease-in-out infinite;
+}
