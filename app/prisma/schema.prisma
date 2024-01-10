@@ -41,8 +41,8 @@ model User {
   last_name                 String?
   permission                String?
   image                     String?
-  userRoleId                Int?
-  user_role                 UserRole?                  @relation(fields: [userRoleId], references: [id], onDelete: Cascade)
+  role                      String?
+  userRole                  UserRole?                  @relation(fields: [role], references: [name], onDelete: Cascade)
   department_memberships    DepartmentMembership[]
   created_oportunities      Opportunity[]
   opportunity_participation OpportunityParticipation[]
@@ -54,8 +54,7 @@ model User {
 }
 
 model UserRole {
-  id              Int              @id @default(autoincrement())
-  name            String           @unique
+  name            String           @id
   users           User[]
   userPermissions UserPermission[]
 }
@@ -64,8 +63,8 @@ model UserPermission {
   id          Int      @id @default(autoincrement())
   name        String   @unique
   description String
-  roleId      Int
-  userRole    UserRole @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  role        String
+  userRole    UserRole @relation(fields: [role], references: [name], onDelete: Cascade)
 }
 
 model Profile {
@@ -147,38 +146,37 @@ enum DepartmentPosition {
 }
 
 model Opportunity {
-  id                        Int                        @id @default(autoincrement())
-  creatorId                 String?
-  creator                   User?                      @relation(fields: [creatorId], references: [id], onDelete: SetNull)
-  title                     String
-  description               String
-  departmentId              Int
-  department                Department                 @relation(fields: [departmentId], references: [id])
-  opportunity_start         DateTime
-  opportunity_end           DateTime?
-  applications              Application[]
-  reviews                   Review[]
-  opportunity_participation OpportunityParticipation[]
-  createdAt                 DateTime                   @default(now())
-  updatedAt                 DateTime                   @updatedAt
+  id                       Int                        @id @default(autoincrement())
+  creatorId                String?
+  creator                  User?                      @relation(fields: [creatorId], references: [id], onDelete: SetNull)
+  title                    String
+  description              String
+  departmentId             Int
+  department               Department                 @relation(fields: [departmentId], references: [id])
+  opportunity_start        DateTime
+  opportunity_end          DateTime?
+  applications             Application[]
+  reviews                  Review[]
+  opportunityParticipation OpportunityParticipation[]
+  createdAt                DateTime                   @default(now())
+  updatedAt                DateTime                   @updatedAt
 }
 
 model OpportunityParticipation {
-  userId        String
-  user          User            @relation(fields: [userId], references: [id], onDelete: Cascade)
-  opportunityId Int
-  opportunity   Opportunity     @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
-  roleId        Int
-  role          OpportunityRole @relation(fields: [roleId], references: [id])
-  createdAt     DateTime        @default(now())
-  updatedAt     DateTime        @updatedAt
+  userId          String
+  user            User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  opportunityId   Int
+  opportunity     Opportunity     @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
+  role            String
+  opportunityRole OpportunityRole @relation(fields: [role], references: [name])
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
 
-  @@id([userId, opportunityId])
+  @@id(name: "opportunityParticipationId", [userId, opportunityId])
 }
 
 model OpportunityRole {
-  id                        Int                        @id @default(autoincrement())
-  name                      String                     @unique
+  name                      String                     @id
   opportunityParticipations OpportunityParticipation[]
   rolePermissions           OpportunityPermission[]
 }
@@ -187,8 +185,8 @@ model OpportunityPermission {
   id              Int             @id @default(autoincrement())
   name            String          @unique
   description     String
-  roleId          Int
-  opportunityRole OpportunityRole @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  role            String
+  opportunityRole OpportunityRole @relation(fields: [role], references: [name], onDelete: Cascade)
 }
 
 model Application {
