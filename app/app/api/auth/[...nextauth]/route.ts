@@ -15,14 +15,7 @@ export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
   secret: process.env.NEXTAUTH_SECRET,
   pages: {
-    signIn: "/auth",
-    /*
-        newUser: '/auth/signup',
-        signOut: '/auth/signout',
-        error: '/auth/error', // Error code passed in query string as ?error=
-        verifyRequest: '/auth/verify-request', // (used for check email message)
-        */
-    //TODO: add signOut, error pages
+    signIn: "/auth"
   },
   providers: [
     SlackProvider({
@@ -40,7 +33,7 @@ export const authOptions: NextAuthOptions = {
         };
       },
     }),
-    //TODO: add email provider setup
+
     CredentialsProvider({
       name: "Credentials",
       credentials: {
@@ -80,10 +73,6 @@ export const authOptions: NextAuthOptions = {
         };
       },
     }),
-    // EmailProvider({
-    //     server: process.env.EMAIL_SERVER,
-    //     from: process.env.EMAIL_FROM
-    // }),
   ],
   callbacks: {
     async jwt({ token, user }) {
@@ -100,11 +89,6 @@ export const authOptions: NextAuthOptions = {
           image: token.image,
         },
       };
-      // session.user.id = token.id
-      // session.user.first_name = token.first_name
-      // session.user.permission = token.permission
-      // session.user.image = token.image
-      // return session
     },
   },
 };
