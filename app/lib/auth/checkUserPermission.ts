@@ -11,7 +11,9 @@ enum OrderedPermissions {
 //if permissions are not included in the ordered permissions enum they will be added here and will be considered lower than the lowest ordered permission
 const Permissions = { ...OrderedPermissions, ...UserPermission};
 
+
 export async function checkPermission(required_permissions, user_permission) {
+  //always set to true for testing
 
   // return true;
 

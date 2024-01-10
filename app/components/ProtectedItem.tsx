@@ -12,7 +12,9 @@ interface Props {
   showNotFound?: boolean;
   children?: React.ReactNode;
 }
-
+/**
+ * @deprecated Do not use anymore
+ */
 function ProtectedItem({
   roles,
   redirectToAuth,

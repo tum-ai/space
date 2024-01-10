@@ -26,6 +26,7 @@ import {
 
 import { columns } from "./Columns"
 import LoadingWheel from "@components/LoadingWheel"
+import { getProfileData } from "@lib/retrievals"
 
 export function DataTable() {
   const [data, setData] = React.useState([]);
@@ -41,29 +42,21 @@ export function DataTable() {
 
 
   React.useEffect(() => {
-    fetch("http://localhost:3000/api/profiles")
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error(res.status.toString());
-        }
-        return res.json();
-      })
-      .then((data) => {
-        const profile_data = data.profiles.map((profile) => {
-          return {
-            ...profile
-          }
-        })
-        setData(profile_data)
-      })
-      .catch((err) => {
-        if (err.message === '403') {
+    const fetchData = async () => {
+      try {
+        const profiles = await getProfileData()
+        setData(profiles);
+      } catch(error) {
+        if (error.response.status === 403) {
           setError('Not allowed');
-          return;
+        } else {
+          setError('Something went wrong');
         }
-        throw err;
-      });
-      setLoading(false);
+      }
+    };
+
+    fetchData();
+    setLoading(false);
   }, [])
 
   const table = useReactTable({

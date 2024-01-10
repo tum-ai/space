@@ -8,52 +8,36 @@ import { Input } from "@components/ui/input"
 import { DataTableViewOptions } from "./DataTableViewOptions"
 
 import { DataTableFacetedFilter } from "./DataTableFacetedFilter"
-import { UserPermission, DepartmentPosition } from "@prisma/client"
 import React, { useState, useEffect } from 'react';
-
-import axios from "axios"
+import { getPermissionsMap, getPositionsMap, getDepartmentsMap} from "@lib/retrievals";
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>
 }
-
-
-const permissions = Object.keys(UserPermission).map((permission) => ({
-    label: String(permission[0].toUpperCase() + permission.slice(1)).replaceAll('_', ' '),
-    value: permission,
-}));
-
-const position = Object.keys(DepartmentPosition).map((position) => ({
-    label: String(position[0].toUpperCase() + position.slice(1)).replaceAll('_', ' '),
-    value: position,
-}));
-
 
 export function DataTableToolbar<TData>({
   table,
 }: DataTableToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0
   const [departments, setDepartments] = useState([]);
+  const [permissions, setPermissions] = useState([]);
+  const [positions, setPositions] = useState([]);
 
   useEffect(() => {
-    const fetchDepartments = async () => {
-      const response = await axios.get("http://localhost:3000/api/departments").catch((err) => {
-        if (err.status === 403) {
-          return;
-        }
-        throw err;
-      });
-      if (!response) {
-        return;
+    const fetchData = async () => {
+      try {
+        const departments = await getDepartmentsMap()
+        const permissions = await getPermissionsMap();
+        const positions = await getPositionsMap();
+        setDepartments(departments);
+        setPermissions(permissions);
+        setPositions(positions);
+      } catch (error) {
+        console.error(error);
       }
-      const departments = response.data.departments.map((department) => ({
-        label: String(department.name[0].toUpperCase() + department.name.slice(1)).replaceAll('_', ' '),
-        value: department.name,
-      }));
-      setDepartments(departments);
     };
 
-    fetchDepartments();
+    fetchData();
   }, []);
 
   return (
@@ -93,7 +77,7 @@ export function DataTableToolbar<TData>({
           <DataTableFacetedFilter
             column={table.getColumn("current_department_position")}
             title={table.getColumn("current_department_position").columnDef["label"]}
-            options={position}
+            options={positions}
           />
         )}
         {isFiltered && (

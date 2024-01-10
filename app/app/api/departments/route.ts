@@ -31,7 +31,10 @@ const partial_view = {
 export async function GET(req: NextRequest) {
 
     //authorization
-    const session = await getServerSession();
+    const session = await getServerSession().catch((e) => {
+        console.log(e);
+        return null;
+    });
     const user_permission = session?.user?.permission;
   
     const has_admin_permission = user_permission && await checkPermission(['admin'], user_permission);
