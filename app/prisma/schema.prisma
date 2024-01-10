@@ -41,8 +41,7 @@ model User {
   last_name                 String?
   permission                String?
   image                     String?
-  role                      String?
-  userRole                  UserRole?                  @relation(fields: [role], references: [name], onDelete: Cascade)
+  userRoles                 UserRole[]
   department_memberships    DepartmentMembership[]
   created_oportunities      Opportunity[]
   opportunity_participation OpportunityParticipation[]
