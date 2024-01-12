@@ -71,71 +71,57 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
-    async signIn({ user, profile: pro, account: acc }: {user, profile, account}) {
-      // Start a transaction
-      await prisma.$transaction(async (prisma) => {
-        const userExists = await prisma.user.findFirst({
-          where: { 
-            accounts: {
-              some: {
-                id: user.id 
-              }
-            },
-        }})
+    async signIn({ user, profile, account }: {user, profile, account}) {
+      await prisma.$transaction(async (prisma) => {    
+        try {
+          const role = await prisma.userRole.upsert({
+            where: { name: "member" },
+            update: {},
+            create: { name: "member" }
+          });
 
-        console.log(userExists)
+          const {email,given_name: firstName,family_name: lastName,picture: image, date_email_verified: emailVerifiedTimestamp} = profile;
+    
+          const persistedUser = await prisma.user.create({
+            data: {
+              email,
+              firstName,
+              lastName,
+              image,
+              emailVerified: new Date(emailVerifiedTimestamp * 1000),
+              createdAt: new Date(),
+              updatedAt: new Date(),
+              userRoles: { connect: [{ name: role.name }] }
+            }
+          });
 
-        console.log("Here;s the user",user)
-
-        //TODO ensure that you check the role!
-
-        if (!userExists) {
-          try{
-            const userPersi = await prisma.user.create({
-              data: {
-                email: pro.email,
-                firstName: pro.given_name,
-                lastName: pro.family_name,
-                image: pro.picture,
-                emailVerified: new Date(pro.date_email_verified*1000),
-                createdAt: new Date(),
-                updatedAt: new Date(),
-                userRoles: {connect: [{name: "member"}]}
-              }
-            })
-
-            const toke = acc.access_token
-            console.log(toke)
-
-            await prisma.account.create({
-              data: {
-                userId: userPersi.id,
-                idToken: acc.id_token,
-                type: acc.type,
-                provider: acc.provider,
-                providerAccountId: acc.providerAccountId,
-                ok: acc.ok,
-                state: acc.state,
-                accessToken: toke,
-                tokenType: acc.token_type,
-                createdAt: new Date(acc.createdAt),
-                updatedAt: new Date(acc.updatedAt)
-              }
-            })
-          }
-          catch(Error){
-
-            console.log("\n\n\n\n\n",Error)
-          }
-
-          //TODO destructure hwere possible
-          }
-          return userExists;
-        });
-
-      return true; 
+          const {id_token:idToken, type, provider, providerAccountId, ok, state, access_token:accessToken, token_type:tokenType} = account
+    
+          await prisma.account.create({
+            data: {
+              userId: persistedUser.id,
+              idToken,
+              type,
+              provider,
+              providerAccountId,
+              ok,
+              state,
+              accessToken,
+              tokenType,
+              createdAt: new Date(),
+              updatedAt: new Date()
+            }
+          });
+        } catch (Error) {
+          console.log("\n\n\n\n\n")
+        }
+      });
+      return true
     },
     async jwt({ token, user }) {
+      
+      console.log({...token, ...user})
+
       if (user) {
         return {...token, ...user}
       }
