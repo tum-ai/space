@@ -16,15 +16,11 @@ model Account {
   providerAccountId String
   ok                Boolean
   state             String
-  refresh_token     String?  @db.Text
-  access_token      String?  @db.Text
-  expires_at        Int?
-  token_type        String?
-  scope             String?
-  id_token          String?
+  accessToken       String?  @db.Text
+  tokenType         String?
+  idToken           String?
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
-  session_state     String?
   user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
@@ -32,24 +28,23 @@ model Account {
 }
 
 model User {
-  id                        String                     @id @default(cuid())
-  profileId                 Int?                       @unique
-  profile                   Profile?                   @relation(fields: [profileId], references: [id])
-  email                     String?                    @unique
-  password                  String?
-  first_name                String?
-  last_name                 String?
-  permission                String?
-  image                     String?
-  userRoles                 UserRole[]
-  department_memberships    DepartmentMembership[]
-  created_oportunities      Opportunity[]
-  opportunity_participation OpportunityParticipation[]
-  reviews                   Review[]
-  emailVerified             DateTime?
-  createdAt                 DateTime                   @default(now())
-  updatedAt                 DateTime                   @updatedAt
-  accounts                  Account[]
+  id                       String                     @id @default(cuid())
+  profileId                Int?                       @unique
+  profile                  Profile?                   @relation(fields: [profileId], references: [id])
+  email                    String                     @unique
+  password                 String?
+  firstName                String?
+  lastName                 String?
+  image                    String?
+  userRoles                UserRole[]
+  departmentMemberships    DepartmentMembership[]
+  createdOpportunities     Opportunity[]
+  opportunityParticipation OpportunityParticipation[]
+  reviews                  Review[]
+  emailVerified            DateTime?
+  createdAt                DateTime                   @default(now())
+  updatedAt                DateTime                   @updatedAt
+  accounts                 Account[]
 }
 
 model UserRole {
@@ -67,22 +62,22 @@ model UserPermission {
 }
 
 model Profile {
-  id                 Int       @id @default(autoincrement())
-  userId             Int
-  user               User?
-  birthday           DateTime?
-  nationality        String?
-  description        String?
-  activity_status    String
-  degree_level       String?
-  degree_name        String?
-  degree_semester    Int?
-  degree_last_update DateTime?
-  university         String?
-  profile_picture    String?
-  contacts           Contact[]
-  createdAt          DateTime  @default(now())
-  updatedAt          DateTime  @updatedAt
+  id               Int       @id @default(autoincrement())
+  userId           Int
+  user             User?
+  birthday         DateTime?
+  nationality      String?
+  description      String?
+  activityStatus   String
+  degreeLevel      String?
+  degreeName       String?
+  degreeSemester   Int?
+  degreeLastUpdate DateTime?
+  university       String?
+  profilePicture   String?
+  contacts         Contact[]
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
 }
 
 model Contact {
@@ -105,14 +100,14 @@ enum ContactType {
 }
 
 model Department {
-  id                     Int                    @id @default(autoincrement())
-  name                   String
-  type                   DepartmentType
-  creation_date          DateTime
-  department_memberships DepartmentMembership[]
-  opportunities          Opportunity[]
-  createdAt              DateTime               @default(now())
-  updatedAt              DateTime               @updatedAt
+  id                    Int                    @id @default(autoincrement())
+  name                  String
+  type                  DepartmentType
+  creationDate          DateTime
+  departmentMemberships DepartmentMembership[]
+  opportunities         Opportunity[]
+  createdAt             DateTime               @default(now())
+  updatedAt             DateTime               @updatedAt
 }
 
 enum DepartmentType {
@@ -121,16 +116,16 @@ enum DepartmentType {
 }
 
 model DepartmentMembership {
-  id                  Int                @id @default(autoincrement())
-  userId              String?
-  user                User?              @relation(fields: [userId], references: [id], onDelete: SetNull)
-  departmentId        Int?
-  department          Department?        @relation(fields: [departmentId], references: [id], onDelete: SetNull)
-  membership_start    DateTime
-  membership_end      DateTime?
-  department_position DepartmentPosition
-  createdAt           DateTime           @default(now())
-  updatedAt           DateTime           @updatedAt
+  id                 Int                @id @default(autoincrement())
+  userId             String?
+  user               User?              @relation(fields: [userId], references: [id], onDelete: SetNull)
+  departmentId       Int?
+  department         Department?        @relation(fields: [departmentId], references: [id], onDelete: SetNull)
+  membershipStart    DateTime
+  membershipEnd      DateTime?
+  departmentPosition DepartmentPosition
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
 }
 
 enum DepartmentPosition {
@@ -152,8 +147,8 @@ model Opportunity {
   description              String
   departmentId             Int
   department               Department                 @relation(fields: [departmentId], references: [id])
-  opportunity_start        DateTime
-  opportunity_end          DateTime?
+  opportunityStart         DateTime
+  opportunityEnd           DateTime?
   applications             Application[]
   reviews                  Review[]
   opportunityParticipation OpportunityParticipation[]
@@ -204,7 +199,7 @@ model Review {
   assignee      User        @relation(fields: [assigneeId], references: [profileId])
   applicationId Int
   application   Application @relation(fields: [applicationId], references: [id])
-  review_text   String?
+  reviewText    String?
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
 }
