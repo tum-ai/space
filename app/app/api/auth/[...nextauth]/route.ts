@@ -4,9 +4,7 @@ import SlackProvider from "next-auth/providers/slack";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import prisma from "database/db";
 import CredentialsProvider from "next-auth/providers/credentials";
-import EmailProvider from "next-auth/providers/email";
 import { compare } from "bcrypt";
-import Error from "next/error";
 
 export const authOptions: NextAuthOptions = {
   session: {
