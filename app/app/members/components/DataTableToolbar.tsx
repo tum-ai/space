@@ -1,24 +1,28 @@
-"use client"
+"use client";
 
-import { Cross2Icon } from "@radix-ui/react-icons"
-import { Table } from "@tanstack/react-table"
+import { Cross2Icon } from "@radix-ui/react-icons";
+import { Table } from "@tanstack/react-table";
 
-import { Button } from "@components/ui/button"
-import { Input } from "@components/ui/input"
-import { DataTableViewOptions } from "./DataTableViewOptions"
+import { Button } from "@components/ui/button";
+import { Input } from "@components/ui/input";
+import { DataTableViewOptions } from "./DataTableViewOptions";
 
-import { DataTableFacetedFilter } from "./DataTableFacetedFilter"
-import React, { useState, useEffect } from 'react';
-import { getPermissionsMap, getPositionsMap, getDepartmentsMap} from "@lib/retrievals";
-
+import { DataTableFacetedFilter } from "./DataTableFacetedFilter";
+import React, { useState, useEffect } from "react";
+import {
+  getPermissionsMap,
+  getPositionsMap,
+  getDepartmentsMap,
+} from "@lib/retrievals";
+import DataTableEditDialog from "./DataTableEditDialog";
 interface DataTableToolbarProps<TData> {
-  table: Table<TData>
+  table: Table<TData>;
 }
 
 export function DataTableToolbar<TData>({
   table,
 }: DataTableToolbarProps<TData>) {
-  const isFiltered = table.getState().columnFilters.length > 0
+  const isFiltered = table.getState().columnFilters.length > 0;
   const [departments, setDepartments] = useState([]);
   const [permissions, setPermissions] = useState([]);
   const [positions, setPositions] = useState([]);
@@ -26,7 +30,7 @@ export function DataTableToolbar<TData>({
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const departments = await getDepartmentsMap()
+        const departments = await getDepartmentsMap();
         const permissions = await getPermissionsMap();
         const positions = await getPositionsMap();
         setDepartments(departments);
@@ -40,11 +44,39 @@ export function DataTableToolbar<TData>({
     fetchData();
   }, []);
 
+  const getSelectedRows = () => {
+    const tmp = [];
+    table
+      .getRowModel()
+      .rows.filter((row) => row.getIsSelected())
+      .map((row) => {
+        tmp.push(row._valuesCache);
+      });
+    return tmp;
+  };
+
   return (
-    <div className="flex flex-col sm:flex-row items-center justify-between gap-2">
-      <div className="flex flex-1 flex-wrap items-center gap-2" style={{ maxWidth: '100%' }}>
+    <div className="flex flex-col items-center justify-between gap-2 sm:flex-row">
+      <div
+        className="flex flex-1 flex-wrap items-center gap-2"
+        style={{ maxWidth: "100%" }}
+      >
+        <DataTableEditDialog rows={getSelectedRows()} />
+        <Button
+          variant="outline"
+          onClick={() => {
+            //TODO implement DELETE
+            console.info("delete the selected data", getSelectedRows());
+          }}
+          className="h-8 px-2 lg:px-3"
+          disabled={!getSelectedRows().length}
+        >
+          Delete
+        </Button>
         <Input
-          placeholder={`Filter ${table.getColumn("email")?.columnDef["label"]}...`}
+          placeholder={`Filter ${table.getColumn("email")?.columnDef[
+            "label"
+          ]}...`}
           value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
             table.getColumn("email")?.setFilterValue(event.target.value)
@@ -52,8 +84,12 @@ export function DataTableToolbar<TData>({
           className="h-8 w-full sm:w-[150px] lg:w-[250px]"
         />
         <Input
-          placeholder={`Filter ${table.getColumn("last_name")?.columnDef["label"]}...`}
-          value={(table.getColumn("last_name")?.getFilterValue() as string) ?? ""}
+          placeholder={`Filter ${table.getColumn("last_name")?.columnDef[
+            "label"
+          ]}...`}
+          value={
+            (table.getColumn("last_name")?.getFilterValue() as string) ?? ""
+          }
           onChange={(event) =>
             table.getColumn("last_name")?.setFilterValue(event.target.value)
           }
@@ -76,7 +112,9 @@ export function DataTableToolbar<TData>({
         {table.getColumn("current_department_position") && (
           <DataTableFacetedFilter
             column={table.getColumn("current_department_position")}
-            title={table.getColumn("current_department_position").columnDef["label"]}
+            title={
+              table.getColumn("current_department_position").columnDef["label"]
+            }
             options={positions}
           />
         )}
@@ -93,5 +131,5 @@ export function DataTableToolbar<TData>({
       </div>
       <DataTableViewOptions table={table} />
     </div>
-  )
+  );
 }
