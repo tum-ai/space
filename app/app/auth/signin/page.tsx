@@ -10,6 +10,13 @@ import { signIn, signOut } from "next-auth/react";
 
 export const SignIn = () => {
   const router = useRouter();
+
+  if(process.env.NEXT_PUBLIC_VERCEL_ENV !== 'development') {
+    console.error('This page is only available in development mode!');
+    router.push('/auth');
+    return null; 
+  }
+
   return (
     <Section>
       <Formik

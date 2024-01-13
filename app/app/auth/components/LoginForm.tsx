@@ -12,12 +12,20 @@ export const LoginForm = async ({ setResetPassword }) => {
   };
 
   const signUpRoute = () => {
+    if (!isDevelopment) {
+      router.push('/auth');
+      return;
+    }
     router.push('/auth/signup');
-  }
+  };
 
   const signInRoute = () => {
+    if (!isDevelopment) {
+      router.push('/auth');
+      return;
+    }
     router.push('/auth/signin');
-  }
+  };
 
   return (
     <div className="m-auto flex max-w-[500px] flex-col gap-4 ">

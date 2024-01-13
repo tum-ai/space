@@ -10,6 +10,12 @@ import ErrorMessage from "@components/ErrorMessage";
 const SignUp = () => {
   const router = useRouter();
 
+  if(process.env.NEXT_PUBLIC_VERCEL_ENV !== 'development') {
+    console.error('This page is only available in development mode!');
+    router.push('/auth');
+    return null; 
+  }
+
   const registerUser = async (values) => {
     const response = await fetch("/api/auth/signup", {
       method: "POST",
