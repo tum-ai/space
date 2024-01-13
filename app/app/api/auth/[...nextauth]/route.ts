@@ -72,13 +72,12 @@ export const authOptions: NextAuthOptions = {
       await prisma.$transaction(async (prisma) => {
         const userExists = await prisma.user.findFirst({
           where: {
-            id: user.id
+            email: profile.email
           }
         })
         if(!userExists){
           try {
             const {email,given_name: firstName,family_name: lastName,picture: image, date_email_verified: emailVerifiedTimestamp} = profile;
-      
             const persistedUser = await prisma.user.create({
               data: {
                 email,
@@ -86,14 +85,12 @@ export const authOptions: NextAuthOptions = {
                 lastName,
                 image,
                 emailVerified: new Date(emailVerifiedTimestamp * 1000),
-                createdAt: new Date(),
-                updatedAt: new Date(),
                 userRoles: { connect: [{ name: "member" }] }
               }
-            });
-  
+            })
+
             const {id_token:idToken, type, provider, providerAccountId, ok, state, access_token:accessToken, token_type:tokenType} = account
-      
+
             await prisma.account.create({
               data: {
                 userId: persistedUser.id,
@@ -104,14 +101,11 @@ export const authOptions: NextAuthOptions = {
                 ok,
                 state,
                 accessToken,
-                tokenType,
-                createdAt: new Date(),
-                updatedAt: new Date()
+                tokenType
               }
-            });
+            })
           } catch (Error) {
-        console.log(user)
-            console.log("Unable to create user. See Error: \n", Error)
+            console.log("\n\n\n\nUnable to create user. See Error: \n", Error)
           } 
         }
       });
