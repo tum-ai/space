@@ -4,14 +4,12 @@ import SlackProvider from "next-auth/providers/slack";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import prisma from "database/db";
 import CredentialsProvider from "next-auth/providers/credentials";
-import EmailProvider from "next-auth/providers/email";
 import { compare } from "bcrypt";
-import Error from "next/error";
+import { jwt, signIn, createNewSession } from "./signIn";
 
 export const authOptions: NextAuthOptions = {
   session: {
     strategy: "jwt",
-    maxAge: 30 * 24 * 60 * 60, //30 days
   },
   adapter: PrismaAdapter(prisma),
   secret: process.env.NEXTAUTH_SECRET,
@@ -21,15 +19,8 @@ export const authOptions: NextAuthOptions = {
   providers: [
     SlackProvider({
       clientId: process.env.SLACK_CLIENT_ID,
-      clientSecret: process.env.SLACK_CLIENT_SECRET,
-      async profile(profile) {
-        return {
-          id: profile["https://slack.com/user_id"] || profile.sub,
-          email: profile.email
-        };
-      },
+      clientSecret: process.env.SLACK_CLIENT_SECRET
     }),
-
     CredentialsProvider({
       name: "Credentials",
       credentials: {
@@ -71,74 +62,16 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
-    async signIn({ user, profile, account }: {user, profile, account}) {
-      await prisma.$transaction(async (prisma) => {    
-        try {
-          const role = await prisma.userRole.upsert({
-            where: { name: "member" },
-            update: {},
-            create: { name: "member" }
-          });
-
-          const {email,given_name: firstName,family_name: lastName,picture: image, date_email_verified: emailVerifiedTimestamp} = profile;
-    
-          const persistedUser = await prisma.user.create({
-            data: {
-              email,
-              firstName,
-              lastName,
-              image,
-              emailVerified: new Date(emailVerifiedTimestamp * 1000),
-              createdAt: new Date(),
-              updatedAt: new Date(),
-              userRoles: { connect: [{ name: role.name }] }
-            }
-          });
-
-          const {id_token:idToken, type, provider, providerAccountId, ok, state, access_token:accessToken, token_type:tokenType} = account
-    
-          await prisma.account.create({
-            data: {
-              userId: persistedUser.id,
-              idToken,
-              type,
-              provider,
-              providerAccountId,
-              ok,
-              state,
-              accessToken,
-              tokenType,
-              createdAt: new Date(),
-              updatedAt: new Date()
-            }
-          });
-        } catch (Error) {
-          console.log("\n\n\n\n\n")
-        }
-      });
-      return true
+    async signIn({ profile, account }) {
+      return signIn({ profile, account })
     },
-    async jwt({ token, user }) {
-      
-      console.log({...token, ...user})
 
-      if (user) {
-        return {...token, ...user}
-      }
-      return token;
-    },
     async session({ session, token }) {
-      //TODO print this out
-      return {
-        ...session,
-        user: {
-          ...session.user,
-          id: token.id,
-          firstName: token.firstName,
-          lastName: token.lastName,
-          image: token.image
-        },
-      };
+      return createNewSession({session, token})
+    },
+
+    async jwt({ token, user }) {
+        return jwt({token, user})
     },
   },
 };

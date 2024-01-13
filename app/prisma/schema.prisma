@@ -103,7 +103,7 @@ model Department {
   id                    Int                    @id @default(autoincrement())
   name                  String
   type                  DepartmentType
-  creationDate          DateTime
+  creationDate          DateTime               @default(now())
   departmentMemberships DepartmentMembership[]
   opportunities         Opportunity[]
   createdAt             DateTime               @default(now())
