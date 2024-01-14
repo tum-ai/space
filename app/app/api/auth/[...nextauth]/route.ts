@@ -5,6 +5,7 @@ import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import prisma from "database/db";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { compare } from "bcrypt";
+import { jwt, signIn, createNewSession } from "./signIn";
 
 export const authOptions: NextAuthOptions = {
   session: {
@@ -68,81 +69,16 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
-    async signIn({ user, profile, account }: {user, profile, account}) {
-      await prisma.$transaction(async (prisma) => {
-        const userExists = await prisma.user.findFirst({
-          where: {
-            email: profile.email
-          }
-        })
-        if(!userExists){
-          try {
-            const {email,given_name: firstName,family_name: lastName,picture: image, date_email_verified: emailVerifiedTimestamp} = profile;
-            const persistedUser = await prisma.user.create({
-              data: {
-                email,
-                firstName,
-                lastName,
-                image,
-                emailVerified: new Date(emailVerifiedTimestamp * 1000),
-                userRoles: { connect: [{ name: "member" }] }
-              }
-            })
-
-            const {id_token:idToken, type, provider, providerAccountId, ok, state, access_token:accessToken, token_type:tokenType} = account
-
-            await prisma.account.create({
-              data: {
-                userId: persistedUser.id,
-                idToken,
-                type,
-                provider,
-                providerAccountId,
-                ok,
-                state,
-                accessToken,
-                tokenType
-              }
-            })
-          } catch (Error) {
-            console.log("\n\n\n\nUnable to create user. See Error: \n", Error)
-          } 
-        }
-      });
-      return true
+    async signIn({ user, profile, account }) {
+      return signIn({ user, profile, account })
     },
 
     async session({ session, token }) {
-      const {firstName, lastName, id, image, roles} = token as any
-      session.user = {firstName, lastName, id, image, roles} as any
-      console.log(session)
-      return session
+      return createNewSession({session, token})
     },
 
     async jwt({ token, user }) {
-      try{
-        if(user){
-          const rolesOfUser = await prisma.user.findUnique({
-            where: {
-              id: user.id,
-            },
-            select: {
-              userRoles: {
-                select: {
-                  name: true,
-                }
-              }
-            }
-          })
-          const roles = rolesOfUser.userRoles.map(role => role.name);
-          const {firstName, lastName, id, image } = user as any
-          return {...token, firstName, lastName, id, image, roles}
-        }
-      } catch(Error) {
-        console.log("Unable to check roles of user. Error: \n", Error)
-      }
-
-      return {...token};
+        return jwt({token, user})
     },
   },
 };
