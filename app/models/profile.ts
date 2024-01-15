@@ -1,22 +1,22 @@
-export interface SocialNetwork {
-  link: string; // URL
-  type: string;
-}
-
 export interface Profile {
+  // User
   id?: string;
   email: string;
   first_name: string;
   last_name: string;
-  description: string;
-  profile_picture: string;
-  socialNetworks: SocialNetwork[];
-  department: string;
-  previousDepartments: string[];
-  degree_level: string; // TODO: this should probably be it's own type
-  degree_name: string;
-  degree_semester: string;
-  currentJob: string; // TODO: why is this camel case
-  university: string;
-  nationality: string;
+  image?: string;
+
+  // Profile
+  birthday?: Date;
+  nationality?: string;
+  description?: string;
+  activity_status: string;
+  degree_level?: string;
+  degree_name?: string;
+  degree_semester?: number;
+  university?: string;
+
+  // Department / DepartmentMembership
+  current_department: string;
+  current_department_position: string;
 }
