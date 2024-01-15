@@ -15,16 +15,6 @@ import {
   SelectValue,
 } from "@components/ui/select";
 export default function DataTableEditDialog(props: any) {
-  const DEFAULT_DATA = {
-    id: 0,
-    first_name: "",
-    last_name: "",
-    email: "",
-    current_department: "",
-    permission: "",
-    current_department_position: "",
-  };
-
   const [data, setData] = useState(props.rows);
 
   useEffect(() => {
