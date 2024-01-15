@@ -12,6 +12,7 @@ import { useState } from "react";
 import ErrorMessage from "@components/ErrorMessage";
 import Textarea from "@components/Textarea";
 import Tooltip from "@components/Tooltip";
+import { DatePicker } from "@components/DatePicker";
 
 const mockAdmins = [
   {
@@ -45,6 +46,7 @@ const mockScreeners = [
     tags: [{ text: "Community", color: "red" }],
   },
   {
+    id: 5,
     photoUrl: "https://placekitten.com/206/206",
     name: "Sophia Rodriguez",
     tags: [{ text: "Development", color: "purple" }],
@@ -83,7 +85,15 @@ export default function CreateOpportunity() {
           tallyId: Yup.string(),
           name: Yup.string().required(),
           begin: Yup.date().required(),
-          end: Yup.date(),
+          end: Yup.date().test(
+            "is-greater",
+            "End date must be later than begin date",
+            function (value) {
+              const beginDate = this.parent.begin;
+              if (!value || !beginDate) return true;
+              return value >= beginDate;
+            },
+          ),
           description: Yup.string(),
         })}
         initialValues={{
@@ -97,7 +107,7 @@ export default function CreateOpportunity() {
           console.log(values); //TODO: actually submit via API
         }}
       >
-        {({ errors, touched }) => (
+        {({ errors, touched, setValues, values }) => (
           <Form className="flex flex-col gap-4">
             <div>
               <Field
@@ -123,29 +133,35 @@ export default function CreateOpportunity() {
             </div>
             <div className="flex flex-col gap-4 md:flex-row">
               <div className="flex-1">
-                <Field
-                  as={Input}
+                <DatePicker
                   label="Begin"
-                  name="begin"
-                  type="date"
                   placeholder="Pick a date"
-                  state={touched.begin && errors.begin && "error"}
+                  state={
+                    (touched.begin && errors.begin && "error") || "default"
+                  }
                   fullWidth
+                  value={values.begin}
+                  setValue={(value: Date) =>
+                    setValues({ ...values, begin: value })
+                  }
                 />
                 <ErrorMessage name="begin" />
               </div>
               <div className="flex-1">
-                <Field
-                  as={Input}
+                <DatePicker
                   label="End"
-                  name="end"
-                  type="date"
                   placeholder="Pick a date"
-                  state={touched.end && errors.end && "error"}
+                  state={
+                    (touched.begin && errors.begin && "error") || "default"
+                  }
                   fullWidth
+                  value={values.end}
+                  setValue={(value: Date) =>
+                    setValues({ ...values, end: value })
+                  }
                 />
+                <ErrorMessage name="end" />
               </div>
-              <ErrorMessage name="end" />
             </div>
             <div>
               <Field
@@ -237,6 +253,7 @@ function MemberSection() {
                 trigger={
                   <AddMemberBar
                     text={`+ Add ${stakeholder.role.toLowerCase()}`}
+                    onClick={() => console.log("add me")}
                   />
                 }
               >
