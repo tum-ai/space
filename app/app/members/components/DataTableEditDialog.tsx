@@ -26,7 +26,6 @@ export default function DataTableEditDialog(props: any) {
   };
 
   const [data, setData] = useState(props.rows);
-  const [groupedData, setGroupedData] = useState(DEFAULT_DATA);
 
   useEffect(() => {
     setData(props.rows);
@@ -42,14 +41,6 @@ export default function DataTableEditDialog(props: any) {
     );
     setData(newData);
     console.info(data);
-  };
-
-  const handleInputGroupedData = (attributeName, newValue) => {
-    const newData = props.rows.map((item) => {
-      return { ...item, [attributeName]: newValue };
-    });
-    setData(newData);
-    setGroupedData(DEFAULT_DATA);
   };
 
   const handleSubmit = () => {
