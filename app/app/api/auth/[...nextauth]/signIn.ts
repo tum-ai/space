@@ -12,16 +12,16 @@ import { Session } from "next-auth"
  * @see {@link https://www.prisma.io/docs}
  */
 async function checkUserExistence(email: string): Promise<boolean> {
-    await prisma.user.findFirst({
+    const potentialUser = await prisma.user.findFirst({
         where: {
           email: email
         }
     })
     .catch((error) => {
-        throw new Error("Failed to retrieve user with that email:\n" + error)
+        console.log("Failed to retrieve user with that email:\n" + error)
     })
 
-    return true
+    return potentialUser !== null
 }
 
 /**
@@ -65,7 +65,7 @@ async function persistUser(profile, prisma): Promise<User> {
  */
 async function persistAccount(account, persistedUser, prisma): Promise<boolean> {
     const {id_token:idToken, type, provider, providerAccountId, ok, state, access_token:accessToken, token_type:tokenType} = account
-      
+
     await prisma.account.create({
       data: {
         userId: persistedUser.id,
