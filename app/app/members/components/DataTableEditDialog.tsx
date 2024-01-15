@@ -6,19 +6,50 @@ import { Button } from "@components/ui/button";
 import { useEffect } from "react";
 import { useState } from "react";
 import { Input } from "@components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@components/ui/select";
 export default function DataTableEditDialog(props: any) {
-  const [data, setData] = useState([]);
+  const DEFAULT_DATA = {
+    id: 0,
+    first_name: "",
+    last_name: "",
+    email: "",
+    current_department: "",
+    permission: "",
+    current_department_position: "",
+  };
+
+  const [data, setData] = useState(props.rows);
+  const [groupedData, setGroupedData] = useState(DEFAULT_DATA);
 
   useEffect(() => {
     setData(props.rows);
-  }, []);
+  }, [props.rows]);
 
-  const handleInputChange = (id, attributeName, newValue) => {
-    setData((prevData) =>
-      prevData.map((item) =>
-        item.id === id ? { ...item, [attributeName]: newValue } : item,
-      ),
+  const handleInputChange = (
+    id: number,
+    attributeName: string,
+    newValue: any,
+  ) => {
+    const newData = props.rows.map((item) =>
+      item.id === id ? { ...item, [attributeName]: newValue } : item,
     );
+    setData(newData);
+    console.info(data);
+  };
+
+  const handleInputGroupedData = (attributeName, newValue) => {
+    const newData = props.rows.map((item) => {
+      return { ...item, [attributeName]: newValue };
+    });
+    setData(newData);
+    setGroupedData(DEFAULT_DATA);
   };
 
   const handleSubmit = () => {
@@ -47,64 +78,77 @@ export default function DataTableEditDialog(props: any) {
           <Cross1Icon className="h-5 w-5 text-black hover:text-gray-700 dark:text-white dark:hover:text-gray-400" />
         </DialogClose>
         <div className="flex flex-col gap-8">
-          <p className="text-slate-400">Edit selected members</p>
           <div className="flex flex-col gap-2">
+            <p className="text-slate-400">Edit all members</p>
             <div className="grid grid-cols-8 gap-2">
-              <p className="col-span-1">ID</p>
-              <p className="col-span-2">Email</p>
-              <p>First name</p>
-              <p>Last name</p>
-              <p>Department</p>
-              <p>Permission</p>
-              <p>Position</p>
+              <p className="col-span-1 text-sm text-slate-400">ID</p>
+              <p className="col-span-2 text-sm text-slate-400">Email</p>
+              <p className="text-sm text-slate-400">First name</p>
+              <p className="text-sm text-slate-400">Last name</p>
+              <p className="text-sm text-slate-400">Department</p>
+              <p className="text-sm text-slate-400">Permission</p>
+              <p className="text-sm text-slate-400">Position</p>
             </div>
-            {props.rows.map((row) => (
+            {data.map((row) => (
               <div className="grid grid-cols-8 gap-2">
                 <Input
-                  defaultValue={row.id}
-                  onChange={(evt) =>
-                    handleInputChange(row.id, "email", evt.target.value)
-                  }
+                  value={row.id}
                   className="col-span-1 h-8"
                   disabled={true}
                 />
                 <Input
-                  defaultValue={row.email}
+                  value={row.email}
                   onChange={(evt) =>
                     handleInputChange(row.id, "email", evt.target.value)
                   }
                   className="col-span-2 h-8"
                 />
                 <Input
-                  defaultValue={row.first_name}
+                  value={row.first_name}
                   onChange={(evt) =>
                     handleInputChange(row.id, "first_name", evt.target.value)
                   }
                   className="h-8 "
                 />
                 <Input
-                  defaultValue={row.last_name}
+                  value={row.last_name}
                   onChange={(evt) =>
                     handleInputChange(row.id, "last_name", evt.target.value)
                   }
                   className="h-8 "
                 />
-                <Input
-                  defaultValue={row.department}
-                  onChange={(evt) =>
-                    handleInputChange(row.id, "department", evt.target.value)
+                <Select
+                  onValueChange={(input) =>
+                    handleInputChange(row.id, "current_department", input)
                   }
-                  className="h-8 "
-                />
-                <Input
-                  defaultValue={row.permission}
-                  onChange={(evt) =>
-                    handleInputChange(row.id, "permission", evt.target.value)
+                >
+                  <SelectTrigger className="h-8">
+                    <SelectValue placeholder={row.current_department} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectItem value="DEV">DEV</SelectItem>
+                      <SelectItem value="LnF">LnF</SelectItem>
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+                <Select
+                  onValueChange={(input) =>
+                    handleInputChange(row.permission, "permission", input)
                   }
-                  className="h-8 "
-                />
+                >
+                  <SelectTrigger className="h-8">
+                    <SelectValue placeholder={row.permission} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectItem value="admin">admin</SelectItem>
+                      <SelectItem value="user">user</SelectItem>
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
                 <Input
-                  defaultValue={row.position}
+                  value={row.current_department_position}
                   onChange={(evt) =>
                     handleInputChange(row.id, "position", evt.target.value)
                   }
@@ -112,19 +156,19 @@ export default function DataTableEditDialog(props: any) {
                 />
               </div>
             ))}
+            <span className="flex justify-end gap-2">
+              <DialogClose>
+                <Button type="submit" variant="outline">
+                  Cancel
+                </Button>
+              </DialogClose>
+              <DialogClose>
+                <Button type="submit" onClick={handleSubmit}>
+                  Save Changes
+                </Button>
+              </DialogClose>
+            </span>
           </div>
-          <span className="flex justify-end gap-2">
-            <DialogClose className="float-right">
-              <Button type="submit" variant="outline">
-                Cancel
-              </Button>
-            </DialogClose>
-            <DialogClose className="float-right">
-              <Button type="submit" onClick={handleSubmit}>
-                Save Changes
-              </Button>
-            </DialogClose>
-          </span>
         </div>
       </Dialog>
     </div>
