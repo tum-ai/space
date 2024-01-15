@@ -62,8 +62,8 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
-    async signIn({ user, profile, account }) {
-      return signIn({ user, profile, account })
+    async signIn({ profile, account }) {
+      return signIn({ profile, account })
     },
 
     async session({ session, token }) {
