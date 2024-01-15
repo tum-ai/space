@@ -51,7 +51,7 @@ async function persistAccount(account, persistedUser, prisma): Promise<Account> 
     })
 }
 
-export async function signIn({ user, profile, account }): Promise<boolean> {
+export async function signIn({ profile, account }): Promise<boolean> {
     return await prisma.$transaction(async (prisma) => {
         const isUserPersisted = await checkUserExistence(profile.email)
 
@@ -70,6 +70,8 @@ export async function signIn({ user, profile, account }): Promise<boolean> {
     })
 }
 
+
+
 async function findRoles(id: string): Promise<string[]> {
     const rolesOfUser = await prisma.user.findUnique({
         where: {
@@ -85,6 +87,16 @@ async function findRoles(id: string): Promise<string[]> {
     
     return rolesOfUser.userRoles.map(role => role.name);
 }
+
+/**
+ * 
+ * @param param0 
+ * 
+ * 
+ * 
+ * 
+ * @returns 
+ */
 
 export async function jwt({token, user}): Promise<User>{
     delete token.name
