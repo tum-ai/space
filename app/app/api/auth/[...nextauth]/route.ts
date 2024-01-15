@@ -19,15 +19,8 @@ export const authOptions: NextAuthOptions = {
   providers: [
     SlackProvider({
       clientId: process.env.SLACK_CLIENT_ID,
-      clientSecret: process.env.SLACK_CLIENT_SECRET,
-      async profile(profile) {
-        return {
-          id: profile["https://slack.com/user_id"] || profile.sub,
-          email: profile.email
-        };
-      },
+      clientSecret: process.env.SLACK_CLIENT_SECRET
     }),
-
     CredentialsProvider({
       name: "Credentials",
       credentials: {
