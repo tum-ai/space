@@ -1,4 +1,5 @@
 import { User } from "@prisma/client"
+import { compare } from "bcrypt"
 import { Session } from "next-auth"
 
 
@@ -22,6 +23,33 @@ async function checkUserExistence(email: string): Promise<boolean> {
     })
 
     return potentialUser !== null
+}
+
+/**
+ *  Checks if the users credentials match the existing users ones
+ * 
+ * @param email - The email associated with the user that is trying to sign in
+ * 
+ * @param password - The password associated with the user that is trying to sign in
+ * 
+ * @returns Returns a promise of true or throws an error if there was an error retrieving the user
+ * 
+ */
+async function checkUsersCredentials(email: string, password: string): Promise<boolean> {
+    const existingUser = await prisma.user.findUnique({
+        where: { email: email },
+      });
+
+      if (!existingUser) {
+        return false;
+      }
+
+      const passwordMatch = await compare(
+        password,
+        existingUser.password,
+      );
+
+      return passwordMatch
 }
 
 /**
@@ -99,7 +127,7 @@ async function persistAccount(account, persistedUser, prisma): Promise<boolean> 
  */
 export async function signIn({ profile, account }): Promise<boolean> {
     return await prisma.$transaction(async (prisma) => {
-        const isUserPersisted = await checkUserExistence(profile.email)
+                const isUserPersisted = await checkUserExistence(profile.email)
 
         if (!isUserPersisted) {
             const persistedUser = await persistUser(profile, prisma)
@@ -107,6 +135,31 @@ export async function signIn({ profile, account }): Promise<boolean> {
         }
 
         return true
+    })
+}
+
+/**
+ *  Handles sign in for providers by persisting the user and (for oAuth, the account metadata) before authorizing access to space
+ * 
+ * @param profile - The returned response of the user's Slack profile
+ * @param account - Metadata about the account
+ * 
+ * @returns Returns a promise of true if the sign in was successful and false if otherwise. Errors are handled in each function locally for easier debugging
+ * 
+ * @see {@link https://github.com/nextauthjs/next-auth/blob/v4/packages/next-auth/src/providers/slack.ts}
+ */
+export async function signInCred({ credentials, account }): Promise<boolean> {
+    return await prisma.$transaction(async (prisma) => {
+            if(credentials.email && credentials.password) {
+                const isUserAuthenticated = await checkUsersCredentials(credentials.email, credentials.password)
+                if(isUserAuthenticated) {
+                    return true
+                } else {
+                    return false
+                } 
+            } else {
+                return false   
+            }
     })
 }
 

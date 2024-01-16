@@ -65,8 +65,8 @@ erDiagram
         Int profileId FK
         String email
         String password
-        String first_name
-        String last_name
+        String firstName
+        String lastName
         String image
         UserPermission permission
         DateTime emailVerified

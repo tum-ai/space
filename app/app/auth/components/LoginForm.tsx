@@ -10,6 +10,14 @@ export const LoginForm = async ({ setResetPassword }) => {
     router.push("/profile");
   };
 
+  const signUpRoute = () => {
+    router.push('/auth/signup');
+  };
+
+  const signInRoute = () => {
+    router.push('/auth/signin');
+  };
+
   return (
     <div className="m-auto flex max-w-[500px] flex-col gap-4 ">
       <h2 className="flex justify-center text-3xl">Login</h2>
@@ -27,6 +35,8 @@ export const LoginForm = async ({ setResetPassword }) => {
       </Button>
       <Button onClick={() => signOut()}> Sign out</Button>
       <Button onClick={profileRoute}>View Profile</Button>
+      <Button onClick={signInRoute}>Sign in with Credentials</Button>
+      <Button onClick={signUpRoute}>Sign up</Button> 
     </div>
   );
 };
