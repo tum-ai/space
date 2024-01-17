@@ -40,40 +40,10 @@ const Me = () => {
     degree_name: "Informatics",
     degree_semester: 100,
     description:
-      "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.",
+      "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.",
   };
 
-  const { id, email, image, activity_status, current_department, current_department_position, 
-    first_name, last_name, nationality, birthday, university, degree_level, 
-    degree_name, degree_semester, description } = data;
-
-  const restructured = {
-    general: {
-      id,
-      email,
-      image,
-      activity_status,
-      current_department,
-      current_department_position,
-    },
-    grid: {
-      personal: {
-        first_name,
-        last_name,
-        nationality,
-        birthday: new Date(birthday),
-      },
-      academia: {
-        university,
-        degree_level,
-        degree_name,
-        degree_semester,
-      },
-      description,
-    },
-  };
-
-  return <ProfileOverview profile={restructured} />;
+  return <ProfileOverview profile={data} />;
 };
 
 export default Me;

@@ -2,51 +2,73 @@
 import { Button } from "@components/ui/button";
 import Icon from "@components/Icon";
 import Image from "next/image";
-import Link from "next/link";
-import { PencilSquareIcon } from "@heroicons/react/24/outline";
+import {
+  PencilSquareIcon,
+  AcademicCapIcon,
+  PencilIcon,
+  UserIcon,
+} from "@heroicons/react/24/outline";
 import ProfileEditor from "../../me/components/ProfileEditor";
 import Tag from "@components/Tag";
-import { useMemo } from "react";
-import { Card, CardContent, CardTitle } from "@components/ui/card";
+
+const IconProps = "w-5 h-5 mr-2";
+
+function restructureData(data) {
+  const {
+    id,
+    email,
+    image,
+    activity_status,
+    current_department,
+    current_department_position,
+    first_name,
+    last_name,
+    nationality,
+    birthday,
+    university,
+    degree_level,
+    degree_name,
+    degree_semester,
+    description,
+  } = data;
+
+  return {
+    general: {
+      id,
+      email,
+      image,
+      activity_status,
+      current_department,
+      current_department_position,
+    },
+    personal: {
+      first_name,
+      last_name,
+      nationality,
+      birthday: new Date(birthday),
+    },
+    academia: {
+      university,
+      degree_level,
+      degree_name,
+      degree_semester,
+    },
+    description,
+  };
+}
 
 function formatKey(key) {
   return key.replace(/_/g, " ").replace(/^\w/, (c) => c.toUpperCase());
 }
 
 function ProfileOverview({ profile }) {
-  const grid = profile.grid;
-
-  const gridEntries = useMemo(() => {
-    return Object.entries(grid).filter(([key]) => key !== "description");
-  }, [grid]);
+  const data = restructureData(profile);
 
   return (
-    <div className="space-y-8">
-      <ProfileHeader profile={profile} />
-      <div className="grid grid-cols-2 gap-6 lg:grid-cols-3">
-        {gridEntries.map(([oKey, oVal]) => (
-          <Card className="p-5">
-            <CardTitle className="mb-4 text-3xl font-thin">{oKey}</CardTitle>
-            <div className="flex flex-col gap-12 p-3">
-              {Object.entries(oVal).map(([iKey, iVal]) => (
-                <div className="flex flex-row justify-between">
-                  <p className="text-gray-500">{formatKey(iKey)}</p>
-                  <p>
-                    {iVal instanceof Date ? iVal.toLocaleDateString() : iVal}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </Card>
-        ))}
-        {grid.description && (
-          <Card className="col-span-2 p-5 lg:col-span-1">
-            <CardTitle className="mb-3 text-3xl font-thin">
-              description
-            </CardTitle>
-            <div className="p-3">{grid.description}</div>
-          </Card>
-        )}
+    <div className="flex justify-center">
+      <div className="max-w-[850px] space-y-10">
+        <ProfileHeader data={profile} />
+        <ProfileContent data={data} />
       </div>
     </div>
   );
@@ -57,14 +79,14 @@ function ProfilePicture({ image }) {
     <>
       {image ? (
         <Image
-          className="h-36 w-36 rounded-full object-cover"
+          className="h-26 w-26 rounded-full object-cover"
           src={image}
           width={150}
           height={150}
           alt="Your profile picture"
         />
       ) : (
-        <div className="flex h-36 w-36 rounded-full bg-gray-300 text-center drop-shadow-lg dark:bg-gray-800">
+        <div className="flex h-24 w-24 rounded-full bg-gray-300 text-center drop-shadow-lg dark:bg-gray-800">
           <Icon name={"FaUser"} className="m-auto text-4xl text-white" />
         </div>
       )}
@@ -72,40 +94,33 @@ function ProfilePicture({ image }) {
   );
 }
 
-function ProfileHeader({ profile }) {
-  const { general, grid } = profile;
-
+function ProfileHeader({ data }) {
   return (
-    <div className="grid w-full grid-cols-3">
-      <div className="flex flex-col items-start">
-        <ProfilePicture image={general.image} />
-        <div className="mt-4">
-          <h1 className="text-2xl font-light">
-            {grid.personal.first_name + " " + grid.personal.last_name}
-          </h1>
-          <div className="flex flex-row gap-6">
-            <p>ID: {general.id}</p>
-            <Link
-              className="hover:text-blue-800 dark:hover:text-blue-200"
-              href={`mailto:${general.email}`}
-            >
-              {general.email}
-            </Link>
-          </div>
+    <div className="grid grid-cols-2 gap-4 md:grid-cols-4 items-center">
+      <div className="col-span-2 flex items-center gap-4">
+        <ProfilePicture image={data.image} />
+        <div>
+          <h3 className="text-3xl font-medium">
+            {data.first_name} {data.last_name}
+          </h3>
+          <a
+            href={`mailto:${data.email}`}
+            className="text-gray-500 hover:text-blue-500"
+          >
+            {data.email}
+          </a>
         </div>
       </div>
-      <div className="flex flex-row gap-4 justify-center items-end">
+      <div className="flex gap-3 md:justify-self-end">
         <Tag
           text={
-            general.current_department +
-            " " +
-            general.current_department_position
+            data.current_department + " " + data.current_department_position
           }
-          color="indigo"
+          color="blue"
         />
-        <Tag text={general.activity_status} color="green" />
+        <Tag text={data.activity_status} color="green" />
       </div>
-      <div className="flex items-end justify-end">
+      <div className="justify-self-end">
         <ProfileEditor
           trigger={
             <Button>
@@ -113,9 +128,52 @@ function ProfileHeader({ profile }) {
               Edit
             </Button>
           }
-          profile={profile}
+          profile={data}
         />
       </div>
+    </div>
+  );
+}
+
+function ProfileContent({ data }) {
+  return (
+    <div className="grid grid-cols-1 gap-8 sm:grid-cols-2">
+      <div className="sm:col-span-2">
+        <div className="mb-2 flex flex-row items-center">
+          <PencilIcon className={IconProps} />
+          <h3 className="text-2xl font-medium">Description</h3>
+        </div>
+        <p className="text-gray-400">{data.description}</p>
+      </div>
+      <div>
+        <div className="mb-2 flex flex-row items-center">
+          <UserIcon className={IconProps} />
+          <h3 className="text-2xl font-medium">Personal</h3>
+        </div>
+        <ContentList data={data.personal} />
+      </div>
+      <div>
+        <div className="mb-2 flex flex-row items-center">
+          <AcademicCapIcon className={IconProps} />
+          <h3 className="text-2xl font-medium">Academic</h3>
+        </div>
+        <ContentList data={data.academia} />
+      </div>
+    </div>
+  );
+}
+
+function ContentList({ data }) {
+  return (
+    <div className="flex flex-col gap-3">
+      {Object.entries(data).map(([iKey, iVal]) => (
+        <div className="grid grid-cols-2">
+          <p className="text-gray-400">{formatKey(iKey)}</p>
+          <p>
+            {iVal instanceof Date ? iVal.toLocaleDateString() : String(iVal)}
+          </p>
+        </div>
+      ))}
     </div>
   );
 }

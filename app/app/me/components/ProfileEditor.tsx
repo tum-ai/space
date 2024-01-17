@@ -12,6 +12,7 @@ import {
   ArrowDownOnSquareStackIcon,
   ArrowUpTrayIcon,
 } from "@heroicons/react/24/outline";
+import {UploadIcon, DownloadIcon} from "@radix-ui/react-icons";
 import { z } from 'zod';
 import { MeModel } from "@models/me";
 
@@ -36,14 +37,14 @@ function ProfileEditor({ trigger, profile }) {
   return (
     <Dialog trigger={trigger}>
       <Formik
-        initialValues={profile.grid.personal}
+        initialValues={profile}
         validationSchema={profileSchema}
         onSubmit={async (values) => {}}
       >
         {({ handleChange }) => (
           <ProfileForm
             handleChange={handleChange}
-            editorProfile={profile.general}
+            editorProfile={profile}
           />
         )}
       </Formik>
@@ -59,14 +60,14 @@ const ProfileForm = ({ handleChange, editorProfile }) => (
   </Form>
 );
 
-const IconProps = "w-5 mr-2";
+const IconProps = "w-5 h-5 mr-2";
 
 const ProfileHeader = () => (
   <div className="flex items-center justify-between">
     <h1 className="text-3xl">Edit Profile</h1>
     <div className="col-span-2 flex space-x-2">
       <Button type="submit">
-        <ArrowDownOnSquareStackIcon className={IconProps} />
+        <DownloadIcon className={IconProps} />
         Save
       </Button>
       <DialogRadix.Close>
@@ -114,7 +115,7 @@ const UploadProfilePicture = ({ handleChange }) => (
     type="button"
     onClick={() => document.getElementById("profile_picture").click()}
   >
-    <ArrowUpTrayIcon className={IconProps} />
+    <UploadIcon className={IconProps} />
     <Input
       label="Upload picture"
       type="file"
