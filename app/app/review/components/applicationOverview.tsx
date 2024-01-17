@@ -37,11 +37,11 @@ export const ApplicationOverview = ({ application }: Props) => {
               return -1;
             }
           })
-          .filter(
-            (field: TallyField) => {
-              return field.value && field.type !== "CHECKBOXES" && field.value !== ".";
-            },
-          )
+          .filter((field: TallyField) => {
+            return (
+              field.value && field.type !== "CHECKBOXES" && field.value !== "."
+            );
+          })
           .map((field: TallyField) => (
             <TallyFieldComp field={field} key={field.key} />
           ))}

@@ -2,7 +2,7 @@ import { VariantProps, cva } from "class-variance-authority";
 
 interface Props
   extends VariantProps<typeof styles>,
-  React.InputHTMLAttributes<HTMLInputElement> {
+    React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;
   className?: string;
 }
@@ -26,7 +26,7 @@ const styles = cva(
     },
   },
 );
-const labelStyles = cva("text-sm", {
+export const labelStyles = cva("text-sm", {
   variants: {
     state: {
       default: "",

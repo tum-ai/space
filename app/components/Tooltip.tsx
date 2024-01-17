@@ -7,7 +7,7 @@ export default function Tooltip({ trigger, children }) {
         <TooltipRadix.Trigger asChild>{trigger}</TooltipRadix.Trigger>
         <TooltipRadix.Portal>
           <TooltipRadix.Content
-            className="rounded-lg bg-gray-300 p-4 dark:bg-gray-900"
+            className="text-md rounded-lg bg-white px-4 py-2 shadow"
             sideOffset={5}
           >
             {children}

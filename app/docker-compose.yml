@@ -1,0 +1,14 @@
+version: "3.8"
+services:
+  db:
+    image: postgres:14-alpine
+    restart: unless-stopped
+    container_name: spacedb
+    environment:
+      POSTGRES_DB: spacedb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    volumes:
+      - ./data/db:/var/lib/postgresql/data
+    ports:
+      - "15432:5432"

@@ -1,9 +1,9 @@
 "use client";
 import { useRouter } from "next/navigation";
-import { signOut } from 'next-auth/react';
-import { useEffect } from 'react';
+import { signOut } from "next-auth/react";
+import { useEffect } from "react";
 
-const signout = () => {
+const SignOut = () => {
   const router = useRouter();
 
   signOut({ redirect: false });
@@ -11,10 +11,9 @@ const signout = () => {
   useEffect(() => {
     const newPath = `/auth`;
     router.push(newPath);
-  }, [router]); 
+  }, [router]);
 
-
-  return null;  // maybe add a loading spinner here
+  return null; // maybe add a loading spinner here
 };
 
-export default signout;
+export default SignOut;
