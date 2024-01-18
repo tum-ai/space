@@ -23,6 +23,6 @@ export const env = createEnv({
     NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
     NEXT_PUBLIC_ENVIRONMENT: process.env.NEXT_PUBLIC_ENVIRONMENT,
     NEXT_PUBLIC_TALLY_SIGNING_SECRET:
-      process.env.NEXT_PUBLIC_TALLY_SIGNING_SECRET,
+      process.env.NEXT_PUBLIC_TALLY_SIGNING_SECRET ?? "",
   },
 });
