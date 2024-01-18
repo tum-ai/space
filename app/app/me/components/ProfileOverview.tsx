@@ -96,7 +96,7 @@ function ProfilePicture({ image }) {
 
 function ProfileHeader({ data }) {
   return (
-    <div className="grid grid-cols-2 gap-4 md:grid-cols-4 items-center">
+    <div className="grid grid-cols-2 items-center gap-4 md:grid-cols-4">
       <div className="col-span-2 flex items-center gap-4">
         <ProfilePicture image={data.image} />
         <div>
