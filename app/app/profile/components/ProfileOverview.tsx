@@ -13,17 +13,16 @@ interface Props {
 function ProfileOverview({ profile }: Props) {
   return (
     <div className="relative m-auto max-w-3xl">
-        <div className="absolute top-0 flex w-full justify-end p-4">
-          <ProfileEditor
-            trigger={
-              <Button>
-                <PencilSquareIcon className="mr-2 w-5" />
-                Edit
-              </Button>
-            }
-          />
-        </div>
-      
+      <div className="absolute top-0 flex w-full justify-end p-4">
+        <ProfileEditor
+          trigger={
+            <Button>
+              <PencilSquareIcon className="mr-2 w-5" />
+              Edit
+            </Button>
+          }
+        />
+      </div>
 
       {profile.image && (
         <Image
@@ -52,8 +51,7 @@ function ProfileOverview({ profile }: Props) {
             {profile.email}
           </Link>
 
-          
-          { /*
+          {/*
           {profile.socialNetworks &&
             profile.socialNetworks.map((socialNetwork) => (
               <Link key={socialNetwork.link} href={socialNetwork.link}>
