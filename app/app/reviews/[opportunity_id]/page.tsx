@@ -1,5 +1,3 @@
-"use client";
-
 import { Section } from "@components/Section";
 import { Button } from "@components/ui/button";
 import OverviewRows from "./components/OverviewRows";
@@ -122,6 +120,7 @@ export default function ReviewOverview({ params }) {
   const [searchQuery, setSearchQuery] = useState('');
   const filteredData = filterData(showOnlyUnfinished, phase, searchQuery, data);
 
+export default function ReviewOverview() {
   return (
     <Section className="space-y-6">
       <OverviewHeader opportunityId={opportunityId} opportunityTitle={opportunityTitle}/>
