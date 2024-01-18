@@ -4,8 +4,11 @@ import {
   TableIcon,
   RowsIcon,
   MixerHorizontalIcon,
+  MagnifyingGlassIcon,
 } from "@radix-ui/react-icons";
 import { Tabs, TabsList, TabsTrigger } from "@components/ui/tabs";
+import Input from "@components/Input";
+import Link from "next/link";
 
 export default function ReviewOverview() {
   return (
@@ -21,7 +24,9 @@ function OverviewHeader() {
     <div className="flex flex-col gap-2">
       <div className="flex w-full flex-row items-center justify-between">
         <h1 className="text-6xl font-thin">Applications</h1>
-        <Button>All opportunities</Button>
+        <Link href="../opportunities">
+          <Button>All opportunities</Button>
+        </Link>
       </div>
       <p>View all availavle Applications</p>
       <h2 className="text-2xl">Winter Semester 2024/2025 Application</h2>
@@ -32,9 +37,7 @@ function OverviewHeader() {
 function OverviewToolBar() {
   return (
     <div className="flex h-20 w-full flex-row space-x-2">
-      <Button variant="outline" size="default" className="w-full">
-        Filter
-      </Button>
+      <Input fullWidth placeholder="Search"></Input>
       <Button variant="outline" size="default">
         <MixerHorizontalIcon className="mr-2" />
         Filter
@@ -51,4 +54,12 @@ function OverviewToolBar() {
       </Tabs>
     </div>
   );
+}
+
+function OverviewList({ data }) {
+	return (
+		<div className="flex flex-col space-y-4">
+			
+		</div>
+	);
 }
