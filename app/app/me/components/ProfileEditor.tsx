@@ -8,13 +8,8 @@ import { useStores } from "@providers/StoreProvider";
 import { Field, Form, Formik } from "formik";
 import * as DialogRadix from "@radix-ui/react-dialog";
 import Image from "next/image";
-import {
-  ArrowDownOnSquareStackIcon,
-  ArrowUpTrayIcon,
-} from "@heroicons/react/24/outline";
-import {UploadIcon, DownloadIcon} from "@radix-ui/react-icons";
-import { z } from 'zod';
-import { MeModel } from "@models/me";
+import { UploadIcon, DownloadIcon } from "@radix-ui/react-icons";
+import { z } from "zod";
 
 const profileSchema = z.object({
   /*
@@ -30,7 +25,11 @@ const profileSchema = z.object({
   university: z.string().nullable(),
   degree_level: z.string().nullable(),
   degree_name: z.string().nullable(),
-  degree_semester: z.number().min(1, "Semester must be at least 1.").int("Semester must be an integer.").nullable(),
+  degree_semester: z
+    .number()
+    .min(1, "Semester must be at least 1.")
+    .int("Semester must be an integer.")
+    .nullable(),
 });
 
 function ProfileEditor({ trigger, profile }) {
@@ -42,10 +41,7 @@ function ProfileEditor({ trigger, profile }) {
         onSubmit={async (values) => {}}
       >
         {({ handleChange }) => (
-          <ProfileForm
-            handleChange={handleChange}
-            editorProfile={profile}
-          />
+          <ProfileForm handleChange={handleChange} editorProfile={profile} />
         )}
       </Formik>
     </Dialog>
@@ -178,7 +174,6 @@ const ProfileDetails = () => (
         placeholder="2"
         type="number"
       />
-
     </div>
     <InputFieldComponent
       name="description"
