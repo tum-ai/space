@@ -6,8 +6,8 @@ export interface SocialNetwork {
 export interface Profile {
   id?: string;
   email: string;
-  first_name: string;
-  last_name: string;
+  firstName: string;
+  lastName: string;
   description: string;
   profile_picture: string;
   socialNetworks: SocialNetwork[];
