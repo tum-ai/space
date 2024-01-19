@@ -5,7 +5,7 @@ import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import prisma from "database/db";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { compare } from "bcrypt";
-import { jwt, signIn, createNewSession } from "./signIn";
+import { jwt, signIn, createNewSession, signInCred } from "./signIn";
 
 export const authOptions: NextAuthOptions = {
   session: {
@@ -59,16 +59,22 @@ export const authOptions: NextAuthOptions = {
 
         return {
           id: `${existingUser.id}`,
-          username: existingUser.firstName + "_" + existingUser.lastName,
-          email: existingUser.email,
+          firstName: existingUser.firstName,
+          lastName: existingUser.lastName,
+          //roles: existingUser.roles,
+          image: existingUser.image
         };
       },
     }),
   ],
   callbacks: {
-    async signIn({ profile, account }) {
-      return signIn({ profile, account });
-    },
+    async signIn({ credentials, profile, account }) {
+      if( account.provider === 'slack' ) {
+        return signIn({ profile, account });
+      } else {
+        return signInCred({ credentials, account })
+      }
+  },
 
     async session({ session, token }) {
       return createNewSession({ session, token });

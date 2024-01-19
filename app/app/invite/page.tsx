@@ -18,8 +18,8 @@ const Invite = () => {
         email: Yup.string()
           .email("Must be valid email")
           .required("Cannot be empty"),
-        first_name: Yup.string().required("Cannot be empty"),
-        last_name: Yup.string().required("Cannot be empty"),
+        firstName: Yup.string().required("Cannot be empty"),
+        lastName: Yup.string().required("Cannot be empty"),
         department_handle: Yup.string().required("Cannot be empty"),
         department_position: Yup.string().required("Cannot be empty"),
       }),
@@ -30,8 +30,8 @@ const Invite = () => {
     invitees: [
       {
         email: "",
-        first_name: "",
-        last_name: "",
+        firstName: "",
+        lastName: "",
         department_handle: "DEV",
         department_position: "member",
       },
@@ -101,8 +101,8 @@ const Invite = () => {
                         onClick={() =>
                           push({
                             email: "",
-                            first_name: "",
-                            last_name: "",
+                            firstName: "",
+                            lastName: "",
                             department_handle: "DEV",
                             department_position: "member",
                           })
@@ -151,25 +151,25 @@ const Invite = () => {
                                 <td>
                                   <Field
                                     as={Input}
-                                    name={`invitees.${index}.first_name`}
+                                    name={`invitees.${index}.firstName`}
                                     placeholder="Daniel"
                                     type="text"
                                     fullWidth
                                   />
                                   <ErrorMessage
-                                    name={`invitees.${index}.first_name`}
+                                    name={`invitees.${index}.firstName`}
                                   />
                                 </td>
                                 <td>
                                   <Field
                                     as={Input}
-                                    name={`invitees.${index}.last_name`}
+                                    name={`invitees.${index}.lastName`}
                                     placeholder="Korth"
                                     type="text"
                                     fullWidth
                                   />
                                   <ErrorMessage
-                                    name={`invitees.${index}.last_name`}
+                                    name={`invitees.${index}.lastName`}
                                   />
                                 </td>
                                 <td>

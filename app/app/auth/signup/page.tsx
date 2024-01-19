@@ -23,8 +23,8 @@ const SignUp = () => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        first_name: values.first_name,
-        last_name: values.last_name,
+        firstName: values.firstName,
+        lastName: values.lastName,
         email: values.email,
         password: values.password
     })
@@ -41,15 +41,15 @@ const SignUp = () => {
     <Section>
     <Formik
       validationSchema={Yup.object().shape({
-        first_name: Yup.string().required(),
-        last_name: Yup.string().required(),
+        firstName: Yup.string().required(),
+        lastName: Yup.string().required(),
         email: Yup.string().email().required(),
         password: Yup.string().required(),
         password2: Yup.string().oneOf([Yup.ref('password'), null], 'Passwords must match').required()
       })}
       initialValues={{
-        first_name: "",
-        last_name: "",
+        firstName: "",
+        lastName: "",
         email: "",
         password: "",
         password2: "",
@@ -63,25 +63,25 @@ const SignUp = () => {
             <Field
               as={Input}
               label="First name"
-              type="first_name"
-              name="first_name"
+              type="firstName"
+              name="firstName"
               placeholder=""
-              state={touched.first_name && errors.first_name && "error"}
+              state={touched.firstName && errors.firstName && "error"}
               fullWidth
             />
-            <ErrorMessage name="first_name" />
+            <ErrorMessage name="firstName" />
           </div>
           <div>
             <Field
               as={Input}
               label="Last name"
-              type="last_name"
-              name="last_name"
+              type="lastName"
+              name="lastName"
               placeholder=""
-              state={touched.last_name && errors.last_name && "error"}
+              state={touched.lastName && errors.lastName && "error"}
               fullWidth
             />
-            <ErrorMessage name="last_name" />
+            <ErrorMessage name="lastName" />
           </div>
           <div>
             <Field

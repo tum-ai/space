@@ -55,9 +55,9 @@ export function ApplicationRow({ application }) {
                       }
                     >
                       <div>
-                        {profile.first_name +
+                        {profile.firstName +
                           " " +
-                          profile.last_name +
+                          profile.lastName +
                           " - final score: " +
                           review.finalscore}
                       </div>
