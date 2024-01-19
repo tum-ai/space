@@ -96,7 +96,7 @@ function ProfilePicture({ image }) {
 
 function ProfileHeader({ data }) {
   return (
-    <div className="grid grid-cols-2 items-center gap-4 md:grid-cols-4">
+    <div className="grid grid-cols-2 items-center gap-4 lg:grid-cols-4">
       <div className="col-span-2 flex items-center gap-4">
         <ProfilePicture image={data.image} />
         <div>
@@ -111,13 +111,9 @@ function ProfileHeader({ data }) {
           </a>
         </div>
       </div>
-      <div className="flex gap-3 md:justify-self-end">
-        <Tag
-          text={
-            data.current_department + " " + data.current_department_position
-          }
-          color="blue"
-        />
+      <div className="flex gap-2 lg:justify-self-end">
+        <Tag text={data.current_department} color="blue" />
+        <Tag text={data.current_department_position} color="purple" />
         <Tag text={data.activity_status} color="green" />
       </div>
       <div className="justify-self-end">
