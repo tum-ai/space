@@ -21,7 +21,7 @@ export default function OpportunityCard(props: any) {
         <Link href={"./edit/" + +props.opportunity.id} className="w-full">
           <Button className="w-full">Edit</Button>
         </Link>
-        <Link href={"./view/" + +props.opportunity.id} className="w-full">
+        <Link href={"./reviews/" + +props.opportunity.id} className="w-full">
           <Button className="w-full">View</Button>
         </Link>
       </CardFooter>
