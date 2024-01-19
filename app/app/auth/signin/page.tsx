@@ -11,10 +11,10 @@ import { signIn, signOut } from "next-auth/react";
 export const SignIn = () => {
   const router = useRouter();
 
-  if(process.env.NEXT_PUBLIC_VERCEL_ENV !== 'development') {
-    console.error('This page is only available in development mode!');
-    router.push('/auth');
-    return null; 
+  if (process.env.NEXT_PUBLIC_VERCEL_ENV !== "development") {
+    console.error("This page is only available in development mode!");
+    router.push("/auth");
+    return null;
   }
 
   return (
@@ -28,13 +28,13 @@ export const SignIn = () => {
           email: "",
           password: "",
         }}
-        onSubmit = {async (values) => {
-          const signInData = await signIn('credentials', {
+        onSubmit={async (values) => {
+          const signInData = await signIn("credentials", {
             email: values.email,
             password: values.password,
-            redirect: false
+            redirect: false,
           });
-          if(signInData?.error) {
+          if (signInData?.error) {
             console.log(signInData.error);
           } else {
             return router.push("/profile");

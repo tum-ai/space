@@ -5,7 +5,7 @@ import { signIn, signOut } from "next-auth/react";
 
 export const LoginForm = async ({ setResetPassword }) => {
   const router = useRouter();
-  const isDevelopment = process.env.NEXT_PUBLIC_VERCEL_ENV === 'development';
+  const isDevelopment = process.env.NEXT_PUBLIC_VERCEL_ENV === "development";
 
   const profileRoute = () => {
     router.push("/profile");
@@ -13,18 +13,18 @@ export const LoginForm = async ({ setResetPassword }) => {
 
   const signUpRoute = () => {
     if (!isDevelopment) {
-      router.push('/auth');
+      router.push("/auth");
       return;
     }
-    router.push('/auth/signup');
+    router.push("/auth/signup");
   };
 
   const signInRoute = () => {
     if (!isDevelopment) {
-      router.push('/auth');
+      router.push("/auth");
       return;
     }
-    router.push('/auth/signin');
+    router.push("/auth/signin");
   };
 
   return (
@@ -45,7 +45,7 @@ export const LoginForm = async ({ setResetPassword }) => {
       {isDevelopment && (
         <>
           <Button onClick={signInRoute}>Sign in with Credentials</Button>
-          <Button onClick={signUpRoute}>Sign up</Button> 
+          <Button onClick={signUpRoute}>Sign up</Button>
         </>
       )}
       <Button onClick={() => signOut()}> Sign out</Button>

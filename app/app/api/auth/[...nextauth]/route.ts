@@ -29,52 +29,52 @@ export const authOptions: NextAuthOptions = {
           type: "email",
           placeholder: "max.mustermann@gmail.com",
         },
-              password: { label: "Password", type: "password" },
-            },
-            async authorize(credentials) {
-              if(process.env.NEXT_PUBLIC_VERCEL_ENV != "development") {
-                return null;
-              }
+        password: { label: "Password", type: "password" },
+      },
+      async authorize(credentials) {
+        if (process.env.NEXT_PUBLIC_VERCEL_ENV != "development") {
+          return null;
+        }
 
-              if (!credentials?.email || !credentials?.password) {
-                  return null;
-              }
+        if (!credentials?.email || !credentials?.password) {
+          return null;
+        }
 
-              const existingUser = await prisma.user.findUnique({
-                  where: { email: credentials?.email },
-              });
+        const existingUser = await prisma.user.findUnique({
+          where: { email: credentials?.email },
+        });
 
-              if (!existingUser) {
-                  return null;
-              }
+        if (!existingUser) {
+          return null;
+        }
 
-              const passwordMatch = await compare(
+        const passwordMatch = await compare(
           credentials.password,
           existingUser.password,
         );
 
-              if (!passwordMatch) {
-                  return null;
-              }
+        if (!passwordMatch) {
+          return null;
+        }
 
         return {
           id: `${existingUser.id}`,
           firstName: existingUser.firstName,
           lastName: existingUser.lastName,
           //roles: existingUser.roles,
-          image: existingUser.image
+          image: existingUser.image,
         };
       },
     }),
   ],
   callbacks: {
     async signIn({ credentials, profile, account }) {
-      if( account.provider === 'slack' ) {
+      if (account.provider === "slack") {
         return signIn({ profile, account });
       } else {
-        return signInCred({ credentials, account })
+        return signInCred({ credentials, account });
       }
-  },
+    },
 
     async session({ session, token }) {
       return createNewSession({ session, token });
