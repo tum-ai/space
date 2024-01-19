@@ -79,14 +79,14 @@ function ProfilePicture({ image }) {
     <>
       {image ? (
         <Image
-          className="h-26 w-26 rounded-full object-cover"
+          className="h-32 w-32 rounded-full object-cover"
           src={image}
           width={150}
           height={150}
           alt="Your profile picture"
         />
       ) : (
-        <div className="flex h-24 w-24 rounded-full bg-gray-300 text-center drop-shadow-lg dark:bg-gray-800">
+        <div className="flex h-32 w-32 rounded-full bg-gray-300 text-center drop-shadow-lg dark:bg-gray-800">
           <Icon name={"FaUser"} className="m-auto text-4xl text-white" />
         </div>
       )}
