@@ -1,4 +1,5 @@
 version: "3.8"
+
 services:
   db:
     image: postgres:14-alpine
@@ -9,6 +10,11 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
     volumes:
-      - ./data/db:/var/lib/postgresql/data
+      - ../data/db:/var/lib/postgresql/data
     ports:
       - "15432:5432"
+    networks:
+      - app-network
+
+networks:
+  app-network:
