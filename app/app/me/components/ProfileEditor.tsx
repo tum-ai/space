@@ -32,7 +32,9 @@ function ProfileEditor({ trigger, profile }) {
       <Formik
         initialValues={profile}
         validationSchema={profileSchema}
-        onSubmit={async (values) => {throw Error("TODO: Not implemented - update profile in DB")}}
+        onSubmit={async (values) => {
+          throw Error("TODO: Not implemented - update profile in DB");
+        }}
       >
         {({ handleChange }) => (
           <ProfileForm handleChange={handleChange} editorProfile={profile} />
