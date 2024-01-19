@@ -12,12 +12,6 @@ import { UploadIcon, DownloadIcon } from "@radix-ui/react-icons";
 import { z } from "zod";
 
 const profileSchema = z.object({
-  /*
-  profile_picture: z.union([z.string().nullable(), z.instanceof(FileList).optional()])
-    .refine((file) => !file || (file instanceof FileList && file[0].size <= 0.2 * 1048576), {
-      message: "File is too big! Max size is 200 KB.",
-    }),
-  */
   first_name: z.string().nonempty("First name is required."),
   last_name: z.string().nonempty("Last name is required."),
   birthday: z.date().nullable(),
@@ -38,7 +32,7 @@ function ProfileEditor({ trigger, profile }) {
       <Formik
         initialValues={profile}
         validationSchema={profileSchema}
-        onSubmit={async (values) => {}}
+        onSubmit={async (values) => {throw Error("TODO: Not implemented - update profile in DB")}}
       >
         {({ handleChange }) => (
           <ProfileForm handleChange={handleChange} editorProfile={profile} />
