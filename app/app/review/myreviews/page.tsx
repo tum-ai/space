@@ -86,17 +86,17 @@ const MyReviews = observer(() => {
                                     profilePicture={profile.profile_picture}
                                     initials={(
                                       "" +
-                                      profile.first_name[0] +
-                                      profile.last_name[0]
+                                      profile.firstName[0] +
+                                      profile.lastName[0]
                                     ).toUpperCase()}
                                   />
                                 </div>
                               }
                             >
                               <div>
-                                {profile.first_name +
+                                {profile.firstName +
                                   " " +
-                                  profile.last_name +
+                                  profile.lastName +
                                   " - final score: " +
                                   review.finalscore}
                               </div>
