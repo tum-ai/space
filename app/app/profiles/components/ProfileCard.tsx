@@ -17,7 +17,7 @@ const ProfileCard = observer(({ profile }) => {
         <div className="flex w-full justify-between gap-2">
           <div className="flex flex-col overflow-hidden">
             <p className="overflow-hidden text-ellipsis whitespace-nowrap font-bold">
-              {profile?.first_name + " " + profile?.last_name}
+              {profile?.firstName + " " + profile?.lastName}
             </p>
             <p className="overflow-hidden text-ellipsis whitespace-nowrap">
               {profile.email}
@@ -28,8 +28,8 @@ const ProfileCard = observer(({ profile }) => {
             profilePicture={profile.profile_picture}
             initials={(
               "" +
-              profile.first_name[0] +
-              profile.last_name[0]
+              profile.firstName[0] +
+              profile.lastName[0]
             ).toUpperCase()}
           />
         </div>
