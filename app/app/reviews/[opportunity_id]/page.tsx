@@ -3,7 +3,7 @@
 import { Section } from "@components/Section";
 import { Button } from "@components/ui/button";
 import OverviewRows from "./components/OverviewRows";
-import OverviewTable from "./components/OverviewRows";
+import OverviewTable from "./components/OverviewTable";
 import {
   TableIcon,
   RowsIcon,
@@ -13,7 +13,7 @@ import { Tabs, TabsList, TabsTrigger } from "@components/ui/tabs";
 import Input from "@components/Input";
 import Link from "next/link";
 import { useState } from "react";
-import OpportunityCard from "app/opportunities/components/opportunityCard";
+
 
 interface Reviewer {
   name: string;
