@@ -35,4 +35,8 @@ if (environment_name === "production") {
 console.log("Env: ", environment_name);
 
 const app = initializeApp(firebaseConfig);
+<<<<<<< HEAD
 export const auth = getAuth(app);
+=======
+export const auth = getAuth(app);
+>>>>>>> dev
