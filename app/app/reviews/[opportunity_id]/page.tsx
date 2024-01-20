@@ -98,6 +98,8 @@ const data = {
   },
 };
 
+const opportunityTitle = "Winter Semester 2024/2025 Application"
+
 function filterData(showOnlyUnfinished: boolean, phase: string, searchQuery: string, data: Data): Data {
   return Object.entries(data).reduce((acc, [key, item]) => {
     const isFinishedMatch = !showOnlyUnfinished || !item.finished;
@@ -123,7 +125,7 @@ export default function ReviewOverview({ params }) {
 
   return (
     <Section className="space-y-6">
-      <OverviewHeader opportunityId={opportunityId} />
+      <OverviewHeader opportunityId={opportunityId} opportunityTitle={opportunityTitle}/>
       <OverviewToolBar
         setPhase={setPhase}
         phase={phase}
@@ -138,7 +140,7 @@ export default function ReviewOverview({ params }) {
   );
 }
 
-function OverviewHeader({ opportunityId }) {
+function OverviewHeader({ opportunityId, opportunityTitle }) {
   return (
     <div className="flex flex-col gap-1.5">
       <div className="flex w-full flex-row items-center justify-between">
