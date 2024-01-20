@@ -17,6 +17,7 @@ import {
   DropdownMenuTrigger,
   DropdownMenuContent,
 } from "@components/ui/dropdown-menu";
+
 interface Reviewer {
   name: string;
   imgSrc: string;
@@ -97,24 +98,27 @@ const data = {
   },
 };
 
-function filterData(showOnlyUnfinished: boolean, phase, data: Data): Data {
+function filterData(showOnlyUnfinished : boolean, phase : string, searchQuery : string, data: Data): Data {
   return Object.entries(data).reduce((acc, [key, item]) => {
-    console.log(acc, key, item);
     const isFinishedMatch = !showOnlyUnfinished || !item.finished;
     const isPhaseMatch = item.phase === phase || phase === "all";
-    if (isFinishedMatch && isPhaseMatch) {
+    const isSearchMatch = item.firstName.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                          item.lastName.toLowerCase().includes(searchQuery.toLowerCase());
+    if (isFinishedMatch && isPhaseMatch && isSearchMatch) {
       acc[key] = item;
     }
     return acc;
   }, {});
 }
 
+
 export default function ReviewOverview({ params }) {
   const opportunityId = decodeURIComponent(params.opportunity_id);
   const mockPhases = ["screening", "interview", "decision"]; // change -> needs to be passed
   const [phase, setPhase] = useState("all");
   const [showOnlyUnfinished, setShowOnlyUnfinished] = useState(false);
-  const filteredData = filterData(showOnlyUnfinished, phase, data);
+  const [searchQuery, setSearchQuery] = useState('');
+  const filteredData = filterData(showOnlyUnfinished, phase, searchQuery, data);
 
   return (
     <Section className="space-y-6">
@@ -125,6 +129,8 @@ export default function ReviewOverview({ params }) {
         phases={mockPhases}
         showOnlyUnfinished={showOnlyUnfinished}
         changeShowOnlyUnfinished={setShowOnlyUnfinished}
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
       />
       <OverviewRows data={filteredData} />
     </Section>
@@ -155,11 +161,12 @@ function OverviewToolBar({
   setPhase,
   showOnlyUnfinished,
   changeShowOnlyUnfinished,
+  searchQuery,
+  setSearchQuery,
 }) {
-  console.log(phases);
   return (
     <div className="flex space-x-2">
-      <Input fullWidth placeholder="Search"></Input>
+      <Input fullWidth placeholder="Search" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}/>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="secondary">
