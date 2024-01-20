@@ -108,7 +108,7 @@ function OverviewHeader({ opportunityId }) {
         <h2 className="text-2xl">
           Winter Semester 2024/2025 Application
         </h2>
-        <h2 className="text-2xl">
+        <h2 className="text-2x">
           ID: {opportunityId}
         </h2>
       </div>
@@ -118,7 +118,7 @@ function OverviewHeader({ opportunityId }) {
 
 function OverviewToolBar({ onTabChange }) {
   return (
-    <div className="flex h-20 w-full flex-row space-x-2">
+    <div className="flex w-full flex-row space-x-2">
       <Input fullWidth placeholder="Search"></Input>
       <Button variant="outline" size="default">
         <MixerHorizontalIcon className="mr-2" />
