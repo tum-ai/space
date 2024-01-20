@@ -123,13 +123,13 @@ const ProfileDetails = () => (
   <>
     <div className="grid grid-cols-2 gap-4">
       <InputFieldComponent
-        name="firstName"
+        name="first_name"
         label="First name"
         placeholder="Max"
         type="text"
       />
       <InputFieldComponent
-        name="lastName"
+        name="last_name"
         label="Last name"
         placeholder="Mustermann"
         type="text"

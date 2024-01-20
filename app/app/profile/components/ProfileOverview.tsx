@@ -50,33 +50,17 @@ function ProfileOverview({ profile }: Props) {
           >
             {profile.email}
           </Link>
-
-          {/*
-          {profile.socialNetworks &&
-            profile.socialNetworks.map((socialNetwork) => (
-              <Link key={socialNetwork.link} href={socialNetwork.link}>
-                <Icon
-                  name={
-                    socialNetwork.type === "Other"
-                      ? "FaGlobe"
-                      : (("Fa" + socialNetwork.type) as any)
-                  }
-                  className="rounded-full p-2 hover:scale-105"
-                />
-              </Link>
-            ))}
-                */}
         </div>
         <dl className="divide-y divide-gray-600">
           <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
             <dt className="font-medium">Degree</dt>
             <dd>
-              {profile.degree_level} {profile.degree_name}
+              {profile.degreeLevel} {profile.degreeName}
             </dd>
           </div>
           <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
             <dt className="font-medium">Semester</dt>
-            <dd>{profile.degree_semester}</dd>
+            <dd>{profile.degreeSemester}</dd>
           </div>
           <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
             <dt className="font-medium">University</dt>
