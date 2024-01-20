@@ -11,18 +11,28 @@ import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
   DropdownMenuSeparator,
-} from "@components/ui/dropdown-menu";
-import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
   DropdownMenuContent,
-} from "@radix-ui/react-dropdown-menu";
-
+} from "@components/ui/dropdown-menu";
+import { DropdownMenuCheckboxItemProps } from "@radix-ui/react-dropdown-menu";
 interface Reviewer {
   name: string;
   imgSrc: string;
 }
+
+interface DataEntry {
+  firstName: string;
+  lastName: string;
+  phase: string;
+  score: number;
+  reviewer: Reviewer[];
+  finished: boolean;
+}
+
+type Data = { [key: string]: DataEntry };
 
 let simon: Reviewer = {
   name: "Simon Huang",
@@ -44,6 +54,7 @@ const data = {
     phase: "Interview",
     score: 9.8,
     reviewer: [simon, bryan],
+    finished: true,
   },
   "2": {
     firstName: "Tim",
@@ -51,6 +62,7 @@ const data = {
     phase: "Interview",
     score: 6.8,
     reviewer: [simon, tim],
+    finished: false,
   },
   "3": {
     firstName: "Bryan",
@@ -58,6 +70,7 @@ const data = {
     phase: "Interview",
     score: 7.3,
     reviewer: [simon, tim, bryan],
+    finished: true,
   },
   "4": {
     firstName: "Peter",
@@ -65,6 +78,7 @@ const data = {
     phase: "Interview",
     score: 7.3,
     reviewer: [simon, tim, bryan],
+    finished: false,
   },
   "5": {
     firstName: "Dieter",
@@ -72,6 +86,7 @@ const data = {
     phase: "Interview",
     score: 7.3,
     reviewer: [simon, tim, bryan],
+    finished: true,
   },
   "6": {
     firstName: "Magnus",
@@ -79,19 +94,40 @@ const data = {
     phase: "Interview",
     score: 7.3,
     reviewer: [simon, tim, bryan],
+    finished: false,
   },
 };
 
+function filterData(showOnlyUnfinished : boolean, phaseList : string[], data: Data): Data {
+  return Object.entries(data).reduce((acc, [key, item]) => {
+    const isFinishedMatch = item.finished !== showOnlyUnfinished;
+    const isPhaseMatch = phaseList.includes(item.phase) || phaseList.includes("all");
+    if (isFinishedMatch && isPhaseMatch) {
+      acc[key] = item;
+    }
+    return acc;
+  }, {});
+}
+
+type Checked = DropdownMenuCheckboxItemProps["checked"];
+
 export default function ReviewOverview({ params }) {
   const opportunityId = decodeURIComponent(params.opportunity_id);
-  const [phase, setPhase] = useState<"screening" | "interview" | "decision">(
-    "screening",
-  );
+  const mockPhases = ["screening", "interview", "decision"]; // change -> needs to be passed
+  const [phase, setPhase] = useState("all");
+  const [showOnlyUnfinished, setShowOnlyUnfinished] = useState(false);
+  const filteredData = filterData(showOnlyUnfinished, mockPhases, data);
 
   return (
     <Section className="space-y-6">
       <OverviewHeader opportunityId={opportunityId} />
-      <OverviewToolBar setPhase={setPhase} phase={phase} phases={ params.phases } />
+      <OverviewToolBar
+        setPhase={setPhase}
+        phase={phase}
+        phases={mockPhases}
+        showOnlyUnfinished={showOnlyUnfinished}
+        changeShowOnlyUnfinished={setShowOnlyUnfinished}
+      />
       <OverviewRows data={data} />
     </Section>
   );
@@ -115,9 +151,15 @@ function OverviewHeader({ opportunityId }) {
   );
 }
 
-function OverviewToolBar({ phase, phases, setPhase }) {
+function OverviewToolBar({
+  phase,
+  phases,
+  setPhase,
+  showOnlyUnfinished,
+  changeShowOnlyUnfinished,
+}) {
   return (
-    <div className="flex w-full flex-row space-x-2">
+    <div className="flex space-x-2">
       <Input fullWidth placeholder="Search"></Input>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
@@ -129,9 +171,25 @@ function OverviewToolBar({ phase, phases, setPhase }) {
         <DropdownMenuContent className="z-50 w-56">
           <DropdownMenuLabel>Filter options</DropdownMenuLabel>
           <DropdownMenuSeparator />
-
+          <DropdownMenuCheckboxItem
+            checked={showOnlyUnfinished}
+            onCheckedChange={changeShowOnlyUnfinished}
+          >
+            Only unfinished
+          </DropdownMenuCheckboxItem>
           <DropdownMenuSeparator />
-          <DropdownMenuRadioGroup value={phase}></DropdownMenuRadioGroup>
+          <DropdownMenuRadioGroup value={phase} onValueChange={setPhase}>
+            <DropdownMenuRadioItem value="screening">
+              Screening
+            </DropdownMenuRadioItem>
+            <DropdownMenuRadioItem value="interview">
+              Interview
+            </DropdownMenuRadioItem>
+            <DropdownMenuRadioItem value="decision">
+              Decision
+            </DropdownMenuRadioItem>
+            <DropdownMenuRadioItem value="all">All</DropdownMenuRadioItem>
+          </DropdownMenuRadioGroup>
         </DropdownMenuContent>
       </DropdownMenu>
     </div>
