@@ -3,17 +3,21 @@
 import { Section } from "@components/Section";
 import { Button } from "@components/ui/button";
 import OverviewRows from "./components/OverviewRows";
-import OverviewTable from "./components/OverviewTable";
-import {
-  TableIcon,
-  RowsIcon,
-  MixerHorizontalIcon,
-} from "@radix-ui/react-icons";
-import { Tabs, TabsList, TabsTrigger } from "@components/ui/tabs";
+import { MixerHorizontalIcon } from "@radix-ui/react-icons";
 import Input from "@components/Input";
 import Link from "next/link";
 import { useState } from "react";
-
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuRadioGroup,
+  DropdownMenuSeparator,
+} from "@components/ui/dropdown-menu";
+import {
+  DropdownMenuLabel,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+} from "@radix-ui/react-dropdown-menu";
 
 interface Reviewer {
   name: string;
@@ -79,17 +83,16 @@ const data = {
 };
 
 export default function ReviewOverview({ params }) {
-  const [tab, setTab] = useState<"rows" | "table">("rows");
   const opportunityId = decodeURIComponent(params.opportunity_id);
+  const [phase, setPhase] = useState<"screening" | "interview" | "decision">(
+    "screening",
+  );
+
   return (
     <Section className="space-y-6">
       <OverviewHeader opportunityId={opportunityId} />
-      <OverviewToolBar onTabChange={setTab} />
-      {tab === "rows" ? (
-        <OverviewRows data={data} />
-      ) : (
-        <OverviewTable data={data} />
-      )}
+      <OverviewToolBar setPhase={setPhase} phase={phase} phases={ params.phases } />
+      <OverviewRows data={data} />
     </Section>
   );
 }
@@ -105,35 +108,32 @@ function OverviewHeader({ opportunityId }) {
       </div>
       <p>View all available Applications for</p>
       <div className="flex w-full items-center justify-between">
-        <h2 className="text-2xl">
-          Winter Semester 2024/2025 Application
-        </h2>
-        <h2 className="text-2x">
-          ID: {opportunityId}
-        </h2>
+        <h2 className="text-2xl">Winter Semester 2024/2025 Application</h2>
+        <h2 className="text-2x">ID: {opportunityId}</h2>
       </div>
     </div>
   );
 }
 
-function OverviewToolBar({ onTabChange }) {
+function OverviewToolBar({ phase, phases, setPhase }) {
   return (
     <div className="flex w-full flex-row space-x-2">
       <Input fullWidth placeholder="Search"></Input>
-      <Button variant="outline" size="default">
-        <MixerHorizontalIcon className="mr-2" />
-        Filter
-      </Button>
-      <Tabs defaultValue="rows">
-        <TabsList className="h-10">
-          <TabsTrigger value="rows" onClick={() => onTabChange("rows")}>
-            <RowsIcon />
-          </TabsTrigger>
-          <TabsTrigger value="table" onClick={() => onTabChange("table")}>
-            <TableIcon />
-          </TabsTrigger>
-        </TabsList>
-      </Tabs>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="secondary">
+            <MixerHorizontalIcon className="mr-2" />
+            Filter
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent className="z-50 w-56">
+          <DropdownMenuLabel>Filter options</DropdownMenuLabel>
+          <DropdownMenuSeparator />
+
+          <DropdownMenuSeparator />
+          <DropdownMenuRadioGroup value={phase}></DropdownMenuRadioGroup>
+        </DropdownMenuContent>
+      </DropdownMenu>
     </div>
   );
 }
