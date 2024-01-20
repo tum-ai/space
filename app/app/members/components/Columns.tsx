@@ -198,7 +198,7 @@ export const columns: ExtendedColumnDef<User>[] = [
   
         return (
           <>
-            <DataTableEditDialog key={row.id} rows={[row]} visible={isDialogOpen} />
+            <DataTableEditDialog key={row.id} rows={row} visible={isDialogOpen} />
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="h-8 w-8 p-0">

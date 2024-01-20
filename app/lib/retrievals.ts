@@ -1,12 +1,20 @@
-import { UserPermission, DepartmentPosition } from "@prisma/client"; 
+import { DepartmentPosition } from "@prisma/client"; 
 import axios from 'axios';
 
 export async function getPermissionsMap() {
-    return Object.keys(UserPermission).map((permission) => ({
-      label: String(permission[0].toUpperCase() + permission.slice(1)).replaceAll('_', ' '),
-      value: permission,
+  try {
+    const response = await axios.get('/api/permissions');
+    if (response.status !== 200) {
+      throw new Error('Failed to fetch permissions');
+    }
+    return response.data.permissions.map(permission => ({
+      label: permission.name.charAt(0).toUpperCase() + permission.name.slice(1).replaceAll('_', ' '),
+      value: permission.name,
     }));
+  } catch (error) {
+
   }
+}
   
 export async function getPositionsMap() {
   return Object.keys(DepartmentPosition).map((position) => ({

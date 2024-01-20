@@ -1,60 +1,41 @@
 import { NextRequest, NextResponse } from 'next/server'
 import prisma from "database/db";
-import { checkPermission } from "@lib/auth/checkUserPermission";
-import { getServerSession } from 'next-auth';
 
-const complete_view = {
+const completeView = {
     id: true,
     name: true,
-    department_memberships: {
-        select: {
-            user: {
-                select: {
-                    id: true,
-                    first_name: true,
-                    last_name: true,
-                    email: true,
-                    image: true,
-                }
-            },
-            department_position: true,
-        }
+    description: true,
+    userRole: {
+        name: true
     }
 }
 
-const partial_view = {
+const partialView = {
     id: true,
-    name: true,
+    name: true
 }
 
 
 export async function GET(req: NextRequest) {
 
-    //authorization
-    const session = await getServerSession().catch((e) => {
-        console.log(e);
-        return null;
-    });
-    const user_permission = session?.user?.permission;
-  
-    const has_admin_permission = user_permission && await checkPermission(['admin'], user_permission);
-
-    // _________________________________________________________
-
     let departments;
-
+    const id  = req.nextUrl.searchParams.get('id');
     
-    if (has_admin_permission) {
-        departments = await prisma.department.findMany({
-            select: complete_view
-        });
-    } else {
-        departments = await prisma.department.findMany({
-            select: partial_view
-        });
+    try {
+        if (id) {
+            departments = await prisma.department.findMany({
+                select: completeView
+            });
+        } else {
+            departments = await prisma.department.findMany({
+                select: partialView
+            });
+        }
+    } catch (error) {
+        return NextResponse.json({"error": error}, { status: 500 })
     }
+    
 
     return NextResponse.json({"departments": departments}, { status: 200 })
-    
 };
      
