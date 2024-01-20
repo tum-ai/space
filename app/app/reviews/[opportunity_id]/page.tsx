@@ -98,19 +98,20 @@ const data = {
   },
 };
 
-function filterData(showOnlyUnfinished : boolean, phase : string, searchQuery : string, data: Data): Data {
+function filterData(showOnlyUnfinished: boolean, phase: string, searchQuery: string, data: Data): Data {
   return Object.entries(data).reduce((acc, [key, item]) => {
     const isFinishedMatch = !showOnlyUnfinished || !item.finished;
     const isPhaseMatch = item.phase === phase || phase === "all";
     const isSearchMatch = item.firstName.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                          item.lastName.toLowerCase().includes(searchQuery.toLowerCase());
+                          item.lastName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                          key.includes(searchQuery); // Include ID in the search
+
     if (isFinishedMatch && isPhaseMatch && isSearchMatch) {
       acc[key] = item;
     }
     return acc;
   }, {});
 }
-
 
 export default function ReviewOverview({ params }) {
   const opportunityId = decodeURIComponent(params.opportunity_id);
@@ -166,7 +167,7 @@ function OverviewToolBar({
 }) {
   return (
     <div className="flex space-x-2">
-      <Input fullWidth placeholder="Search" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}/>
+      <Input fullWidth placeholder="Search for name or ID" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}/>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="secondary">
