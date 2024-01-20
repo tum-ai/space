@@ -29,6 +29,7 @@ interface OverviewRowsProps {
 }
 
 function OverviewRows({ data }: OverviewRowsProps) {
+  console.log(data);
   return (
     <div className="flex flex-col space-y-4">
       {Object.entries(data).map(([id, vals]) => (

@@ -17,7 +17,6 @@ import {
   DropdownMenuTrigger,
   DropdownMenuContent,
 } from "@components/ui/dropdown-menu";
-import { DropdownMenuCheckboxItemProps } from "@radix-ui/react-dropdown-menu";
 interface Reviewer {
   name: string;
   imgSrc: string;
@@ -51,7 +50,7 @@ const data = {
   "1": {
     firstName: "Simon",
     lastName: "Huang",
-    phase: "Interview",
+    phase: "interview",
     score: 9.8,
     reviewer: [simon, bryan],
     finished: true,
@@ -59,7 +58,7 @@ const data = {
   "2": {
     firstName: "Tim",
     lastName: "Baum",
-    phase: "Interview",
+    phase: "interview",
     score: 6.8,
     reviewer: [simon, tim],
     finished: false,
@@ -67,7 +66,7 @@ const data = {
   "3": {
     firstName: "Bryan",
     lastName: "Alvin",
-    phase: "Interview",
+    phase: "interview",
     score: 7.3,
     reviewer: [simon, tim, bryan],
     finished: true,
@@ -75,7 +74,7 @@ const data = {
   "4": {
     firstName: "Peter",
     lastName: "Petersen",
-    phase: "Interview",
+    phase: "interview",
     score: 7.3,
     reviewer: [simon, tim, bryan],
     finished: false,
@@ -83,7 +82,7 @@ const data = {
   "5": {
     firstName: "Dieter",
     lastName: "Dietgen",
-    phase: "Interview",
+    phase: "screening",
     score: 7.3,
     reviewer: [simon, tim, bryan],
     finished: true,
@@ -91,17 +90,18 @@ const data = {
   "6": {
     firstName: "Magnus",
     lastName: "Magnusen",
-    phase: "Interview",
+    phase: "interview",
     score: 7.3,
     reviewer: [simon, tim, bryan],
     finished: false,
   },
 };
 
-function filterData(showOnlyUnfinished : boolean, phaseList : string[], data: Data): Data {
+function filterData(showOnlyUnfinished : boolean, phase, data: Data): Data {
   return Object.entries(data).reduce((acc, [key, item]) => {
-    const isFinishedMatch = item.finished !== showOnlyUnfinished;
-    const isPhaseMatch = phaseList.includes(item.phase) || phaseList.includes("all");
+    console.log(acc, key, item)
+    const isFinishedMatch = !showOnlyUnfinished || !item.finished;
+    const isPhaseMatch = (item.phase === phase) || (phase === 'all');
     if (isFinishedMatch && isPhaseMatch) {
       acc[key] = item;
     }
@@ -109,14 +109,12 @@ function filterData(showOnlyUnfinished : boolean, phaseList : string[], data: Da
   }, {});
 }
 
-type Checked = DropdownMenuCheckboxItemProps["checked"];
-
 export default function ReviewOverview({ params }) {
   const opportunityId = decodeURIComponent(params.opportunity_id);
   const mockPhases = ["screening", "interview", "decision"]; // change -> needs to be passed
   const [phase, setPhase] = useState("all");
   const [showOnlyUnfinished, setShowOnlyUnfinished] = useState(false);
-  const filteredData = filterData(showOnlyUnfinished, mockPhases, data);
+  const filteredData = filterData(showOnlyUnfinished, phase, data);
 
   return (
     <Section className="space-y-6">
@@ -128,7 +126,7 @@ export default function ReviewOverview({ params }) {
         showOnlyUnfinished={showOnlyUnfinished}
         changeShowOnlyUnfinished={setShowOnlyUnfinished}
       />
-      <OverviewRows data={data} />
+      <OverviewRows data={filteredData} />
     </Section>
   );
 }
@@ -190,6 +188,7 @@ function OverviewToolBar({
             </DropdownMenuRadioItem>
             <DropdownMenuRadioItem value="all">All</DropdownMenuRadioItem>
           </DropdownMenuRadioGroup>
+          <DropdownMenuSeparator />
         </DropdownMenuContent>
       </DropdownMenu>
     </div>
