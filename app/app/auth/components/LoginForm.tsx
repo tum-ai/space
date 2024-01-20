@@ -5,9 +5,26 @@ import { signIn, signOut } from "next-auth/react";
 
 export const LoginForm = async ({ setResetPassword }) => {
   const router = useRouter();
+  const isDevelopment = process.env.NEXT_PUBLIC_VERCEL_ENV === "development";
 
   const profileRoute = () => {
     router.push("/profile");
+  };
+
+  const signUpRoute = () => {
+    if (!isDevelopment) {
+      router.push("/auth");
+      return;
+    }
+    router.push("/auth/signup");
+  };
+
+  const signInRoute = () => {
+    if (!isDevelopment) {
+      router.push("/auth");
+      return;
+    }
+    router.push("/auth/signin");
   };
 
   return (
@@ -25,6 +42,12 @@ export const LoginForm = async ({ setResetPassword }) => {
         />
         Log in with Slack
       </Button>
+      {isDevelopment && (
+        <>
+          <Button onClick={signInRoute}>Sign in with Credentials</Button>
+          <Button onClick={signUpRoute}>Sign up</Button>
+        </>
+      )}
       <Button onClick={() => signOut()}> Sign out</Button>
       <Button onClick={profileRoute}>View Profile</Button>
     </div>

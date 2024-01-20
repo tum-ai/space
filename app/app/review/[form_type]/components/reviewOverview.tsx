@@ -3,7 +3,7 @@ export function ReviewOverview({ review }) {
     <div className="top-0 grid h-fit grid-cols-1 gap-4 md:sticky md:grid-cols-2">
       <div className="text-2xl md:col-span-2">
         <span>Reviewer: </span>
-        {review.reviewer?.first_name + " " + review.reviewer?.last_name}
+        {review.reviewer?.firstName + " " + review.reviewer?.lastName}
       </div>
       <hr className="border-2 border-black dark:border-white md:col-span-2" />
       {Object.entries(review)

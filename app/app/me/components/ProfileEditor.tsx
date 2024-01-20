@@ -49,8 +49,8 @@ type SocialNetworkType = {
 
 type ProfileFormData = {
   profile_picture?: string | null;
-  first_name: string;
-  last_name: string;
+  firstName: string;
+  lastName: string;
   nationality?: string | null;
   university?: string | null;
   degree_level?: string | null;
@@ -71,8 +71,8 @@ const validationSchema = Yup.object().shape({
       return true; // not a file input
     })
     .nullable(),
-  first_name: Yup.string().required("First name is required."),
-  last_name: Yup.string().required("Last name is required."),
+  firstName: Yup.string().required("First name is required."),
+  lastName: Yup.string().required("Last name is required."),
   nationality: Yup.string().nullable(),
   university: Yup.string().nullable(),
   degree_level: Yup.string().nullable(),
@@ -225,13 +225,13 @@ const ProfileDetails = () => (
   <>
     <div className="grid grid-cols-2 gap-4">
       <InputFieldComponent
-        name="first_name"
+        name="firstName"
         label="First name"
         placeholder="Max"
         type="text"
       />
       <InputFieldComponent
-        name="last_name"
+        name="lastName"
         label="Last name"
         placeholder="Mustermann"
         type="text"
