@@ -10,16 +10,27 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@components/ui/dropdown-menu"
 import { DataTableColumnHeader} from "./DataTabelHeader" 
 import { User } from "prisma/prisma-client"
 import { Avatar } from "@components/Avatar"
+import DataTableEditDialog from "./DataTableEditDialog"
+import { deleteProfile } from "@lib/retrievals"
 
-// label for the column to have a human readable name, becaused Header is used for the header component
+// ExtendedColumnDef extends ColumnDef with additional properties for table rendering.
 type ExtendedColumnDef<T extends object> = ColumnDef<T> & {
+  // 'label' is a human-readable name for the column. It's used instead of 'Header' which is for the header component.
   label: string;
+
+  // 'hasFilter' indicates whether the table column should have a filter. By default, it's false.
+  hasFilter?: boolean; 
+
+  // 'options' is a function returning a Promise that resolves to a Map of filter options for the table column. 
+  // By default, it's a String filter.
+  options?: () => Promise<Map<string, string>>; 
 };
 
 
@@ -189,29 +200,53 @@ export const columns: ExtendedColumnDef<User>[] = [
       enableHiding: false,
       cell: ({ row }) => {
         const profil = row.original
+        const [isDialogOpen, setDialogOpen] = React.useState(false);
   
         return (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="h-8 w-8 p-0">
-                <span className="sr-only">Open menu</span>
-                <MoreHorizontal className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Actions</DropdownMenuLabel>
-              <DropdownMenuItem
-                onClick={() => {
-                  if (!profil.email) {
-                    return
-                  }
-                  navigator.clipboard.writeText(profil.email)}}
-              >
-                Copy Email
-              </DropdownMenuItem>
-              <DropdownMenuItem>View Member</DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <>
+            <DataTableEditDialog key={row.id} rows={[row]} visible={isDialogOpen} />
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="h-8 w-8 p-0">
+                  <span className="sr-only">Open menu</span>
+                  <MoreHorizontal className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                <DropdownMenuItem
+                  onClick={() => {
+                    if (!profil.email) {
+                      return
+                    }
+                    navigator.clipboard.writeText(profil.email)}}
+                >
+                  Copy Email
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                      onClick={() => {
+                        setDialogOpen(true);
+                      }}
+                    >
+                      Edit Member
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem className="text-red-500"
+                  onClick={async () => {
+                    try {
+                      await deleteProfile(profil.id);
+                      window.location.reload();
+                      //TODO: Instead of reloading the page, we should update the table in the parent component
+                    } catch (error) {
+                      throw new Error(error);
+                    }
+                  }}
+                  >
+                  Delete Member
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </> 
         )
       },
     },

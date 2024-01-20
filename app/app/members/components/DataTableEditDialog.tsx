@@ -14,12 +14,36 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@components/ui/select";
+import { updateMembership, getDepartmentsMap, getPermissionsMap, getPositionsMap, createMembership } from "@lib/retrievals";
+
+
 export default function DataTableEditDialog(props: any) {
   const [data, setData] = useState(props.rows);
+  const [visible, setVisible] = useState(props.visible);
+  const [departments, setDepartments] = useState([]);
+  const [permissions, setPermissions] = useState([]);
+  const [positions, setPositions] = useState([]);
+  console.log(data.row)
 
   useEffect(() => {
     setData(props.rows);
-  }, [props.rows]);
+    setVisible(props.visible);
+
+    const fetchData = async () => {
+      try {
+        const departments = await getDepartmentsMap();
+        const permissions = await getPermissionsMap();
+        const positions = await getPositionsMap();
+        setDepartments(departments);
+        setPermissions(permissions);
+        setPositions(positions);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchData();
+  }, [props.rows, props.visible]);
 
   const handleInputChange = (
     id: number,
@@ -29,13 +53,44 @@ export default function DataTableEditDialog(props: any) {
     const newData = props.rows.map((item) =>
       item.id === id ? { ...item, [attributeName]: newValue } : item,
     );
-    setData(newData);
-    console.info(data);
   };
 
   const handleSubmit = () => {
-    console.info("move this data to DB", data);
-    //TODO validate inputs
+
+    const updateMembershipData = async () => {
+
+      const userId = data.id;
+      const departmentId = data.department;
+      
+      if (!userId) {
+        console.error('data wrong format to submit')
+        return;
+      }
+
+      if (departmentId) {
+        console.error('data wrong format to submit')
+        return;
+      }
+      //TODO validate inputs
+
+
+      try {
+        let response = await updateMembership(userId, data);
+        if (response.status == 404) {
+          response = await createMembership(userId, departmentId, data);
+        }
+        return response.data;
+      } catch (error) {
+        throw new Error(error);
+      }
+    }
+
+    try {
+      const response = updateMembershipData();
+    } catch (error) {
+      throw new Error(error);
+    }
+
 
     //TODO make the UPDATE request to DB
 
@@ -45,22 +100,16 @@ export default function DataTableEditDialog(props: any) {
   return (
     <div>
       <Dialog
-        trigger={
-          <Button
-            variant="outline"
-            className="h-8 px-2 lg:px-3"
-            disabled={!props.rows.length}
-          >
-            Edit
-          </Button>
-        }
+        trigger={true}
+        isOpenOutside={visible} 
+        setIsOpenOutside={setVisible}
       >
         <DialogClose className="float-right">
           <Cross1Icon className="h-5 w-5 text-black hover:text-gray-700 dark:text-white dark:hover:text-gray-400" />
         </DialogClose>
         <div className="flex flex-col gap-8">
           <div className="flex flex-col gap-2">
-            <p className="text-slate-400">Edit all members</p>
+            <p className="text-slate-400">Edit</p>
             <div className="grid grid-cols-8 gap-2">
               <p className="col-span-1 text-sm text-slate-400">ID</p>
               <p className="col-span-2 text-sm text-slate-400">Email</p>
@@ -71,7 +120,7 @@ export default function DataTableEditDialog(props: any) {
               <p className="text-sm text-slate-400">Position</p>
             </div>
             {data.map((row) => (
-              <div className="grid grid-cols-8 gap-2">
+              <div key={row.id} className="grid grid-cols-8 gap-2">
                 <Input
                   value={row.id}
                   className="col-span-1 h-8"
@@ -107,10 +156,13 @@ export default function DataTableEditDialog(props: any) {
                     <SelectValue placeholder={row.current_department} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectGroup>
-                      <SelectItem value="DEV">DEV</SelectItem>
-                      <SelectItem value="LnF">LnF</SelectItem>
-                    </SelectGroup>
+                  <SelectGroup>
+                    {departments.map((department) => (
+                      <SelectItem key={department.label} value={department.value}>
+                        {department.label}
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
                   </SelectContent>
                 </Select>
                 <Select
@@ -123,18 +175,32 @@ export default function DataTableEditDialog(props: any) {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectGroup>
-                      <SelectItem value="admin">admin</SelectItem>
-                      <SelectItem value="user">user</SelectItem>
+                      {permissions.map((permission) => (
+                        <SelectItem key={permission.label} value={permission.value}>
+                          {permission.label}
+                        </SelectItem>
+                      ))}
                     </SelectGroup>
                   </SelectContent>
                 </Select>
-                <Input
-                  value={row.current_department_position}
-                  onChange={(evt) =>
-                    handleInputChange(row.id, "position", evt.target.value)
+                <Select
+                  onValueChange={(input) =>
+                    handleInputChange(row.position, "position", input)
                   }
-                  className="h-8 "
-                />
+                >
+                  <SelectTrigger className="h-8">
+                    <SelectValue placeholder={row.position} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      {positions.map((position) => (
+                        <SelectItem key={position.label} value={position.value}>
+                          {position.label}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
               </div>
             ))}
             <span className="flex justify-end gap-2">

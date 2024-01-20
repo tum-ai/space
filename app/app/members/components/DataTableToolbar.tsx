@@ -14,7 +14,6 @@ import {
   getPositionsMap,
   getDepartmentsMap,
 } from "@lib/retrievals";
-import DataTableEditDialog from "./DataTableEditDialog";
 interface DataTableToolbarProps<TData> {
   table: Table<TData>;
 }
@@ -61,18 +60,6 @@ export function DataTableToolbar<TData>({
         className="flex flex-1 flex-wrap items-center gap-2"
         style={{ maxWidth: "100%" }}
       >
-        <DataTableEditDialog rows={getSelectedRows()} />
-        <Button
-          variant="outline"
-          onClick={() => {
-            //TODO implement DELETE
-            console.info("delete the selected data", getSelectedRows());
-          }}
-          className="h-8 px-2 lg:px-3"
-          disabled={!getSelectedRows().length}
-        >
-          Delete
-        </Button>
         <Input
           placeholder={`Filter ${table.getColumn("email")?.columnDef[
             "label"

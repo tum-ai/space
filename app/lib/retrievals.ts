@@ -26,7 +26,7 @@ export async function getDepartmentsMap() {
       value: department.name,
     }));
   } catch (error) {
-    throw error;
+    throw new Error(error);
   }
 }
 
@@ -40,9 +40,37 @@ export async function getProfileData() {
     }
     return response.data.profiles;
   } catch (error) {
-    throw error;
+    throw new Error(error);
   }
 }
 
+export async function deleteProfile(id: string) {
+  try {
+    const response = await axios.delete(`/api/profiles?id=${id}`);
+    if (response.status !== 200) {
+      throw new Error('Failed to delete profile');
+    }
+    return response.data.profiles;
+  } catch (error) {
+    throw new Error(error);
+  }
+}
 
+export async function updateMembership(user_id: string, data: object) {
+  try {
+    let response = await axios.put(`/api/departmentMemberships/${user_id}`, data)
+    return response;
+  } catch (error) {
+    throw new Error(error);
+  }
+}
+
+export async function createMembership(user_id: string, department_id: string, data: object) {
+  try {
+    const response = await axios.post(`/api/departmentMemberships/${user_id}/${department_id}`, data)
+    return response;
+  } catch (error) {
+    throw new Error(error);
+  }
+}
 

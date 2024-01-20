@@ -67,9 +67,9 @@ export async function GET(req: NextRequest) {
         });
     }
 
-    prepareMembershipData(profiles);
+    const new_profiles = prepareMembershipData(profiles);
 
-    return NextResponse.json({"profiles": profiles}, { status: 200 })
+    return NextResponse.json({"profiles": new_profiles}, { status: 200 })
 };
 
 
@@ -119,9 +119,9 @@ export async function PUT(req: NextRequest) {
         select: complete_view
     });
 
-    prepareMembershipData(profiles);
+    const new_profiles = prepareMembershipData(profiles);
 
-    return NextResponse.json({"profiles": profiles}, { status: 200 })
+    return NextResponse.json({"profiles": new_profiles}, { status: 200 })
 }
 
 export async function DELETE(req: NextRequest) {
@@ -132,9 +132,9 @@ export async function DELETE(req: NextRequest) {
    
      const has_permission = user_permission && await checkPermission(['admin'], user_permission);
    
-     if (!has_permission) {
-         return NextResponse.json({ error: "Missing permission " }, { status: 403 });
-     }
+    //  if (!has_permission) {
+    //      return NextResponse.json({ error: "Missing permission " }, { status: 403 });
+    //  }
  
      // _________________________________________________________
 
@@ -150,9 +150,9 @@ export async function DELETE(req: NextRequest) {
         select: complete_view
     });
 
-    prepareMembershipData(profiles);
+    const new_profiles = prepareMembershipData(profiles);
 
-    return NextResponse.json({"profiles": profiles}, { status: 200 })
+    return NextResponse.json({"profiles": new_profiles}, { status: 200 })
 }
 
 
@@ -164,6 +164,7 @@ function prepareMembershipData(profiles) {
     //     membership_start: 'desc'
     // }
     // in Prisma2 https://github.com/graphql-nexus/nexus-plugin-prisma/issues/458
+
 
     if (!profiles) return;
 
@@ -193,5 +194,5 @@ function prepareMembershipData(profiles) {
         }
     });
 
-    return;
+    return profiles;
 }
