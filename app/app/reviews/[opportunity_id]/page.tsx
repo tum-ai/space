@@ -97,11 +97,11 @@ const data = {
   },
 };
 
-function filterData(showOnlyUnfinished : boolean, phase, data: Data): Data {
+function filterData(showOnlyUnfinished: boolean, phase, data: Data): Data {
   return Object.entries(data).reduce((acc, [key, item]) => {
-    console.log(acc, key, item)
+    console.log(acc, key, item);
     const isFinishedMatch = !showOnlyUnfinished || !item.finished;
-    const isPhaseMatch = (item.phase === phase) || (phase === 'all');
+    const isPhaseMatch = item.phase === phase || phase === "all";
     if (isFinishedMatch && isPhaseMatch) {
       acc[key] = item;
     }
@@ -156,6 +156,7 @@ function OverviewToolBar({
   showOnlyUnfinished,
   changeShowOnlyUnfinished,
 }) {
+  console.log(phases);
   return (
     <div className="flex space-x-2">
       <Input fullWidth placeholder="Search"></Input>
@@ -177,18 +178,13 @@ function OverviewToolBar({
           </DropdownMenuCheckboxItem>
           <DropdownMenuSeparator />
           <DropdownMenuRadioGroup value={phase} onValueChange={setPhase}>
-            <DropdownMenuRadioItem value="screening">
-              Screening
-            </DropdownMenuRadioItem>
-            <DropdownMenuRadioItem value="interview">
-              Interview
-            </DropdownMenuRadioItem>
-            <DropdownMenuRadioItem value="decision">
-              Decision
-            </DropdownMenuRadioItem>
+            {phases.map((phase) => (
+              <DropdownMenuRadioItem value={phase} key={phase}>
+                {phase.charAt(0).toUpperCase() + phase.slice(1)}
+              </DropdownMenuRadioItem>
+            ))}
             <DropdownMenuRadioItem value="all">All</DropdownMenuRadioItem>
           </DropdownMenuRadioGroup>
-          <DropdownMenuSeparator />
         </DropdownMenuContent>
       </DropdownMenu>
     </div>
