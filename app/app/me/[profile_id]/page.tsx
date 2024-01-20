@@ -3,7 +3,6 @@
 import ProfileOverview from "../components/ProfileOverview";
 
 const Me = () => {
-
   // Add data retrieval
 
   const data = {
