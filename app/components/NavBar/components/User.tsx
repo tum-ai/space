@@ -30,10 +30,10 @@ const LoggedInUser = ({ user, meModel }) => {
         <Avatar
           variant="circle"
           profilePicture={user.profile.profile_picture}
-          initials={`${user.profile.first_name[0]}${user.profile.last_name[0]}`}
+          initials={`${user.profile.firstName[0]}${user.profile.lastName[0]}`}
         />
         <p className="hidden sm:flex">
-          {user.profile.first_name} {user.profile.last_name}
+          {user.profile.firstName} {user.profile.lastName}
         </p>
       </DropdownMenuTrigger>
 

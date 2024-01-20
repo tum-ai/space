@@ -42,7 +42,7 @@ function ProfileOverview({ profile }: Props) {
       <div className="mt-6 space-y-12">
         <div className="max-w-90 flex flex-col items-center space-y-3 xl:col-span-2">
           <h1 className="w-full text-center text-6xl font-thin">
-            {profile.first_name + " " + profile.last_name}
+            {profile.firstName + " " + profile.lastName}
           </h1>
           <Link
             className="mx-auto text-lg hover:text-blue-800"
