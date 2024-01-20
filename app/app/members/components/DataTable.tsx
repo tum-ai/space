@@ -40,7 +40,6 @@ export function DataTable() {
   const [error, setError] = React.useState(null);
   const [loading, setLoading] = React.useState(true);
 
-
   React.useEffect(() => {
     const fetchData = async () => {
       try {

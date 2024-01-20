@@ -24,12 +24,6 @@ import { deleteProfile } from "@lib/retrievals"
 type ExtendedColumnDef<T extends object> = ColumnDef<T> & {
   // 'label' is a human-readable name for the column. It's used instead of 'Header' which is for the header component.
   label: string;
-
-  // 'hasFilter' indicates whether the table column should have a filter. By default, it's false.
-  hasFilter?: boolean; 
-
-  // 'options' is a function returning a Promise that resolves to a Map of filter options for the table column. 
-  // By default, it's a String filter.
   options?: () => Promise<Map<string, string>>; 
 };
 

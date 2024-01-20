@@ -23,7 +23,6 @@ export default function DataTableEditDialog(props: any) {
   const [departments, setDepartments] = useState([]);
   const [permissions, setPermissions] = useState([]);
   const [positions, setPositions] = useState([]);
-  console.log(data.row)
 
   useEffect(() => {
     setData(props.rows);
@@ -83,14 +82,16 @@ export default function DataTableEditDialog(props: any) {
       } catch (error) {
         throw new Error(error);
       }
-    }
 
+    }
+    
     try {
       const response = updateMembershipData();
     } catch (error) {
       throw new Error(error);
     }
-
+    
+    setVisible(false);
 
     //TODO make the UPDATE request to DB
 
@@ -104,7 +105,7 @@ export default function DataTableEditDialog(props: any) {
         isOpenOutside={visible} 
         setIsOpenOutside={setVisible}
       >
-        <DialogClose className="float-right">
+        <DialogClose className="float-right" onClick={() => setVisible(false)}>
           <Cross1Icon className="h-5 w-5 text-black hover:text-gray-700 dark:text-white dark:hover:text-gray-400" />
         </DialogClose>
         <div className="flex flex-col gap-8">
