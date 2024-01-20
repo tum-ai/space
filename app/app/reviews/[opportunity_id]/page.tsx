@@ -168,8 +168,7 @@ function OverviewToolBar({
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="z-50 w-56">
-          <DropdownMenuLabel>Filter options</DropdownMenuLabel>
-          <DropdownMenuSeparator />
+          <DropdownMenuLabel>Filter progress</DropdownMenuLabel>
           <DropdownMenuCheckboxItem
             checked={showOnlyUnfinished}
             onCheckedChange={changeShowOnlyUnfinished}
@@ -177,6 +176,7 @@ function OverviewToolBar({
             Only unfinished
           </DropdownMenuCheckboxItem>
           <DropdownMenuSeparator />
+          <DropdownMenuLabel>Filter phases</DropdownMenuLabel>
           <DropdownMenuRadioGroup value={phase} onValueChange={setPhase}>
             {phases.map((phase) => (
               <DropdownMenuRadioItem value={phase} key={phase}>
