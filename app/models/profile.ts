@@ -8,9 +8,19 @@ interface DepartmentMembership {
 }
 
 export interface Profile {
-  id: string;
-  first_name: string;
-  last_name: string;
+  id?: string;
   email: string;
-  department_memberships: DepartmentMembership[];
+  firstName: string;
+  lastName: string;
+  description: string;
+  profile_picture: string;
+  socialNetworks: SocialNetwork[];
+  department: string;
+  previousDepartments: string[];
+  degree_level: string; // TODO: this should probably be it's own type
+  degree_name: string;
+  degree_semester: string;
+  currentJob: string; // TODO: why is this camel case
+  university: string;
+  nationality: string;
 }

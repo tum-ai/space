@@ -57,8 +57,8 @@ const ReferralsPage = observer(() => {
                   className="border-b dark:border-gray-500"
                 >
                   <td>{referral.email}</td>
-                  <td>{referral.first_name}</td>
-                  <td>{referral.last_name}</td>
+                  <td>{referral.firstName}</td>
+                  <td>{referral.lastName}</td>
                   <td>{referral.comment}</td>
                   <td className="p-4">
                     <Button
@@ -126,15 +126,15 @@ const SubmitReferral = () => {
     email: Yup.string()
       .email("Must be valid email")
       .required("Cannot be empty"),
-    first_name: Yup.string().required("Cannot be empty"),
-    last_name: Yup.string().required("Cannot be empty"),
+    firstName: Yup.string().required("Cannot be empty"),
+    lastName: Yup.string().required("Cannot be empty"),
     comment: Yup.string().required("Cannot be empty"),
   });
 
   const initialValues = {
     email: "",
-    first_name: "",
-    last_name: "",
+    firstName: "",
+    lastName: "",
     comment: "",
   };
 
@@ -196,25 +196,25 @@ const SubmitReferral = () => {
                 <Field
                   as={Input}
                   label="First name"
-                  name={`first_name`}
+                  name={`firstName`}
                   placeholder="Daniel"
                   type="text"
-                  state={touched.first_name && errors.first_name && "error"}
+                  state={touched.firstName && errors.firstName && "error"}
                   fullWidth
                 />
-                <ErrorMessage name={`first_name`} />
+                <ErrorMessage name={`firstName`} />
               </div>
               <div className="flex flex-col">
                 <Field
                   as={Input}
                   label="Last name"
-                  name={`last_name`}
+                  name={`lastName`}
                   placeholder="Korth"
                   type="text"
-                  state={touched.last_name && errors.last_name && "error"}
+                  state={touched.lastName && errors.lastName && "error"}
                   fullWidth
                 />
-                <ErrorMessage name={`last_name`} />
+                <ErrorMessage name={`lastName`} />
               </div>
               <div className="flex flex-col">
                 <Field

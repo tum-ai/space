@@ -26,7 +26,7 @@ const styles = cva(
     },
   },
 );
-const labelStyles = cva("text-sm", {
+export const labelStyles = cva("text-sm", {
   variants: {
     state: {
       default: "",
