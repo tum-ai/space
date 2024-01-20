@@ -3,21 +3,18 @@ import { DepartmentMembership } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 
 // GET /api/departmentMemberships/[...departmentMembershipIds]
-export async function GET(req: NextRequest) {
+export async function GET(
+  req: NextRequest,
+  { params }: { params: { departmentMembershipIds: string[] } },
+) {
   try {
-    const searchParams = req.nextUrl.searchParams;
-    let departmentMembershipIds = searchParams.getAll(
-      "departmentMembershipIds",
-    );
-
+    const { departmentMembershipIds } = params;
     let readDepartmentMembership: DepartmentMembership[];
 
     try {
       readDepartmentMembership = await prisma.departmentMembership.findMany({
         where: {
-          id: {
-            in: departmentMembershipIds.map((id) => parseInt(id)),
-          },
+          id: { in: departmentMembershipIds.map((id) => parseInt(id)) },
         },
       });
     } catch (error) {
@@ -36,21 +33,19 @@ export async function GET(req: NextRequest) {
 }
 
 // DELETE /api/departmentMemberships/[...departmentMembershipIds]
-export async function DELETE(req: NextRequest) {
+export async function DELETE(
+  req: NextRequest,
+  { params }: { params: { departmentMembershipIds: string[] } },
+) {
   try {
-    const searchParams = req.nextUrl.searchParams;
-    const departmentMembershipIds = searchParams
-      .getAll("departmentMembershipIds")
-      .map((id) => parseInt(id));
+    const { departmentMembershipIds } = params;
     let deleteDepartmentMembershipCount: number;
 
     try {
       deleteDepartmentMembershipCount = (
         await prisma.departmentMembership.deleteMany({
           where: {
-            id: {
-              in: departmentMembershipIds,
-            },
+            id: { in: departmentMembershipIds.map((id) => parseInt(id)) },
           },
         })
       ).count;

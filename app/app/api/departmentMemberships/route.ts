@@ -1,28 +1,7 @@
 import prisma from "database/db";
 import { DepartmentMembership } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
-
-// GET /api/departmentMemberships
-export async function GET() {
-  try {
-    let readDepartmentMembership: DepartmentMembership[];
-
-    try {
-      readDepartmentMembership = await prisma.departmentMembership.findMany();
-    } catch (error) {
-      console.log(error);
-
-      return NextResponse.json({ message: "Bad Request." }, { status: 400 });
-    }
-
-    return NextResponse.json(readDepartmentMembership, { status: 200 });
-  } catch (error) {
-    return NextResponse.json(
-      { message: "Internal server error." },
-      { status: 500 },
-    );
-  }
-}
+import { env } from "app/env.mjs";
 
 // POST /api/departmentMemberships
 export async function POST(req: NextRequest) {
@@ -31,9 +10,9 @@ export async function POST(req: NextRequest) {
     const { userId, departmentId } = createFields;
 
     const getDepartmentMembershipResponse = await fetch(
-      `/api/departmentMemberships/${userId}/${departmentId}`,
+      `${env.NEXT_PUBLIC_API_URL}/api/departmentMemberships/userId/${userId}/departmentId/${departmentId}`,
     );
-    if (getDepartmentMembershipResponse.ok) {
+    if (await getDepartmentMembershipResponse.json()) {
       return NextResponse.json(
         { message: "User is already a member of the department." },
         { status: 409 },
@@ -53,6 +32,28 @@ export async function POST(req: NextRequest) {
     }
 
     return NextResponse.json(createDepartmentMembership, { status: 200 });
+  } catch (error) {
+    return NextResponse.json(
+      { message: "Internal server error." },
+      { status: 500 },
+    );
+  }
+}
+
+// GET /api/departmentMemberships
+export async function GET(req: NextRequest) {
+  try {
+    let readDepartmentMembership: DepartmentMembership[];
+
+    try {
+      readDepartmentMembership = await prisma.departmentMembership.findMany();
+    } catch (error) {
+      console.log(error);
+
+      return NextResponse.json({ message: "Bad Request." }, { status: 400 });
+    }
+
+    return NextResponse.json(readDepartmentMembership, { status: 200 });
   } catch (error) {
     return NextResponse.json(
       { message: "Internal server error." },

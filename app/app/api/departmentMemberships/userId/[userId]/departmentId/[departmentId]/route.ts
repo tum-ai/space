@@ -3,16 +3,20 @@ import { DepartmentMembership } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 
 // GET /api/departmentMemberships/userId/[userId]/departmentId/[departmentId]
-export async function GET(req: NextRequest) {
+export async function GET(
+  req: NextRequest,
+  { params }: { params: { userId: string; departmentId: string } },
+) {
   try {
-    const searchParams = req.nextUrl.searchParams;
-    const userId = parseInt(searchParams.get("userId"));
-    const departmentId = parseInt(searchParams.get("departmentId"));
+    const { userId, departmentId } = params;
     let readDepartmentMembership: DepartmentMembership;
 
     try {
-      readDepartmentMembership = await prisma.departmentMembership.findUnique({
-        where: { userId, departmentId },
+      readDepartmentMembership = await prisma.departmentMembership.findFirst({
+        where: {
+          userId,
+          departmentId: parseInt(departmentId),
+        },
       });
     } catch (error) {
       console.log(error);
