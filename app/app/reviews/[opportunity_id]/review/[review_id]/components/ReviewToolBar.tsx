@@ -4,7 +4,11 @@ import { Tabs, TabsList, TabsTrigger } from "@components/ui/tabs";
 import { Button } from "@components/ui/button";
 import { EditIcon, SendIcon } from "lucide-react";
 
-export default function ReviewToolBar({ changeView }) {
+export default function ReviewToolBar({
+  changeView,
+  handleSave,
+  handleSubmit,
+}) {
   return (
     <div className="flex flex-row justify-center gap-2">
       <Tabs defaultValue="both">
@@ -23,11 +27,19 @@ export default function ReviewToolBar({ changeView }) {
           </TabsTrigger>
         </TabsList>
       </Tabs>
-      <Button className="flex flex-row gap-2" variant="secondary">
+      <Button
+        className="flex flex-row gap-2"
+        variant="secondary"
+        onClick={handleSave}
+      >
         <EditIcon className="h-4" />
         <span>Save Changes</span>
       </Button>
-      <Button className="flex flex-row gap-2" variant="default">
+      <Button
+        className="flex flex-row gap-2"
+        variant="default"
+        onClick={handleSubmit}
+      >
         <SendIcon className="h-4" />
         <span>Submit</span>
       </Button>
