@@ -98,13 +98,19 @@ const data = {
   },
 };
 
-function filterData(showOnlyUnfinished: boolean, phase: string, searchQuery: string, data: Data): Data {
+function filterData(
+  showOnlyUnfinished: boolean,
+  phase: string,
+  searchQuery: string,
+  data: Data,
+): Data {
   return Object.entries(data).reduce((acc, [key, item]) => {
     const isFinishedMatch = !showOnlyUnfinished || !item.finished;
     const isPhaseMatch = item.phase === phase || phase === "all";
-    const isSearchMatch = item.firstName.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                          item.lastName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                          key.includes(searchQuery); 
+    const isSearchMatch =
+      item.firstName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.lastName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      key.includes(searchQuery);
 
     if (isFinishedMatch && isPhaseMatch && isSearchMatch) {
       acc[key] = item;
@@ -116,15 +122,18 @@ function filterData(showOnlyUnfinished: boolean, phase: string, searchQuery: str
 export default function ReviewOverview({ params }) {
   const opportunityId = decodeURIComponent(params.opportunity_id);
   const mockPhases = ["screening", "interview", "decision"]; // change -> needs to be passed
-  const opportunityTitle = "Winter Semester 2024/2025 Application" // change -> needs to be passed
+  const opportunityTitle = "Winter Semester 2024/2025 Application"; // change -> needs to be passed
   const [phase, setPhase] = useState("all");
   const [showOnlyUnfinished, setShowOnlyUnfinished] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
   const filteredData = filterData(showOnlyUnfinished, phase, searchQuery, data);
 
   return (
     <Section className="space-y-6">
-      <OverviewHeader opportunityId={opportunityId} opportunityTitle={opportunityTitle}/>
+      <OverviewHeader
+        opportunityId={opportunityId}
+        opportunityTitle={opportunityTitle}
+      />
       <OverviewToolBar
         setPhase={setPhase}
         phase={phase}
@@ -168,7 +177,12 @@ function OverviewToolBar({
 }) {
   return (
     <div className="flex space-x-2">
-      <Input fullWidth placeholder="Search for name or ID" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}/>
+      <Input
+        fullWidth
+        placeholder="Search for name or ID"
+        value={searchQuery}
+        onChange={(e) => setSearchQuery(e.target.value)}
+      />
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="secondary">

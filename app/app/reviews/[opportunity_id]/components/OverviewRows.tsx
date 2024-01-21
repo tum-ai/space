@@ -47,9 +47,9 @@ function OverviewRows({ data }: OverviewRowsProps) {
 
 function Row({ id, name, phase, score, reviewers }: RowProps) {
   return (
-    <Card className="grid grid-cols-1 items-center gap-4 p-4 md:p-2 transition-colors duration-200 hover:bg-slate-50 md:grid-cols-3">
+    <Card className="grid grid-cols-1 items-center gap-4 p-4 transition-colors duration-200 hover:bg-slate-50 md:grid-cols-3 md:p-2">
       <p className="font-normal">{name}</p>
-      <div className="flex items-center justify-between md:justify-normal space-x-5">
+      <div className="flex items-center justify-between space-x-5 md:justify-normal">
         <div className="grid grid-cols-3 gap-2">
           {reviewers.map((reviewer, index) => (
             <div key={index} className="h-10 w-10 overflow-hidden rounded-full">
@@ -66,11 +66,11 @@ function Row({ id, name, phase, score, reviewers }: RowProps) {
         <span>{`${reviewers.length}/3`}</span>
       </div>
       <div className="flex items-center justify-between space-x-5 md:justify-self-end">
-        <div className="flex space-x-5 items-center">
+        <div className="flex items-center space-x-5">
           <Tag text={phase} color="blue" />
           <Tag text={score.toString()} color="green" />
         </div>
-        <div className="flex space-x-5 items-center">
+        <div className="flex items-center space-x-5">
           <p>ID: {id}</p>
           <Button>View</Button>
         </div>
