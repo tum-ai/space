@@ -15,12 +15,15 @@ import {
   getDepartmentsMap,
 } from "@lib/retrievals";
 import DataTableEditDialog from "./DataTableEditDialog";
+
 interface DataTableToolbarProps<TData> {
   table: Table<TData>;
+  tableData: object;
 }
 
 export function DataTableToolbar<TData>({
   table,
+  tableData
 }: DataTableToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0;
   const [departments, setDepartments] = useState([]);
@@ -40,7 +43,6 @@ export function DataTableToolbar<TData>({
         console.error(error);
       }
     };
-
     fetchData();
   }, []);
 
@@ -117,7 +119,7 @@ export function DataTableToolbar<TData>({
           </Button>
         )}
       </div>
-      <DataTableEditDialog rows={getSelectedRows()}/>
+      <DataTableEditDialog tableData={tableData} rows={getSelectedRows()}/>
       <DataTableViewOptions table={table} />
     </div>
   );

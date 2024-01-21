@@ -54,7 +54,7 @@ export async function getDepartmentsMap() {
       label:
         department.name.charAt(0).toUpperCase() +
         department.name.slice(1).replaceAll("_", " "),
-      value: department.name,
+      value: department.id,
     }));
   } catch (error) {
     throw new Error(error);
@@ -77,7 +77,7 @@ export async function getProfileData() {
 
 export async function deleteProfile(id: string) {
   try {
-    const response = await axios.delete(`/api/profiles?id=${id}`);
+    const response = await axios.delete(`/api/profiles/${id}`);
     if (response.status !== 200) {
       throw new Error("Failed to delete profile");
     }
@@ -87,10 +87,22 @@ export async function deleteProfile(id: string) {
   }
 }
 
-export async function updateMembership(user_id: string, data: object) {
+export async function updateProfile(id: string, data: object) {
+  try {
+    const response = await axios.put(`/api/profiles/${id}`, data);
+    if (response.status !== 200) {
+      throw new Error("Failed to update profile");
+    }
+    return response.data.profiles;
+  } catch (error) {
+    throw new Error(error);
+  }
+}
+
+export async function updateMembership(departmentId: number, data: object) {
   try {
     let response = await axios.put(
-      `/api/departmentMemberships/${user_id}`,
+      `/api/departmentMemberships/${departmentId}`,
       data,
     );
     return response;
@@ -99,15 +111,19 @@ export async function updateMembership(user_id: string, data: object) {
   }
 }
 
-export async function createMembership(
-  user_id: string,
-  department_id: string,
-  data: object,
-) {
+export async function createMembership(data: object) {
   try {
-    const response = await axios.post(
-      `/api/departmentMemberships/${user_id}/${department_id}`,
-      data,
+    const response = await axios.post(`/api/departmentMemberships`, data);
+    return response;
+  } catch (error) {
+    throw new Error(error);
+  }
+}
+
+export async function getMembership(user_id: string, department_id: string) {
+  try {
+    const response = await axios.get(
+      `/api/departmentMemberships/userId/${user_id}/departmentId/${department_id}`,
     );
     return response;
   } catch (error) {

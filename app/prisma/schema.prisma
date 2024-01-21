@@ -35,8 +35,8 @@ model User {
   password                 String?
   firstName                String?
   lastName                 String?
-  image                    String?
-  userRoles                UserRole[]
+  image                    String?           
+  userToUserRoles          UserToUserRole[]
   departmentMemberships    DepartmentMembership[]
   createdOpportunities     Opportunity[]
   opportunityParticipation OpportunityParticipation[]
@@ -48,9 +48,19 @@ model User {
 }
 
 model UserRole {
-  name            String           @id
-  users           User[]
-  userPermissions UserPermission[]
+  name            String           @id   
+  userToUserRoles UserToUserRole[]
+  userPermissions UserPermission[] 
+}
+
+model UserToUserRole { 
+  userId String
+  roleId String
+  user   User   @relation(fields: [userId], references: [id], onDelete : Cascade)
+  role   UserRole   @relation(fields: [roleId], references: [name], onDelete : Cascade)
+
+  @@id(name: "userToUserRoleId", [userId, roleId])
+  @@index([userId])
 }
 
 model UserPermission {
