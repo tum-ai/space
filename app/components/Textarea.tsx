@@ -1,11 +1,13 @@
 function Textarea({
   label,
   variant,
+  handler,
   ...props
 }: {
   label?: string;
   variant?: "default" | "outlined";
   props: object;
+  handler?: any;
 }) {
   // Define styles for the different variants
   const variantStyles = {
