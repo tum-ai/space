@@ -47,10 +47,10 @@ function OverviewRows({ data }: OverviewRowsProps) {
 
 function Row({ id, name, phase, score, reviewers }: RowProps) {
   return (
-    <Card className="grid grid-cols-1 md:grid-cols-3 items-center p-2 transition-colors duration-200 hover:bg-slate-50">
+    <Card className="grid grid-cols-1 items-center gap-4 p-4 md:p-2 transition-colors duration-200 hover:bg-slate-50 md:grid-cols-3">
       <p className="font-normal">{name}</p>
-      <div className="flex space-x-5 items-center">
-        <div className="grid gap-2 grid-cols-3">
+      <div className="flex items-center justify-between space-x-5">
+        <div className="grid grid-cols-3 gap-2">
           {reviewers.map((reviewer, index) => (
             <div key={index} className="h-10 w-10 overflow-hidden rounded-full">
               <Image
@@ -65,11 +65,15 @@ function Row({ id, name, phase, score, reviewers }: RowProps) {
         </div>
         <span>{`${reviewers.length}/3`}</span>
       </div>
-      <div className="flex items-center space-x-5 justify-self-end">
-        <Tag text={phase} color="blue" />
-        <Tag text={score.toString()} color="green" />
-        <p>ID: {id}</p>
-        <Button>View</Button>
+      <div className="flex items-center justify-between space-x-5 md:justify-self-end">
+        <div className="flex space-x-5 items-center">
+          <Tag text={phase} color="blue" />
+          <Tag text={score.toString()} color="green" />
+        </div>
+        <div className="flex space-x-5 items-center">
+          <p>ID: {id}</p>
+          <Button>View</Button>
+        </div>
       </div>
     </Card>
   );
