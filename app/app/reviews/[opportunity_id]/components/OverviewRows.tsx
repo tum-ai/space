@@ -47,20 +47,23 @@ function OverviewRows({ data }: OverviewRowsProps) {
 
 function Row({ id, name, phase, score, reviewers }: RowProps) {
   return (
-    <Card className="grid grid-cols-3 items-center p-2 transition-colors duration-200 hover:bg-slate-50">
+    <Card className="grid grid-cols-1 md:grid-cols-3 items-center p-2 transition-colors duration-200 hover:bg-slate-50">
       <p className="font-normal">{name}</p>
-      <div className="flex space-x-2">
-        {reviewers.map((reviewer, index) => (
-          <div key={index} className="h-10 w-10 overflow-hidden rounded-full">
-            <Image
-              src={reviewer.imgSrc}
-              alt={`Bild von ${reviewer.name}`}
-              width={40}
-              height={40}
-              className="rounded-full"
-            />
-          </div>
-        ))}
+      <div className="flex space-x-5 items-center">
+        <div className="grid gap-2 grid-cols-3">
+          {reviewers.map((reviewer, index) => (
+            <div key={index} className="h-10 w-10 overflow-hidden rounded-full">
+              <Image
+                src={reviewer.imgSrc}
+                alt={`Bild von ${reviewer.name}`}
+                width={40}
+                height={40}
+                className="rounded-full"
+              />
+            </div>
+          ))}
+        </div>
+        <span>{`${reviewers.length}/3`}</span>
       </div>
       <div className="flex items-center space-x-5 justify-self-end">
         <Tag text={phase} color="blue" />

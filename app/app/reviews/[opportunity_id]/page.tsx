@@ -98,15 +98,13 @@ const data = {
   },
 };
 
-const opportunityTitle = "Winter Semester 2024/2025 Application"
-
 function filterData(showOnlyUnfinished: boolean, phase: string, searchQuery: string, data: Data): Data {
   return Object.entries(data).reduce((acc, [key, item]) => {
     const isFinishedMatch = !showOnlyUnfinished || !item.finished;
     const isPhaseMatch = item.phase === phase || phase === "all";
     const isSearchMatch = item.firstName.toLowerCase().includes(searchQuery.toLowerCase()) || 
                           item.lastName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                          key.includes(searchQuery); // Include ID in the search
+                          key.includes(searchQuery); 
 
     if (isFinishedMatch && isPhaseMatch && isSearchMatch) {
       acc[key] = item;
@@ -118,6 +116,7 @@ function filterData(showOnlyUnfinished: boolean, phase: string, searchQuery: str
 export default function ReviewOverview({ params }) {
   const opportunityId = decodeURIComponent(params.opportunity_id);
   const mockPhases = ["screening", "interview", "decision"]; // change -> needs to be passed
+  const opportunityTitle = "Winter Semester 2024/2025 Application" // change -> needs to be passed
   const [phase, setPhase] = useState("all");
   const [showOnlyUnfinished, setShowOnlyUnfinished] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
