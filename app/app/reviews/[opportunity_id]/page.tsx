@@ -1,7 +1,8 @@
+"use client";
+
 import { Section } from "@components/Section";
 import { Button } from "@components/ui/button";
 import OverviewRows from "./components/OverviewRows";
-<<<<<<< HEAD
 import { MixerHorizontalIcon } from "@radix-ui/react-icons";
 import Input from "@components/Input";
 import Link from "next/link";
@@ -16,19 +17,6 @@ import {
   DropdownMenuTrigger,
   DropdownMenuContent,
 } from "@components/ui/dropdown-menu";
-=======
-import OverviewTable from "./components/OverviewTable";
-import {
-  TableIcon,
-  RowsIcon,
-  MixerHorizontalIcon,
-} from "@radix-ui/react-icons";
-import { Tabs, TabsList, TabsTrigger } from "@components/ui/tabs";
-import Input from "@components/Input";
-import Link from "next/link";
-import { useState } from "react";
-
->>>>>>> 1b6c0a8 (add config)
 
 interface Reviewer {
   name: string;
@@ -134,7 +122,6 @@ export default function ReviewOverview({ params }) {
   const [searchQuery, setSearchQuery] = useState('');
   const filteredData = filterData(showOnlyUnfinished, phase, searchQuery, data);
 
-export default function ReviewOverview() {
   return (
     <Section className="space-y-6">
       <OverviewHeader opportunityId={opportunityId} opportunityTitle={opportunityTitle}/>
