@@ -28,11 +28,7 @@ function Textarea({
   return (
     <div className="flex w-full flex-col space-y-2">
       {label && <label className={classNames.label}>{label}</label>}
-      <textarea
-        {...props}
-        className={classNames.textarea}
-        onChange={(evt) => handler()}
-      />
+      <textarea {...props} className={classNames.textarea} />
     </div>
   );
 }

@@ -3,7 +3,6 @@
 import { Card } from "@components/ui/card";
 import { EditIcon } from "lucide-react";
 import Select from "@components/Select";
-import { useEffect } from "react";
 import { Answer } from "../../types";
 
 export default function SelectCard({ data, handler }) {

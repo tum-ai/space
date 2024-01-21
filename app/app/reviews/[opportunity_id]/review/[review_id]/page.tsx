@@ -1,11 +1,11 @@
 "use client";
 
 import { Section } from "@components/Section";
-import { useEffect, useState, createContext } from "react";
+import { useEffect, useState } from "react";
 import ReviewInputColumn from "./components/ReviewInputColumn";
 import ReviewInfoColumn from "./components/ReviewInfoColumn";
 import ReviewToolBar from "./components/ReviewToolBar";
-import { Question, Answer, OpportunityQuestions } from "./types";
+import { Question } from "./types";
 
 export default function Review({ params }) {
   const review_id = decodeURIComponent(params.review_id);
@@ -20,7 +20,7 @@ export default function Review({ params }) {
     semester: "5",
   };
 
-  const [questions, setQuestions] = useState<OpportunityQuestions>([
+  const [questions, setQuestions] = useState<Question[]>([
     {
       id: 1,
       question: "Why is this participant a good fit?",

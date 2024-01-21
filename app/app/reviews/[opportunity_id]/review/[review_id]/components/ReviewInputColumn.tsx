@@ -2,7 +2,6 @@
 
 import InputCard from "./inputs/InputCard";
 import SliderCard from "./inputs/SliderCard";
-import { useState } from "react";
 import SelectCard from "./inputs/SelectCard";
 import { Question } from "../types";
 
