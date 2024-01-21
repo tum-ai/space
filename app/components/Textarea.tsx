@@ -1,11 +1,13 @@
 function Textarea({
   label,
   variant,
+  handler,
   ...props
 }: {
   label?: string;
   variant?: "default" | "outlined";
   props: object;
+  handler?: any;
 }) {
   // Define styles for the different variants
   const variantStyles = {
@@ -26,7 +28,11 @@ function Textarea({
   return (
     <div className="flex w-full flex-col space-y-2">
       {label && <label className={classNames.label}>{label}</label>}
-      <textarea {...props} className={classNames.textarea} />
+      <textarea
+        {...props}
+        className={classNames.textarea}
+        onChange={(evt) => handler()}
+      />
     </div>
   );
 }
