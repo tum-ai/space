@@ -2,7 +2,7 @@ import prisma from "database/db";
 import { DepartmentMembership } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 
-// GET /api/departmentMemberships/userId/[userId]/departmentId/[departmentId]
+// GET /api/departmentMembership/userId/[userId]/departmentId/[departmentId]
 export async function GET(
   req: NextRequest,
   { params }: { params: { userId: string; departmentId: string } },

@@ -2,7 +2,7 @@ import prisma from "database/db";
 import { DepartmentMembership } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 
-// GET /api/departmentMemberships/[departmentMembershipId]
+// GET /api/departmentMembership/[departmentMembershipId]
 export async function GET(
   req: NextRequest,
   { params }: { params: { departmentMembershipId: string } },
@@ -30,7 +30,7 @@ export async function GET(
   }
 }
 
-// PUT /api/departmentMemberships/[departmentMembershipId]
+// PUT /api/departmentMembership/[departmentMembershipId]
 export async function PUT(
   req: NextRequest,
   { params }: { params: { departmentMembershipId: string } },
@@ -61,7 +61,7 @@ export async function PUT(
   }
 }
 
-// DELETE /api/departmentMemberships/[departmentMembershipId]
+// DELETE /api/departmentMembership/[departmentMembershipId]
 export async function DELETE(
   req: NextRequest,
   { params }: { params: { departmentMembershipId: string } },

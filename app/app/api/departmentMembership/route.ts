@@ -3,14 +3,14 @@ import { DepartmentMembership } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 import { env } from "app/env.mjs";
 
-// POST /api/departmentMemberships
+// POST /api/departmentMembership
 export async function POST(req: NextRequest) {
   try {
     const createFields = await req.json();
     const { userId, departmentId } = createFields;
 
     const getDepartmentMembershipResponse = await fetch(
-      `${env.NEXT_PUBLIC_API_URL}/api/departmentMemberships/userId/${userId}/departmentId/${departmentId}`,
+      `${env.NEXT_PUBLIC_API_URL}/api/departmentMembership/userId/${userId}/departmentId/${departmentId}`,
     );
     if (await getDepartmentMembershipResponse.json()) {
       return NextResponse.json(
@@ -40,7 +40,7 @@ export async function POST(req: NextRequest) {
   }
 }
 
-// GET /api/departmentMemberships
+// GET /api/departmentMembership
 export async function GET(req: NextRequest) {
   try {
     let readDepartmentMembership: DepartmentMembership[];
