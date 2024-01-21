@@ -10,7 +10,7 @@ export async function POST(req: NextRequest) {
     const { userId, departmentId } = createFields;
 
     const getDepartmentMembershipResponse = await fetch(
-      `${env.NEXT_PUBLIC_API_URL}/api/departmentMembership/userId/${userId}/departmentId/${departmentId}`,
+      `${env.NEXT_PUBLIC_API_URL}/api/departmentMembership/user/${userId}/department/${departmentId}`,
     );
     if (await getDepartmentMembershipResponse.json()) {
       return NextResponse.json(
