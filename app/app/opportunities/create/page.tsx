@@ -1,19 +1,9 @@
 "use client";
 
-import Input from "@components/Input";
-import { Button } from "@components/ui/button";
-import { Cross1Icon, QuestionMarkCircledIcon } from "@radix-ui/react-icons";
-import Select from "@components/Select";
-import { Field, Form, Formik } from "formik";
-import * as Yup from "yup";
-import { MemberBar, AddMemberBar } from "./components/MemberBar";
-import Dialog from "@components/Dialog";
-import { useState } from "react";
-import ErrorMessage from "@components/ErrorMessage";
-import Textarea from "@components/Textarea";
-import Tooltip from "@components/Tooltip";
-import { DatePicker } from "@components/DatePicker";
 import GeneralInformation from "./components/GeneralInformation";
+import DefineSteps from "./components/DefineSteps";
+import { Tabs, TabsTrigger, TabsContent, TabsList } from "@components/ui/tabs";
+import { Section } from "@components/Section";
 
 const mockAdmins = [
   {
@@ -67,10 +57,35 @@ const mockMembers = [
 
 export default function CreateOpportunity() {
   return (
-    <GeneralInformation
-      members={mockMembers}
-      screeners={mockScreeners}
-      admins={mockAdmins}
-    />
+    <Section>
+      <Tabs defaultValue="general">
+        <CreateOpportunityHeader />
+        <TabsContent value="general">
+          <GeneralInformation
+            members={mockMembers}
+            screeners={mockScreeners}
+            admins={mockAdmins}
+          />
+        </TabsContent>
+        <TabsContent value="steps">
+          <DefineSteps />
+        </TabsContent>
+      </Tabs>
+    </Section>
+  );
+}
+
+function CreateOpportunityHeader({}) {
+  return (
+    <div className="flex flex-col mb-10 space-y-4">
+      <div className="flex flex-col gap-3">
+        <h1 className="text-6xl">Opportunity</h1>
+        <p>Configure a new opportunity</p>
+      </div>
+      <TabsList className="self-center">
+        <TabsTrigger value="general">General information</TabsTrigger>
+        <TabsTrigger value="steps">Define steps</TabsTrigger>
+      </TabsList>
+    </div>
   );
 }

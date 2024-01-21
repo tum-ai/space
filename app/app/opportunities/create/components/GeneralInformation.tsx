@@ -22,122 +22,105 @@ enum Roles {
 export default function GeneralInformation({ members, screeners, admins }) {
   return (
     // center element
-    <div className="mx-4 mb-12 flex flex-col gap-8 self-center md:mx-24">
-      <div className="flex flex-col gap-3">
-        <h1 className="text-6xl">Opportunity</h1>
-        <p>Configure a new opportunity</p>
-      </div>
-      {/* TODO: Create placeholder logic */}
-      <div className="text-lg">General information {"->"} Define steps</div>
-      {/* Setup form */}
-      <Formik
-        validationSchema={Yup.object().shape({
-          tallyId: Yup.string(),
-          name: Yup.string().required(),
-          begin: Yup.date().required(),
-          end: Yup.date().test(
-            "is-greater",
-            "End date must be later than begin date",
-            function (value) {
-              const beginDate = this.parent.begin;
-              if (!value || !beginDate) return true;
-              return value >= beginDate;
-            },
-          ),
-          description: Yup.string(),
-        })}
-        initialValues={{
-          tallyId: undefined,
-          name: undefined,
-          begin: undefined,
-          end: undefined,
-          description: undefined,
-        }}
-        onSubmit={async (values) => {
-          console.log(values); //TODO: actually submit via API
-        }}
-      >
-        {({ errors, touched, setValues, values }) => (
-          <Form className="flex flex-col gap-4">
-            <div>
-              <Field
-                as={Input}
-                label="Tally ID"
-                name="tallyId"
-                placeholder="venture-campaign-ws-2023"
-                state={touched.tallyId && errors.tallyId && "error"}
+    <Formik
+      validationSchema={Yup.object().shape({
+        tallyId: Yup.string(),
+        name: Yup.string().required(),
+        begin: Yup.date().required(),
+        end: Yup.date().test(
+          "is-greater",
+          "End date must be later than begin date",
+          function (value) {
+            const beginDate = this.parent.begin;
+            if (!value || !beginDate) return true;
+            return value >= beginDate;
+          },
+        ),
+        description: Yup.string(),
+      })}
+      initialValues={{
+        tallyId: undefined,
+        name: undefined,
+        begin: undefined,
+        end: undefined,
+        description: undefined,
+      }}
+      onSubmit={async (values) => {
+        console.log(values); //TODO: actually submit via API
+      }}
+    >
+      {({ errors, touched, setValues, values }) => (
+        <Form className="flex flex-col gap-4">
+          <div>
+            <Field
+              as={Input}
+              label="Tally ID"
+              name="tallyId"
+              placeholder="venture-campaign-ws-2023"
+              state={touched.tallyId && errors.tallyId && "error"}
+              fullWidth
+            />
+            <ErrorMessage name="tallyId" />
+          </div>
+          <div>
+            <Field
+              as={Input}
+              label="Opportunity name"
+              name="name"
+              placeholder="Venture campaign WS2023"
+              state={touched.name && errors.name && "error"}
+              fullWidth
+            />
+            <ErrorMessage name="name" />
+          </div>
+          <div className="flex flex-col gap-4 md:flex-row">
+            <div className="flex-1">
+              <DatePicker
+                label="Begin"
+                placeholder="Pick a date"
+                state={(touched.begin && errors.begin && "error") || "default"}
                 fullWidth
+                value={values.begin}
+                setValue={(value: Date) =>
+                  setValues({ ...values, begin: value })
+                }
               />
-              <ErrorMessage name="tallyId" />
+              <ErrorMessage name="begin" />
             </div>
-            <div>
-              <Field
-                as={Input}
-                label="Opportunity name"
-                name="name"
-                placeholder="Venture campaign WS2023"
-                state={touched.name && errors.name && "error"}
+            <div className="flex-1">
+              <DatePicker
+                label="End"
+                placeholder="Pick a date"
+                state={(touched.begin && errors.begin && "error") || "default"}
                 fullWidth
+                value={values.end}
+                setValue={(value: Date) => setValues({ ...values, end: value })}
               />
-              <ErrorMessage name="name" />
+              <ErrorMessage name="end" />
             </div>
-            <div className="flex flex-col gap-4 md:flex-row">
-              <div className="flex-1">
-                <DatePicker
-                  label="Begin"
-                  placeholder="Pick a date"
-                  state={
-                    (touched.begin && errors.begin && "error") || "default"
-                  }
-                  fullWidth
-                  value={values.begin}
-                  setValue={(value: Date) =>
-                    setValues({ ...values, begin: value })
-                  }
-                />
-                <ErrorMessage name="begin" />
-              </div>
-              <div className="flex-1">
-                <DatePicker
-                  label="End"
-                  placeholder="Pick a date"
-                  state={
-                    (touched.begin && errors.begin && "error") || "default"
-                  }
-                  fullWidth
-                  value={values.end}
-                  setValue={(value: Date) =>
-                    setValues({ ...values, end: value })
-                  }
-                />
-                <ErrorMessage name="end" />
-              </div>
-            </div>
-            <div>
-              <Field
-                as={Textarea}
-                label="Description"
-                variant="outlined"
-                name="description"
-                placeholder="Venture campaign for the winter semester 2023 in partnership with OpenAI."
-                state={touched.description && errors.description && "error"}
-                fullWidth
-              />
-              <ErrorMessage name="description" />
-            </div>
-            <hr className="col-span-2" />
+          </div>
+          <div>
+            <Field
+              as={Textarea}
+              label="Description"
+              variant="outlined"
+              name="description"
+              placeholder="Venture campaign for the winter semester 2023 in partnership with OpenAI."
+              state={touched.description && errors.description && "error"}
+              fullWidth
+            />
+            <ErrorMessage name="description" />
+          </div>
+          <hr className="col-span-2" />
 
-            <MemberSection screeners={screeners} members={members} admins={admins}/>
-
-            <div className="grid w-full">
-              <Button className="justify-self-end" type="submit">
-                Next
-              </Button>
-            </div>
-          </Form>
-        )}
-      </Formik>
-    </div>
+          <MemberSection
+            screeners={screeners}
+            members={members}
+            admins={admins}
+          />
+        </Form>
+      )}
+    </Formik>
   );
 }
 

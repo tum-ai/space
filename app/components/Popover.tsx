@@ -1,4 +1,3 @@
-import { Cross1Icon } from "@radix-ui/react-icons";
 import * as PopoverPrimitive from "@radix-ui/react-popover";
 import { clsx } from "clsx";
 
