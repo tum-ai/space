@@ -6,7 +6,9 @@ const completeView = {
     name: true,
     description: true,
     userRole: {
-        name: true
+        select: {
+            name: true,
+        }
     }
 }
 

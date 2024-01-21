@@ -5,31 +5,39 @@ import { getServerSession } from 'next-auth';
 
 const complete_view = {
     id: true,
-    first_name: true,
-    last_name: true,
+    firstName: true,
+    lastName: true,
     email: true,
-    permission: true,
+    userRoles: {
+        select: {
+            name: true,
+        }
+    },
     image: true,
-    department_memberships: {
+    departmentMemberships: {
         select: {
             department: {
                 select: {
                     name: true,
                 }
             },
-            department_position: true,
-            membership_end: true,
-            membership_start: true,
+            departmentPosition: true,
+            membershipEnd: true,
+            membershipStart: true,
         }
     }
 }
 
 const partial_view = {
     id: true,
-    first_name: true,
-    last_name: true,
+    firstName: true,
+    lastName: true,
     email: true,
-    permission: true,
+    userRoles: {
+        select: {
+            name: true,
+        }
+    },
     image: true
 }
 

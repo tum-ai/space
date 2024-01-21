@@ -14,6 +14,7 @@ import {
   getPositionsMap,
   getDepartmentsMap,
 } from "@lib/retrievals";
+import DataTableEditDialog from "./DataTableEditDialog";
 interface DataTableToolbarProps<TData> {
   table: Table<TData>;
 }
@@ -71,14 +72,14 @@ export function DataTableToolbar<TData>({
           className="h-8 w-full sm:w-[150px] lg:w-[250px]"
         />
         <Input
-          placeholder={`Filter ${table.getColumn("last_name")?.columnDef[
+          placeholder={`Filter ${table.getColumn("lastName")?.columnDef[
             "label"
           ]}...`}
           value={
-            (table.getColumn("last_name")?.getFilterValue() as string) ?? ""
+            (table.getColumn("lastName")?.getFilterValue() as string) ?? ""
           }
           onChange={(event) =>
-            table.getColumn("last_name")?.setFilterValue(event.target.value)
+            table.getColumn("lastName")?.setFilterValue(event.target.value)
           }
           className="h-8 w-full sm:w-[150px] lg:w-[250px]"
         />
@@ -89,18 +90,18 @@ export function DataTableToolbar<TData>({
             options={permissions}
           />
         )}
-        {table.getColumn("current_department") && (
+        {table.getColumn("currentDepartment") && (
           <DataTableFacetedFilter
-            column={table.getColumn("current_department")}
-            title={table.getColumn("current_department").columnDef["label"]}
+            column={table.getColumn("currentDepartment")}
+            title={table.getColumn("currentDepartment").columnDef["label"]}
             options={departments}
           />
         )}
-        {table.getColumn("current_department_position") && (
+        {table.getColumn("currentDepartmentPosition") && (
           <DataTableFacetedFilter
-            column={table.getColumn("current_department_position")}
+            column={table.getColumn("currentDepartmentPosition")}
             title={
-              table.getColumn("current_department_position").columnDef["label"]
+              table.getColumn("currentDepartmentPosition").columnDef["label"]
             }
             options={positions}
           />
@@ -116,6 +117,7 @@ export function DataTableToolbar<TData>({
           </Button>
         )}
       </div>
+      <DataTableEditDialog rows={getSelectedRows()}/>
       <DataTableViewOptions table={table} />
     </div>
   );

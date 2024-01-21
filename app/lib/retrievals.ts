@@ -12,13 +12,13 @@ export async function getPermissionsMap() {
       value: permission.name,
     }));
   } catch (error) {
-
+    // throw new Error(error);
   }
 }
   
 export async function getPositionsMap() {
   return Object.keys(DepartmentPosition).map((position) => ({
-    label: String(position[0].toUpperCase() + position.slice(1)).replaceAll('_', ' '),
+    label: String(position[0].toUpperCase() + position.slice(1).toLowerCase()).replaceAll('_', ' '),
     value: position,
   }));
 }

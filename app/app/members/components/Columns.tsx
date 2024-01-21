@@ -68,8 +68,8 @@ export const columns: ExtendedColumnDef<User>[] = [
             profilePicture={profil.image}
             initials={(
               "" +
-              row.getValue('first_name')[0] +
-              row.getValue('last_name')[0]
+              row.getValue('firstName')[0] +
+              row.getValue('lastName')[0]
             ).toUpperCase()}
           />
         </>
@@ -98,24 +98,24 @@ export const columns: ExtendedColumnDef<User>[] = [
       },
     },
     {
-      accessorKey: "first_name",
+      accessorKey: "firstName",
       label: "First Name",
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title={column.columnDef["label"]} />
       ),
       cell: ({ row }) => {
-        const value = row.getValue("first_name") as string;
+        const value = row.getValue("firstName") as string;
         return <div className="lowercase">{value ? value.replace(/_/g, ' ') : ''}</div>;
       },
     },
     {
-        accessorKey: "last_name",
+        accessorKey: "lastName",
         label: "Last Name",
         header: ({ column }) => (
           <DataTableColumnHeader column={column} title={column.columnDef["label"]} />
         ),
         cell: ({ row }) => {
-          const value = row.getValue("last_name") as string;
+          const value = row.getValue("lastName") as string;
           return <div className="lowercase">{value ? value.replace(/_/g, ' ') : ''}</div>;
         },
       },
@@ -143,7 +143,7 @@ export const columns: ExtendedColumnDef<User>[] = [
         },
       },
       {
-        accessorKey: "current_department",
+        accessorKey: "currentDepartment",
         label: "Department",
         header: ({ column }) => (
           <DataTableColumnHeader column={column} title={column.columnDef["label"]} />
@@ -161,12 +161,12 @@ export const columns: ExtendedColumnDef<User>[] = [
           return false;
         },
         cell: ({ row }) => {
-          const value = row.getValue("current_department") as string;
+          const value = row.getValue("currentDepartment") as string;
           return <div className="lowercase">{value ? value.replace(/_/g, ' ') : ''}</div>;
         },
       },
       {
-        accessorKey: "current_department_position",
+        accessorKey: "currentDepartmentPosition",
         label: "Position",
         header: ({ column }) => (
           <DataTableColumnHeader column={column} title={column.columnDef["label"]} />
@@ -184,7 +184,7 @@ export const columns: ExtendedColumnDef<User>[] = [
           return false;
         },
         cell: ({ row }) => {
-          const value = row.getValue("current_department_position") as string;
+          const value = row.getValue("currentDepartmentPosition") as string;
           return <div className="lowercase">{value ? value.replace(/_/g, ' ') : ''}</div>;
         },
       },
@@ -194,11 +194,9 @@ export const columns: ExtendedColumnDef<User>[] = [
       enableHiding: false,
       cell: ({ row }) => {
         const profil = row.original
-        const [isDialogOpen, setDialogOpen] = React.useState(false);
   
         return (
           <>
-            <DataTableEditDialog key={row.id} rows={row} visible={isDialogOpen} />
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="h-8 w-8 p-0">
@@ -217,14 +215,6 @@ export const columns: ExtendedColumnDef<User>[] = [
                 >
                   Copy Email
                 </DropdownMenuItem>
-                <DropdownMenuItem
-                      onClick={() => {
-                        setDialogOpen(true);
-                      }}
-                    >
-                      Edit Member
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
                 <DropdownMenuItem className="text-red-500"
                   onClick={async () => {
                     try {

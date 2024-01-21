@@ -30,7 +30,6 @@ const partial_view = {
 
 export async function GET(req: NextRequest) {
 
-    console.log("fetching permissions")
     let permissions;
     const id  = req.nextUrl.searchParams.get('id');
     
