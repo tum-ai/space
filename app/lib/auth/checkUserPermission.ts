@@ -1,4 +1,4 @@
-import { getPermissionsMap } from "@lib/retrievals";
+import { getRolesMap } from "@lib/retrievals";
 
 //if added more permissions, add them here but be aware of the order of the enum higher permissions should be higher in the enum
 enum OrderedPermissions {
@@ -8,7 +8,7 @@ enum OrderedPermissions {
 }
 
 //if permissions are not included in the ordered permissions enum they will be added here and will be considered lower than the lowest ordered permission
-const Permissions = { ...OrderedPermissions, ...getPermissionsMap()};
+const Permissions = { ...OrderedPermissions, ...getRolesMap()};
 
 
 export async function checkPermission(required_permissions, user_permission) {

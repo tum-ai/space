@@ -14,13 +14,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@components/ui/select";
-import { updateMembership, getDepartmentsMap, getPermissionsMap, getPositionsMap, createMembership } from "@lib/retrievals";
+import { updateMembership, getDepartmentsMap, getRolesMap, getPositionsMap, createMembership } from "@lib/retrievals";
 
 
 export default function DataTableEditDialog(props: any) {
   const [data, setData] = useState(props.rows);
   const [departments, setDepartments] = useState([]);
-  const [permissions, setPermissions] = useState([]);
+  const [roles, setRoles] = useState([]);
   const [positions, setPositions] = useState([]);
 
   useEffect(() => {
@@ -29,10 +29,10 @@ export default function DataTableEditDialog(props: any) {
     const fetchData = async () => {
       try {
         const departments = await getDepartmentsMap();
-        const permissions = await getPermissionsMap();
+        const roles = await getRolesMap();
         const positions = await getPositionsMap();
         setDepartments(departments);
-        setPermissions(permissions);
+        setRoles(roles);
         setPositions(positions);
       } catch (error) {
         console.error(error);
@@ -94,16 +94,16 @@ export default function DataTableEditDialog(props: any) {
   };
 
   return (
-    <div>
+    <div className="ml-auto lg:flex">
       <Dialog
-        trigger={<Button disabled={data.length === 0} variant="ghost">Edit {data.length}</Button>}
+        trigger={<Button disabled={data.length === 0} size="sm" className="h-8">Edit {data.length}</Button>}
       >
         
         <DialogClose className="float-right">
           <Cross1Icon className="h-5 w-5 text-black hover:text-gray-700 dark:text-white dark:hover:text-gray-400" />
         </DialogClose>
-        <div className="flex flex-col gap-8">
-          <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-10">
+          <div className="flex flex-col gap-8">
             <div className="flex flex-col gap-2">
               <p className="text-slate-400">Edit</p>
               <div className="flex gap-1">
@@ -148,9 +148,9 @@ export default function DataTableEditDialog(props: any) {
                     </SelectTrigger>
                     <SelectContent>
                       <SelectGroup>
-                        {permissions.map((permission) => (
-                          <SelectItem key={permission.label} value={permission.value}>
-                            {permission.label}
+                        {roles.map((role) => (
+                          <SelectItem key={role.label} value={role.value}>
+                            {role.label}
                           </SelectItem>
                         ))}
                       </SelectGroup>

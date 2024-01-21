@@ -1,36 +1,59 @@
-import { DepartmentPosition } from "@prisma/client"; 
-import axios from 'axios';
+import { DepartmentPosition } from "@prisma/client";
+import axios from "axios";
 
-export async function getPermissionsMap() {
+export async function getRolesMap() {
   try {
-    const response = await axios.get('/api/permissions');
+    const response = await axios.get("/api/roles");
     if (response.status !== 200) {
-      throw new Error('Failed to fetch permissions');
+      throw new Error("Failed to fetch permissions");
     }
-    return response.data.permissions.map(permission => ({
-      label: permission.name.charAt(0).toUpperCase() + permission.name.slice(1).replaceAll('_', ' '),
-      value: permission.name,
+    return response.data.roles.map((role) => ({
+      label:
+        role.name.charAt(0).toUpperCase() +
+        role.name.slice(1).replaceAll("_", " "),
+      value: role.name,
     }));
   } catch (error) {
     // throw new Error(error);
   }
 }
-  
+
+export async function getRolesMapForUser(id: string) {
+  try {
+    const response = await axios.get(`/api/roles/${id}`);
+    if (response.status !== 200) {
+      throw new Error("Failed to fetch permissions");
+    }
+    return response.data.map((role) => ({
+      label:
+        role.name.charAt(0).toUpperCase() +
+        role.name.slice(1).replaceAll("_", " "),
+      value: role.name,
+    }));
+  } catch (error) {
+    throw new Error(error);
+  }
+}
+
 export async function getPositionsMap() {
   return Object.keys(DepartmentPosition).map((position) => ({
-    label: String(position[0].toUpperCase() + position.slice(1).toLowerCase()).replaceAll('_', ' '),
+    label: String(
+      position[0].toUpperCase() + position.slice(1).toLowerCase(),
+    ).replaceAll("_", " "),
     value: position,
   }));
 }
 
 export async function getDepartmentsMap() {
   try {
-    const response = await axios.get('/api/departments');
+    const response = await axios.get("/api/departments");
     if (response.status !== 200) {
-      throw new Error('Failed to fetch departments');
+      throw new Error("Failed to fetch departments");
     }
-    return response.data.departments.map(department => ({
-      label: department.name.charAt(0).toUpperCase() + department.name.slice(1).replaceAll('_', ' '),
+    return response.data.departments.map((department) => ({
+      label:
+        department.name.charAt(0).toUpperCase() +
+        department.name.slice(1).replaceAll("_", " "),
       value: department.name,
     }));
   } catch (error) {
@@ -42,9 +65,9 @@ export async function getDepartmentsMap() {
 // if there is a change to the provided profile data you need to update app/members/components/Columns.tsx accordingly
 export async function getProfileData() {
   try {
-    const response = await axios.get('/api/profiles');
+    const response = await axios.get("/api/profiles");
     if (response.status !== 200) {
-      throw new Error('Failed to fetch profiles');
+      throw new Error("Failed to fetch profiles");
     }
     return response.data.profiles;
   } catch (error) {
@@ -56,7 +79,7 @@ export async function deleteProfile(id: string) {
   try {
     const response = await axios.delete(`/api/profiles?id=${id}`);
     if (response.status !== 200) {
-      throw new Error('Failed to delete profile');
+      throw new Error("Failed to delete profile");
     }
     return response.data.profiles;
   } catch (error) {
@@ -66,19 +89,28 @@ export async function deleteProfile(id: string) {
 
 export async function updateMembership(user_id: string, data: object) {
   try {
-    let response = await axios.put(`/api/departmentMemberships/${user_id}`, data)
+    let response = await axios.put(
+      `/api/departmentMemberships/${user_id}`,
+      data,
+    );
     return response;
   } catch (error) {
     throw new Error(error);
   }
 }
 
-export async function createMembership(user_id: string, department_id: string, data: object) {
+export async function createMembership(
+  user_id: string,
+  department_id: string,
+  data: object,
+) {
   try {
-    const response = await axios.post(`/api/departmentMemberships/${user_id}/${department_id}`, data)
+    const response = await axios.post(
+      `/api/departmentMemberships/${user_id}/${department_id}`,
+      data,
+    );
     return response;
   } catch (error) {
     throw new Error(error);
   }
 }
-

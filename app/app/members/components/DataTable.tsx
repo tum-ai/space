@@ -126,7 +126,13 @@ export function DataTable() {
                     <div className="flex items-center justify-center space-x-2">
                         <LoadingWheel />
                     </div>
-                  ) : error}
+                  ) : (!error ? (
+                    <div className="flex items-center justify-center space-x-2">
+                      <p className="text-sm text-slate-400">
+                        No data found.
+                      </p>
+                    </div>
+                  ) : error)}
                 </TableCell>
               </TableRow>
             )}

@@ -10,7 +10,7 @@ import { DataTableViewOptions } from "./DataTableViewOptions";
 import { DataTableFacetedFilter } from "./DataTableFacetedFilter";
 import React, { useState, useEffect } from "react";
 import {
-  getPermissionsMap,
+  getRolesMap,
   getPositionsMap,
   getDepartmentsMap,
 } from "@lib/retrievals";
@@ -24,17 +24,17 @@ export function DataTableToolbar<TData>({
 }: DataTableToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0;
   const [departments, setDepartments] = useState([]);
-  const [permissions, setPermissions] = useState([]);
+  const [roles, setRoles] = useState([]);
   const [positions, setPositions] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const departments = await getDepartmentsMap();
-        const permissions = await getPermissionsMap();
+        const roles = await getRolesMap();
         const positions = await getPositionsMap();
         setDepartments(departments);
-        setPermissions(permissions);
+        setRoles(roles);
         setPositions(positions);
       } catch (error) {
         console.error(error);
@@ -83,11 +83,11 @@ export function DataTableToolbar<TData>({
           }
           className="h-8 w-full sm:w-[150px] lg:w-[250px]"
         />
-        {table.getColumn("permission") && (
+        {table.getColumn("userRoles") && (
           <DataTableFacetedFilter
-            column={table.getColumn("permission")}
-            title={table.getColumn("permission").columnDef["label"]}
-            options={permissions}
+            column={table.getColumn("userRoles")}
+            title={table.getColumn("userRoles").columnDef["label"]}
+            options={roles}
           />
         )}
         {table.getColumn("currentDepartment") && (

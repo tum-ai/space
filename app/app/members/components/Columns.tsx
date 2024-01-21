@@ -15,9 +15,8 @@ import {
   DropdownMenuTrigger,
 } from "@components/ui/dropdown-menu"
 import { DataTableColumnHeader} from "./DataTabelHeader" 
-import { User } from "prisma/prisma-client"
+import { User, UserRole } from "@prisma/client"
 import { Avatar } from "@components/Avatar"
-import DataTableEditDialog from "./DataTableEditDialog"
 import { deleteProfile } from "@lib/retrievals"
 
 // ExtendedColumnDef extends ColumnDef with additional properties for table rendering.
@@ -120,25 +119,31 @@ export const columns: ExtendedColumnDef<User>[] = [
         },
       },
       {
-        accessorKey: "permission",
-        label: "Permission",
+        accessorKey: "userRoles",
+        label: "Roles",
         header: ({ column }) => (
           <DataTableColumnHeader column={column} title={column.columnDef["label"]} />
         ),
         filterFn: (row, id, filterValues) => {
+          const aRoles: UserRole[] = row.getValue(id);
           for (let i = 0; i < filterValues.length; i++) {
             const filterValue = filterValues[i].toLowerCase()
             if (!row.getValue(id)) {
               return false;
             }
-            if (String(row.getValue(id)).toLowerCase().includes(filterValue)) {
-              return true;
+            for (let j = 0; j < aRoles.length; j++) {
+              const role = aRoles[j];
+              if (String(role.name).toLowerCase().includes(filterValue)) {
+                return true;
+              }
             }
           }
           return false;
         },
         cell: ({ row }) => {
-          const value = row.getValue("permission") as string;
+          const user = row.original;
+          const roleNames = user['userRoles'].map(role => role.name);
+          const value = roleNames.join(', ');
           return <div className="lowercase">{value ? value.replace(/_/g, ' ') : ''}</div>;
         },
       },
@@ -174,10 +179,7 @@ export const columns: ExtendedColumnDef<User>[] = [
         filterFn: (row, id, filterValues) => {
           for (let i = 0; i < filterValues.length; i++) {
             const filterValue = filterValues[i].toLowerCase()
-            if (!row.getValue(id)) {
-              return false;
-            }
-            if (String(row.getValue(id)).toLowerCase().includes(filterValue)) {
+            if (String(row.getValue('currentDepartmentPosition')).toLowerCase().includes(filterValue)) {
               return true;
             }
           }

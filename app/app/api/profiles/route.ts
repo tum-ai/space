@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import prisma from "database/db";
 import { checkPermission } from "@lib/auth/checkUserPermission";
 import { getServerSession } from 'next-auth';
+import { DepartmentMembership, User } from '@prisma/client';
 
 const complete_view = {
     id: true,
@@ -129,7 +130,7 @@ export async function DELETE(req: NextRequest) {
 
 
 
-function prepareMembershipData(profiles) {
+function prepareMembershipData(profiles: any) {
     // not possible to order by nested fields. function required.
     // orderBy: {
     //     membership_end: 'desc',
@@ -145,24 +146,24 @@ function prepareMembershipData(profiles) {
     }
 
     profiles.forEach(profile => {
-        if (profile.department_memberships && Array.isArray(profile.department_memberships)) {
-            profile.department_memberships.sort((a, b) => {
-                if (a.membership_end === b.membership_end) {
-                    return b.membership_start.getTime() - a.membership_start.getTime();
+        if (profile.departmentMemberships && Array.isArray(profile.departmentMemberships)) {
+            profile.departmentMemberships.sort((a, b) => {
+                if (a.membershipEnd === b.membershipEnd) {
+                    return b.membershipStart.getTime() - a.membershipStart.getTime();
                 }
-                return b.membership_end.getTime() - a.membership_end.getTime();
+                return b.membershipEnd.getTime() - a.membershipEnd.getTime();
             });
         }
     });
 
     //assign new fields
     profiles.forEach(profile => {
-        if (profile.department_memberships && profile.department_memberships?.length > 0) {
-            profile['current_department'] = profile.department_memberships[0]?.department?.name;
-            profile['current_department_position'] = profile.department_memberships[0]?.department_position;
+        if (profile.departmentMemberships && profile.departmentMemberships?.length > 0) {
+            profile['currentDepartment'] = profile.departmentMemberships[0]?.department?.name;
+            profile['currentDepartmentPosition'] = profile.departmentMemberships[0]?.departmentPosition;
         } else {
-            profile['current_department'] = null;
-            profile['current_department_position'] = null;
+            profile['currentDepartment'] = "";
+            profile['currentDepartmentPosition'] = "";
         }
     });
 
