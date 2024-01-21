@@ -11,7 +11,7 @@ import {
   ParsedFormData,
 } from "./routeTypes";
 
-// POST /api/tally/opportunityId/[opportunityId]
+// POST /api/tally/opportunity/[opportunityId]
 export async function POST(
   req: Request,
   { params }: { params: { opportunityId: string } },
@@ -129,7 +129,7 @@ async function saveFormData(formData: LabelTextPair, opportunityId: number) {
   return NextResponse.json(createApplication, { status: 200 });
 }
 
-// GET /api/tally/opportunityId/[opportunityId]
+// GET /api/tally/opportunity/[opportunityId]
 export async function GET(
   req: NextRequest,
   { params }: { params: { opportunityId: string } },
