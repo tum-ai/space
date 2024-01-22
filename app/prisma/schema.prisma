@@ -150,7 +150,6 @@ model Opportunity {
   department               Department                 @relation(fields: [departmentId], references: [id])
   opportunityStart         DateTime
   opportunityEnd           DateTime?
-  applications             Application[]
   reviews                  Review[]
   opportunityParticipation OpportunityParticipation[]
   createdAt                DateTime                   @default(now())
@@ -184,28 +183,17 @@ model OpportunityPermission {
   opportunityRole OpportunityRole @relation(fields: [role], references: [name], onDelete: Cascade)
 }
 
-model Application {
-  id            Int         @id @default(autoincrement())
-  opportunityId Int
-  opportunity   Opportunity @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
-  content       Json
-  reviews       Review[]
-}
-
 model Review {
   id            Int           @id @default(autoincrement())
+  application   Json
   opportunityId Int
   opportunity   Opportunity   @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
-  applicationId Int
-  application   Application   @relation(fields: [applicationId], references: [id])
   phaseReviews  PhaseReview[]
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt
-  @@unique([opportunityId, applicationId])
 }
 
 model PhaseReview {
-  id         Int    @id @default(autoincrement())
   phase      String
   reviewId   Int
   review     Review @relation(fields: [reviewId], references: [id])
@@ -214,5 +202,5 @@ model PhaseReview {
   content    Json
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt
-  @@unique([phase, reviewId])
+  @@id(name: "id", [phase, reviewId])
 }
