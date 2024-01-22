@@ -2,7 +2,7 @@ import { z } from "zod";
 
 const PersonSchema = z.object({
   id: z.number(),
-  tags: z.array(z.string()),
+  tags: z.array(z.string()).optional(),
 });
 
 const QuestionSchema = z
