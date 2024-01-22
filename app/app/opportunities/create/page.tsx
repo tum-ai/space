@@ -9,6 +9,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { FormSchema } from "./schema";
 import { ArrowRightIcon } from "@radix-ui/react-icons";
+import { zodResolver } from "@hookform/resolvers/zod"
 
 const mockAdmins = [
   {
@@ -60,14 +61,35 @@ const mockMembers = [
   },
 ];
 
+const defaultValues = {
+  generalInformation: {
+    tallyID: '',
+    name: '',
+    begin: new Date(), // or a specific default date
+    end: new Date(), // or a specific default date
+    description: '',
+    admins: [], // Assuming no default admins
+    screeners: [], // Assuming no default screeners
+  },
+  defineSteps: {
+    phases: {
+      
+    },
+  },
+};
+
+
 export default function CreateOpportunity() {
-  const form = useForm<z.infer<typeof FormSchema>>;
+  const form = useForm<z.infer<typeof FormSchema>>({
+    resolver: zodResolver(FormSchema),
+    defaultValues: defaultValues,
+  })
 
   return (
     <Section>
       <Tabs defaultValue="general">
         <CreateOpportunityHeader />
-        <Form>
+        <Form {...form}>
           <TabsContent value="general">
             <GeneralInformation
               members={mockMembers}

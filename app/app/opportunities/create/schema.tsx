@@ -24,6 +24,16 @@ const QuestionSchema = z
     },
   );
 
+const FormSchema = z.object({
+  formName: z.string(),
+  questions: z.array(QuestionSchema),
+})
+
+const PhaseSchema = z.object({
+  phaseName: z.string(),
+  forms: z.array(FormSchema),
+})
+
 const GeneralInformationSchema = z.object({
   tallyID: z.string(),
   name: z.string(),
@@ -34,15 +44,13 @@ const GeneralInformationSchema = z.object({
   screeners: z.array(PersonSchema),
 });
 
-const FormWithinPhaseSchema = z.record(z.array(QuestionSchema));
-
 const DefineStepsSchema = z.object({
-  phases: z.record(FormWithinPhaseSchema),
+  phases: z.array(PhaseSchema),
 });
 
-const FormSchema = z.object({
+const FullFormSchema = z.object({
   generalInformation: GeneralInformationSchema,
   defineSteps: DefineStepsSchema,
 });
 
-export { FormSchema };
+export { FullFormSchema };
