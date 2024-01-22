@@ -1,13 +1,17 @@
 import DefinePhases from "./DefinePhases";
+import DefineQuestions from "./DefineQuestions";
 
 const phases = {
-	"Screening phase": ["Screening"],
-	"Interview phase": ["Venture Interview", "RnD Interview", "Legal Interview"],
-	Decision: ["Venture Decision", "RnD Decision", "Legal Decision"],
-  };
+  "Screening Phase": ["Screening"],
+  "Interview Phase": ["Venture Interview", "RnD Interview", "Legal Interview"],
+  "Decision Phase": ["Venture Decision", "RnD Decision", "Legal Decision"],
+};
 
 export default function DefineSteps() {
   return (
-	  <DefinePhases phases={phases}/>
+    <div className="space-y-14">
+      <DefinePhases phases={phases} />
+      <DefineQuestions />
+    </div>
   );
 }

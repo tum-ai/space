@@ -1,8 +1,12 @@
+import { ButtonIcon } from "@components/IconButton";
+import { Badge } from "@components/ui/badge";
 import { Button } from "@components/ui/button";
 import { Card } from "@components/ui/card";
 import { Input } from "@components/ui/input";
 import { Popover, PopoverContent } from "@components/ui/popover";
-import { PopoverTrigger } from "@radix-ui/react-popover";
+import { Separator } from "@components/ui/separator";
+import { TrashIcon } from "@radix-ui/react-icons";
+import { PopoverClose, PopoverTrigger } from "@radix-ui/react-popover";
 import { useState } from "react";
 
 interface PhaseProps {
@@ -13,10 +17,29 @@ interface PhaseProps {
 
 export default function DefinePhases({ phases }) {
   const [currentPhases, setCurrentPhases] = useState(phases);
+  const [currentPhaseName, setCurrentPhaseName] = useState("");
+  const [currentFormName, setCurrentFormName] = useState("");
+
+  function addNewPhase(title: string, initialFormName: string) {
+    const newPhases = {
+      ...currentPhases,
+      [title]: [initialFormName],
+    };
+
+    setCurrentPhases(newPhases);
+  }
+
+  function addFormToPhase(phaseName: string, newForm: string) {
+    const updatedPhases = {
+      ...currentPhases,
+      [phaseName]: [...currentPhases[phaseName], newForm],
+    };
+    setCurrentPhases(updatedPhases);
+  }
 
   return (
-    <div className="grid grid-cols-4">
-      {Object.entries(phases).map(
+    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 sm:gap-x-0 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+      {Object.entries(currentPhases).map(
         ([phase, forms]: [string, string[]], index: number) => (
           <Phase key={phase} title={phase} forms={forms} index={index} />
         ),
@@ -24,9 +47,14 @@ export default function DefinePhases({ phases }) {
       <div className="flex min-h-[200px] flex-col items-start">
         <Popover>
           <PopoverTrigger asChild>
-            <Button variant="ghost" className="text-gray-300">
-              + Add phase
-            </Button>
+            <div className="flex h-14 w-full items-center">
+              <Button
+                variant="ghost"
+                className="w-full text-sm font-medium text-gray-300 dark:text-gray-600"
+              >
+                + Add phase
+              </Button>
+            </div>
           </PopoverTrigger>
           <PopoverContent className="w-80">
             <div className="grid gap-4">
@@ -43,6 +71,8 @@ export default function DefinePhases({ phases }) {
                     id="phaseName"
                     placeholder="Interview"
                     className="col-span-2 h-8"
+                    value={currentPhaseName}
+                    onChange={(c) => setCurrentPhaseName(c.target.value)}
                   />
                 </div>
                 <div className="grid grid-cols-3 items-center gap-4">
@@ -51,15 +81,32 @@ export default function DefinePhases({ phases }) {
                     id="phaseName"
                     placeholder="Screening"
                     className="col-span-2 h-8"
+                    value={currentFormName}
+                    onChange={(c) => setCurrentFormName(c.target.value)}
                   />
                 </div>
+              </div>
+              <div className="flex items-center justify-end">
+                {/* TODO: validate the input */}
+                <PopoverClose asChild>
+                  <Button
+                    variant="secondary"
+                    onClick={() =>
+                      addNewPhase(currentPhaseName, currentFormName)
+                    }
+                  >
+                    Add
+                  </Button>
+                </PopoverClose>
               </div>
             </div>
           </PopoverContent>
         </Popover>
-        <div className="my-1 w-full border border-gray-500"></div>
-        <div className="flex h-full w-32 flex-col items-center justify-center">
-          <Button variant="secondary">+ Add form</Button>
+        <Separator className="mb-4 mt-1 h-[2px]" />
+        <div className="flex h-full w-full flex-col items-center justify-center">
+          <Card className="w-full p-2 text-center text-sm font-light text-gray-300 dark:text-gray-600">
+            Add phases to define forms
+          </Card>
         </div>
       </div>
     </div>
@@ -67,17 +114,26 @@ export default function DefinePhases({ phases }) {
 }
 
 function Phase({ title, forms, index }: PhaseProps) {
+
   return (
     <div className="flex min-h-[250px] flex-col items-start">
-      <h3 className="flex h-10 items-center">
-        {index + 1} {title}
-      </h3>
-      <div className="my-2 w-full border border-gray-500"></div>
+      <div className="flex justify-between items-center h-14 w-5/6">
+        <div className="flex items-center space-x-1.5 text-sm font-medium">
+          <Badge variant="secondary">{index + 1}</Badge>
+          <h4>{title}</h4>
+        </div>
+      </div>
+      <Separator className="mb-4 mt-1 h-[2px]" />
       <div className="flex h-full w-4/5 flex-col items-center justify-center gap-2">
         {forms.map((form) => (
-          <Card className="w-full p-2">{form}</Card>
+          <Card className="w-full px-4 py-2 text-sm font-light">{form}</Card>
         ))}
-        <Card className="w-full p-2 font-light text-gray-300">+ Add form</Card>
+        <Button
+          variant="outline"
+          className="w-full text-gray-300 hover:text-gray-600 dark:text-gray-600 dark:hover:text-gray-300"
+        >
+          + add form
+        </Button>
       </div>
     </div>
   );

@@ -1,6 +1,6 @@
 import { ButtonIcon } from "@components/IconButton";
 import Tag from "@components/Tag";
-import { Card, CardContent } from "@components/ui/card";
+import { Card } from "@components/ui/card";
 import { TrashIcon } from "@radix-ui/react-icons";
 import Image from "next/image";
 

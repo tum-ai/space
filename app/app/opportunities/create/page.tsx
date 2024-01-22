@@ -4,6 +4,8 @@ import GeneralInformation from "./components/GeneralInformation";
 import DefineSteps from "./components/DefineSteps";
 import { Tabs, TabsTrigger, TabsContent, TabsList } from "@components/ui/tabs";
 import { Section } from "@components/Section";
+import Tooltip from "@components/Tooltip";
+import { QuestionMarkCircledIcon } from "@radix-ui/react-icons";
 
 const mockAdmins = [
   {
@@ -77,7 +79,7 @@ export default function CreateOpportunity() {
 
 function CreateOpportunityHeader({}) {
   return (
-    <div className="flex flex-col mb-10 space-y-4">
+    <div className="mb-12 flex flex-col space-y-6">
       <div className="flex flex-col gap-3">
         <h1 className="text-6xl">Opportunity</h1>
         <p>Configure a new opportunity</p>
