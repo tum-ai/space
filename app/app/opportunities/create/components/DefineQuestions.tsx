@@ -8,6 +8,7 @@ import { Button } from "@components/ui/button";
 import Select from "@components/Select";
 import { useState } from "react";
 import QuestionCard from "./QuestionCard";
+import { Badge } from "@components/ui/badge";
 export interface Question {
   type: "select" | "slider" | "textarea";
   question: string;
@@ -15,7 +16,7 @@ export interface Question {
   maxValue?: number;
 }
 
-export default function DefineQuestions() {
+export default function DefineQuestions({ form }) {
   //List of already saved questions
   const [definedQuestions, setDefinedQuestions] = useState([]);
 
@@ -103,7 +104,22 @@ export default function DefineQuestions() {
   return (
     <Card className="flex flex-col gap-8 p-4">
       <div className="flex flex-col gap-4">
-        <h1 className="text-2xl">Define questions</h1>
+        <div className="flex flex-col gap-1">
+          <h1 className="text-2xl">Define questions for [{form}]</h1>
+          <p className="text-sm text-slate-600">
+            These will get asked to the reviewers
+          </p>
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          <Input label="Form name" placeholder="name" fullWidth />
+          <Input
+            label="Number of review"
+            placeholder="number of review"
+            fullWidth
+          />
+        </div>
+
         <Card className="flex flex-col gap-4 p-4">
           <span className="flex gap-4">
             <Select
@@ -133,8 +149,8 @@ export default function DefineQuestions() {
               onChange={(evt) => setQuestionInput(evt.target.value)}
               value={questionInput}
             />
-            <Button onClick={addQuestion} className="w-32">
-              Add
+            <Button onClick={addQuestion} className="w-44" variant="secondary">
+              Add Question
             </Button>
           </span>
           {selectedQuestionType === "select" ? (
@@ -151,8 +167,10 @@ export default function DefineQuestions() {
               <div className="flex flex-col gap-4">
                 {tmpSelectOptions.map((item: string, index: number) => (
                   <Card className="flex justify-between gap-2 p-2">
-                    <span>{index + ". " + item}</span>
-
+                    <div className="flex gap-4">
+                      <Badge variant="secondary">{index + 1}</Badge>
+                      <span>{item}</span>
+                    </div>
                     <TrashIcon
                       className="h-5"
                       onClick={() => handleDeleteTmpOption(index)}
@@ -182,7 +200,6 @@ export default function DefineQuestions() {
             />
           ))}
         </div>
-        <Button onClick={() => {}}>Save Questions</Button>
       </div>
     </Card>
   );

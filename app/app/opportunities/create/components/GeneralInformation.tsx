@@ -6,7 +6,7 @@ import { Cross1Icon, QuestionMarkCircledIcon } from "@radix-ui/react-icons";
 import Select from "@components/Select";
 import { Field, Form, Formik } from "formik";
 import * as Yup from "yup";
-import { MemberBar, AddMemberBar } from "../components/MemberBar";
+import { MemberBar, AddMemberBar } from "./MemberBar";
 import Dialog from "@components/Dialog";
 import { useState } from "react";
 import ErrorMessage from "@components/ErrorMessage";

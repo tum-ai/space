@@ -2,12 +2,15 @@ import { ButtonIcon } from "@components/IconButton";
 import { Badge } from "@components/ui/badge";
 import { Button } from "@components/ui/button";
 import { Card } from "@components/ui/card";
-import { Input } from "@components/ui/input";
+import Input from "@components/Input";
 import { Popover, PopoverContent } from "@components/ui/popover";
 import { Separator } from "@components/ui/separator";
-import { TrashIcon } from "@radix-ui/react-icons";
+import { Cross1Icon, TrashIcon } from "@radix-ui/react-icons";
 import { PopoverClose, PopoverTrigger } from "@radix-ui/react-popover";
 import { useState } from "react";
+import Dialog from "@components/Dialog";
+import { DialogClose } from "@radix-ui/react-dialog";
+import { DialogBody } from "next/dist/client/components/react-dev-overlay/internal/components/Dialog";
 
 interface PhaseProps {
   title: string;
@@ -114,10 +117,9 @@ export default function DefinePhases({ phases }) {
 }
 
 function Phase({ title, forms, index }: PhaseProps) {
-
   return (
     <div className="flex min-h-[250px] flex-col items-start">
-      <div className="flex justify-between items-center h-14 w-5/6">
+      <div className="flex h-14 w-5/6 items-center justify-between">
         <div className="flex items-center space-x-1.5 text-sm font-medium">
           <Badge variant="secondary">{index + 1}</Badge>
           <h4>{title}</h4>
@@ -126,14 +128,37 @@ function Phase({ title, forms, index }: PhaseProps) {
       <Separator className="mb-4 mt-1 h-[2px]" />
       <div className="flex h-full w-4/5 flex-col items-center justify-center gap-2">
         {forms.map((form) => (
-          <Card className="w-full px-4 py-2 text-sm font-light">{form}</Card>
+          <Button
+            className="w-full px-4 py-2 text-sm font-light"
+            variant="outline"
+            value={form}
+          >
+            {form}
+          </Button>
         ))}
-        <Button
-          variant="outline"
-          className="w-full text-gray-300 hover:text-gray-600 dark:text-gray-600 dark:hover:text-gray-300"
+
+        <Dialog
+          trigger={
+            <Button
+              variant="outline"
+              className="w-full text-gray-300 hover:text-gray-600 dark:text-gray-600 dark:hover:text-gray-300"
+            >
+              + add form
+            </Button>
+          }
         >
-          + add form
-        </Button>
+          <DialogClose className="float-right">
+            <Cross1Icon className="h-5 w-5 text-black hover:text-gray-700 dark:text-white dark:hover:text-gray-400" />
+          </DialogClose>
+          <DialogBody className="flex flex-col gap-4">
+            <Input
+              label="Form name"
+              placeholder="add form name here"
+              fullWidth
+            ></Input>
+            <Button>Add form</Button>
+          </DialogBody>
+        </Dialog>
       </div>
     </div>
   );

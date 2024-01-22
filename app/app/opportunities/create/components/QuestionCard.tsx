@@ -2,6 +2,7 @@
 
 import { Card } from "@components/ui/card";
 import { EditIcon, HashIcon, ListIcon, TrashIcon } from "lucide-react";
+import { Badge } from "@components/ui/badge";
 
 export default function QuestionCard({ question, index, handler }) {
   return (
@@ -25,22 +26,28 @@ export default function QuestionCard({ question, index, handler }) {
         )}
         <TrashIcon onClick={() => handler(index)} />
       </div>
-
-      <p>{question.question}</p>
+      <div className="flex gap-4">
+        <Badge variant="secondary">Question</Badge>
+        <span className="font-semibold">{question.question}</span>
+      </div>
       {question.options ? (
         <div className="flex flex-col gap-2">
           {question.options.map((option: string, index: number) => (
             <Card className="flex gap-4 p-2">
-              <span>{index} )</span>
-              <span>{option}</span>
+              <div className="flex gap-4">
+                <Badge variant="secondary">{index + 1}</Badge>
+                <span>{option}</span>
+              </div>
             </Card>
           ))}
         </div>
       ) : null}
       {question.maxValue ? (
         <Card className="flex gap-4 p-2">
-          <span>Max: </span>
-          <span>{question.maxValue}</span>
+          <div className="flex gap-4">
+            <Badge variant="secondary">Max</Badge>
+            <span>{question.maxValue}</span>
+          </div>
         </Card>
       ) : null}
     </Card>
