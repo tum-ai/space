@@ -7,7 +7,7 @@ import { Section } from "@components/Section";
 import { Form } from "@components/ui/form";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { FormSchema } from "./schema";
+import { FullFormSchema } from "./schema";
 import { ArrowRightIcon } from "@radix-ui/react-icons";
 import { zodResolver } from "@hookform/resolvers/zod"
 
@@ -61,28 +61,25 @@ const mockMembers = [
   },
 ];
 
-const defaultValues = {
+const defaultSchemaValues = {
   generalInformation: {
     tallyID: '',
     name: '',
-    begin: new Date(), // or a specific default date
-    end: new Date(), // or a specific default date
+    begin: new Date(),
+    end: new Date(), 
     description: '',
-    admins: [], // Assuming no default admins
-    screeners: [], // Assuming no default screeners
+    admins: [], 
+    screeners: [], 
   },
   defineSteps: {
-    phases: {
-      
-    },
+    phases: [],
   },
 };
 
-
 export default function CreateOpportunity() {
-  const form = useForm<z.infer<typeof FormSchema>>({
-    resolver: zodResolver(FormSchema),
-    defaultValues: defaultValues,
+  const form = useForm<z.infer<typeof FullFormSchema>>({
+    resolver: zodResolver(FullFormSchema),
+    defaultValues: defaultSchemaValues,
   })
 
   return (
