@@ -1,6 +1,14 @@
 import prisma from "database/db";
 import { NextRequest, NextResponse } from "next/server";
 
+/**
+ * GET opportunityParticipation/[opportunityId]/screener/[screenerId]
+ *
+ * @param NextRequest request
+ * @param number opportunityId
+ * @param number screenerId
+ * @returns user screener
+ */
 export const GET = async (
   request: NextRequest,
   { params: { opportunityId, screenerId } },
@@ -31,6 +39,14 @@ export const GET = async (
   return NextResponse.json(responseBody, { status });
 };
 
+/**
+ * PUT opportunityParticipation/[opportunityId]/screener/[screenerId]
+ *
+ * @param NextRequest request
+ * @param number opportunityId
+ * @param number screenerId
+ * @returns user screener
+ */
 export const PUT = async (
   request: NextRequest,
   { params: { opportunityId, screenerId } },
