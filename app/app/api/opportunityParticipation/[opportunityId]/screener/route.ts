@@ -1,6 +1,13 @@
 import prisma from "database/db";
 import { NextRequest, NextResponse } from "next/server";
 
+/**
+ * GET opportunityParticipation/[opportunityId]/screener
+ *
+ * @param NextRequest request
+ * @param number opportunityId
+ * @returns user[] screener
+ */
 export async function GET(
   request: NextRequest,
   { params: { opportunityId } },
@@ -23,6 +30,14 @@ export async function GET(
   return NextResponse.json({ screeners }, { status: 200 });
 }
 
+/**
+ * POST opportunityParticipation/[opportunityId]/screener
+ *
+ * @param NextRequest request
+ * @param json userId
+ * @param number opportunityId
+ * @returns user screener
+ */
 export async function POST(
   request: NextRequest,
   { params: { opportunityId } },

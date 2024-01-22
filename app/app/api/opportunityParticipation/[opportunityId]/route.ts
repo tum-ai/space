@@ -1,6 +1,13 @@
 import prisma from "database/db";
 import { NextRequest, NextResponse } from "next/server";
 
+/**
+ * GET opportunityParticipation/[opportunityId]
+ *
+ * @param NextRequest request
+ * @param number opportunityId
+ * @returns User[]
+ */
 export async function GET(
   request: NextRequest,
   { params: { opportunityId } },
