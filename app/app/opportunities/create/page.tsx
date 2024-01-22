@@ -4,8 +4,12 @@ import GeneralInformation from "./components/GeneralInformation";
 import DefineSteps from "./components/DefineSteps";
 import { Tabs, TabsTrigger, TabsContent, TabsList } from "@components/ui/tabs";
 import { Section } from "@components/Section";
-import Tooltip from "@components/Tooltip";
-import { QuestionMarkCircledIcon } from "@radix-ui/react-icons";
+import { Form } from "@components/ui/form";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { FullFormSchema } from "./schema";
+import { ArrowRightIcon } from "@radix-ui/react-icons";
+import { zodResolver } from "@hookform/resolvers/zod"
 
 const mockAdmins = [
   {
@@ -57,21 +61,43 @@ const mockMembers = [
   },
 ];
 
+const defaultSchemaValues = {
+  generalInformation: {
+    tallyID: '',
+    name: '',
+    begin: new Date(),
+    end: new Date(), 
+    description: '',
+    admins: [], 
+    screeners: [], 
+  },
+  defineSteps: {
+    phases: [],
+  },
+};
+
 export default function CreateOpportunity() {
+  const form = useForm<z.infer<typeof FullFormSchema>>({
+    resolver: zodResolver(FullFormSchema),
+    defaultValues: defaultSchemaValues,
+  })
+
   return (
     <Section>
       <Tabs defaultValue="general">
         <CreateOpportunityHeader />
-        <TabsContent value="general">
-          <GeneralInformation
-            members={mockMembers}
-            screeners={mockScreeners}
-            admins={mockAdmins}
-          />
-        </TabsContent>
-        <TabsContent value="steps">
-          <DefineSteps />
-        </TabsContent>
+        <Form {...form}>
+          <TabsContent value="general">
+            <GeneralInformation
+              members={mockMembers}
+              screeners={mockScreeners}
+              admins={mockAdmins}
+            />
+          </TabsContent>
+          <TabsContent value="steps">
+            <DefineSteps />
+          </TabsContent>
+        </Form>
       </Tabs>
     </Section>
   );
@@ -86,6 +112,7 @@ function CreateOpportunityHeader({}) {
       </div>
       <TabsList className="self-center">
         <TabsTrigger value="general">General information</TabsTrigger>
+        <ArrowRightIcon className="h-5 w-5 mx-2"/>
         <TabsTrigger value="steps">Define steps</TabsTrigger>
       </TabsList>
     </div>
