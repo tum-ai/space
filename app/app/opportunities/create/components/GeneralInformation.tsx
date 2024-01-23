@@ -48,6 +48,16 @@ export default function GeneralInformation({ form, members }) {
     } else if (role === Roles.SCREENER) {
       appendScreener({ id: member.value, name: member.key, tags: [] });
     }
+  } 
+  
+  function handleRemoveMember(role, memberId) {
+    if (role === Roles.ADMIN) {
+      const index = adminFields.findIndex((admin) => admin.id === memberId);
+      removeAdmin(index);
+    } else if (role === Roles.SCREENER) {
+      const index = screenerFields.findIndex((screener) => screener.id === memberId);
+      removeScreener(index);
+    }
   }
 
   return (
@@ -95,6 +105,7 @@ export default function GeneralInformation({ form, members }) {
         admins={adminFields}
         members={members}
         onAddMember={handleAddMember}
+        onRemoveMember={handleRemoveMember}
         form={form}
       />
     </div>
@@ -147,7 +158,7 @@ function FormDatePicker({ formControl, name, label }) {
   );
 }
 
-function MemberSection({ screeners, members, admins, onAddMember, form }) {
+function MemberSection({ screeners, members, admins, onAddMember, onRemoveMember, form }) {
   const [dialog, setDialog] = useState({ open: false, role: undefined });
   const [selectedMember, setSelectedMember] = useState(undefined);
 
@@ -202,7 +213,7 @@ function MemberSection({ screeners, members, admins, onAddMember, form }) {
             name={member.name}
             photoUrl={member.photoUrl}
             tags={member.tags}
-            onDelete={() => console.log("delete member", member.id)}
+            onDelete={() => onRemoveMember(stakeholder.role, member.id)}
           />
         ))}
         <AddMemberBar
