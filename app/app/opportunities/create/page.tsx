@@ -9,7 +9,8 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { FullFormSchema } from "./schema";
 import { ArrowRightIcon } from "@radix-ui/react-icons";
-import { zodResolver } from "@hookform/resolvers/zod"
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Button } from "@components/ui/button";
 
 const mockAdmins = [
   {
@@ -63,13 +64,13 @@ const mockMembers = [
 
 const defaultSchemaValues = {
   generalInformation: {
-    tallyID: '',
-    name: '',
-    begin: new Date(),
-    end: new Date(), 
-    description: '',
-    admins: [], 
-    screeners: [], 
+    tallyID: "",
+    name: "",
+    begin: undefined,
+    end: undefined,
+    description: "",
+    admins: [],
+    screeners: [],
   },
   defineSteps: {
     phases: [],
@@ -80,23 +81,29 @@ export default function CreateOpportunity() {
   const form = useForm<z.infer<typeof FullFormSchema>>({
     resolver: zodResolver(FullFormSchema),
     defaultValues: defaultSchemaValues,
-  })
+  });
 
   return (
     <Section>
       <Tabs defaultValue="general">
         <CreateOpportunityHeader />
         <Form {...form}>
-          <TabsContent value="general">
-            <GeneralInformation
-              members={mockMembers}
-              screeners={mockScreeners}
-              admins={mockAdmins}
-            />
-          </TabsContent>
-          <TabsContent value="steps">
-            <DefineSteps />
-          </TabsContent>
+          <form
+            onSubmit={form.handleSubmit((values) => {
+              console.log(values);
+            })}
+          >
+            <TabsContent value="general">
+              <GeneralInformation
+                form={form}
+                members={mockMembers}
+              />
+            </TabsContent>
+            <TabsContent value="steps">
+              <DefineSteps />
+            </TabsContent>
+            <Button type="submit">Submit</Button>
+          </form>
         </Form>
       </Tabs>
     </Section>
@@ -112,7 +119,7 @@ function CreateOpportunityHeader({}) {
       </div>
       <TabsList className="self-center">
         <TabsTrigger value="general">General information</TabsTrigger>
-        <ArrowRightIcon className="h-5 w-5 mx-2"/>
+        <ArrowRightIcon className="mx-2 h-5 w-5" />
         <TabsTrigger value="steps">Define steps</TabsTrigger>
       </TabsList>
     </div>
