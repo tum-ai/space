@@ -17,6 +17,8 @@ export interface Question {
 }
 
 export default function DefineQuestions({ form }) {
+  const [formName, setFormName] = useState("");
+  const [numberOfReview, setNumberOfReview] = useState(0);
   //List of already saved questions
   const [definedQuestions, setDefinedQuestions] = useState([]);
 
@@ -101,22 +103,42 @@ export default function DefineQuestions({ form }) {
     setDefinedQuestions(newQuestions);
   };
 
+  const handleSaveForm = () => {
+    const form = {
+      formName: formName,
+      questions: definedQuestions,
+    };
+
+    //TODO append the form and save it
+  };
+
   return (
     <Card className="flex flex-col gap-8 p-4">
       <div className="flex flex-col gap-4">
         <div className="flex flex-col gap-1">
-          <h1 className="text-2xl">Define questions for [{form}]</h1>
+          <h1 className="text-2xl">
+            Define questions {form ? "for " + form : ""}
+          </h1>
           <p className="text-sm text-slate-600">
             These will get asked to the reviewers
           </p>
         </div>
 
         <div className="grid grid-cols-2 gap-4">
-          <Input label="Form name" placeholder="name" fullWidth />
+          <Input
+            label="Form name"
+            placeholder="name"
+            fullWidth
+            value={formName}
+            onChange={(evt) => setFormName(evt.target.value)}
+          />
           <Input
             label="Number of review"
-            placeholder="number of review"
+            placeholder="Set the number of review"
             fullWidth
+            type="number"
+            value={numberOfReview}
+            onChange={(evt) => setNumberOfReview(Number(evt.target.value))}
           />
         </div>
 
@@ -200,6 +222,7 @@ export default function DefineQuestions({ form }) {
             />
           ))}
         </div>
+        <Button onClick={handleSaveForm}>Save Form</Button>
       </div>
     </Card>
   );

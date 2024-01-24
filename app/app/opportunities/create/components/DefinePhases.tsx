@@ -18,7 +18,7 @@ interface PhaseProps {
   index: number;
 }
 
-export default function DefinePhases({ phases }) {
+export default function DefinePhases({ phases, changeForm }) {
   const [currentPhases, setCurrentPhases] = useState(phases);
   const [currentPhaseName, setCurrentPhaseName] = useState("");
   const [currentFormName, setCurrentFormName] = useState("");
@@ -44,7 +44,13 @@ export default function DefinePhases({ phases }) {
     <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 sm:gap-x-0 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
       {Object.entries(currentPhases).map(
         ([phase, forms]: [string, string[]], index: number) => (
-          <Phase key={phase} title={phase} forms={forms} index={index} />
+          <Phase
+            key={phase}
+            title={phase}
+            forms={forms}
+            index={index}
+            handler={changeForm}
+          />
         ),
       )}
       <div className="flex min-h-[200px] flex-col items-start">
@@ -116,7 +122,7 @@ export default function DefinePhases({ phases }) {
   );
 }
 
-function Phase({ title, forms, index }: PhaseProps) {
+function Phase({ title, forms, index, handler }) {
   return (
     <div className="flex min-h-[250px] flex-col items-start">
       <div className="flex h-14 w-5/6 items-center justify-between">
@@ -132,6 +138,7 @@ function Phase({ title, forms, index }: PhaseProps) {
             className="w-full px-4 py-2 text-sm font-light"
             variant="outline"
             value={form}
+            onClick={() => handler(form)}
           >
             {form}
           </Button>

@@ -75,7 +75,7 @@ export default function CreateOpportunity() {
               <GeneralInformation form={form} members={mockMembers} />
             </TabsContent>
             <TabsContent value="steps">
-              <DefineSteps />
+              <DefineSteps form={form} />
             </TabsContent>
             <Button
               variant="destructive"

@@ -1,6 +1,7 @@
 import DefinePhases from "./DefinePhases";
 import DefineQuestions from "./DefineQuestions";
 import { Button } from "@components/ui/button";
+import { useState } from "react";
 
 const phases = {
   "Screening Phase": ["Screening"],
@@ -8,11 +9,17 @@ const phases = {
   "Decision Phase": ["Venture Decision", "RnD Decision", "Legal Decision"],
 };
 
-export default function DefineSteps() {
+export default function DefineSteps({ form }) {
+  const [currentForm, setCurrentForm] = useState();
+
+  const handleChangeForm = (form) => {
+    setCurrentForm(form);
+  };
+
   return (
     <div className="space-y-14">
-      <DefinePhases phases={phases} />
-      <DefineQuestions form={phases["Screening Phase"][0]} />
+      <DefinePhases phases={phases} changeForm={handleChangeForm} />
+      <DefineQuestions form={currentForm} />
       <div className="flex justify-end">
         <Button>Create Opportunity</Button>
       </div>
