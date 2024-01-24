@@ -15,9 +15,13 @@ export async function GET(req: NextRequest, { params }: { params: { userId: stri
                 firstName: true,
                 lastName: true,
                 email: true,
-                userRoles: {
+                userToUserRoles: {
                   select: {
-                    name: true,
+                    role: {
+                        select: {
+                            name: true,
+                        }
+                    },
                   },
                 },
                 image: true,
@@ -25,6 +29,7 @@ export async function GET(req: NextRequest, { params }: { params: { userId: stri
                   select: {
                     department: {
                       select: {
+                        id: true,
                         name: true,
                       },
                     },
@@ -60,6 +65,7 @@ export async function PUT(req: NextRequest, { params }: { params: { userId: stri
             data: body, // Update profile with request body
         }); 
     } catch (error) {
+        console.log(error)
         return NextResponse.json({"error": error}, { status: 500 })
     }
 

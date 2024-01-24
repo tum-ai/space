@@ -1,3 +1,4 @@
+import { Prisma } from '@prisma/client'
 import { DepartmentPosition } from "@prisma/client";
 import axios from "axios";
 
@@ -87,7 +88,7 @@ export async function deleteProfile(id: string) {
   }
 }
 
-export async function updateProfile(id: string, data: object) {
+export async function updateProfile(id: string, data: any) {
   try {
     const response = await axios.put(`/api/profiles/${id}`, data);
     if (response.status !== 200) {
@@ -99,7 +100,7 @@ export async function updateProfile(id: string, data: object) {
   }
 }
 
-export async function updateMembership(departmentId: number, data: object) {
+export async function updateMembership(departmentId: number, data: Prisma.DepartmentMembershipUpdateInput) {
   try {
     let response = await axios.put(
       `/api/departmentMemberships/${departmentId}`,
@@ -111,7 +112,7 @@ export async function updateMembership(departmentId: number, data: object) {
   }
 }
 
-export async function createMembership(data: object) {
+export async function createMembership(data: Prisma.DepartmentMembershipUpdateInput) {
   try {
     const response = await axios.post(`/api/departmentMemberships`, data);
     return response;
@@ -125,6 +126,26 @@ export async function getMembership(user_id: string, department_id: string) {
     const response = await axios.get(
       `/api/departmentMemberships/userId/${user_id}/departmentId/${department_id}`,
     );
+    return response;
+  } catch (error) {
+    throw new Error(error);
+  }
+}
+
+export async function deleteMembership(membershipId: number) {
+  try {
+    const response = await axios.delete(
+      `/api/departmentMemberships/${membershipId}`,
+    );
+    return response;
+  } catch (error) {
+    throw new Error(error);
+  }
+}
+
+async function deleteUserToUserRole(user_id: string, role_id: string) {
+  try {
+    const response = await axios.get(`/api/userToUserRoles/userId/${user_id}/roleId/${role_id}`);
     return response;
   } catch (error) {
     throw new Error(error);

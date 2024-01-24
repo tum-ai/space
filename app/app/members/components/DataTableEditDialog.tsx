@@ -22,7 +22,9 @@ import {
   updateMembership,
   createMembership,
   updateProfile,
+  deleteMembership,
 } from "@lib/retrievals";
+import { AxiosResponse } from "axios";
 
 export default function DataTableEditDialog({ rows, tableData, ...props }) {
   const [rowData, setRowData] = useState([]);
@@ -67,103 +69,135 @@ export default function DataTableEditDialog({ rows, tableData, ...props }) {
     }
   };
 
-  const handleSubmit = () => {
-    const updateMembershipData = async () => {
+  const handleDelete = async (userId: string, departmentId: string) => {
+    let response: AxiosResponse<any, any>;
+
+    if (selectedDepartment) {
+      response = await getMembership(userId, departmentId);
+      const membershipId = response.data?.id;
+
+      if (!membershipId) {
+        return null;
+      }
+
+      response = await deleteMembership(membershipId);
+    }
+
+    if (selectedRole) {
       try {
-        for (let i = 0; i < rowData.length; i++) {
-          const row = rowData[i];
-          const userId = row.id;
-          let departmentId;
+        response = await updateProfile(userId, {
+          userToUserRoles: {
+            disconnect: [
+              {
+                userId_roleId: {
+                  userId: userId, // replace with the actual user ID
+                  roleId: selectedRole, // replace with the actual role ID
+                },
+              },
+            ],
+          },
+          updatedAt: new Date(),
+        });
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  };
 
-          for (let index = 0; index < tableData.length; index++) {
-            const profile = tableData[index];
+  const handleSave = async (userId: string, departmentId: string) => {
+    let response: AxiosResponse<any, any>;
 
-            if (profile.id != userId) {
-              continue;
-            }
+    const membershipData = {
+      membershipStart: new Date(),
+      membershipEnd: new Date(),
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      user: {
+        connect: {
+          id: userId,
+        },
+      },
+    };
 
-            departmentId = profile.currentDepartment.id;
-            break;
-          }
+    if (selectedDepartment) {
+      membershipData["department"] = {
+        connect: {
+          id: selectedDepartment,
+        },
+      };
+    }
 
-          const membershipData = {
-            membershipStart: new Date(),
-            membershipEnd: new Date(),
-            createdAt: new Date(),
+    if (selectedPosition) {
+      membershipData["departmentPosition"] = selectedPosition;
+    }
+
+    if (selectedDepartment && selectedPosition) {
+      try {
+        response = await createMembership(membershipData);
+      } catch (error) {
+        if (error.response.status == 409) {
+          //Membership does not exist, create it
+
+          response = await getMembership(userId, departmentId);
+          const membershipId = response.data.id;
+
+          //TODO make the UPDATE request to DB
+          response = await updateMembership(membershipId, {
             updatedAt: new Date(),
-            user: {
+          });
+        } else {
+          throw new Error(error);
+        }
+      }
+    }
+
+    if (selectedRole) {
+      response = await updateProfile(userId, {
+        userToUserRoles: {
+          create: {
+            role: {
               connect: {
-                id: userId,
+                name: selectedRole,
               },
             },
-          };
+          },
+        },
+        updatedAt: new Date(),
+      });
+    }
 
-          if (selectedDepartment) {
-            membershipData["department"] = {
-              connect: {
-                id: selectedDepartment,
-              },
-            };
+    return response;
+  };
+
+  const handleSubmit = () => {
+    const updateMembershipData = async () => {
+      for (let i = 0; i < rowData.length; i++) {
+        const row = rowData[i];
+        const userId = row.id;
+        let departmentId: string;
+
+        for (let index = 0; index < tableData.length; index++) {
+          const profile = tableData[index];
+
+          if (profile.id != userId) {
+            continue;
           }
 
-          if (selectedPosition) {
-            membershipData["departmentPosition"] = selectedPosition;
-          }
-
-          if (selectedDepartment && selectedPosition) {
-            try {
-              let response = await createMembership(membershipData);
-            } catch (error) {
-              if (error.response.status == 409) {
-                //Membership does not exist, create it
-                try {
-                  let response = await getMembership(userId, departmentId);
-                  const membershipId = response.data.id;
-
-                  //TODO make the UPDATE request to DB
-                  response = await updateMembership(membershipId, {
-                    updatedAt: new Date(),
-                  });
-                } catch (error) {
-                  console.error(
-                    "something went wrong updating membership",
-                    error,
-                  );
-                }
-              } else {
-                console.error(
-                  "something went wrong creating membership",
-                  error,
-                );
-              }
-            }
-          }
-
-          if (selectedRole) {
-            try {
-              let response = await updateProfile(userId, {
-                userRoles: {
-                  connect: {
-                    name: selectedRole,
-                  },
-                },
-                updatedAt: new Date(),
-              });
-            } catch (error) {
-              console.error("something went wrong updating profile", error);
-            }
-          }
+          departmentId = profile.departmentMemberships[0]?.department.id;
+          break;
         }
-      } catch (error) {
-        console.error("wrong data", error);
+
+        try {
+          handleDelete(userId, departmentId);
+        } catch (error) {
+          console.error("something went wrong updating", error);
+        }
       }
     };
 
-    try {
-      const response = updateMembershipData();
-    } catch (error) {
-      throw new Error(error);
-    }
+    updateMembershipData().then(() => {
+      // window.location.reload();
+    });
   };
 
   return (
