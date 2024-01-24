@@ -11,7 +11,7 @@ import { Popover } from "./Popover";
 import { labelStyles } from "./Input";
 
 interface DatePickerProps {
-  label: string;
+  label?: string;
   placeholder: string;
   setValue: (value: Date) => void;
   value: Date | undefined;
@@ -26,9 +26,11 @@ export function DatePicker(props: DatePickerProps) {
 
   return (
     <div className="flex flex-col gap-2">
-      <label className={labelStyles({ state: props.state })}>
-        {props.label}
-      </label>
+      {props.label && (
+        <label className={labelStyles({ state: props.state })}>
+          {props.label}
+        </label>
+      )}
       <Popover
         trigger={
           <Button
