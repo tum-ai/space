@@ -12,53 +12,31 @@ import { ArrowRightIcon } from "@radix-ui/react-icons";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@components/ui/button";
 
-const mockAdmins = [
+function submitOpportunity(values) {
+  console.log(values);
+}
+
+const mockMembers = [
   {
-    id: 1,
-    photoUrl: "https://placekitten.com/200/200",
-    name: "Simon Huang",
+    memberId: "1",
+    memberName: "Simon Huang",
     tags: [
       { text: "Owner", color: "yellow" },
       { text: "Development", color: "blue" },
     ],
+    photoUrl: "https://placekitten.com/200/200",
   },
   {
-    id: 2,
-    photoUrl: "https://placekitten.com/201/201",
-    name: "Max von Storch",
+    memberId: "2",
+    memberName: "Max von Storch",
     tags: [{ text: "RnD", color: "green" }],
+    photoUrl: "https://placekitten.com/201/201",
   },
-];
-
-const mockScreeners = [
   {
-    id: 3,
-    photoUrl: "https://placekitten.com/202/202",
-    name: "Emma Johnson",
+    memberId: "3",
+    memberName: "Tim Baum",
     tags: [{ text: "Legal and finance", color: "orange" }],
-  },
-  {
-    id: 4,
-    photoUrl: "https://placekitten.com/204/204",
-    name: "Oliver Davis",
-    tags: [{ text: "Community", color: "red" }],
-  },
-  {
-    id: 5,
-    photoUrl: "https://placekitten.com/206/206",
-    name: "Sophia Rodriguez",
-    tags: [{ text: "Development", color: "purple" }],
-  },
-];
-
-const mockMembers = [
-  {
-    key: "Simon Huang",
-    value: "1",
-  },
-  {
-    key: "Tim Baum",
-    value: "2",
+    photoUrl: "https://placekitten.com/202/202",
   },
 ];
 
@@ -94,15 +72,18 @@ export default function CreateOpportunity() {
             })}
           >
             <TabsContent value="general">
-              <GeneralInformation
-                form={form}
-                members={mockMembers}
-              />
+              <GeneralInformation form={form} members={mockMembers} />
             </TabsContent>
             <TabsContent value="steps">
               <DefineSteps />
             </TabsContent>
-            <Button type="submit">Submit</Button>
+            <Button
+              variant="destructive"
+              type="submit"
+              className="mt-10 w-full"
+            >
+              Submit
+            </Button>
           </form>
         </Form>
       </Tabs>

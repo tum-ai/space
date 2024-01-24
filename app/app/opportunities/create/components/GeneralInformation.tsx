@@ -22,7 +22,15 @@ enum Roles {
   SCREENER = "Screener",
 }
 
+let formatMemberSelect = member => ({ key: member.memberName, value: member.memberId});
+
 export default function GeneralInformation({ form, members }) {
+
+  const membersSelectFormat = members.map((member) => formatMemberSelect(member))
+
+  const [availableAdmins, setAvailableAdmins] = useState(membersSelectFormat);
+  const [availableScreeners, setAvailableScreeners] = useState(membersSelectFormat);
+
   const {
     fields: adminFields,
     append: appendAdmin,
@@ -42,21 +50,32 @@ export default function GeneralInformation({ form, members }) {
   });
 
   function handleAddMember(role, memberId) {
-    const member = members.find((m) => m.value === memberId);
+    const member = members.find((m) => m.memberId === memberId);
+
     if (role === Roles.ADMIN) {
-      appendAdmin({ id: member.value, name: member.key, tags: [] });
+      appendAdmin({ memberId: member.memberId, memberName: member.memberName, tags: member.tags, photoUrl: member.photoUrl });
+      setAvailableAdmins(availableAdmins.filter((m) => m.value !== memberId));
     } else if (role === Roles.SCREENER) {
-      appendScreener({ id: member.value, name: member.key, tags: [] });
+      appendScreener({ memberId: member.memberId, memberName: member.memberName, tags: member.tags, photoUrl: member.photoUrl });
+      setAvailableScreeners(
+        availableScreeners.filter((m) => m.value !== memberId),
+      );
     }
-  } 
-  
+  }
+
   function handleRemoveMember(role, memberId) {
+    const member = members.find((m) => m.memberId === memberId);
+
     if (role === Roles.ADMIN) {
       const index = adminFields.findIndex((admin) => admin.id === memberId);
       removeAdmin(index);
+      setAvailableAdmins([...availableAdmins, formatMemberSelect(member)]);
     } else if (role === Roles.SCREENER) {
-      const index = screenerFields.findIndex((screener) => screener.id === memberId);
+      const index = screenerFields.findIndex(
+        (screener) => screener.id === memberId,
+      );
       removeScreener(index);
+      setAvailableScreeners([...availableScreeners, formatMemberSelect(member)]);
     }
   }
 
@@ -103,7 +122,8 @@ export default function GeneralInformation({ form, members }) {
       <MemberSection
         screeners={screenerFields}
         admins={adminFields}
-        members={members}
+        availableAdmins={availableAdmins}
+        availableScreeners={availableScreeners}
         onAddMember={handleAddMember}
         onRemoveMember={handleRemoveMember}
         form={form}
@@ -158,8 +178,17 @@ function FormDatePicker({ formControl, name, label }) {
   );
 }
 
-function MemberSection({ screeners, members, admins, onAddMember, onRemoveMember, form }) {
+function MemberSection({
+  screeners,
+  admins,
+  availableScreeners,
+  availableAdmins,
+  onAddMember,
+  onRemoveMember,
+  form,
+}) {
   const [dialog, setDialog] = useState({ open: false, role: undefined });
+  // type: {key: string -> memberName, value: string -> memberId}
   const [selectedMember, setSelectedMember] = useState(undefined);
 
   function getAdminError() {
@@ -209,16 +238,19 @@ function MemberSection({ screeners, members, admins, onAddMember, onRemoveMember
       <div className="flex flex-col gap-2">
         {stakeholder.members.map((member) => (
           <MemberBar
-            key={member.id}
-            name={member.name}
+            key={member.memberId}
+            name={member.memberName}
             photoUrl={member.photoUrl}
             tags={member.tags}
-            onDelete={() => onRemoveMember(stakeholder.role, member.id)}
+            onDelete={() => onRemoveMember(stakeholder.role, member.memberId)}
           />
         ))}
         <AddMemberBar
           text={`+ Add ${stakeholder.role.toLowerCase()}`}
-          onClick={() => setDialog({ open: true, role: stakeholder.role })}
+          onClick={() => {
+            setSelectedMember(undefined);
+            setDialog({ open: true, role: stakeholder.role });
+          }}
         />
         <Dialog
           isOpenOutside={dialog.open && dialog.role === stakeholder.role}
@@ -239,7 +271,11 @@ function MemberSection({ screeners, members, admins, onAddMember, onRemoveMember
             </div>
             <Select
               placeholder="Select a member"
-              options={members}
+              options={
+                stakeholder.role === Roles.ADMIN
+                  ? availableAdmins
+                  : availableScreeners
+              }
               value={selectedMember}
               setSelectedItem={setSelectedMember}
             />

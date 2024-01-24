@@ -1,8 +1,10 @@
 import { z } from "zod";
 
 const PersonSchema = z.object({
-  id: z.string(),
-  tags: z.array(z.string()).optional(),
+  memberId: z.string(),
+  memberName: z.string(),
+  tags: z.array(z.object({ text: z.string(), color: z.string() })).optional(),
+  photoUrl: z.string(),
 });
 
 const QuestionSchema = z
@@ -27,28 +29,43 @@ const QuestionSchema = z
 const FormSchema = z.object({
   formName: z.string(),
   questions: z.array(QuestionSchema),
-})
+});
 
 const PhaseSchema = z.object({
   phaseName: z.string(),
   forms: z.array(FormSchema),
-})
-
-const GeneralInformationSchema = z.object({
-  tallyID: z.string().min(1, "TallyID is required"),
-  name: z.string().min(1, "Opportunity name is required"),
-  begin: z.date().refine(date => date.toString() !== 'Invalid Date', "Begin date is required"),
-  end: z.date().refine(date => date.toString() !== 'Invalid Date', "End date is required"),
-  description: z.string().min(1, "Description is required"),
-  admins: z.array(PersonSchema).min(1, "You must assign at least one admin"),
-  screeners: z.array(PersonSchema),
-}).refine((data) => {
-  // check if begin is before end
-  return data.begin && data.end && data.begin <= data.end;
-}, {
-  message: "Begin date must be before end date",
-  path: ["end"],
 });
+
+const GeneralInformationSchema = z
+  .object({
+    tallyID: z.string().min(1, "TallyID is required"),
+    name: z.string().min(1, "Opportunity name is required"),
+    begin: z
+      .date()
+      .refine(
+        (date) => date.toString() !== "Invalid Date",
+        "Begin date is required",
+      ),
+    end: z
+      .date()
+      .refine(
+        (date) => date.toString() !== "Invalid Date",
+        "End date is required",
+      ),
+    description: z.string().min(1, "Description is required"),
+    admins: z.array(PersonSchema).min(1, "At least one admin required"),
+    screeners: z.array(PersonSchema),
+  })
+  .refine(
+    (data) => {
+      // check if begin is before end
+      return data.begin && data.end && data.begin <= data.end;
+    },
+    {
+      message: "Begin date must be before end date",
+      path: ["end"],
+    },
+  );
 
 const DefineStepsSchema = z.object({
   phases: z.array(PhaseSchema),
