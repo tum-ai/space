@@ -8,13 +8,13 @@ const phases = {
   "Decision Phase": ["Venture Decision", "RnD Decision", "Legal Decision"],
 };
 
-export default function DefineSteps() {
+export default function DefineSteps( form ) {
   return (
     <div className="space-y-14">
-      <DefinePhases phases={phases} />
+      <DefinePhases phases={phases} form={form} />
       <DefineQuestions form={phases["Screening Phase"][0]} />
       <div className="flex justify-end">
-        <Button>Create Opportunity</Button>
+        <Button type="submit">Create Opportunity</Button>
       </div>
     </div>
   );
