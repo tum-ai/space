@@ -6,6 +6,7 @@ import { Button } from "@components/ui/button";
 import { useEffect } from "react";
 import { useState } from "react";
 import { Badge } from "@components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@components/ui/tabs";
 import {
   SelectContent,
   SelectGroup,
@@ -25,8 +26,17 @@ import {
   deleteMembership,
 } from "@lib/retrievals";
 import { AxiosResponse } from "axios";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardDescription,
+  CardTitle,
+  CardFooter,
+} from "@components/ui/card";
 
 export default function DataTableEditDialog({ rows, tableData, ...props }) {
+  const [assign, setAssign] = useState("add");
   const [rowData, setRowData] = useState([]);
   const [departments, setDepartments] = useState([]);
   const [roles, setRoles] = useState([]);
@@ -73,7 +83,7 @@ export default function DataTableEditDialog({ rows, tableData, ...props }) {
     let response: AxiosResponse<any, any>;
 
     if (selectedDepartment) {
-      response = await getMembership(userId, departmentId);
+      response = await getMembership(userId, selectedDepartment);
       const membershipId = response.data?.id;
 
       if (!membershipId) {
@@ -87,14 +97,10 @@ export default function DataTableEditDialog({ rows, tableData, ...props }) {
       try {
         response = await updateProfile(userId, {
           userToUserRoles: {
-            disconnect: [
-              {
-                userId_roleId: {
-                  userId: userId, // replace with the actual user ID
-                  roleId: selectedRole, // replace with the actual role ID
-                },
-              },
-            ],
+            deleteMany: {
+              userId: userId,
+              roleId: selectedRole,
+            },
           },
           updatedAt: new Date(),
         });
@@ -188,7 +194,11 @@ export default function DataTableEditDialog({ rows, tableData, ...props }) {
         }
 
         try {
-          handleDelete(userId, departmentId);
+          if (assign === "add") {
+            await handleSave(userId, departmentId);
+          } else {
+            await handleDelete(userId, departmentId);
+          }
         } catch (error) {
           console.error("something went wrong updating", error);
         }
@@ -196,7 +206,7 @@ export default function DataTableEditDialog({ rows, tableData, ...props }) {
     };
 
     updateMembershipData().then(() => {
-      // window.location.reload();
+      window.location.reload();
     });
   };
 
@@ -212,8 +222,8 @@ export default function DataTableEditDialog({ rows, tableData, ...props }) {
         <DialogClose className="float-right">
           <Cross1Icon className="h-5 w-5 text-black hover:text-gray-700 dark:text-white dark:hover:text-gray-400" />
         </DialogClose>
-        <div className="flex flex-col gap-12">
-          <div className="flex flex-col gap-9">
+        <div className="flex flex-col gap-6">
+          <div className="flex flex-col gap-6">
             <div className="flex flex-col gap-2">
               <p className="text-slate-400">Edit</p>
               <div className="flex gap-1">
@@ -223,77 +233,162 @@ export default function DataTableEditDialog({ rows, tableData, ...props }) {
                 {rowData.length > 5 && <Badge>+{rowData.length - 5}</Badge>}
               </div>
             </div>
-            <div>
-              <div className="grid grid-cols-3 gap-2">
-                <div>
-                  <p className="text-sm text-slate-400">Role</p>
-                  <Select
-                    onValueChange={(input) => handleInputChange("role", input)}
-                  >
-                    <SelectTrigger className="h-8">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectGroup>
-                        {roles.map((role) => (
-                          <SelectItem key={role.label} value={role.value}>
-                            {role.label}
-                          </SelectItem>
-                        ))}
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <p className="text-sm text-slate-400">Department</p>
-                  <Select
-                    onValueChange={(input) =>
-                      handleInputChange("currentDepartment", input)
-                    }
-                  >
-                    <SelectTrigger className="h-8">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectGroup>
-                        {departments.map((department) => (
-                          <SelectItem
-                            key={department.label}
-                            value={department.value}
+            <Tabs defaultValue="add" onValueChange={setAssign}>
+              <div className="flex-col gap-8">
+                <TabsList className="grid w-full grid-cols-2">
+                  <TabsTrigger value="add">Add</TabsTrigger>
+                  <TabsTrigger value="delete">Delete</TabsTrigger>
+                </TabsList>
+                <TabsContent value="add">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Assign</CardTitle>
+                      <CardDescription>
+                        Assign Members to a Role, Department, and Position
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-2">
+                      <div className="grid grid-cols-3 gap-2">
+                        <div>
+                          <p className="text-sm text-slate-400">Role</p>
+                          <Select
+                            onValueChange={(input) =>
+                              handleInputChange("role", input)
+                            }
                           >
-                            {department.label}
-                          </SelectItem>
-                        ))}
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <p className="text-sm text-slate-400">Position</p>
-                  <Select
-                    onValueChange={(input) =>
-                      handleInputChange("position", input)
-                    }
-                  >
-                    <SelectTrigger className="h-8">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectGroup>
-                        {positions.map((position) => (
-                          <SelectItem
-                            key={position.label}
-                            value={position.value}
+                            <SelectTrigger className="h-8">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectGroup>
+                                {roles.map((role) => (
+                                  <SelectItem
+                                    key={role.label}
+                                    value={role.value}
+                                  >
+                                    {role.label}
+                                  </SelectItem>
+                                ))}
+                              </SelectGroup>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div>
+                          <p className="text-sm text-slate-400">Department</p>
+                          <Select
+                            onValueChange={(input) =>
+                              handleInputChange("currentDepartment", input)
+                            }
                           >
-                            {position.label}
-                          </SelectItem>
-                        ))}
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
-                </div>
+                            <SelectTrigger className="h-8">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectGroup>
+                                {departments.map((department) => (
+                                  <SelectItem
+                                    key={department.label}
+                                    value={department.value}
+                                  >
+                                    {department.label}
+                                  </SelectItem>
+                                ))}
+                              </SelectGroup>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div>
+                          <p className="text-sm text-slate-400">Position</p>
+                          <Select
+                            onValueChange={(input) =>
+                              handleInputChange("position", input)
+                            }
+                          >
+                            <SelectTrigger className="h-8">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectGroup>
+                                {positions.map((position) => (
+                                  <SelectItem
+                                    key={position.label}
+                                    value={position.value}
+                                  >
+                                    {position.label}
+                                  </SelectItem>
+                                ))}
+                              </SelectGroup>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </TabsContent>
+                <TabsContent value="delete">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Delete</CardTitle>
+                      <CardDescription>
+                        Delete Members from a Role or Department
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-2">
+                      <div className="grid grid-cols-2 gap-2">
+                        <div>
+                          <p className="text-sm text-slate-400">Role</p>
+                          <Select
+                            onValueChange={(input) =>
+                              handleInputChange("role", input)
+                            }
+                          >
+                            <SelectTrigger className="h-8">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectGroup>
+                                {roles.map((role) => (
+                                  <SelectItem
+                                    key={role.label}
+                                    value={role.value}
+                                  >
+                                    {role.label}
+                                  </SelectItem>
+                                ))}
+                              </SelectGroup>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div>
+                          <p className="text-sm text-slate-400">Department</p>
+                          <Select
+                            onValueChange={(input) =>
+                              handleInputChange("currentDepartment", input)
+                            }
+                          >
+                            <SelectTrigger className="h-8">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectGroup>
+                                {departments.map((department) => (
+                                  <SelectItem
+                                    key={department.label}
+                                    value={department.value}
+                                  >
+                                    {department.label}
+                                  </SelectItem>
+                                ))}
+                              </SelectGroup>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </TabsContent>
               </div>
-            </div>
+            </Tabs>
           </div>
           <div className="flex gap-4">
             <span className="ml-auto flex gap-2">

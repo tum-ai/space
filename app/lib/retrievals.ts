@@ -88,7 +88,7 @@ export async function deleteProfile(id: string) {
   }
 }
 
-export async function updateProfile(id: string, data: any) {
+export async function updateProfile(id: string, data: Prisma.UserUpdateInput) {
   try {
     const response = await axios.put(`/api/profiles/${id}`, data);
     if (response.status !== 200) {
