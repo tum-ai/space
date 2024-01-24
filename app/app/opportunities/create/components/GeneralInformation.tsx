@@ -22,14 +22,20 @@ enum Roles {
   SCREENER = "Screener",
 }
 
-let formatMemberSelect = member => ({ key: member.memberName, value: member.memberId});
+let formatMemberSelect = (member) => ({
+  key: member.memberName,
+  value: member.memberId,
+});
 
 export default function GeneralInformation({ form, members }) {
 
-  const membersSelectFormat = members.map((member) => formatMemberSelect(member))
+  const membersSelectFormat = members.map((member) =>
+    formatMemberSelect(member),
+  );
 
   const [availableAdmins, setAvailableAdmins] = useState(membersSelectFormat);
-  const [availableScreeners, setAvailableScreeners] = useState(membersSelectFormat);
+  const [availableScreeners, setAvailableScreeners] =
+    useState(membersSelectFormat);
 
   const {
     fields: adminFields,
@@ -53,30 +59,41 @@ export default function GeneralInformation({ form, members }) {
     const member = members.find((m) => m.memberId === memberId);
 
     if (role === Roles.ADMIN) {
-      appendAdmin({ memberId: member.memberId, memberName: member.memberName, tags: member.tags, photoUrl: member.photoUrl });
+      appendAdmin({
+        memberId: member.memberId,
+        memberName: member.memberName,
+        tags: member.tags,
+        photoUrl: member.photoUrl,
+      });
       setAvailableAdmins(availableAdmins.filter((m) => m.value !== memberId));
     } else if (role === Roles.SCREENER) {
-      appendScreener({ memberId: member.memberId, memberName: member.memberName, tags: member.tags, photoUrl: member.photoUrl });
+      appendScreener({
+        memberId: member.memberId,
+        memberName: member.memberName,
+        tags: member.tags,
+        photoUrl: member.photoUrl,
+      });
       setAvailableScreeners(
         availableScreeners.filter((m) => m.value !== memberId),
       );
     }
+
   }
 
-  function handleRemoveMember(role, memberId) {
+  function handleRemoveMember(role, memberId, index) {
     const member = members.find((m) => m.memberId === memberId);
 
     if (role === Roles.ADMIN) {
-      const index = adminFields.findIndex((admin) => admin.id === memberId);
       removeAdmin(index);
       setAvailableAdmins([...availableAdmins, formatMemberSelect(member)]);
     } else if (role === Roles.SCREENER) {
-      const index = screenerFields.findIndex(
-        (screener) => screener.id === memberId,
-      );
       removeScreener(index);
-      setAvailableScreeners([...availableScreeners, formatMemberSelect(member)]);
+      setAvailableScreeners([
+        ...availableScreeners,
+        formatMemberSelect(member),
+      ]);
     }
+
   }
 
   return (
@@ -236,13 +253,15 @@ function MemberSection({
         </Tooltip>
       </div>
       <div className="flex flex-col gap-2">
-        {stakeholder.members.map((member) => (
+        {stakeholder.members.map((member, index) => (
           <MemberBar
             key={member.memberId}
             name={member.memberName}
             photoUrl={member.photoUrl}
             tags={member.tags}
-            onDelete={() => onRemoveMember(stakeholder.role, member.memberId)}
+            onDelete={() =>
+              onRemoveMember(stakeholder.role, member.memberId, index)
+            }
           />
         ))}
         <AddMemberBar
