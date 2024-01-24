@@ -18,7 +18,7 @@ interface PhaseProps {
   index: number;
 }
 
-export default function DefinePhases({ phases, changeForm }) {
+export default function DefinePhases({ phases, changeForm, form }) {
   const [currentPhases, setCurrentPhases] = useState(phases);
   const [currentPhaseName, setCurrentPhaseName] = useState("");
   const [currentFormName, setCurrentFormName] = useState("");

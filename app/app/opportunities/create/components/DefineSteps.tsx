@@ -21,7 +21,7 @@ export default function DefineSteps({ form }) {
       <DefinePhases phases={phases} changeForm={handleChangeForm} />
       <DefineQuestions form={currentForm} />
       <div className="flex justify-end">
-        <Button>Create Opportunity</Button>
+        <Button type="submit">Create Opportunity</Button>
       </div>
     </div>
   );

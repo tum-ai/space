@@ -8,9 +8,10 @@ import { Form } from "@components/ui/form";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { FullFormSchema } from "./schema";
-import { ArrowRightIcon } from "@radix-ui/react-icons";
+import { ArrowRightIcon, CheckIcon, Cross2Icon } from "@radix-ui/react-icons";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@components/ui/button";
+import { useEffect } from "react";
 
 function submitOpportunity(values) {
   console.log(values);
@@ -57,6 +58,7 @@ const defaultSchemaValues = {
 
 export default function CreateOpportunity() {
   const form = useForm<z.infer<typeof FullFormSchema>>({
+    mode: 'all',
     resolver: zodResolver(FullFormSchema),
     defaultValues: defaultSchemaValues,
   });
@@ -64,26 +66,17 @@ export default function CreateOpportunity() {
   return (
     <Section>
       <Tabs defaultValue="general">
-        <CreateOpportunityHeader />
+        <CreateOpportunityHeader form={form} />
         <Form {...form}>
           <form
-            onSubmit={form.handleSubmit((values) => {
-              console.log(values);
-            })}
+            onSubmit={form.handleSubmit((values) => submitOpportunity(values))}
           >
             <TabsContent value="general">
               <GeneralInformation form={form} members={mockMembers} />
             </TabsContent>
             <TabsContent value="steps">
-              <DefineSteps form={form} />
+              <DefineSteps form={form}/>
             </TabsContent>
-            <Button
-              variant="destructive"
-              type="submit"
-              className="mt-10 w-full"
-            >
-              Submit
-            </Button>
           </form>
         </Form>
       </Tabs>
@@ -91,7 +84,10 @@ export default function CreateOpportunity() {
   );
 }
 
-function CreateOpportunityHeader({}) {
+function CreateOpportunityHeader({ form }) {
+  const isFormSubmitted = form.formState.isSubmitted;
+  const hasNoGeneralInformationErrors = (!form.formState.errors.generalInformation) && isFormSubmitted;
+
   return (
     <div className="mb-12 flex flex-col space-y-6">
       <div className="flex flex-col gap-3">
@@ -99,7 +95,12 @@ function CreateOpportunityHeader({}) {
         <p>Configure a new opportunity</p>
       </div>
       <TabsList className="self-center">
-        <TabsTrigger value="general">General information</TabsTrigger>
+        <TabsTrigger value="general">
+          <div className="flex flex-row items-center space-x-1">
+            {hasNoGeneralInformationErrors ? <CheckIcon className="w-4 h-4 text-green-500"/> : <Cross2Icon className="w-4 h-4 text-red-500"/>}
+            <p>General information</p>
+          </div>
+        </TabsTrigger>
         <ArrowRightIcon className="mx-2 h-5 w-5" />
         <TabsTrigger value="steps">Define steps</TabsTrigger>
       </TabsList>
