@@ -140,11 +140,12 @@ function Phase({ title, phaseIndex, handler, control, removePhase }) {
           <Badge variant="secondary">{phaseIndex + 1}</Badge>
           <h4>{title}</h4>
         </div>
-        <ButtonIcon
-          icon={<TrashIcon width={18} height={18} />}
+        <button
           onClick={() => removePhase(phaseIndex)}
-          className="text-gray-300 mr-1.5"
-        ></ButtonIcon>
+          className="mr-3 text-gray-300 transition-colors duration-100 ease-in-out hover:text-gray-800"
+        >
+          <TrashIcon width={18} height={18} />
+        </button>
       </div>
       <Separator className="mb-4 mt-1 h-[2px]" />
       <div className="flex h-full w-4/5 flex-col items-center justify-center gap-2">
@@ -154,6 +155,7 @@ function Phase({ title, phaseIndex, handler, control, removePhase }) {
             formName={form.formName}
             questions={form.questions}
             handler={handler}
+            removeForm={removeForm}
           />
         ))}
         <Popover>
@@ -206,15 +208,19 @@ function Phase({ title, phaseIndex, handler, control, removePhase }) {
   );
 }
 
-function Form({ formName, questions, handler, formIndex }) {
+function Form({ formName, questions, handler, formIndex, removeForm }) {
   return (
-    <Button
-      className="w-full px-4 py-2 text-sm font-light"
-      variant="outline"
-      value={formName}
+    <Card
+      className="flex items-center justify-between w-full pl-2 py-2 text-sm font-light"
       onClick={() => handler(formName)}
     >
       {formName}
-    </Button>
+      <button
+        onClick={() => removeForm(formIndex)}
+        className="mr-3 text-gray-300 transition-colors duration-100 ease-in-out hover:text-gray-800"
+      >
+        <TrashIcon width={18} height={18} />
+      </button>
+    </Card>
   );
 }
