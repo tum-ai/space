@@ -8,9 +8,10 @@ import { PopoverClose, PopoverTrigger } from "@radix-ui/react-popover";
 import { useState } from "react";
 import { useFieldArray } from "react-hook-form";
 import { FormMessage } from "@components/ui/form";
+import { TrashIcon } from "@radix-ui/react-icons";
+import { ButtonIcon } from "@components/IconButton";
 
 export default function DefinePhases({ phases, changeForm, form }) {
-  const [currentPhases, setCurrentPhases] = useState([]);
   const [currentPhaseName, setCurrentPhaseName] = useState("");
   const [currentFormName, setCurrentFormName] = useState("");
 
@@ -18,35 +19,14 @@ export default function DefinePhases({ phases, changeForm, form }) {
     fields: phaseFields,
     append: appendPhase,
     remove: removePhase,
+    update: updatePhase,
   } = useFieldArray({
     control: form.control,
-    name: "defineSteps.phases",
+    name: "defineSteps",
   });
 
-  function addNewPhase(title: string, initialFormName: string) {
-    const newPhase = {
-      phaseName: title,
-      forms: [{ formName: initialFormName, questions: [] }],
-    };
-    const updatedPhases = [...currentPhases, newPhase];
-    setCurrentPhases(updatedPhases);
-    form.setValue("defineSteps.phases", updatedPhases);
-  }
-
-  function addFormToPhase(phaseIndex, newFormName) {
-    const newForm = { formName: newFormName, questions: [] };
-    const updatedPhases = currentPhases.map((phase, index) => {
-      if (index === phaseIndex) {
-        return { ...phase, forms: [...phase.forms, newForm] };
-      }
-      return phase;
-    });
-    setCurrentPhases(updatedPhases);
-    form.setValue("defineSteps.phases", updatedPhases);
-  }
-
   function getPhaseError() {
-    const phaseErrors = form.formState.errors.defineSteps?.phases;
+    const phaseErrors = form.formState.errors.defineSteps;
     if (phaseErrors && phaseErrors.message) {
       return phaseErrors.message;
     }
@@ -61,11 +41,11 @@ export default function DefinePhases({ phases, changeForm, form }) {
         {phaseFields.map((phase, index) => (
           <Phase
             key={phase.id}
+            control={form.control}
             title={phase.phaseName}
-            forms={phase.forms}
-            index={index}
+            phaseIndex={index}
             handler={changeForm}
-            onAddForm={addFormToPhase}
+            removePhase={removePhase}
           />
         ))}
         <div className="flex min-h-[200px] flex-col items-start">
@@ -116,7 +96,10 @@ export default function DefinePhases({ phases, changeForm, form }) {
                     <Button
                       variant="secondary"
                       onClick={() =>
-                        addNewPhase(currentPhaseName, currentFormName)
+                        appendPhase({
+                          phaseName: currentPhaseName,
+                          forms: [{ formName: currentFormName, questions: [] }],
+                        })
                       }
                     >
                       Add
@@ -139,30 +122,40 @@ export default function DefinePhases({ phases, changeForm, form }) {
   );
 }
 
-function Phase({ title, forms, index, handler, onAddForm }) {
+function Phase({ title, phaseIndex, handler, control, removePhase }) {
+  const {
+    fields: formFields,
+    append: appendForm,
+    remove: removeForm,
+  } = useFieldArray({
+    control,
+    name: `defineSteps[${phaseIndex}].forms`,
+  });
   const [currentFormName, setCurrentFormName] = useState("");
 
   return (
     <div className="flex min-h-[250px] flex-col items-start">
       <div className="flex h-14 w-5/6 items-center justify-between">
         <div className="flex items-center space-x-1.5 text-sm font-medium">
-          <Badge variant="secondary">{index + 1}</Badge>
+          <Badge variant="secondary">{phaseIndex + 1}</Badge>
           <h4>{title}</h4>
         </div>
+        <ButtonIcon
+          icon={<TrashIcon width={18} height={18} />}
+          onClick={() => removePhase(phaseIndex)}
+          className="text-gray-300 mr-1.5"
+        ></ButtonIcon>
       </div>
       <Separator className="mb-4 mt-1 h-[2px]" />
       <div className="flex h-full w-4/5 flex-col items-center justify-center gap-2">
-        {forms.map((form) => (
-          <Button
-            className="w-full px-4 py-2 text-sm font-light"
-            variant="outline"
-            value={form}
-            onClick={() => handler(form)}
-          >
-            {form}
-          </Button>
+        {formFields.map((form, index) => (
+          <Form
+            formIndex={index}
+            formName={form.formName}
+            questions={form.questions}
+            handler={handler}
+          />
         ))}
-
         <Popover>
           <PopoverTrigger asChild>
             <Button
@@ -197,7 +190,9 @@ function Phase({ title, forms, index, handler, onAddForm }) {
                 <PopoverClose asChild>
                   <Button
                     variant="secondary"
-                    onClick={onAddForm(index, currentFormName)}
+                    onClick={() =>
+                      appendForm({ formName: currentFormName, questions: [] })
+                    }
                   >
                     Add
                   </Button>
@@ -208,5 +203,18 @@ function Phase({ title, forms, index, handler, onAddForm }) {
         </Popover>
       </div>
     </div>
+  );
+}
+
+function Form({ formName, questions, handler, formIndex }) {
+  return (
+    <Button
+      className="w-full px-4 py-2 text-sm font-light"
+      variant="outline"
+      value={formName}
+      onClick={() => handler(formName)}
+    >
+      {formName}
+    </Button>
   );
 }

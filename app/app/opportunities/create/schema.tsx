@@ -67,13 +67,10 @@ const GeneralInformationSchema = z
     },
   );
 
-const DefineStepsSchema = z.object({
-  phases: z.array(PhaseSchema).min(1, "Add at least one phase"),
-});
 
 const FullFormSchema = z.object({
   generalInformation: GeneralInformationSchema,
-  defineSteps: DefineStepsSchema,
+  defineSteps: z.array(PhaseSchema).min(1, "Add at least one phase"),
 });
 
 export { FullFormSchema };
