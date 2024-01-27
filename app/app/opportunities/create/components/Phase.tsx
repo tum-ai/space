@@ -28,7 +28,13 @@ export default function Phase({
     control,
     name: `defineSteps[${phaseIndex}].forms`,
   });
+
   const [currentFormName, setCurrentFormName] = useState("");
+
+  function handleAddForm() {
+    appendForm({ formName: currentFormName, questions: [] });
+    setCurrentFormName(undefined);
+  }
 
   return (
     <div className="flex min-h-[250px] flex-col items-start">
@@ -86,12 +92,7 @@ export default function Phase({
               </div>
               <div className="flex items-center justify-end">
                 <PopoverClose asChild>
-                  <Button
-                    variant="secondary"
-                    onClick={() =>
-                      appendForm({ formName: currentFormName, questions: [] })
-                    }
-                  >
+                  <Button variant="secondary" onClick={() => handleAddForm()}>
                     Add
                   </Button>
                 </PopoverClose>
