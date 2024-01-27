@@ -3,8 +3,6 @@ import DefinePhases from "./DefinePhases";
 import DefineQuestions from "./DefineQuestions";
 import { Button } from "@components/ui/button";
 
-const phases = [];
-
 export default function DefineSteps({ form }) {
   const [currentForm, setCurrentForm] = useState();
 
@@ -14,7 +12,7 @@ export default function DefineSteps({ form }) {
 
   return (
     <div className="space-y-14">
-      <DefinePhases phases={phases} changeForm={handleChangeForm} form={form}/>
+      <DefinePhases changeForm={handleChangeForm} form={form} />
       <DefineQuestions form={currentForm} />
       <div className="flex justify-end">
         <Button type="submit">Create Opportunity</Button>

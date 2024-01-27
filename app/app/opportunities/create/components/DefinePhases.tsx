@@ -7,10 +7,9 @@ import { PopoverClose, PopoverTrigger } from "@radix-ui/react-popover";
 import { useState } from "react";
 import { useFieldArray } from "react-hook-form";
 import { FormMessage } from "@components/ui/form";
-import { TrashIcon } from "@radix-ui/react-icons";
 import Phase from "./Phase";
 
-export default function DefinePhases({ phases, changeForm, form }) {
+export default function DefinePhases({ changeForm, form }) {
   const [currentPhaseName, setCurrentPhaseName] = useState("");
   const [currentFormName, setCurrentFormName] = useState("");
 
@@ -18,7 +17,6 @@ export default function DefinePhases({ phases, changeForm, form }) {
     fields: phaseFields,
     append: appendPhase,
     remove: removePhase,
-    update: updatePhase,
   } = useFieldArray({
     control: form.control,
     name: "defineSteps",
@@ -33,6 +31,15 @@ export default function DefinePhases({ phases, changeForm, form }) {
   }
 
   const phaseErrorMessages = getPhaseError();
+
+  function handleAddPhase() {
+    appendPhase({
+      phaseName: currentPhaseName,
+      forms: [{ formName: currentFormName, questions: [] }],
+    });
+    setCurrentPhaseName(undefined);
+    setCurrentFormName(undefined);
+  }
 
   return (
     <div>
@@ -90,16 +97,10 @@ export default function DefinePhases({ phases, changeForm, form }) {
                   </div>
                 </div>
                 <div className="flex items-center justify-end">
-                  {/* TODO: validate the input */}
                   <PopoverClose asChild>
                     <Button
                       variant="secondary"
-                      onClick={() =>
-                        appendPhase({
-                          phaseName: currentPhaseName,
-                          forms: [{ formName: currentFormName, questions: [] }],
-                        })
-                      }
+                      onClick={() => handleAddPhase()}
                     >
                       Add
                     </Button>

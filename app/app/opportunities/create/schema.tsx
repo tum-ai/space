@@ -33,7 +33,7 @@ const FormSchema = z.object({
 
 const PhaseSchema = z.object({
   phaseName: z.string(),
-  forms: z.array(FormSchema),
+  forms: z.array(FormSchema).min(1, "At least one form required"),
 });
 
 const GeneralInformationSchema = z
@@ -58,7 +58,6 @@ const GeneralInformationSchema = z
   })
   .refine(
     (data) => {
-      // check if begin is before end
       return data.begin && data.end && data.begin <= data.end;
     },
     {

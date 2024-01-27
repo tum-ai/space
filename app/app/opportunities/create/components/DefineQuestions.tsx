@@ -117,7 +117,7 @@ export default function DefineQuestions({ form }) {
       <div className="flex flex-col gap-4">
         <div className="flex flex-col gap-1">
           <h1 className="text-2xl">
-          {`Define questions ${form ? `for "${form}"` : ""}`}
+            {`Define questions ${form ? `for "${form}"` : ""}`}
           </h1>
           <p className="text-sm text-slate-600">
             These will get asked to the reviewers

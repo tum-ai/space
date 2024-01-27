@@ -10,8 +10,6 @@ import { z } from "zod";
 import { FullFormSchema } from "./schema";
 import { ArrowRightIcon, CheckIcon, Cross2Icon } from "@radix-ui/react-icons";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button } from "@components/ui/button";
-import { useEffect } from "react";
 
 function submitOpportunity(values) {
   console.log(values);
@@ -41,7 +39,8 @@ const mockMembers = [
   },
 ];
 
-const defaultSchemaValues = {
+// TODO: defaultValues should be retrieved from DB and passed
+const defaultSchemaValues2 = {
   generalInformation: {
     tallyID: "",
     name: "",
@@ -54,11 +53,11 @@ const defaultSchemaValues = {
   defineSteps: [],
 };
 
-export default function CreateOpportunity() {
+export default function CreateOpportunity( defaultValues ) {
   const form = useForm<z.infer<typeof FullFormSchema>>({
     mode: 'all',
     resolver: zodResolver(FullFormSchema),
-    defaultValues: defaultSchemaValues,
+    defaultValues: defaultSchemaValues2,
   });
 
   return (
@@ -73,7 +72,7 @@ export default function CreateOpportunity() {
               <GeneralInformation form={form} members={mockMembers} />
             </TabsContent>
             <TabsContent value="steps">
-              <DefineSteps form={form}/>
+              <DefineSteps form={form} />
             </TabsContent>
           </form>
         </Form>
