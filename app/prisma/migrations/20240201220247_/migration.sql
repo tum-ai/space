@@ -172,6 +172,25 @@ CREATE TABLE "Review" (
 );
 
 -- CreateTable
+CREATE TABLE "Tag" (
+    "id" SERIAL NOT NULL,
+    "opportunityId" INTEGER NOT NULL,
+    "tallyLabel" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+
+    CONSTRAINT "Tag_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "ReviewTag" (
+    "id" SERIAL NOT NULL,
+    "reviewId" INTEGER NOT NULL,
+    "tagId" INTEGER NOT NULL,
+
+    CONSTRAINT "ReviewTag_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "PhaseReview" (
     "phase" TEXT NOT NULL,
     "reviewId" INTEGER NOT NULL,
@@ -211,6 +230,12 @@ CREATE UNIQUE INDEX "Contact_username_key" ON "Contact"("username");
 CREATE UNIQUE INDEX "OpportunityPermission_name_key" ON "OpportunityPermission"("name");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "Tag_opportunityId_name_key" ON "Tag"("opportunityId", "name");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "ReviewTag_tagId_reviewId_key" ON "ReviewTag"("tagId", "reviewId");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "_UserToUserRole_AB_unique" ON "_UserToUserRole"("A", "B");
 
 -- CreateIndex
@@ -229,10 +254,10 @@ ALTER TABLE "UserPermission" ADD CONSTRAINT "UserPermission_role_fkey" FOREIGN K
 ALTER TABLE "Contact" ADD CONSTRAINT "Contact_profileId_fkey" FOREIGN KEY ("profileId") REFERENCES "Profile"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "DepartmentMembership" ADD CONSTRAINT "DepartmentMembership_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "DepartmentMembership" ADD CONSTRAINT "DepartmentMembership_departmentId_fkey" FOREIGN KEY ("departmentId") REFERENCES "Department"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "DepartmentMembership" ADD CONSTRAINT "DepartmentMembership_departmentId_fkey" FOREIGN KEY ("departmentId") REFERENCES "Department"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "DepartmentMembership" ADD CONSTRAINT "DepartmentMembership_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Opportunity" ADD CONSTRAINT "Opportunity_creatorId_fkey" FOREIGN KEY ("creatorId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
@@ -241,13 +266,13 @@ ALTER TABLE "Opportunity" ADD CONSTRAINT "Opportunity_creatorId_fkey" FOREIGN KE
 ALTER TABLE "Opportunity" ADD CONSTRAINT "Opportunity_departmentId_fkey" FOREIGN KEY ("departmentId") REFERENCES "Department"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "OpportunityParticipation" ADD CONSTRAINT "OpportunityParticipation_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
 ALTER TABLE "OpportunityParticipation" ADD CONSTRAINT "OpportunityParticipation_opportunityId_fkey" FOREIGN KEY ("opportunityId") REFERENCES "Opportunity"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "OpportunityParticipation" ADD CONSTRAINT "OpportunityParticipation_role_fkey" FOREIGN KEY ("role") REFERENCES "OpportunityRole"("name") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "OpportunityParticipation" ADD CONSTRAINT "OpportunityParticipation_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "OpportunityPermission" ADD CONSTRAINT "OpportunityPermission_role_fkey" FOREIGN KEY ("role") REFERENCES "OpportunityRole"("name") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -256,10 +281,19 @@ ALTER TABLE "OpportunityPermission" ADD CONSTRAINT "OpportunityPermission_role_f
 ALTER TABLE "Review" ADD CONSTRAINT "Review_opportunityId_fkey" FOREIGN KEY ("opportunityId") REFERENCES "Opportunity"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "PhaseReview" ADD CONSTRAINT "PhaseReview_reviewId_fkey" FOREIGN KEY ("reviewId") REFERENCES "Review"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Tag" ADD CONSTRAINT "Tag_opportunityId_fkey" FOREIGN KEY ("opportunityId") REFERENCES "Opportunity"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "ReviewTag" ADD CONSTRAINT "ReviewTag_reviewId_fkey" FOREIGN KEY ("reviewId") REFERENCES "Review"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "ReviewTag" ADD CONSTRAINT "ReviewTag_tagId_fkey" FOREIGN KEY ("tagId") REFERENCES "Tag"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "PhaseReview" ADD CONSTRAINT "PhaseReview_assigneeId_fkey" FOREIGN KEY ("assigneeId") REFERENCES "User"("profileId") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "PhaseReview" ADD CONSTRAINT "PhaseReview_reviewId_fkey" FOREIGN KEY ("reviewId") REFERENCES "Review"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "_UserToUserRole" ADD CONSTRAINT "_UserToUserRole_A_fkey" FOREIGN KEY ("A") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;

@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import { checkOpportunityExistence } from "../../route";
-import { validateLocaleAndSetLanguage } from "typescript";
 
 /**
  * Checks if the review exists.
@@ -24,16 +23,27 @@ export const checkReviewExistence = async (
   return review !== null;
 };
 
+/**
+ * Ensures that the opportunity and review ids exist.
+ *
+ * @param opportunityId
+ *
+ * @param reviewId
+ * @returns
+ */
 export const validateReviewPhaseRequest = async (
   opportunityId: number,
   reviewId: number,
 ): Promise<boolean> => {
   try {
     return (
-      checkOpportunityExistence(opportunityId) && checkReviewExistence(reviewId)
+      (await checkOpportunityExistence(opportunityId)) &&
+      (await checkReviewExistence(reviewId))
     );
   } catch (error) {
-    console.log("Unable to validate review phase request.");
+    console.log(
+      "Unable to validate review request. Does the review/opportunity exist?",
+    );
     return false;
   }
 };
@@ -102,7 +112,6 @@ export const POST = async (
       assigneeId === undefined ||
       content === undefined
     ) {
-      console.log("seaseaesasersaeaseasd\n\n\n\n\n");
       reviewPhaseUndefined = true;
     }
 
