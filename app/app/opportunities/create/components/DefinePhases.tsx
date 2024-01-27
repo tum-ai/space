@@ -1,4 +1,3 @@
-import { Badge } from "@components/ui/badge";
 import { Button } from "@components/ui/button";
 import { Card } from "@components/ui/card";
 import Input from "@components/Input";
@@ -9,7 +8,7 @@ import { useState } from "react";
 import { useFieldArray } from "react-hook-form";
 import { FormMessage } from "@components/ui/form";
 import { TrashIcon } from "@radix-ui/react-icons";
-import { ButtonIcon } from "@components/IconButton";
+import Phase from "./Phase";
 
 export default function DefinePhases({ phases, changeForm, form }) {
   const [currentPhaseName, setCurrentPhaseName] = useState("");
@@ -119,108 +118,5 @@ export default function DefinePhases({ phases, changeForm, form }) {
       </div>
       <FormMessage className="mt-2">{phaseErrorMessages}</FormMessage>
     </div>
-  );
-}
-
-function Phase({ title, phaseIndex, handler, control, removePhase }) {
-  const {
-    fields: formFields,
-    append: appendForm,
-    remove: removeForm,
-  } = useFieldArray({
-    control,
-    name: `defineSteps[${phaseIndex}].forms`,
-  });
-  const [currentFormName, setCurrentFormName] = useState("");
-
-  return (
-    <div className="flex min-h-[250px] flex-col items-start">
-      <div className="flex h-14 w-5/6 items-center justify-between">
-        <div className="flex items-center space-x-1.5 text-sm font-medium">
-          <Badge variant="secondary">{phaseIndex + 1}</Badge>
-          <h4>{title}</h4>
-        </div>
-        <button
-          onClick={() => removePhase(phaseIndex)}
-          className="mr-3 text-gray-300 transition-colors duration-100 ease-in-out hover:text-gray-800"
-        >
-          <TrashIcon width={18} height={18} />
-        </button>
-      </div>
-      <Separator className="mb-4 mt-1 h-[2px]" />
-      <div className="flex h-full w-4/5 flex-col items-center justify-center gap-2">
-        {formFields.map((form, index) => (
-          <Form
-            formIndex={index}
-            formName={form.formName}
-            questions={form.questions}
-            handler={handler}
-            removeForm={removeForm}
-          />
-        ))}
-        <Popover>
-          <PopoverTrigger asChild>
-            <Button
-              variant="outline"
-              className="w-full text-gray-300 hover:text-gray-600 dark:text-gray-600 dark:hover:text-gray-300"
-            >
-              + add form
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-80">
-            <div className="grid gap-4">
-              <div className="space-y-2">
-                <h4 className="font-medium leading-none">Forms</h4>
-                <p className="text-sm text-muted-foreground">
-                  Add spcialized forms to phases.
-                </p>
-              </div>
-              <div className="grid gap-2">
-                <div className="flex items-center justify-between">
-                  <p>Name</p>
-                  <Input
-                    id="phaseName"
-                    placeholder="Screening"
-                    className="col-span-2 h-8"
-                    value={currentFormName}
-                    onChange={(c) => setCurrentFormName(c.target.value)}
-                  />
-                </div>
-              </div>
-              <div className="flex items-center justify-end">
-                {/* TODO: validate the input */}
-                <PopoverClose asChild>
-                  <Button
-                    variant="secondary"
-                    onClick={() =>
-                      appendForm({ formName: currentFormName, questions: [] })
-                    }
-                  >
-                    Add
-                  </Button>
-                </PopoverClose>
-              </div>
-            </div>
-          </PopoverContent>
-        </Popover>
-      </div>
-    </div>
-  );
-}
-
-function Form({ formName, questions, handler, formIndex, removeForm }) {
-  return (
-    <Card
-      className="flex items-center justify-between w-full pl-2 py-2 text-sm font-light"
-      onClick={() => handler(formName)}
-    >
-      {formName}
-      <button
-        onClick={() => removeForm(formIndex)}
-        className="mr-3 text-gray-300 transition-colors duration-100 ease-in-out hover:text-gray-800"
-      >
-        <TrashIcon width={18} height={18} />
-      </button>
-    </Card>
   );
 }

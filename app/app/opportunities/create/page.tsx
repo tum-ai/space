@@ -51,9 +51,7 @@ const defaultSchemaValues = {
     admins: [],
     screeners: [],
   },
-  defineSteps: {
-    phases: [],
-  },
+  defineSteps: [],
 };
 
 export default function CreateOpportunity() {
