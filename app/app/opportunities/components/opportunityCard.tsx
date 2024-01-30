@@ -2,26 +2,37 @@ import { Card, CardFooter, CardHeader, CardContent } from "@components/ui/card";
 import { Button } from "@components/ui/button";
 import { CalendarIcon } from "@radix-ui/react-icons";
 import Link from "next/link";
-export default function OpportunityCard(props: any) {
+import { Opportunity } from "@prisma/client";
+
+interface OpportunityCardProps {
+  opportunity: Opportunity;
+}
+
+export default function OpportunityCard({ opportunity }: OpportunityCardProps) {
   return (
     <Card className="flex flex-col">
-      <CardHeader className="text-3xl">{props.opportunity.title}</CardHeader>
+      <CardHeader className="text-3xl">{opportunity.title}</CardHeader>
       <CardContent className="flex flex-col gap-4">
         <span className="flex flex-row items-center gap-2 text-slate-500">
           <CalendarIcon />
-          <p>{props.opportunity.date}</p>
+          <p>
+            {opportunity.opportunityStart.toLocaleDateString()}{" "}
+            {opportunity.opportunityEnd &&
+              ` - ${opportunity.opportunityEnd.toLocaleDateString()}`}
+          </p>
         </span>
-        <p className="text-2xl">{props.opportunity.participants} Applicants</p>
-        {props.opportunity.description}
+        {/* TODO: number of applicants */}
+        <p className="text-2xl">100 applicants</p>
+        {opportunity.description}
       </CardContent>
       <CardFooter className="flex-cols flex gap-4">
-        <Link href={"./dashboard/" + +props.opportunity.id} className="w-full">
+        <Link href={"./dashboard/" + +opportunity.id} className="w-full">
           <Button className="w-full">Dashboard</Button>
         </Link>
-        <Link href={"./edit/" + +props.opportunity.id} className="w-full">
+        <Link href={"./edit/" + +opportunity.id} className="w-full">
           <Button className="w-full">Edit</Button>
         </Link>
-        <Link href={"./reviews/" + +props.opportunity.id} className="w-full">
+        <Link href={"./reviews/" + +opportunity.id} className="w-full">
           <Button className="w-full">View</Button>
         </Link>
       </CardFooter>
