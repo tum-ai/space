@@ -1,9 +1,51 @@
 "use client";
 
 import ProfileOverview from "../components/ProfileOverview";
+import { authOptions } from "../../api/auth/[...nextauth]/route";
+import { getServerSession } from "next-auth";
+import { useEffect, useState } from "react";
 
-const Me = () => {
+const Me = async () => {
   // Add data retrieval
+  const session = await getServerSession(authOptions);
+  const userId = session?.user.id;
+
+  //TODO: Fetch data from backend, by accessing first user then profile?
+  const [profileData, setProfile] = useState(null);
+  const [error, setError] = useState(null);
+
+  console.log("userId:", userId);
+
+  useEffect(() => {
+    // Fetch user data to get profileId
+    fetch(`/api/user/${userId}`)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Failed to fetch user data');
+        }
+        return response.json();
+      })
+      .then(userData => {
+        if (userData && userData.profileId) {
+          // Step 2: Fetch Profile Data
+          return fetch(`/api/me/${userData.profileId}`);
+        } else {
+          throw new Error('Profile ID not found');
+        }
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Failed to fetch profile data');
+        }
+        return response.json();
+      })
+      .then(profileData => {
+        setProfile(profileData);
+      })
+      .catch(error => {
+        setError(error.message);
+      });
+  }, [userId]);
 
   const data = {
     id: "1",
@@ -24,7 +66,7 @@ const Me = () => {
       "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.",
   };
 
-  return <ProfileOverview profile={data} />;
+  return <ProfileOverview profile={[data]} />;
 };
 
 export default Me;

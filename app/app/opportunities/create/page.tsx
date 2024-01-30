@@ -8,7 +8,7 @@ import { Field, Form, Formik } from "formik";
 import * as Yup from "yup";
 import { MemberBar, AddMemberBar } from "../components/MemberBar";
 import Dialog from "@components/Dialog";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ErrorMessage from "@components/ErrorMessage";
 import Textarea from "@components/Textarea";
 import Tooltip from "@components/Tooltip";
@@ -70,6 +70,20 @@ enum Roles {
 }
 
 export default function CreateOpportunity() {
+  const [admins, setAdmins] = useState(null)
+  const [screeners, setScreeners] = useState(null)
+  const [members, setMembers] = useState(null)
+  const [isLoading, setLoading] = useState(true)
+ 
+ /* useEffect(() => {
+    fetch('/api/opportunities')
+      .then((res) => res.json())
+      .then((data) => {
+        setData(data) //do we need to parse it somehow?
+        setLoading(false)
+      })
+  }, []);*/
+
   return (
     // center element
     <div className="mx-0 mx-4 mb-12 flex flex-col gap-8 self-center md:mx-24">
