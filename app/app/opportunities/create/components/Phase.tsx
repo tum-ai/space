@@ -55,10 +55,12 @@ export default function Phase({
         {formFields.map((form, index) => (
           <Form
             formIndex={index}
+			phaseIndex={phaseIndex}
             formName={form.formName}
             questions={form.questions}
             handler={handler}
             removeForm={removeForm}
+			control={control}
           />
         ))}
         <Popover>
