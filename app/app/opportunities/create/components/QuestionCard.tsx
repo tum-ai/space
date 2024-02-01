@@ -4,7 +4,7 @@ import { Card } from "@components/ui/card";
 import { EditIcon, HashIcon, ListIcon, TrashIcon } from "lucide-react";
 import { Badge } from "@components/ui/badge";
 
-export default function QuestionCard({ question, index, handler }) {
+export default function QuestionCard({ question, index, onRemoveQuestion }) {
   return (
     <Card className="flex flex-col gap-4 p-4">
       <div className="flex justify-between">
@@ -24,7 +24,7 @@ export default function QuestionCard({ question, index, handler }) {
             <span className="font-bold">Number</span>
           </div>
         )}
-        <TrashIcon onClick={() => handler(index)} />
+        <TrashIcon onClick={() => onRemoveQuestion(index)} />
       </div>
       <div className="flex gap-4">
         <Badge variant="secondary">Question</Badge>

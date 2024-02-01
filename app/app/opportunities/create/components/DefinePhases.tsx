@@ -9,7 +9,7 @@ import { useFieldArray } from "react-hook-form";
 import { FormMessage } from "@components/ui/form";
 import Phase from "./Phase";
 
-export default function DefinePhases({ changeForm, form }) {
+export default function DefinePhases({ questionHandler, form }) {
   const [currentPhaseName, setCurrentPhaseName] = useState("");
   const [currentFormName, setCurrentFormName] = useState("");
 
@@ -50,7 +50,7 @@ export default function DefinePhases({ changeForm, form }) {
             control={form.control}
             title={phase.phaseName}
             phaseIndex={index}
-            handler={changeForm}
+            questionHandler={questionHandler}
             removePhase={removePhase}
           />
         ))}

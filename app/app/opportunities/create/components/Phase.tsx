@@ -16,7 +16,7 @@ import Form from "./Form";
 export default function Phase({
   title,
   phaseIndex,
-  handler,
+  questionHandler,
   control,
   removePhase,
 }) {
@@ -55,12 +55,12 @@ export default function Phase({
         {formFields.map((form, index) => (
           <Form
             formIndex={index}
-			phaseIndex={phaseIndex}
+            phaseIndex={phaseIndex}
             formName={form.formName}
             questions={form.questions}
-            handler={handler}
+            questionHandler={questionHandler}
             removeForm={removeForm}
-			control={control}
+            control={control}
           />
         ))}
         <Popover>

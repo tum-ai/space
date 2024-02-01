@@ -16,11 +16,11 @@ export interface Question {
   maxValue?: number;
 }
 
-export default function DefineQuestions({ form }) {
+export default function DefineQuestions({ formData }) {
+  const {form, questionField, appendQuestion, removeQuestion} = formData;
   const [formName, setFormName] = useState("");
   const [numberOfReview, setNumberOfReview] = useState(0);
   //List of already saved questions
-  const [definedQuestions, setDefinedQuestions] = useState([]);
 
   //States for the Question Input Card
   const [selectedQuestionType, setSelectedQuestionType] = useState<
@@ -83,34 +83,16 @@ export default function DefineQuestions({ form }) {
       };
     }
 
-    const questions = [...definedQuestions, newQuestion];
-
     //reset form to initial values
     setTmpMaxValue(5);
     setQuestionInput("");
     setSelectedQuestionType("textarea");
-    setDefinedQuestions(questions);
+    appendQuestion(newQuestion);
     setTmpSelectOptions([]);
   };
 
-  const deleteQuestion = (indexToDelete: number) => {
-    // Creating a new array excluding the element at the specified index
-    const newQuestions = definedQuestions.filter(
-      (_, index) => index !== indexToDelete,
-    );
+  console.log(questionField);
 
-    // Updating the state with the new array
-    setDefinedQuestions(newQuestions);
-  };
-
-  const handleSaveForm = () => {
-    const form = {
-      formName: formName,
-      questions: definedQuestions,
-    };
-
-    //TODO append the form and save it
-  };
 
   return (
     <Card className="flex flex-col gap-8 p-4">
@@ -214,15 +196,14 @@ export default function DefineQuestions({ form }) {
           ) : null}
         </Card>
         <div className="flex flex-col gap-4">
-          {definedQuestions.map((item: Question, index: number) => (
+          {questionField.map((question, index: number) => (
             <QuestionCard
-              question={item}
+              question={question}
               index={index}
-              handler={deleteQuestion}
+              onRemoveQuestion={removeQuestion}
             />
           ))}
         </div>
-        <Button onClick={handleSaveForm}>Save Form</Button>
       </div>
     </Card>
   );
