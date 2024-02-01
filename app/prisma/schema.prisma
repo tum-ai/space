@@ -40,7 +40,7 @@ model User {
   departmentMemberships    DepartmentMembership[]
   createdOpportunities     Opportunity[]
   opportunityParticipation OpportunityParticipation[]
-  reviews                  Review[]
+  reviews                  PhaseReview[]
   emailVerified            DateTime?
   createdAt                DateTime                   @default(now())
   updatedAt                DateTime                   @updatedAt
@@ -145,11 +145,11 @@ model Opportunity {
   creator                  User?                      @relation(fields: [creatorId], references: [id], onDelete: SetNull)
   title                    String
   description              String
+  configuration            Json
   departmentId             Int
   department               Department                 @relation(fields: [departmentId], references: [id])
   opportunityStart         DateTime
   opportunityEnd           DateTime?
-  applications             Application[]
   reviews                  Review[]
   opportunityParticipation OpportunityParticipation[]
   createdAt                DateTime                   @default(now())
@@ -183,23 +183,24 @@ model OpportunityPermission {
   opportunityRole OpportunityRole @relation(fields: [role], references: [name], onDelete: Cascade)
 }
 
-model Application {
-  id            Int         @id @default(autoincrement())
+model Review {
+  id            Int           @id @default(autoincrement())
+  application   Json
   opportunityId Int
-  opportunity   Opportunity @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
-  content       Json
-  reviews       Review[]
+  opportunity   Opportunity   @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
+  phaseReviews  PhaseReview[]
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
 }
 
-model Review {
-  id            Int         @id @default(autoincrement())
-  opportunityId Int
-  opportunity   Opportunity @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
-  assigneeId    Int
-  assignee      User        @relation(fields: [assigneeId], references: [profileId])
-  applicationId Int
-  application   Application @relation(fields: [applicationId], references: [id])
-  reviewText    String?
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
+model PhaseReview {
+  phase      String
+  reviewId   Int
+  review     Review @relation(fields: [reviewId], references: [id])
+  assigneeId Int
+  assignee   User   @relation(fields: [assigneeId], references: [profileId])
+  content    Json
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  @@id(name: "id", [phase, reviewId])
 }
