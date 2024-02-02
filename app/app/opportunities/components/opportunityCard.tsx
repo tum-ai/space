@@ -26,7 +26,11 @@ export default function OpportunityCard({
               ` - ${opportunity.opportunityEnd.toLocaleDateString()}`}
           </p>
         </span>
-        <p className="text-2xl">{count ?? <LoadingWheel />} applicants</p>
+        {count !== undefined ? (
+          <p className="text-2xl">{count} applicants</p>
+        ) : (
+          <LoadingWheel />
+        )}
         {opportunity.description}
       </CardContent>
       <CardFooter className="flex-cols flex gap-4">
