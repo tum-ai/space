@@ -13,12 +13,12 @@ import { fetchOpportunities } from "../services/opportunityService";
 import { getReviewCounts } from "app/services/reviewService";
 
 export default function Main() {
-  const { data, isLoading, isError, error } = useQuery(
-    ["opportunities"],
-    fetchOpportunities,
-  );
-
-  const opportunities: Opportunity[] = data?.data;
+  const {
+    data: opportunities,
+    isLoading,
+    isError,
+    error,
+  } = useQuery(["opportunities"], fetchOpportunities);
 
   const ids = opportunities?.map((item) => item.id);
 

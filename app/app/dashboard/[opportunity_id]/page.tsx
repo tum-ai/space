@@ -10,16 +10,18 @@ import { Button } from "@components/ui/button";
 import { Section } from "@components/Section";
 import { fetchOpportunity } from "app/services/opportunityService";
 import { useQuery } from "@tanstack/react-query";
-import { Opportunity } from "@prisma/client";
+
 export default function Dashboard({ params }) {
   const opportunityId = decodeURIComponent(params.opportunity_id);
 
-  const { data, isLoading, isError, error } = useQuery(
-    ["opportunity", opportunityId],
-    () => fetchOpportunity(opportunityId),
+  const {
+    data: opportunity,
+    isLoading,
+    isError,
+    error,
+  } = useQuery(["opportunity", opportunityId], () =>
+    fetchOpportunity(opportunityId),
   );
-
-  const opportunity: Opportunity = data?.data;
 
   const [selectedPhase, setSelectedPhase] = useState("SCREENING");
   return (
