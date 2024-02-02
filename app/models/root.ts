@@ -1,5 +1,3 @@
-// check if this is needed
-
 import { DepartmentMembershipsModel } from "./department_memberships";
 import { MeModel } from "./me";
 import { RolesModel } from "./roles";
