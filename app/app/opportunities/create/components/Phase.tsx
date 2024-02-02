@@ -12,12 +12,13 @@ import Input from "@components/Input";
 import { PopoverClose } from "@radix-ui/react-popover";
 import { Separator } from "@components/ui/separator";
 import Form from "./Form";
+import { FormMessage } from "@components/ui/form";
 
 export default function Phase({
   title,
   phaseIndex,
   questionHandler,
-  control,
+  form,
   removePhase,
 }) {
   const {
@@ -25,7 +26,7 @@ export default function Phase({
     append: appendForm,
     remove: removeForm,
   } = useFieldArray({
-    control,
+    control: form.control,
     name: `defineSteps[${phaseIndex}].forms`,
   });
 
@@ -57,10 +58,8 @@ export default function Phase({
             formIndex={index}
             phaseIndex={phaseIndex}
             formName={form.formName}
-            questions={form.questions}
             questionHandler={questionHandler}
             removeForm={removeForm}
-            control={control}
           />
         ))}
         <Popover>

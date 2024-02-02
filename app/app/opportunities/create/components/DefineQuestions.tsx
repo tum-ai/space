@@ -9,6 +9,7 @@ import Select from "@components/Select";
 import { useState } from "react";
 import QuestionCard from "./QuestionCard";
 import { Badge } from "@components/ui/badge";
+import { useFieldArray } from "react-hook-form";
 export interface Question {
   type: "select" | "slider" | "textarea";
   question: string;
@@ -16,9 +17,19 @@ export interface Question {
   maxValue?: number;
 }
 
-export default function DefineQuestions({ formData }) {
-  const {form, questionField, appendQuestion, removeQuestion} = formData;
-  const [formName, setFormName] = useState("");
+export default function DefineQuestions({ control, formData }) {
+
+  const {formName, phaseIndex, formIndex} = formData;
+
+  const {
+    fields: questionsField,
+    append: appendQuestion,
+    remove: removeQuestion,
+  } = useFieldArray({
+    control,
+    name: `defineSteps[${phaseIndex}].forms[${formIndex}].questions`,
+  });
+  
   const [numberOfReview, setNumberOfReview] = useState(0);
   //List of already saved questions
 
@@ -91,15 +102,12 @@ export default function DefineQuestions({ formData }) {
     setTmpSelectOptions([]);
   };
 
-  console.log(questionField);
-
-
   return (
     <Card className="flex flex-col gap-8 p-4">
       <div className="flex flex-col gap-4">
         <div className="flex flex-col gap-1">
           <h1 className="text-2xl">
-            {`Define questions ${form ? `for "${form}"` : ""}`}
+            {`Define questions ${formName ? `for "${formName}"` : ""}`}
           </h1>
           <p className="text-sm text-slate-600">
             These will get asked to the reviewers
@@ -108,14 +116,7 @@ export default function DefineQuestions({ formData }) {
 
         <div className="grid grid-cols-2 gap-4">
           <Input
-            label="Form name"
-            placeholder="name"
-            fullWidth
-            value={formName}
-            onChange={(evt) => setFormName(evt.target.value)}
-          />
-          <Input
-            label="Number of review"
+            label="Number of reviews"
             placeholder="Set the number of review"
             fullWidth
             type="number"
@@ -196,7 +197,7 @@ export default function DefineQuestions({ formData }) {
           ) : null}
         </Card>
         <div className="flex flex-col gap-4">
-          {questionField.map((question, index: number) => (
+          {questionsField.map((question, index: number) => (
             <QuestionCard
               question={question}
               index={index}

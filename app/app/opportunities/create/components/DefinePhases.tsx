@@ -22,7 +22,7 @@ export default function DefinePhases({ questionHandler, form }) {
     name: "defineSteps",
   });
 
-  function getPhaseError() {
+  function getPhasesError() {
     const phaseErrors = form.formState.errors.defineSteps;
     if (phaseErrors && phaseErrors.message) {
       return phaseErrors.message;
@@ -30,7 +30,7 @@ export default function DefinePhases({ questionHandler, form }) {
     return "";
   }
 
-  const phaseErrorMessages = getPhaseError();
+  const phasesErrorMessages = getPhasesError();
 
   function handleAddPhase() {
     appendPhase({
@@ -47,7 +47,7 @@ export default function DefinePhases({ questionHandler, form }) {
         {phaseFields.map((phase, index) => (
           <Phase
             key={phase.id}
-            control={form.control}
+            form={form}
             title={phase.phaseName}
             phaseIndex={index}
             questionHandler={questionHandler}
@@ -117,7 +117,7 @@ export default function DefinePhases({ questionHandler, form }) {
           </div>
         </div>
       </div>
-      <FormMessage className="mt-2">{phaseErrorMessages}</FormMessage>
+      <FormMessage className="mt-2">{phasesErrorMessages}</FormMessage>
     </div>
   );
 }
