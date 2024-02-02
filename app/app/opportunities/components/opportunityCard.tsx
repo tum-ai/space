@@ -3,12 +3,17 @@ import { Button } from "@components/ui/button";
 import { CalendarIcon } from "@radix-ui/react-icons";
 import Link from "next/link";
 import { Opportunity } from "@prisma/client";
+import LoadingWheel from "@components/LoadingWheel";
 
 interface OpportunityCardProps {
   opportunity: Opportunity;
+  count?: number;
 }
 
-export default function OpportunityCard({ opportunity }: OpportunityCardProps) {
+export default function OpportunityCard({
+  opportunity,
+  count,
+}: OpportunityCardProps) {
   return (
     <Card className="flex flex-col">
       <CardHeader className="text-3xl">{opportunity.title}</CardHeader>
@@ -21,8 +26,7 @@ export default function OpportunityCard({ opportunity }: OpportunityCardProps) {
               ` - ${opportunity.opportunityEnd.toLocaleDateString()}`}
           </p>
         </span>
-        {/* TODO: number of applicants */}
-        <p className="text-2xl">100 applicants</p>
+        <p className="text-2xl">{count ?? <LoadingWheel />} applicants</p>
         {opportunity.description}
       </CardContent>
       <CardFooter className="flex-cols flex gap-4">

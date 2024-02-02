@@ -10,6 +10,7 @@ import { Opportunity } from "@prisma/client";
 import { is } from "date-fns/locale";
 import LoadingWheel from "@components/LoadingWheel";
 import { fetchOpportunities } from "../services/opportunityService";
+import { getReviewCounts } from "app/services/reviewService";
 
 export default function Main() {
   const { data, isLoading, isError, error } = useQuery(
@@ -18,6 +19,16 @@ export default function Main() {
   );
 
   const opportunities: Opportunity[] = data?.data;
+
+  const ids = opportunities?.map((item) => item.id);
+
+  const { data: applicationCounts } = useQuery(
+    ["reviews/numbers"],
+    () => getReviewCounts(ids),
+    {
+      enabled: !!ids,
+    },
+  );
 
   return (
     <Section>
@@ -31,7 +42,18 @@ export default function Main() {
         {isLoading && <LoadingWheel />}
         <div className="grid grid-cols-3 gap-4">
           {opportunities?.map((item, index) => {
-            return <OpportunityCard opportunity={item} key={index} />;
+            return (
+              <OpportunityCard
+                opportunity={item}
+                key={index}
+                count={
+                  applicationCounts &&
+                  applicationCounts.find(
+                    (count) => count.opportunityId === item.id,
+                  ).count
+                }
+              />
+            );
           })}
         </div>
       </div>
