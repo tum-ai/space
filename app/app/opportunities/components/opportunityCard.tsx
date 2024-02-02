@@ -27,7 +27,9 @@ export default function OpportunityCard({
           </p>
         </span>
         {count !== undefined ? (
-          <p className="text-2xl">{count} applicants</p>
+          <p className="text-2xl">
+            {count} applicant{count !== 1 && "s"}
+          </p>
         ) : (
           <LoadingWheel />
         )}
