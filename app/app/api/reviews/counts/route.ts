@@ -17,11 +17,10 @@ export async function POST(req: NextRequest) {
     });
 
     const countsMap = opportunityIds.map((id) => {
-      const record = counts.find((count) => count.opportunityId === id)
-      const count = record ? record._count : 0
-      return { opportunityId: id, count: count }
-    })
-
+      const record = counts.find((count) => count.opportunityId === id);
+      const count = record ? record._count : 0;
+      return { opportunityId: id, count: count };
+    });
 
     return NextResponse.json(countsMap, { status: 200 });
   } catch (error) {
