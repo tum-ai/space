@@ -61,7 +61,7 @@ CREATE TABLE "UserPermission" (
 -- CreateTable
 CREATE TABLE "Profile" (
     "id" SERIAL NOT NULL,
-    "userId" INTEGER NOT NULL,
+    "userId" TEXT NOT NULL,
     "birthday" TIMESTAMP(3),
     "nationality" TEXT,
     "description" TEXT,
@@ -194,7 +194,7 @@ CREATE TABLE "ReviewTag" (
 CREATE TABLE "PhaseReview" (
     "phase" TEXT NOT NULL,
     "reviewId" INTEGER NOT NULL,
-    "assigneeId" INTEGER NOT NULL,
+    "assigneeId" TEXT NOT NULL,
     "content" JSONB NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
@@ -290,7 +290,7 @@ ALTER TABLE "ReviewTag" ADD CONSTRAINT "ReviewTag_reviewId_fkey" FOREIGN KEY ("r
 ALTER TABLE "ReviewTag" ADD CONSTRAINT "ReviewTag_tagId_fkey" FOREIGN KEY ("tagId") REFERENCES "Tag"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "PhaseReview" ADD CONSTRAINT "PhaseReview_assigneeId_fkey" FOREIGN KEY ("assigneeId") REFERENCES "User"("profileId") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "PhaseReview" ADD CONSTRAINT "PhaseReview_assigneeId_fkey" FOREIGN KEY ("assigneeId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "PhaseReview" ADD CONSTRAINT "PhaseReview_reviewId_fkey" FOREIGN KEY ("reviewId") REFERENCES "Review"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

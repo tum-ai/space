@@ -63,7 +63,7 @@ model UserPermission {
 
 model Profile {
   id               Int       @id @default(autoincrement())
-  userId           Int
+  userId           String
   birthday         DateTime?
   nationality      String?
   description      String?
@@ -194,11 +194,11 @@ model ReviewTag {
 model PhaseReview {
   phase      String
   reviewId   Int
-  assigneeId Int
+  assigneeId String
   content    Json
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
-  assignee   User     @relation(fields: [assigneeId], references: [profileId])
+  assignee   User     @relation(fields: [assigneeId], references: [id])
   review     Review   @relation(fields: [reviewId], references: [id])
 
   @@id([phase, reviewId], name: "id")

@@ -51,6 +51,8 @@ export const validateReviewPhaseRequest = async (
 /**
  * GET opportunity/[opportunityId]/review/[reviewId]/reviewPhase
  *
+ * Gets all phases for a review
+ * 
  * @param NextRequest request
  * @param number reviewId
  * @param number opportunityId
@@ -61,42 +63,40 @@ export const GET = async (
   { params: { opportunityId, reviewId } },
 ): Promise<NextResponse> => {
   try {
-    const isValidReviewPhaseRequest = await validateReviewPhaseRequest(
-      parseInt(opportunityId),
-      parseInt(reviewId),
-    );
+    const reviewIdNum = parseInt(reviewId);
+    if (isNaN(reviewIdNum)) {
+      return NextResponse.json({ Error: "Invalid review ID." }, { status: 400 });
+    }
+
+    const isValidReviewPhaseRequest = await validateReviewPhaseRequest(parseInt(opportunityId), reviewIdNum);
+    if (!isValidReviewPhaseRequest) {
+      return NextResponse.json({ Error: "Opportunity or Review does not exist." }, { status: 404 });
+    }
 
     const reviewPhases = await prisma.phaseReview.findMany({
       where: {
-        reviewId: parseInt(reviewId),
+        reviewId: reviewIdNum,
       },
     });
 
-    const responseBody =
-      reviewPhases === null || !isValidReviewPhaseRequest
-        ? {
-            Error: "Bad request. The review with this id does not exist.",
-          }
-        : reviewPhases;
-    const status =
-      reviewPhases === null || !isValidReviewPhaseRequest ? 400 : 200;
-
-    return NextResponse.json(responseBody, { status });
+    return NextResponse.json(reviewPhases, { status: 200 });
   } catch (error) {
-    console.log(error);
-    return NextResponse.json(
-      { Error: "Internal Server Error" },
-      { status: 500 },
-    );
+    console.error(error);
+    return NextResponse.json({ Error: "Internal Server Error" }, { status: 500 });
   }
 };
 
 /**
  * POST opportunity/[opportunityId]/review/[reviewId]/reviewPhase
  *
+ * Adds a reviewPhase to a particular review
+ * 
  * @param NextRequest request
  * @param number opportunityId
  * @param number reviewId
+ * @param @async phase - the name of the phase
+ * @param @async assigneeId - the reviewer profile for this phase
+ * @param @async content - the reviewer notes
  * @returns ReviewPhase reviewPhase
  */
 export const POST = async (
@@ -105,51 +105,34 @@ export const POST = async (
 ): Promise<NextResponse> => {
   try {
     const { phase, assigneeId, content } = await request.json();
-    let reviewPhaseUndefined = false;
 
-    if (
-      phase === undefined ||
-      assigneeId === undefined ||
-      content === undefined
-    ) {
-      reviewPhaseUndefined = true;
+    if (!phase || !assigneeId || !content) {
+      return NextResponse.json({ Error: "Phase, assigneeId, and content are required." }, { status: 400 });
     }
 
-    const isValidReviewPhaseRequest = await validateReviewPhaseRequest(
-      parseInt(opportunityId),
-      parseInt(reviewId),
-    );
+    const reviewIdNum = parseInt(reviewId);
+    if (isNaN(reviewIdNum)) {
+      return NextResponse.json({ Error: "Invalid review ID or assignee ID." }, { status: 400 });
+    }
+
+    const isValidReviewPhaseRequest = await validateReviewPhaseRequest(parseInt(opportunityId), reviewIdNum);
+    if (!isValidReviewPhaseRequest) {
+      return NextResponse.json({ Error: "Opportunity or Review does not exist." }, { status: 404 });
+    }
 
     const createReviewPhase = await prisma.phaseReview.create({
       data: {
-        phase: phase,
-        reviewId: parseInt(reviewId),
+        phase,
+        reviewId: reviewIdNum,
         assigneeId: assigneeId,
-        content: content,
+        content,
       },
     });
 
-    const responseBody =
-      createReviewPhase === null ||
-      !isValidReviewPhaseRequest ||
-      reviewPhaseUndefined
-        ? {
-            Error: "Bad request. The review with this id does not exist.",
-          }
-        : createReviewPhase;
-    const status =
-      createReviewPhase === null ||
-      !isValidReviewPhaseRequest ||
-      reviewPhaseUndefined
-        ? 400
-        : 200;
-
-    return NextResponse.json(responseBody, { status });
+    return NextResponse.json(createReviewPhase, { status: 201 }); // Use 201 for created resources
   } catch (error) {
-    console.log(error);
-    return NextResponse.json(
-      { Error: "Internal Server Error" },
-      { status: 500 },
-    );
+    console.error(error);
+    return NextResponse.json({ Error: "Internal Server Error" }, { status: 500 });
   }
 };
+
