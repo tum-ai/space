@@ -10,6 +10,8 @@ import { z } from "zod";
 import { FullFormSchema } from "./schema";
 import { ArrowRightIcon, CheckIcon, Cross2Icon } from "@radix-ui/react-icons";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useQuery } from "@tanstack/react-query";
+import { fetchUsers } from "app/services/userService";
 
 
 function submitOpportunity(values) {
@@ -54,9 +56,13 @@ const defaultSchemaValues2 = {
   defineSteps: [],
 };
 
-export default function CreateOpportunity( defaultValues ) {
+export default function CreateOpportunity(defaultValues) {
+  const { data: users, isLoading } = useQuery(["users"], fetchUsers);
+
+  console.log(users);
+
   const form = useForm<z.infer<typeof FullFormSchema>>({
-    mode: 'all',
+    mode: "all",
     resolver: zodResolver(FullFormSchema),
     defaultValues: defaultSchemaValues2,
   });
@@ -84,7 +90,8 @@ export default function CreateOpportunity( defaultValues ) {
 
 function CreateOpportunityHeader({ form }) {
   const isFormSubmitted = form.formState.isSubmitted;
-  const hasNoGeneralInformationErrors = (!form.formState.errors.generalInformation) && isFormSubmitted;
+  const hasNoGeneralInformationErrors =
+    !form.formState.errors.generalInformation && isFormSubmitted;
 
   return (
     <div className="mb-12 flex flex-col space-y-6">
@@ -95,7 +102,11 @@ function CreateOpportunityHeader({ form }) {
       <TabsList className="self-center">
         <TabsTrigger value="general">
           <div className="flex flex-row items-center space-x-1">
-            {hasNoGeneralInformationErrors ? <CheckIcon className="w-4 h-4 text-green-500"/> : <Cross2Icon className="w-4 h-4 text-red-500"/>}
+            {hasNoGeneralInformationErrors ? (
+              <CheckIcon className="h-4 w-4 text-green-500" />
+            ) : (
+              <Cross2Icon className="h-4 w-4 text-red-500" />
+            )}
             <p>General information</p>
           </div>
         </TabsTrigger>
