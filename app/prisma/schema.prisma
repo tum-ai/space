@@ -16,7 +16,7 @@ model Account {
   providerAccountId String
   ok                Boolean
   state             String
-  accessToken       String?  @db.Text
+  accessToken       String?
   tokenType         String?
   idToken           String?
   createdAt         DateTime @default(now())
@@ -30,21 +30,22 @@ model Account {
 model User {
   id                       String                     @id @default(cuid())
   profileId                Int?                       @unique
-  profile                  Profile?                   @relation(fields: [profileId], references: [id])
   email                    String                     @unique
   password                 String?
   firstName                String?
   lastName                 String?
   image                    String?           
   userToUserRoles          UserToUserRole[]          
-  departmentMemberships    DepartmentMembership[]
-  createdOpportunities     Opportunity[]
-  opportunityParticipation OpportunityParticipation[]
-  reviews                  Review[]
   emailVerified            DateTime?
   createdAt                DateTime                   @default(now())
   updatedAt                DateTime                   @updatedAt
   accounts                 Account[]
+  departmentMemberships    DepartmentMembership[]
+  createdOpportunities     Opportunity[]
+  opportunityParticipation OpportunityParticipation[]
+  reviews                  PhaseReview[]
+  profile                  Profile?                   @relation(fields: [profileId], references: [id])
+  userRoles                UserRole[]                 @relation("UserToUserRole")
 }
 
 model UserRole {
@@ -73,8 +74,7 @@ model UserPermission {
 
 model Profile {
   id               Int       @id @default(autoincrement())
-  userId           Int
-  user             User?
+  userId           String
   birthday         DateTime?
   nationality      String?
   description      String?
@@ -85,28 +85,20 @@ model Profile {
   degreeLastUpdate DateTime?
   university       String?
   profilePicture   String?
-  contacts         Contact[]
   createdAt        DateTime  @default(now())
   updatedAt        DateTime  @updatedAt
+  contacts         Contact[]
+  user             User?
 }
 
 model Contact {
   id        Int         @id @default(autoincrement())
   profileId Int
-  profile   Profile     @relation(fields: [profileId], references: [id])
   type      ContactType
   username  String      @unique
   createdAt DateTime    @default(now())
   updatedAt DateTime    @updatedAt
-}
-
-enum ContactType {
-  EMAIL
-  SLACK
-  GITHUB
-  FACEBOOK
-  INSTAGRAM
-  PHONE
+  profile   Profile     @relation(fields: [profileId], references: [id])
 }
 
 model Department {
@@ -114,69 +106,54 @@ model Department {
   name                  String
   type                  DepartmentType
   creationDate          DateTime               @default(now())
-  departmentMemberships DepartmentMembership[]
-  opportunities         Opportunity[]
   createdAt             DateTime               @default(now())
   updatedAt             DateTime               @updatedAt
-}
-
-enum DepartmentType {
-  FUNCTIONAL
-  MISSION_BASED
+  departmentMemberships DepartmentMembership[]
+  opportunities         Opportunity[]
 }
 
 model DepartmentMembership {
   id                 Int                @id @default(autoincrement())
   userId             String?
-  user               User?              @relation(fields: [userId], references: [id], onDelete: SetNull)
   departmentId       Int?
-  department         Department?        @relation(fields: [departmentId], references: [id], onDelete: SetNull)
   membershipStart    DateTime
   membershipEnd      DateTime?
   departmentPosition DepartmentPosition
   createdAt          DateTime           @default(now())
   updatedAt          DateTime           @updatedAt
-}
-
-enum DepartmentPosition {
-  PRESIDENT
-  HEAD_OF_DEPARTMENT
-  BOARD_MEMBER
-  ADVISOR
-  TASKFORCE_LEAD
-  PROJECT_LEAD
-  ACTIVE_MEMBER
-  ALUMNI
+  department         Department?        @relation(fields: [departmentId], references: [id])
+  user               User?              @relation(fields: [userId], references: [id])
 }
 
 model Opportunity {
   id                       Int                        @id @default(autoincrement())
   creatorId                String?
-  creator                  User?                      @relation(fields: [creatorId], references: [id], onDelete: SetNull)
   title                    String
   description              String
+  configuration            Json
   departmentId             Int
-  department               Department                 @relation(fields: [departmentId], references: [id])
   opportunityStart         DateTime
   opportunityEnd           DateTime?
-  applications             Application[]
-  reviews                  Review[]
-  opportunityParticipation OpportunityParticipation[]
   createdAt                DateTime                   @default(now())
   updatedAt                DateTime                   @updatedAt
+  creator                  User?                      @relation(fields: [creatorId], references: [id])
+  department               Department                 @relation(fields: [departmentId], references: [id])
+  opportunityParticipation OpportunityParticipation[]
+  reviews                  Review[]
+  tags                     Tag[]
 }
 
 model OpportunityParticipation {
   userId          String
-  user            User            @relation(fields: [userId], references: [id], onDelete: Cascade)
   opportunityId   Int
-  opportunity     Opportunity     @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
   role            String
-  opportunityRole OpportunityRole @relation(fields: [role], references: [name])
   createdAt       DateTime        @default(now())
   updatedAt       DateTime        @updatedAt
+  opportunity     Opportunity     @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
+  opportunityRole OpportunityRole @relation(fields: [role], references: [name])
+  user            User            @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@id(name: "opportunityParticipationId", [userId, opportunityId])
+  @@id([userId, opportunityId], name: "opportunityParticipationId")
 }
 
 model OpportunityRole {
@@ -193,23 +170,72 @@ model OpportunityPermission {
   opportunityRole OpportunityRole @relation(fields: [role], references: [name], onDelete: Cascade)
 }
 
-model Application {
-  id            Int         @id @default(autoincrement())
+model Review {
+  id            Int           @id @default(autoincrement())
+  application   Json
   opportunityId Int
-  opportunity   Opportunity @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
-  content       Json
-  reviews       Review[]
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  phaseReviews  PhaseReview[]
+  opportunity   Opportunity   @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
+  reviewTags    ReviewTag[]
 }
 
-model Review {
+model Tag {
   id            Int         @id @default(autoincrement())
   opportunityId Int
-  opportunity   Opportunity @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
-  assigneeId    Int
-  assignee      User        @relation(fields: [assigneeId], references: [profileId])
-  applicationId Int
-  application   Application @relation(fields: [applicationId], references: [id])
-  reviewText    String?
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
+  tallyLabel    String
+  name          String
+  reviewTags    ReviewTag[]
+  opportunity   Opportunity @relation(fields: [opportunityId], references: [id])
+
+  @@unique([opportunityId, name])
+}
+
+model ReviewTag {
+  id       Int    @id @default(autoincrement())
+  reviewId Int
+  tagId    Int
+  review   Review @relation(fields: [reviewId], references: [id])
+  tag      Tag    @relation(fields: [tagId], references: [id])
+
+  @@unique([tagId, reviewId])
+}
+
+model PhaseReview {
+  phase      String
+  reviewId   Int
+  assigneeId String
+  content    Json
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  assignee   User     @relation(fields: [assigneeId], references: [id])
+  review     Review   @relation(fields: [reviewId], references: [id])
+
+  @@id([phase, reviewId], name: "id")
+}
+
+enum ContactType {
+  EMAIL
+  SLACK
+  GITHUB
+  FACEBOOK
+  INSTAGRAM
+  PHONE
+}
+
+enum DepartmentType {
+  FUNCTIONAL
+  MISSION_BASED
+}
+
+enum DepartmentPosition {
+  PRESIDENT
+  HEAD_OF_DEPARTMENT
+  BOARD_MEMBER
+  ADVISOR
+  TASKFORCE_LEAD
+  PROJECT_LEAD
+  ACTIVE_MEMBER
+  ALUMNI
 }
