@@ -1,6 +1,11 @@
 import React, { useState } from "react";
 import { Input } from "@components/ui/input";
-import { Cross1Icon, QuestionMarkCircledIcon } from "@radix-ui/react-icons";
+import {
+  Cross1Icon,
+  Cross2Icon,
+  PlusIcon,
+  QuestionMarkCircledIcon,
+} from "@radix-ui/react-icons";
 import Select from "@components/Select";
 import { MemberBar, AddMemberBar } from "./MemberBar";
 import Dialog from "@components/Dialog";
@@ -16,6 +21,7 @@ import {
 } from "@components/ui/form";
 import { Textarea } from "@components/ui/textarea";
 import { useFieldArray } from "react-hook-form";
+import { Badge } from "@components/ui/badge";
 
 enum Roles {
   ADMIN = "Admin",
@@ -28,7 +34,6 @@ let formatMemberSelect = (member) => ({
 });
 
 export default function GeneralInformation({ form, members }) {
-
   const membersSelectFormat = members.map((member) =>
     formatMemberSelect(member),
   );
@@ -77,7 +82,6 @@ export default function GeneralInformation({ form, members }) {
         availableScreeners.filter((m) => m.value !== memberId),
       );
     }
-
   }
 
   function handleRemoveMember(role, memberId, index) {
@@ -93,7 +97,6 @@ export default function GeneralInformation({ form, members }) {
         formatMemberSelect(member),
       ]);
     }
-
   }
 
   return (
@@ -135,6 +138,8 @@ export default function GeneralInformation({ form, members }) {
           )}
         />
       </div>
+
+      <AddTags control={form.control} />
 
       <MemberSection
         screeners={screenerFields}
@@ -191,6 +196,55 @@ function FormDatePicker({ formControl, name, label }) {
           </FormItem>
         )}
       />
+    </div>
+  );
+}
+
+function AddTags({ control }) {
+  const {
+    fields: tagFields,
+    append: appendTag,
+    remove: removeTag,
+  } = useFieldArray({
+    control: control,
+    name: "generalInformation.tags",
+  });
+
+  const [newTag, setNewTag] = useState("");
+
+  const handleAddTag = () => {
+    if (newTag.trim()) {
+      appendTag({ name: newTag });
+      setNewTag("");
+    }
+  };
+
+  return (
+    <div className="col-span-2 space-y-2 mb-6">
+      <div className="mb-2 flex items-center gap-2">
+        <h1 className="text-2xl">Tags</h1>
+        <Tooltip trigger={<QuestionMarkCircledIcon />}>
+          Add tags to filter reviewers
+        </Tooltip>
+      </div>
+      <div className="flex flex-wrap items-center gap-3">
+        <div className="flex space-x-1">
+        <Button onClick={handleAddTag} size="icon" className="p-3"><PlusIcon /></Button>
+          <Input
+            placeholder="departmentMembership"
+            value={newTag}
+            onChange={(e) => setNewTag(e.target.value)}
+          />
+        </div>
+        {tagFields.map((tag, index) => (
+          <Badge variant="secondary" className="flex items-center space-x-1.5">
+            <p>{tag.name}</p>
+            <button onClick={() => removeTag(index)}>
+              <Cross2Icon className="h-3.5 w-3.5 text-gray-600 dark:text-gray-400" />
+            </button>
+          </Badge>
+        ))}
+      </div>
     </div>
   );
 }

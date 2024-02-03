@@ -55,6 +55,7 @@ const GeneralInformationSchema = z
     description: z.string().min(1, "Description is required"),
     admins: z.array(PersonSchema).min(1, "At least one admin required"),
     screeners: z.array(PersonSchema),
+    tags: z.array(z.object({name: z.string()})),
   })
   .refine(
     (data) => {
@@ -65,7 +66,6 @@ const GeneralInformationSchema = z
       path: ["end"],
     },
   );
-
 
 const FullFormSchema = z.object({
   generalInformation: GeneralInformationSchema,

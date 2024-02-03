@@ -1,7 +1,6 @@
 "use client";
 
 import { Card } from "@components/ui/card";
-import { Section } from "@components/Section";
 import Input from "@components/Input";
 import { TrashIcon } from "lucide-react";
 import { Button } from "@components/ui/button";
