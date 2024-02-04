@@ -220,7 +220,7 @@ function AddTags({ control }) {
   };
 
   return (
-    <div className="col-span-2 space-y-2 mb-6">
+    <div className="col-span-2 mb-6 space-y-2">
       <div className="mb-2 flex items-center gap-2">
         <h1 className="text-2xl">Tags</h1>
         <Tooltip trigger={<QuestionMarkCircledIcon />}>
@@ -229,7 +229,9 @@ function AddTags({ control }) {
       </div>
       <div className="flex flex-wrap items-center gap-3">
         <div className="flex space-x-1">
-        <Button onClick={handleAddTag} size="icon" className="p-3"><PlusIcon /></Button>
+          <Button onClick={handleAddTag} size="icon" className="p-3">
+            <PlusIcon />
+          </Button>
           <Input
             placeholder="departmentMembership"
             value={newTag}

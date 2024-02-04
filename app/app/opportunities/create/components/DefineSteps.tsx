@@ -2,7 +2,6 @@ import { useState } from "react";
 import DefinePhases from "./DefinePhases";
 import DefineQuestions from "./DefineQuestions";
 import { Button } from "@components/ui/button";
-import { number } from "yup";
 
 export default function DefineSteps({ form }) {
   const [currentFormData, setCurrentFormData] = useState({formName: "", phaseIndex: null, formIndex: null});
