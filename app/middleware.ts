@@ -7,8 +7,9 @@ function checkMainPaths(pathname: string) {
   return pathname.startsWith('/api') ||
     pathname.startsWith('/opportunities') ||
     pathname.startsWith('/api/review') ||
-    pathname.startsWith('/profile');
-    //TODO: add more paths to be blocked if necessary
+    pathname.startsWith('/profile') ||
+    pathname.startsWith('/members');
+    //TODO: add more paths to be blocked if necessary : componenets, etc?
 }
 
 export async function middleware(request: NextRequest) {
@@ -35,5 +36,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/api/:path*', '/opportunities/:path*', '/review/:path*', '/profile/:path*'],
+  matcher: ['/api/:path*', '/opportunities/:path*', '/review/:path*', '/profile/:path*', '/members/:path*'],
 };
