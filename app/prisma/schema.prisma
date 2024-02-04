@@ -45,7 +45,6 @@ model User {
   opportunityParticipation OpportunityParticipation[]
   reviews                  PhaseReview[]
   profile                  Profile?                   @relation(fields: [profileId], references: [id])
-  userRoles                UserRole[]                 @relation("UserToUserRole")
 }
 
 model UserRole {
