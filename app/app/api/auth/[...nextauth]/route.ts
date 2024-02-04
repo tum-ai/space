@@ -42,6 +42,23 @@ export const authOptions: NextAuthOptions = {
 
         const existingUser = await prisma.user.findUnique({
           where: { email: credentials?.email },
+          include: {
+            userToUserRoles: {
+              select: {
+                role: {
+                  select: {
+                    name: true,
+                    userPermissions: {
+                      select: {
+                        id: true,
+                        name: true,
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
         });
 
         if (!existingUser) {
@@ -61,7 +78,12 @@ export const authOptions: NextAuthOptions = {
           id: `${existingUser.id}`,
           firstName: existingUser.firstName,
           lastName: existingUser.lastName,
-          //roles: existingUser.roles,
+          // TODO: add roles and permissions to the user object, jwt and session. 
+          // Best practice is to modify the type -> includes the roles and permissions
+          // roles: existingUser.userToUserRoles.map((role) => role.role.name),
+          // permissions: existingUser.userToUserRoles
+          //   .map((role) => role.role.userPermissions)
+          //   .flat(),
           image: existingUser.image,
         };
       },

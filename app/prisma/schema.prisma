@@ -34,7 +34,8 @@ model User {
   password                 String?
   firstName                String?
   lastName                 String?
-  image                    String?
+  image                    String?           
+  userToUserRoles          UserToUserRole[]          
   emailVerified            DateTime?
   createdAt                DateTime                   @default(now())
   updatedAt                DateTime                   @updatedAt
@@ -44,13 +45,22 @@ model User {
   opportunityParticipation OpportunityParticipation[]
   reviews                  PhaseReview[]
   profile                  Profile?                   @relation(fields: [profileId], references: [id])
-  userRoles                UserRole[]                 @relation("UserToUserRole")
 }
 
 model UserRole {
-  name            String           @id
-  userPermissions UserPermission[]
-  users           User[]           @relation("UserToUserRole")
+  name            String           @id   
+  userToUserRoles UserToUserRole[] 
+  userPermissions UserPermission[] 
+}
+
+model UserToUserRole { 
+  userId String
+  roleId String
+  user   User   @relation(fields: [userId], references: [id], onDelete : Cascade)
+  role   UserRole   @relation(fields: [roleId], references: [name], onDelete : Cascade)
+
+  @@id(name: "userToUserRoleId", [userId, roleId])
+  @@index([userId])
 }
 
 model UserPermission {
