@@ -2,7 +2,6 @@ import prisma from "database/db";
 import { UserRole } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 
-
 // GET /api/roles/[userId]
 export async function GET(
   req: NextRequest,
@@ -15,18 +14,22 @@ export async function GET(
     try {
       const user = await prisma.user.findUnique({
         select: {
-          userRoles: {
+          userToUserRoles: {
             select: {
-              name: true
-            }
-          }
+              role: {
+                select: {
+                  name: true,
+                },
+              },
+            },
+          },
         },
         where: {
           id: String(userId),
-        }
+        },
       });
 
-      userRoles = user.userRoles
+      userRoles = user.userToUserRoles.map((role) => role.role);
     } catch (error) {
       console.log(error);
 

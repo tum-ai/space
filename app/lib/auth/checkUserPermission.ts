@@ -1,17 +1,28 @@
-export async function checkPermission(
-  requiredPermissions: object[],
-  userPermissions: object[],
-) {
-  //always set to true for testing
+import { UserRole } from "@prisma/client";
+import axios from "axios";
 
-  return true;
+export async function checkPermission(requiredRole: string[], userId: string) {
+  if (!userId) {
+    return false;
+  }
 
-  // returns true if at least one of the required permissions is included in the user roles
-  for (let i = 0; i < requiredPermissions.length; i++) {
-    for (let j = 0; j < userPermissions.length; j++) {
-      if (requiredPermissions[i] === userPermissions[j]) {
-        return true;
-      }
+  const response = await axios
+    .get(`/api/roles/${userId}`)
+    .then((res) => {
+      const data = res.data as UserRole[];
+      return data.map((role) => role.name);
+    })
+    .catch((error) => {
+      // console.error(error);
+    });
+
+  if (!response) {
+    return false;
+  }
+
+  for (const role of response) {
+    if (requiredRole.some((permission) => role.includes(permission))) {
+      return true;
     }
   }
 
