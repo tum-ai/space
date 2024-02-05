@@ -6,7 +6,7 @@ import path from "path";
 function checkMainPaths(pathname: string) {
   return pathname.startsWith('/api') ||
     pathname.startsWith('/opportunities') ||
-    pathname.startsWith('/api/review') ||
+    pathname.startsWith('/review') ||
     pathname.startsWith('/profile') ||
     pathname.startsWith('/members');
     //TODO: add more paths to be blocked if necessary : componenets, etc?
