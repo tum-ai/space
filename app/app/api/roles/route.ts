@@ -16,18 +16,11 @@ const partial_view = {
 
 export async function GET(req: NextRequest) {
   let permissions;
-  const id = req.nextUrl.searchParams.get("id");
 
   try {
-    if (id) {
-      permissions = await prisma.userRole.findMany({
-        select: complete_view,
-      });
-    } else {
-      permissions = await prisma.userRole.findMany({
-        select: partial_view,
-      });
-    }
+    permissions = await prisma.userRole.findMany({
+      select: partial_view,
+    });
   } catch (error) {
     return NextResponse.json({ error: error }, { status: 500 });
   }
