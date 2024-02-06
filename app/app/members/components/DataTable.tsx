@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import * as React from "react"
+import * as React from "react";
 import {
   ColumnFiltersState,
   SortingState,
@@ -11,10 +11,10 @@ import {
   getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
-} from "@tanstack/react-table" 
-import { DataTableToolbar } from "./DataTableToolbar"
+} from "@tanstack/react-table";
+import { DataTableToolbar } from "./DataTableToolbar";
 
-import { Button } from "@components/ui/button"
+import { Button } from "@components/ui/button";
 import {
   Table,
   TableBody,
@@ -22,19 +22,20 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@components/ui/table"
+} from "@components/ui/table";
 
-import { columns } from "./Columns"
-import LoadingWheel from "@components/LoadingWheel"
-import { getProfileData } from "@lib/retrievals"
+import { columns } from "./Columns";
+import LoadingWheel from "@components/LoadingWheel";
+import { getProfileData } from "@lib/retrievals";
 
 export function DataTable() {
   const [data, setData] = React.useState([]);
-  const [sorting, setSorting] = React.useState<SortingState>([])
+  const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
-  )
-  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
+    [],
+  );
+  const [columnVisibility, setColumnVisibility] =
+    React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
   const [error, setError] = React.useState(null);
   const [loading, setLoading] = React.useState(true);
@@ -42,20 +43,20 @@ export function DataTable() {
   React.useEffect(() => {
     const fetchData = async () => {
       try {
-        const profiles = await getProfileData()
+        const profiles = await getProfileData();
         setData(profiles);
-      } catch(error) {
+      } catch (error) {
         if (error.response && error.response.status === 403) {
-          setError('Not allowed');
+          setError("Not allowed");
         } else {
-          setError('Something went wrong');
+          setError("Something went wrong");
         }
       }
     };
 
     fetchData();
     setLoading(false);
-  }, [])
+  }, []);
 
   const table = useReactTable({
     data,
@@ -74,11 +75,11 @@ export function DataTable() {
       columnVisibility,
       rowSelection,
     },
-  })
+  });
 
   return (
     <div className="space-y-4">
-      <DataTableToolbar table={table} tableData={data}/>
+      <DataTableToolbar table={table} tableData={data} />
       <div className="rounded-md border">
         <Table>
           <TableHeader>
@@ -91,10 +92,10 @@ export function DataTable() {
                         ? null
                         : flexRender(
                             header.column.columnDef.header,
-                            header.getContext()
+                            header.getContext(),
                           )}
                     </TableHead>
-                  )
+                  );
                 })}
               </TableRow>
             ))}
@@ -110,7 +111,7 @@ export function DataTable() {
                     <TableCell key={cell.id}>
                       {flexRender(
                         cell.column.columnDef.cell,
-                        cell.getContext()
+                        cell.getContext(),
                       )}
                     </TableCell>
                   ))}
@@ -124,15 +125,15 @@ export function DataTable() {
                 >
                   {loading ? (
                     <div className="flex items-center justify-center space-x-2">
-                        <LoadingWheel />
+                      <LoadingWheel />
                     </div>
-                  ) : (!error ? (
+                  ) : !error ? (
                     <div className="flex items-center justify-center space-x-2">
-                      <p className="text-sm text-slate-400">
-                        No data found.
-                      </p>
+                      <p className="text-sm text-slate-400">No data found.</p>
                     </div>
-                  ) : error)}
+                  ) : (
+                    error
+                  )}
                 </TableCell>
               </TableRow>
             )}
@@ -164,5 +165,5 @@ export function DataTable() {
         </div>
       </div>
     </div>
-  )
+  );
 }

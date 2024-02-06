@@ -2,7 +2,6 @@ import prisma from "database/db";
 import { UserRole } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 
-
 // GET /api/roles/[userId]
 export async function GET(
   req: NextRequest,
@@ -17,16 +16,16 @@ export async function GET(
         select: {
           userRoles: {
             select: {
-              name: true
-            }
-          }
+              name: true,
+            },
+          },
         },
         where: {
           id: String(userId),
-        }
+        },
       });
 
-      userRoles = user.userRoles
+      userRoles = user.userRoles;
     } catch (error) {
       console.log(error);
 

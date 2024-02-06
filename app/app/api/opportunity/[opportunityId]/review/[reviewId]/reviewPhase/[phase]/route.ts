@@ -5,7 +5,7 @@ import prisma from "database/db";
  * GET opportunity/[opportunityId]/review/[reviewId]/reviewPhase/[phase]
  *
  * Gets a specific ReviewPhase for a review
- * 
+ *
  * @param NextRequest request
  * @param number opportunityId
  * @param number reviewId
@@ -19,7 +19,10 @@ export const GET = async (
   try {
     const reviewIdNum = parseInt(reviewId);
     if (isNaN(reviewIdNum)) {
-      return NextResponse.json({ Error: "Invalid review ID." }, { status: 400 });
+      return NextResponse.json(
+        { Error: "Invalid review ID." },
+        { status: 400 },
+      );
     }
 
     const reviewPhase = await prisma.phaseReview.findUnique({
@@ -32,13 +35,19 @@ export const GET = async (
     });
 
     if (!reviewPhase) {
-      return NextResponse.json({ Error: "Review phase does not exist." }, { status: 404 });
+      return NextResponse.json(
+        { Error: "Review phase does not exist." },
+        { status: 404 },
+      );
     }
 
     return NextResponse.json(reviewPhase, { status: 200 });
   } catch (error) {
     console.error(error);
-    return NextResponse.json({ Error: "Internal Server Error" }, { status: 500 });
+    return NextResponse.json(
+      { Error: "Internal Server Error" },
+      { status: 500 },
+    );
   }
 };
 
@@ -46,7 +55,7 @@ export const GET = async (
  * UPDATE opportunity/[opportunityId]/review/[reviewId]/reviewPhase/[phase]
  *
  * Update a ReviewPhase of a review
- * 
+ *
  * @param NextRequest request
  * @param number opportunityId
  * @param number reviewId
@@ -64,17 +73,23 @@ export const PUT = async (
     const { newPhaseName, assigneeId } = await request.json();
 
     if (!newPhaseName || !assigneeId) {
-      return NextResponse.json({ Error: "New phase name and valid assignee ID are required." }, { status: 400 });
+      return NextResponse.json(
+        { Error: "New phase name and valid assignee ID are required." },
+        { status: 400 },
+      );
     }
 
     const assigneeExists = await prisma.user.findUnique({
       where: {
-        id: assigneeId
+        id: assigneeId,
       },
     });
 
     if (!assigneeExists) {
-      return NextResponse.json({ Error: "Assignee does not exist." }, { status: 404 });
+      return NextResponse.json(
+        { Error: "Assignee does not exist." },
+        { status: 404 },
+      );
     }
 
     const existingPhaseReview = await prisma.phaseReview.findUnique({
@@ -87,12 +102,15 @@ export const PUT = async (
     });
 
     if (!existingPhaseReview) {
-      return NextResponse.json({ Error: "Review phase not found." }, { status: 404 });
+      return NextResponse.json(
+        { Error: "Review phase not found." },
+        { status: 404 },
+      );
     }
 
     const updatedReviewPhase = await prisma.phaseReview.update({
       where: {
-        id: { 
+        id: {
           phase,
           reviewId: reviewIdNum,
         },
@@ -108,22 +126,29 @@ export const PUT = async (
     console.error(error);
 
     if (error.code === "P2025") {
-      return NextResponse.json({ Error: "Review phase not found." }, { status: 404 });
+      return NextResponse.json(
+        { Error: "Review phase not found." },
+        { status: 404 },
+      );
     } else if (error.code === "P2002") {
-      return NextResponse.json({ Error: "Data constraint violation." }, { status: 400 });
+      return NextResponse.json(
+        { Error: "Data constraint violation." },
+        { status: 400 },
+      );
     }
 
-    return NextResponse.json({ Error: "Internal Server Error" }, { status: 500 });
+    return NextResponse.json(
+      { Error: "Internal Server Error" },
+      { status: 500 },
+    );
   }
 };
-
-
 
 /**
  * DELETE opportunity/[opportunityId]/review/[reviewId]/reviewPhase/[phase]
  *
  * Remove a ReviewPhase for a review
- * 
+ *
  * @param NextRequest request
  * @param number opportunityId
  * @param number reviewId
@@ -146,13 +171,21 @@ export const DELETE = async (
       },
     });
 
-    return NextResponse.json({ Message: "Review phase deleted successfully." }, { status: 200 });
+    return NextResponse.json(
+      { Message: "Review phase deleted successfully." },
+      { status: 200 },
+    );
   } catch (error) {
     console.error(error);
     if (error.code === "P2025") {
-      return NextResponse.json({ Error: "Review phase not found." }, { status: 404 });
+      return NextResponse.json(
+        { Error: "Review phase not found." },
+        { status: 404 },
+      );
     }
-    return NextResponse.json({ Error: "Internal Server Error" }, { status: 500 });
+    return NextResponse.json(
+      { Error: "Internal Server Error" },
+      { status: 500 },
+    );
   }
 };
-

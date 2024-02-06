@@ -13,11 +13,19 @@ import { isValid } from "date-fns";
  * @param number opportunityId
  * @returns NextResponse
  */
-export const GET = async (request: NextRequest, { params: { opportunityId, name } }): Promise<NextResponse> => {
+export const GET = async (
+  request: NextRequest,
+  { params: { opportunityId, name } },
+): Promise<NextResponse> => {
   try {
-    const isOpportunityExistent = await checkOpportunityExistence(parseInt(opportunityId));
+    const isOpportunityExistent = await checkOpportunityExistence(
+      parseInt(opportunityId),
+    );
     if (!isOpportunityExistent) {
-      return NextResponse.json({ Error: "Opportunity does not exist." }, { status: 404 });
+      return NextResponse.json(
+        { Error: "Opportunity does not exist." },
+        { status: 404 },
+      );
     }
 
     const tag = await prisma.tag.findUnique({
@@ -36,10 +44,12 @@ export const GET = async (request: NextRequest, { params: { opportunityId, name 
     return NextResponse.json(tag, { status: 200 });
   } catch (error) {
     console.error(error);
-    return NextResponse.json({ Error: "Internal Server Error" }, { status: 500 });
+    return NextResponse.json(
+      { Error: "Internal Server Error" },
+      { status: 500 },
+    );
   }
 };
-
 
 /**
  * PUT opportunity/[opportunityId]/tag/[name]
@@ -51,16 +61,27 @@ export const GET = async (request: NextRequest, { params: { opportunityId, name 
  * @async @param json newTag - the new name you want to give this tag
  * @returns NextResponse
  */
-export const PUT = async (request: NextRequest, { params: { opportunityId, name } }): Promise<NextResponse> => {
+export const PUT = async (
+  request: NextRequest,
+  { params: { opportunityId, name } },
+): Promise<NextResponse> => {
   try {
-    const isOpportunityExistent = await checkOpportunityExistence(parseInt(opportunityId));
+    const isOpportunityExistent = await checkOpportunityExistence(
+      parseInt(opportunityId),
+    );
     if (!isOpportunityExistent) {
-      return NextResponse.json({ Error: "Opportunity does not exist." }, { status: 404 });
+      return NextResponse.json(
+        { Error: "Opportunity does not exist." },
+        { status: 404 },
+      );
     }
 
     const { newTag } = await request.json();
     if (!newTag) {
-      return NextResponse.json({ Error: "New tag name is required." }, { status: 400 });
+      return NextResponse.json(
+        { Error: "New tag name is required." },
+        { status: 400 },
+      );
     }
 
     const updatedTag = await prisma.tag.update({
@@ -78,13 +99,16 @@ export const PUT = async (request: NextRequest, { params: { opportunityId, name 
     return NextResponse.json(updatedTag, { status: 200 });
   } catch (error) {
     console.error(error);
-    return NextResponse.json({ Error: "Internal Server Error" }, { status: 500 });
+    return NextResponse.json(
+      { Error: "Internal Server Error" },
+      { status: 500 },
+    );
   }
 };
 
 /**
  * DELETE opportunity/[opportunityId]/tag/[name]
- * 
+ *
  * Deletes a particular tag from an opportunity
  *
  * @param NextRequest request
@@ -92,11 +116,19 @@ export const PUT = async (request: NextRequest, { params: { opportunityId, name 
  * @param number name
  * @returns NextResponse
  */
-export const DELETE = async (request: NextRequest, { params: { opportunityId, name } }): Promise<NextResponse> => {
+export const DELETE = async (
+  request: NextRequest,
+  { params: { opportunityId, name } },
+): Promise<NextResponse> => {
   try {
-    const opportunityExists = await checkOpportunityExistence(parseInt(opportunityId));
+    const opportunityExists = await checkOpportunityExistence(
+      parseInt(opportunityId),
+    );
     if (!opportunityExists) {
-      return NextResponse.json({ Error: "Opportunity does not exist." }, { status: 404 });
+      return NextResponse.json(
+        { Error: "Opportunity does not exist." },
+        { status: 404 },
+      );
     }
 
     await prisma.tag.delete({
@@ -108,14 +140,18 @@ export const DELETE = async (request: NextRequest, { params: { opportunityId, na
       },
     });
 
-    return NextResponse.json({ Message: "Tag deleted successfully." }, { status: 200 });
+    return NextResponse.json(
+      { Message: "Tag deleted successfully." },
+      { status: 200 },
+    );
   } catch (error) {
     console.error(error);
     if (error.code === "P2025") {
       return NextResponse.json({ Error: "Tag not found." }, { status: 404 });
     }
-    return NextResponse.json({ Error: "Internal Server Error" }, { status: 500 });
+    return NextResponse.json(
+      { Error: "Internal Server Error" },
+      { status: 500 },
+    );
   }
 };
-
-

@@ -146,7 +146,9 @@ export const columns: ExtendedColumnDef<User>[] = [
       />
     ),
     filterFn: (row, id, filterValues) => {
-      const aRoles: UserRole[] = row.original["userToUserRoles"].map(role => role.role);
+      const aRoles: UserRole[] = row.original["userToUserRoles"].map(
+        (role) => role.role,
+      );
       for (let i = 0; i < filterValues.length; i++) {
         const filterValue = filterValues[i].toLowerCase();
         if (!aRoles) {
@@ -183,7 +185,8 @@ export const columns: ExtendedColumnDef<User>[] = [
     ),
     filterFn: (row, id, filterValues) => {
       for (let i = 0; i < filterValues.length; i++) {
-        const rowValue = row.original['departmentMemberships'][0]?.department.id
+        const rowValue =
+          row.original["departmentMemberships"][0]?.department.id;
         const filterValue = filterValues[i];
 
         if (!rowValue) {

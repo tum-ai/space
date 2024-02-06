@@ -23,7 +23,7 @@ interface DataTableToolbarProps<TData> {
 
 export function DataTableToolbar<TData>({
   table,
-  tableData
+  tableData,
 }: DataTableToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0;
   const [departments, setDepartments] = useState([]);
@@ -119,7 +119,7 @@ export function DataTableToolbar<TData>({
           </Button>
         )}
       </div>
-      <DataTableEditDialog tableData={tableData} rows={getSelectedRows()}/>
+      <DataTableEditDialog tableData={tableData} rows={getSelectedRows()} />
       <DataTableViewOptions table={table} />
     </div>
   );
