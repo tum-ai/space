@@ -17,7 +17,7 @@ import {
   FormMessage,
 } from "@components/ui/form";
 
-const SignUp = () => {
+const Register = () => {
   const router = useRouter();
   if (env.NEXT_PUBLIC_VERCEL_ENV !== "development") {
     console.error("This page is only available in development mode!");
@@ -163,4 +163,4 @@ const SignUp = () => {
   );
 };
 
-export default SignUp;
+export default Register;

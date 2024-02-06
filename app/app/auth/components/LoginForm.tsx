@@ -1,36 +1,113 @@
+"use client";
 import { Button } from "@components/ui/button";
-import { env } from "env.mjs";
+import Input from "@components/Input";
+import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
-import Link from "next/link";
+import { env } from "env.mjs";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@components/ui/form";
+import axios from "axios";
 
 export const LoginForm = () => {
-  const isDevelopment = env.NEXT_PUBLIC_VERCEL_ENV === "development";
+  const router = useRouter();
+  if (env.NEXT_PUBLIC_VERCEL_ENV !== "development") {
+    console.error("This page is only available in development mode!");
+    router.push("/auth");
+  }
+
+  const registerFormSchema = z.object({
+    email: z.string().email({ message: "Invalid email address" }),
+    password: z
+      .string()
+      .min(8, { message: "Password must be at least 8 characters long" }),
+  });
+
+  const form = useForm<z.infer<typeof registerFormSchema>>({
+    resolver: zodResolver(registerFormSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  });
+
+  const onSubmit = async (values: z.infer<typeof registerFormSchema>) => {
+    await axios.post("/api/auth/signup", {
+      body: {
+        email: values.email,
+        password: values.password,
+      },
+    });
+    const signInData = await signIn("credentials", {
+      email: values.email,
+      password: values.password,
+      redirect: false,
+    });
+
+    if (signInData?.error) {
+      console.log(signInData.error);
+    } else {
+      return router.push("/profile");
+    }
+  };
 
   return (
-    <div className="m-auto flex max-w-[500px] flex-col gap-4 ">
-      <h2 className="flex justify-center text-3xl">Login</h2>
-      <hr className="col-span-2" />
-      <Button
-        className="flex items-center justify-center rounded-lg border border-transparent bg-white px-4 py-2 text-sm font-medium text-black shadow-sm"
-        onClick={() => signIn("slack")}
+    <Form {...form}>
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="grid grid-cols-2 gap-4"
       >
-        <img
-          src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d5/Slack_icon_2019.svg/2048px-Slack_icon_2019.svg.png"
-          alt="Slack logo"
-          className="mr-2 h-6 w-6"
+        <h2 className="col-span-2 text-3xl">Login</h2>
+
+        <FormField
+          control={form.control}
+          name="email"
+          render={({ field }) => (
+            <FormItem className="col-span-2">
+              <FormLabel>E-mail</FormLabel>
+              <FormControl>
+                <Input
+                  className="w-full"
+                  placeholder="daniel.korth@tum.de"
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
         />
-        Log in with Slack
-      </Button>
-      {isDevelopment && (
-        <>
-          <Button asChild>
-            <Link href="auth/signin">Log in with Credentials</Link>
-          </Button>
-          <Button asChild>
-            <Link href="auth/signup">Register</Link>
-          </Button>
-        </>
-      )}
-    </div>
+
+        <FormField
+          control={form.control}
+          name="password"
+          render={({ field }) => (
+            <FormItem className="col-span-2">
+              <FormLabel>Password</FormLabel>
+              <FormControl>
+                <Input
+                  className="w-full"
+                  placeholder="password"
+                  type="password"
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <Button type="submit" className="col-span-2">
+          Login
+        </Button>
+      </form>
+    </Form>
   );
 };
