@@ -60,7 +60,7 @@ const SignUp = () => {
       >
         {({ errors, touched }) => (
           <Form className="m-auto flex max-w-[500px] flex-col gap-4">
-            <h2 className="text-3xl">Sign Up</h2>
+            <h2 className="text-3xl">Sign-up</h2>
             <div>
               <Field
                 as={Input}

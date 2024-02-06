@@ -1,31 +1,10 @@
-"use client";
 import { Button } from "@components/ui/button";
-import { useRouter } from "next/navigation";
-import { signIn, signOut } from "next-auth/react";
+import { env } from "app/env.mjs";
+import { signIn } from "next-auth/react";
+import Link from "next/link";
 
-export const LoginForm = async ({ setResetPassword }) => {
-  const router = useRouter();
-  const isDevelopment = process.env.NEXT_PUBLIC_VERCEL_ENV === "development";
-
-  const profileRoute = () => {
-    router.push("/profile");
-  };
-
-  const signUpRoute = () => {
-    if (!isDevelopment) {
-      router.push("/auth");
-      return;
-    }
-    router.push("/auth/signup");
-  };
-
-  const signInRoute = () => {
-    if (!isDevelopment) {
-      router.push("/auth");
-      return;
-    }
-    router.push("/auth/signin");
-  };
+export const LoginForm = () => {
+  const isDevelopment = env.NEXT_PUBLIC_VERCEL_ENV === "development";
 
   return (
     <div className="m-auto flex max-w-[500px] flex-col gap-4 ">
@@ -44,12 +23,14 @@ export const LoginForm = async ({ setResetPassword }) => {
       </Button>
       {isDevelopment && (
         <>
-          <Button onClick={signInRoute}>Sign in with Credentials</Button>
-          <Button onClick={signUpRoute}>Sign up</Button>
+          <Button asChild>
+            <Link href="auth/signin">Log in with Credentials</Link>
+          </Button>
+          <Button asChild>
+            <Link href="auth/signup">Register</Link>
+          </Button>
         </>
       )}
-      <Button onClick={() => signOut()}> Sign out</Button>
-      <Button onClick={profileRoute}>View Profile</Button>
     </div>
   );
 };
