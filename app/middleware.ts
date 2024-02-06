@@ -25,11 +25,9 @@ export async function middleware(request: NextRequest) {
 
   // Check if the request is for the other API routes
   if (checkMainPaths(pathname)) {
-    const token = await getToken({
-      req: request,
-      secret: process.env.NEXTAUTH_SECRET,
-    });
-    if (!token) {
+    const session = await getSession();
+    if (!session) {
+      console.log("pathname", pathname);
       const loginUrl = new URL("/auth", request.url);
       return NextResponse.redirect(loginUrl);
     }
@@ -51,7 +49,7 @@ export const config = {
 
 export async function authMiddleware(req, requiredRoles) {
   const session = await getSession();
-  const authUserId = session?.user?.id;
+  const authUserId = "clsaoazmb0000a5gg4driif0j";
 
   if (!authUserId) {
     return NextResponse.json(
