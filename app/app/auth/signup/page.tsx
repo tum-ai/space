@@ -2,128 +2,163 @@
 import { Button } from "@components/ui/button";
 import Input from "@components/Input";
 import { Section } from "@components/Section";
-import * as Yup from "yup";
 import { useRouter } from "next/navigation";
-import { Field, Form, Formik } from "formik";
-import ErrorMessage from "@components/ErrorMessage";
+import axios from "axios";
+import { useForm } from "react-hook-form";
+import { env } from "app/env.mjs";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@components/ui/form";
 
 const SignUp = () => {
   const router = useRouter();
-
-  if (process.env.NEXT_PUBLIC_VERCEL_ENV !== "development") {
+  if (env.NEXT_PUBLIC_VERCEL_ENV !== "development") {
     console.error("This page is only available in development mode!");
     router.push("/auth");
-    return null;
   }
 
-  const registerUser = async (values) => {
-    const response = await fetch("/api/auth/signup", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
+  const registerFormSchema = z
+    .object({
+      firstName: z.string().min(1, { message: "First name can't be empty" }),
+      lastName: z.string().min(1, { message: "Last name can't be empty" }),
+      email: z.string().email({ message: "Invalid email address" }),
+      password: z
+        .string()
+        .min(8, { message: "Password must be at least 8 characters long" }),
+      passwordConfirm: z.string(),
+    })
+    .refine((data) => data.password === data.passwordConfirm, {
+      message: "Passwords don't match",
+      path: ["passwordConfirm"],
+    });
+
+  const form = useForm<z.infer<typeof registerFormSchema>>({
+    resolver: zodResolver(registerFormSchema),
+    defaultValues: {
+      firstName: "",
+      lastName: "",
+      email: "",
+      password: "",
+      passwordConfirm: "",
+    },
+  });
+
+  const onSubmit = async (values: z.infer<typeof registerFormSchema>) => {
+    await axios.post("/api/auth/signup", {
+      body: {
         firstName: values.firstName,
         lastName: values.lastName,
         email: values.email,
         password: values.password,
-      }),
+      },
     });
-
-    if (response.ok) {
-      router.push("/auth");
-    } else {
-      console.error("Something went wrong!");
-    }
   };
 
   return (
     <Section>
-      <Formik
-        validationSchema={Yup.object().shape({
-          firstName: Yup.string().required(),
-          lastName: Yup.string().required(),
-          email: Yup.string().email().required(),
-          password: Yup.string().required(),
-          password2: Yup.string()
-            .oneOf([Yup.ref("password"), null], "Passwords must match")
-            .required(),
-        })}
-        initialValues={{
-          firstName: "",
-          lastName: "",
-          email: "",
-          password: "",
-          password2: "",
-        }}
-        onSubmit={(values) => registerUser(values)}
-      >
-        {({ errors, touched }) => (
-          <Form className="m-auto flex max-w-[500px] flex-col gap-4">
-            <h2 className="text-3xl">Sign-up</h2>
-            <div>
-              <Field
-                as={Input}
-                label="First name"
-                type="firstName"
-                name="firstName"
-                placeholder=""
-                state={touched.firstName && errors.firstName && "error"}
-                fullWidth
-              />
-              <ErrorMessage name="firstName" />
-            </div>
-            <div>
-              <Field
-                as={Input}
-                label="Last name"
-                type="lastName"
-                name="lastName"
-                placeholder=""
-                state={touched.lastName && errors.lastName && "error"}
-                fullWidth
-              />
-              <ErrorMessage name="lastName" />
-            </div>
-            <div>
-              <Field
-                as={Input}
-                label="Email"
-                type="email"
-                name="email"
-                placeholder="daniel.korth@tum.com"
-                state={touched.email && errors.email && "error"}
-                fullWidth
-              />
-              <ErrorMessage name="email" />
-            </div>
-            <div>
-              <Field
-                as={Input}
-                label="Password"
-                type="password"
-                name="password"
-                state={touched.password && errors.password && "error"}
-                fullWidth
-              />
-            </div>
-            <div>
-              <Field
-                as={Input}
-                label="Confirm Password"
-                type="password"
-                name="password2"
-                state={touched.password2 && errors.password2 && "error"}
-                fullWidth
-              />
-            </div>
-            <ErrorMessage name="password" />
-            <ErrorMessage name="password2" />
-            <hr className="col-span-2" />
-            <Button type="submit">Sign Up</Button>
-          </Form>
-        )}
-      </Formik>
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="mx-auto grid max-w-lg grid-cols-2 gap-4"
+        >
+          <h2 className="col-span-2 text-3xl">Registration</h2>
+
+          <FormField
+            control={form.control}
+            name="firstName"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>First name</FormLabel>
+                <FormControl>
+                  <Input placeholder="Daniel" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="lastName"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Last name</FormLabel>
+                <FormControl>
+                  <Input placeholder="Korth" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="email"
+            render={({ field }) => (
+              <FormItem className="col-span-2">
+                <FormLabel>E-mail</FormLabel>
+                <FormControl>
+                  <Input
+                    className="w-full"
+                    placeholder="daniel.korth@tum.de"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="password"
+            render={({ field }) => (
+              <FormItem className="col-span-2">
+                <FormLabel>Password</FormLabel>
+                <FormControl>
+                  <Input
+                    className="w-full"
+                    placeholder="password"
+                    type="password"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="passwordConfirm"
+            render={({ field }) => (
+              <FormItem className="col-span-2">
+                <FormLabel>Confirm Password</FormLabel>
+                <FormControl>
+                  <Input
+                    className="w-full"
+                    placeholder="password"
+                    type="password"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <Button type="submit" className="col-span-2">
+            Register
+          </Button>
+        </form>
+      </Form>
     </Section>
   );
 };
