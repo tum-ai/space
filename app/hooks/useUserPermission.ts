@@ -4,7 +4,12 @@ import { checkPermission } from "@lib/auth/checkUserPermission";
 export async function hasPermission(requiredPermissions = []) {
   const session = await getSession();
   // TODO: will always return undefined because the session is not setup yet
-  const userPermissions = session?.user["permissions"];
+  const userId = session?.user?.id;
+  if (!userId) {
+    return false;
+  }
 
-  return await checkPermission(requiredPermissions, userPermissions);
+  const hasPermission = await checkPermission(requiredPermissions, userId);
+
+  return hasPermission;
 }

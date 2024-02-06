@@ -1,45 +1,51 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "database/db";
-
-
+import { authMiddleware } from "middleware";
 
 export async function GET(req: NextRequest) {
+  //_____ auth check _____
+
+  const authCheckResponse = await authMiddleware(req, ["admin"]);
+  if (authCheckResponse) return authCheckResponse;
+
+  //_____ auth check _____
+
   let profiles;
 
   try {
     profiles = await prisma.user.findMany({
-        select: {
-            id: true,
-            firstName: true,
-            lastName: true,
-            email: true,
-            userToUserRoles: {
+      select: {
+        id: true,
+        firstName: true,
+        lastName: true,
+        email: true,
+        userToUserRoles: {
+          select: {
+            role: {
               select: {
-                role: {
-                    select: {
-                        name: true,
-                    }
-                },
-              },
-            },
-            image: true,
-            departmentMemberships: {
-              select: {
-                department: {
-                  select: {
-                    id: true,
-                    name: true,
-                  },
-                },
-                departmentPosition: true,
-                membershipEnd: true,
-                membershipStart: true,
+                name: true,
               },
             },
           },
-      });
+        },
+        image: true,
+        departmentMemberships: {
+          select: {
+            department: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
+            departmentPosition: true,
+            membershipEnd: true,
+            membershipStart: true,
+          },
+        },
+      },
+    });
   } catch (error) {
-      return NextResponse.json({ error: error }, { status: 400 });
+    return NextResponse.json({ error: error }, { status: 400 });
   }
 
   const new_profiles = prepareMembershipData(profiles);

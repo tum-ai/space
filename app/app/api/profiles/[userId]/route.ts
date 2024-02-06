@@ -2,37 +2,14 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "database/db";
-import { checkPermission } from "lib/auth/checkUserPermission";
+import { authMiddleware } from "middleware";
 import { getSession } from "next-auth/react";
 
 export async function GET(req, { params }: { params: { userId: string } }) {
   //_____ auth check _____
-  // maybe move everything of auth check into seperate file
 
-  const session = await getSession({ req });
-  // const authUserId = session?.user?.id;
-  const authUserId = session?.user?.id;
-
-  //maybe exclude that check because the middleware already checks for auth
-  if (!authUserId) {
-    return NextResponse.json(
-      { error: "You need to be logged in to view this page" },
-      { status: 401 },
-    );
-  }
-
-  const permissionGranted = await checkPermission(
-    ["admin", "member"],
-    authUserId,
-  );
-
-
-  if (!permissionGranted) {
-    return NextResponse.json(
-      { error: "You don't have permission to view this page" },
-      { status: 403 },
-    );
-  }
+  const authCheckResponse = await authMiddleware(req, ["admin"]);
+  if (authCheckResponse) return authCheckResponse;
 
   //_____ auth check _____
 
@@ -85,6 +62,13 @@ export async function PUT(
   req: NextRequest,
   { params }: { params: { userId: string } },
 ) {
+  //_____ auth check _____
+
+  const authCheckResponse = await authMiddleware(req, ["admin"]);
+  if (authCheckResponse) return authCheckResponse;
+
+  //_____ auth check _____
+
   const body = await req.json(); // Get request body
   const { userId } = params; // Get userId from URL
 
@@ -109,6 +93,13 @@ export async function DELETE(
   req: NextRequest,
   { params }: { params: { userId: string } },
 ) {
+  //_____ auth check _____
+
+  const authCheckResponse = await authMiddleware(req, ["admin"]);
+  if (authCheckResponse) return authCheckResponse;
+
+  //_____ auth check _____
+
   const { userId } = params; // Get userId from URL
   let deletedProfile;
 
