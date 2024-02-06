@@ -49,7 +49,7 @@ export const config = {
 
 export async function authMiddleware(req, requiredRoles) {
   const session = await getSession();
-  const authUserId = "clsaoazmb0000a5gg4driif0j";
+  const authUserId = session?.user?.id;
 
   if (!authUserId) {
     return NextResponse.json(

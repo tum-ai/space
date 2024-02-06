@@ -3,7 +3,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "database/db";
 import { authMiddleware } from "middleware";
-import { getSession } from "next-auth/react";
 
 export async function GET(req, { params }: { params: { userId: string } }) {
   //_____ auth check _____
