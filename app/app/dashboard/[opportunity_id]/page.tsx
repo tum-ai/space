@@ -8,14 +8,27 @@ import { PersonIcon } from "@radix-ui/react-icons";
 import { Card } from "@components/ui/card";
 import { Button } from "@components/ui/button";
 import { Section } from "@components/Section";
+import { fetchOpportunity } from "app/services/opportunityService";
+import { useQuery } from "@tanstack/react-query";
+
 export default function Dashboard({ params }) {
   const opportunityId = decodeURIComponent(params.opportunity_id);
+
+  const {
+    data: opportunity,
+    isLoading,
+    isError,
+    error,
+  } = useQuery(["opportunity", opportunityId], () =>
+    fetchOpportunity(opportunityId),
+  );
+
   const [selectedPhase, setSelectedPhase] = useState("SCREENING");
   return (
     <Section>
       <div className="flex flex-col gap-8">
         <div className="flex flex-col gap-4">
-          <h1 className="text-6xl font-thin">Dashboard</h1>
+          <h1 className="text-6xl font-thin">{opportunity.title}</h1>
           <p>ID: {opportunityId}</p>
           <p className="mt-5 text-2xl">General Overview</p>
 
