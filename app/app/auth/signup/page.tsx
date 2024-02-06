@@ -5,7 +5,7 @@ import { Section } from "@components/Section";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import { useForm } from "react-hook-form";
-import { env } from "app/env.mjs";
+import { env } from "env.mjs";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {

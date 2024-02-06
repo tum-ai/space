@@ -1,5 +1,5 @@
 import { Button } from "@components/ui/button";
-import { env } from "app/env.mjs";
+import { env } from "env.mjs";
 import { signIn } from "next-auth/react";
 import Link from "next/link";
 
