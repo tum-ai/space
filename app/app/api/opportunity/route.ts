@@ -1,10 +1,16 @@
 import prisma from "database/db";
 import { Opportunity } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
+import { checkOpportunityPermission } from "lib/auth/checkOpportunitiesPermission";
+import { getSession } from "next-auth/react";
+import { authOptions } from "../auth/[...nextauth]/route";
+import { getServerSession } from "next-auth";
 
 // POST /api/opportunity
 export async function POST(req: NextRequest) {
   try {
+    //check opportunity permission - not required
+
     const createFields = await req.json();
 
     let createOpportunity: Opportunity;
@@ -31,6 +37,17 @@ export async function POST(req: NextRequest) {
 // GET /api/opportunity
 export async function GET(req: NextRequest) {
   try {
+    //check opportunity permission - Screener, Admin
+    const session = await getServerSession(authOptions);
+    const userId = session?.user?.id;
+
+    if(!checkOpportunityPermission(["screener", "admin"], userId, "all")){
+      return NextResponse.json(
+        { message: "Unauthorized." },
+        { status: 403 },
+      );
+    } 
+
     let readOpportunity: Opportunity[];
 
     try {
