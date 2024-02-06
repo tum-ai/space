@@ -1,6 +1,6 @@
 import prisma from "database/db";
 import { Application } from "@prisma/client";
-import { env } from "app/env.mjs";
+import { env } from "env.mjs";
 import { createHmac } from "crypto";
 import { NextRequest, NextResponse } from "next/server";
 import {

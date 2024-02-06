@@ -8,7 +8,7 @@ import { PersonIcon } from "@radix-ui/react-icons";
 import { Card } from "@components/ui/card";
 import { Button } from "@components/ui/button";
 import { Section } from "@components/Section";
-import { fetchOpportunity } from "app/services/opportunityService";
+import { fetchOpportunity } from "@lib/services/opportunityService";
 import { useQuery } from "@tanstack/react-query";
 
 export default function Dashboard({ params }) {

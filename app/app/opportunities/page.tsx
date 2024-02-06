@@ -9,8 +9,8 @@ import axios from "axios";
 import { Opportunity } from "@prisma/client";
 import { is } from "date-fns/locale";
 import LoadingWheel from "@components/LoadingWheel";
-import { fetchOpportunities } from "../services/opportunityService";
-import { getReviewCounts } from "app/services/reviewService";
+import { fetchOpportunities } from "../../lib/services/opportunityService";
+import { getReviewCounts } from "@lib/services/reviewService";
 
 export default function Main() {
   const {

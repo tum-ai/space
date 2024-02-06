@@ -1,7 +1,7 @@
 import prisma from "database/db";
 import { DepartmentMembership } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
-import { env } from "app/env.mjs";
+import { env } from "env.mjs";
 
 // POST /api/departmentMembership
 export async function POST(req: NextRequest) {
