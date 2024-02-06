@@ -6,9 +6,9 @@ import * as Yup from "yup";
 import { useRouter } from "next/navigation";
 import { Field, Form, Formik } from "formik";
 import ErrorMessage from "@components/ErrorMessage";
-import { signIn, signOut } from "next-auth/react";
+import { signIn } from "next-auth/react";
 
-export const SignIn = () => {
+export function SignIn() {
   const router = useRouter();
 
   if (process.env.NEXT_PUBLIC_VERCEL_ENV !== "development") {
@@ -74,6 +74,5 @@ export const SignIn = () => {
       </Formik>
     </Section>
   );
-};
-
+}
 export default SignIn;
