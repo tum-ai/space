@@ -15,14 +15,9 @@ const styles = cva(
         default: "bg-white dark:border-gray-500 dark:bg-gray-700",
         error: "bg-white text-red-700 border-red-900 dark:bg-gray-700",
       },
-      fullWidth: {
-        true: "w-full",
-        false: "w-max",
-      },
     },
     defaultVariants: {
       state: "default",
-      fullWidth: false,
     },
   },
 );
@@ -35,9 +30,9 @@ export const labelStyles = cva("text-sm", {
   },
 });
 
-function Input({ label, state, fullWidth, className, ...props }: Props) {
+function Input({ label, state, className, ...props }: Props) {
   const InnerInput = (
-    <input {...props} className={styles({ state, fullWidth, className })} />
+    <input {...props} className={styles({ state, className })} />
   );
 
   if (!label) {
