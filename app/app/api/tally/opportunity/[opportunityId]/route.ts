@@ -1,5 +1,4 @@
 import prisma from "database/db";
-import { Application } from "@prisma/client";
 import { env } from "env.mjs";
 import { createHmac } from "crypto";
 import { NextRequest, NextResponse } from "next/server";
@@ -10,6 +9,7 @@ import {
   MatrixValue,
   ParsedFormData,
 } from "./routeTypes";
+import { Review } from "@prisma/client";
 
 // POST /api/tally/opportunity/[opportunityId]
 export async function POST(
@@ -123,10 +123,10 @@ function hanldeMatrixField(field: FormField): LabelTextPair {
 async function saveFormData(formData: LabelTextPair, opportunityId: number) {
   const newFormDataJSON = JSON.stringify(formData);
 
-  const createApplication = await prisma.application.create({
+  const createReview = await prisma.review.create({
     data: {
       opportunityId,
-      content: newFormDataJSON,
+      application: newFormDataJSON,
     },
   });
 
@@ -140,10 +140,10 @@ export async function GET(
 ) {
   try {
     const { opportunityId } = params;
-    let readApplication: Application[];
+    let readReview: Review[];
 
     try {
-      readApplication = await prisma.application.findMany({
+      readReview = await prisma.review.findMany({
         where: {
           opportunityId: parseInt(opportunityId),
         },
@@ -154,7 +154,7 @@ export async function GET(
       return NextResponse.json({ message: "Bad Request." }, { status: 400 });
     }
 
-    return NextResponse.json(readApplication, { status: 200 });
+    return NextResponse.json(readReview, { status: 200 });
   } catch (error) {
     return NextResponse.json(
       { message: "Internal server error." },
