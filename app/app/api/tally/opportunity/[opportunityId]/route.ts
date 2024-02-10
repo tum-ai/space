@@ -9,7 +9,7 @@ import {
   MatrixValue,
   ParsedFormData,
 } from "./routeTypes";
-import { Review } from "@prisma/client";
+import { Review, Tag } from "@prisma/client";
 
 // POST /api/tally/opportunity/[opportunityId]
 export async function POST(
@@ -130,7 +130,37 @@ async function saveFormData(formData: LabelTextPair, opportunityId: number) {
     },
   });
 
-  return NextResponse.json(createApplication, { status: 200 });
+  const tags = await getTags(opportunityId, formData);
+
+  const createReviewTag = await prisma.reviewTag.createMany({
+    data: tags.map((tag) => ({
+      reviewId: createReview.id,
+      tagId: tag.id,
+    })),
+  });
+
+  return NextResponse.json({ createReview, createReviewTag }, { status: 200 });
+}
+
+async function getTags(
+  opportunityId: number,
+  formData: LabelTextPair,
+): Promise<Tag[]> {
+  const opportunityTags = await prisma.tag.findMany({
+    where: {
+      opportunityId,
+    },
+  });
+
+  const tags = opportunityTags.filter((tag) => {
+    const formDataEntry = formData[tag.tallyLabel];
+
+    return Array.isArray(formDataEntry)
+      ? formDataEntry.includes(tag.name)
+      : formDataEntry === tag.name;
+  });
+
+  return tags;
 }
 
 // GET /api/tally/opportunity/[opportunityId]
