@@ -58,20 +58,24 @@ function restructureReceivedJSON(formData: ParsedFormData): LabelTextPair {
     const label = field.label;
     let text: string | string[] | LabelTextPair;
 
-    if (
-      fieldType === "MULTIPLE_CHOICE" ||
-      fieldType === "CHECKBOXES" ||
-      fieldType === "DROPDOWN" ||
-      fieldType === "MULTI_SELECT" ||
-      fieldType === "RANKING"
-    ) {
-      text = handleChoiceField(field);
-    } else if (fieldType === "FILE_UPLOAD" || fieldType === "SIGNATURE") {
-      text = handleFileUploadField(field);
-    } else if (fieldType === "MATRIX") {
-      text = hanldeMatrixField(field);
-    } else {
-      text = field.value.toString();
+    switch (fieldType) {
+      case "MULTIPLE_CHOICE":
+      case "CHECKBOXES":
+      case "DROPDOWN":
+      case "MULTI_SELECT":
+      case "RANKING":
+        text = handleChoiceField(field);
+        break;
+      case "FILE_UPLOAD":
+      case "SIGNATURE":
+        text = handleFileUploadField(field);
+        break;
+      case "MATRIX":
+        text = hanldeMatrixField(field);
+        break;
+      default:
+        text = field.value.toString();
+        break;
     }
 
     newFormData[label] = text;
