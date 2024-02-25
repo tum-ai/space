@@ -3,7 +3,6 @@
     "target": "es2017",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
-    "checkJs": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "noEmit": true,
@@ -14,7 +13,6 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
-    "noUncheckedIndexedAccess": true,
     "baseUrl": ".",
     "paths": {
       "@styles/*": ["./styles/*"],
@@ -25,7 +23,12 @@
       "@hooks/*": ["./hooks/*"],
       "@config/*": ["./config/*"]
     },
-    "strict": false,
+
+    /* Strictness */
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "checkJs": true,
+
     "plugins": [
       {
         "name": "next"
