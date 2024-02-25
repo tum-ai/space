@@ -16,6 +16,7 @@ import {
   FormMessage,
 } from "@components/ui/form";
 import axios from "axios";
+import { toast } from "sonner";
 
 export const LoginForm = () => {
   const router = useRouter();
@@ -40,12 +41,7 @@ export const LoginForm = () => {
   });
 
   const onSubmit = async (values: z.infer<typeof registerFormSchema>) => {
-    await axios.post("/api/auth/signup", {
-      body: {
-        email: values.email,
-        password: values.password,
-      },
-    });
+    const id = toast.loading("Logging in...");
     const signInData = await signIn("credentials", {
       email: values.email,
       password: values.password,
@@ -55,6 +51,7 @@ export const LoginForm = () => {
     if (signInData?.error) {
       console.log(signInData.error);
     } else {
+      toast.success("Logged in!", { id });
       return router.push("/profile");
     }
   };
