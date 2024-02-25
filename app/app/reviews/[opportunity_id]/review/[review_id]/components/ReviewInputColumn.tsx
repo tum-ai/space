@@ -12,11 +12,17 @@ export default function ReviewInputColumn({ questions, handler }) {
     <div className="flex h-[42rem] flex-col gap-4 overflow-y-auto rounded-md border-2 border-slate-600 p-4">
       {questions.map((question: Question) => {
         if ("options" in question) {
-          return <SelectCard data={question} handler={handler} />;
+          return (
+            <SelectCard data={question} handler={handler} key={question.id} />
+          );
         } else if (typeof question.answer === "string") {
-          return <InputCard data={question} handler={handler} />;
+          return (
+            <InputCard data={question} handler={handler} key={question.id} />
+          );
         } else if (typeof question.answer === "number") {
-          return <SliderCard data={question} handler={handler} />;
+          return (
+            <SliderCard data={question} handler={handler} key={question.id} />
+          );
         }
       })}
     </div>

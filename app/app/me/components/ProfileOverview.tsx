@@ -163,7 +163,7 @@ function ContentList({ data }) {
   return (
     <div className="flex flex-col gap-3">
       {Object.entries(data).map(([iKey, iVal]) => (
-        <div className="grid grid-cols-2">
+        <div className="grid grid-cols-2" key={`${iKey}-${iVal}`}>
           <p className="text-gray-400">{formatKey(iKey)}</p>
           <p>
             {iVal instanceof Date ? iVal.toLocaleDateString() : String(iVal)}

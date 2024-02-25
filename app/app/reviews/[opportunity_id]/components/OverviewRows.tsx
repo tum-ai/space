@@ -34,6 +34,7 @@ function OverviewRows({ data }: OverviewRowsProps) {
     <div className="flex flex-col space-y-4">
       {Object.entries(data).map(([id, vals]) => (
         <Row
+          key={id}
           id={id}
           name={vals.firstName + " " + vals.lastName}
           phase={vals.phase}
