@@ -26,7 +26,7 @@ import {
 
 import { columns } from "./Columns";
 import LoadingWheel from "@components/LoadingWheel";
-import { getProfileData } from "@lib/retrievals";
+import { getProfileData } from "@services/membershipService";
 
 export function DataTable() {
   const [data, setData] = React.useState([]);

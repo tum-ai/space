@@ -16,3 +16,5 @@ const globalForPrisma = globalThis as unknown as {
 export const db = globalForPrisma.prisma ?? createPrismaClient();
 
 if (env.NEXT_PUBLIC_VERCEL_ENV !== "production") globalForPrisma.prisma = db;
+
+export default db;

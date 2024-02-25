@@ -13,7 +13,7 @@ import {
   getRolesMap,
   getPositionsMap,
   getDepartmentsMap,
-} from "@lib/retrievals";
+} from "@services/membershipService";
 import DataTableEditDialog from "./DataTableEditDialog";
 
 interface DataTableToolbarProps<TData> {
@@ -98,9 +98,7 @@ export function DataTableToolbar<TData>({
         {table.getColumn("currentDepartmentPosition") && (
           <DataTableFacetedFilter
             column={table.getColumn("currentDepartmentPosition")}
-            title={
-              table.getColumn("currentDepartmentPosition").columnDef.label
-            }
+            title={table.getColumn("currentDepartmentPosition").columnDef.label}
             options={positions}
           />
         )}

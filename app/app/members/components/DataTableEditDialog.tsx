@@ -24,7 +24,7 @@ import {
   createMembership,
   updateProfile,
   deleteMembership,
-} from "@lib/retrievals";
+} from "@services/membershipService";
 import { AxiosResponse } from "axios";
 import {
   Card,
@@ -379,7 +379,7 @@ export default function DataTableEditDialog({ rows, tableData }) {
                                 </SelectTrigger>
                                 <SelectContent>
                                   <SelectGroup>
-                                    {roles.map((role) => (
+                                    {roles?.map((role) => (
                                       <SelectItem
                                         key={role.label}
                                         value={role.value}
