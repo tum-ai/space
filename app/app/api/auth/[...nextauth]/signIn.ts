@@ -71,20 +71,38 @@ async function persistUser(profile, prisma): Promise<User> {
     date_email_verified: emailVerifiedTimestamp,
   } = profile;
 
-  return await prisma.user
-    .create({
-      data: {
-        email,
-        firstName,
-        lastName,
-        image,
-        emailVerified: new Date(emailVerifiedTimestamp * 1000),
-        userRoles: { connect: [{ name: "member" }] },
-      },
-    })
-    .catch((error) => {
-      throw new Error("Failed to persist user:\n", error);
+  const defaultRole = "member";
+
+  let role = await prisma.userRole.findUnique({
+    where: { name: defaultRole },
+  });
+
+  if (!role) {
+    role = await prisma.userRole.create({
+      data: { name: defaultRole },
     });
+  }
+
+  const newUser = await prisma.user.create({
+    data: {
+      email,
+      firstName,
+      lastName,
+      image,
+      emailVerified: new Date(emailVerifiedTimestamp * 1000),
+      userToUserRoles: {
+        create: [
+          {
+            role: {
+              connect: { name: defaultRole },
+            },
+          },
+        ],
+      },
+    },
+  });
+
+  return await newUser;
 }
 
 /**
@@ -197,20 +215,16 @@ export async function signInCred({ credentials, account }): Promise<boolean> {
  * @see {@link https://www.prisma.io/docs}
  */
 async function findRoles(id: string): Promise<string[]> {
-  const rolesOfUser = await prisma.user
-    .findUnique({
-      where: {
-        id: id,
-      },
-      select: {
-        userRoles: { select: { name: true } },
-      },
-    })
-    .catch((error) => {
-      throw new Error("Failed to persist account:\n", error);
-    });
+  const rolesOfUser = await prisma.userToUserRole.findMany({
+    where: {
+      userId: id,
+    },
+    select: {
+      roleId: true,
+    },
+  });
 
-  return rolesOfUser.userRoles.map((role) => role.name);
+  return rolesOfUser.map((object) => object.roleId);
 }
 
 /**
@@ -258,5 +272,6 @@ export async function createNewSession({ session, token }): Promise<Session> {
       "Unable to find user associated with this session. See error:\n" + error,
     );
   }
+
   return session;
 }

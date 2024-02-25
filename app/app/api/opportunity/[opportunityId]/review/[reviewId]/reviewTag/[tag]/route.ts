@@ -3,7 +3,7 @@ import { validateReviewTagRequest } from "../route";
 
 /**
  * Validates the existence of an opportunity and a review, then fetches the ID of a given tag.
- * 
+ *
  * @param {number} opportunityId - The ID of the opportunity to validate.
  * @param {number} reviewId - The ID of the review to validate.
  * @param {string} tagName - The name of the tag to fetch the ID for.
@@ -11,7 +11,10 @@ import { validateReviewTagRequest } from "../route";
  * @throws {Error} If the opportunity, review, or tag does not exist.
  */
 async function validateAndFetchTagId(opportunityId, reviewId, tagName) {
-  const isValid = await validateReviewTagRequest(parseInt(opportunityId), parseInt(reviewId));
+  const isValid = await validateReviewTagRequest(
+    parseInt(opportunityId),
+    parseInt(reviewId),
+  );
   if (!isValid) {
     throw new Error("Invalid opportunity ID or review ID.");
   }
@@ -27,16 +30,17 @@ async function validateAndFetchTagId(opportunityId, reviewId, tagName) {
   });
 
   if (!tag) {
-    throw new Error(`Tag with name '${tagName}' not found for opportunity ID ${opportunityId}.`);
+    throw new Error(
+      `Tag with name '${tagName}' not found for opportunity ID ${opportunityId}.`,
+    );
   }
 
   return tag.id;
 }
 
-
 /**
  * GET opportunity/[opportunityId]/review/[reviewId]/ReviewTag/[tag]
- * 
+ *
  * Get a ReviewTag for a specific review
  *
  * @param NextRequest request
@@ -63,7 +67,10 @@ export const GET = async (
     });
 
     if (!reviewTag) {
-      return NextResponse.json({ Error: "Review tag not found." }, { status: 404 });
+      return NextResponse.json(
+        { Error: "Review tag not found." },
+        { status: 404 },
+      );
     }
 
     return NextResponse.json(reviewTag, { status: 200 });
@@ -73,10 +80,9 @@ export const GET = async (
   }
 };
 
-
 /**
  * UPDATE opportunity/[opportunityId]/review/[reviewId]/ReviewTag/[tag]
- * 
+ *
  * Update the tag of a ReviewTag for a specific review
  *
  * @param NextRequest request
@@ -95,7 +101,10 @@ export const PUT = async (
     const { newTagId, newReviewId } = await request.json();
 
     if (!newTagId || !newReviewId) {
-      return NextResponse.json({ Error: "New tag ID and review ID are required." }, { status: 400 });
+      return NextResponse.json(
+        { Error: "New tag ID and review ID are required." },
+        { status: 400 },
+      );
     }
 
     const updateResult = await prisma.reviewTag.updateMany({
@@ -110,22 +119,27 @@ export const PUT = async (
     });
 
     if (updateResult.count === 0) {
-      return NextResponse.json({ Error: "No review tag was updated, check your IDs." }, { status: 404 });
+      return NextResponse.json(
+        { Error: "No review tag was updated, check your IDs." },
+        { status: 404 },
+      );
     }
 
-    return NextResponse.json({ Message: "Review tag updated successfully." }, { status: 200 });
+    return NextResponse.json(
+      { Message: "Review tag updated successfully." },
+      { status: 200 },
+    );
   } catch (error) {
     console.error(error);
     return NextResponse.json({ Error: error.message }, { status: 500 });
   }
 };
 
-
 /**
  * DELETE opportunity/[opportunityId]/review/[reviewId]/ReviewTag/[tag]
  *
  * Removes the ReviewTag for a specific Review
- * 
+ *
  * @param NextRequest request
  * @param number opportunityId
  * @param number reviewId
@@ -148,10 +162,15 @@ export const DELETE = async (
       },
     });
 
-    return NextResponse.json({ Message: "Review tag deleted successfully." }, { status: 200 });
+    return NextResponse.json(
+      { Message: "Review tag deleted successfully." },
+      { status: 200 },
+    );
   } catch (error) {
     console.error(error);
-    return NextResponse.json({ Error: error.message }, { status: error.message.includes("not found") ? 404 : 500 });
+    return NextResponse.json(
+      { Error: error.message },
+      { status: error.message.includes("not found") ? 404 : 500 },
+    );
   }
 };
-

@@ -1,4 +1,4 @@
-import { Prisma } from '@prisma/client'
+import { Prisma } from "@prisma/client";
 import { DepartmentPosition } from "@prisma/client";
 import axios from "axios";
 
@@ -100,7 +100,10 @@ export async function updateProfile(id: string, data: Prisma.UserUpdateInput) {
   }
 }
 
-export async function updateMembership(departmentId: number, data: Prisma.DepartmentMembershipUpdateInput) {
+export async function updateMembership(
+  departmentId: number,
+  data: Prisma.DepartmentMembershipUpdateInput,
+) {
   try {
     let response = await axios.put(
       `/api/departmentMemberships/${departmentId}`,
@@ -112,7 +115,9 @@ export async function updateMembership(departmentId: number, data: Prisma.Depart
   }
 }
 
-export async function createMembership(data: Prisma.DepartmentMembershipUpdateInput) {
+export async function createMembership(
+  data: Prisma.DepartmentMembershipUpdateInput,
+) {
   try {
     const response = await axios.post(`/api/departmentMemberships`, data);
     return response;
@@ -145,7 +150,9 @@ export async function deleteMembership(membershipId: number) {
 
 async function deleteUserToUserRole(user_id: string, role_id: string) {
   try {
-    const response = await axios.get(`/api/userToUserRoles/userId/${user_id}/roleId/${role_id}`);
+    const response = await axios.get(
+      `/api/userToUserRoles/userId/${user_id}/roleId/${role_id}`,
+    );
     return response;
   } catch (error) {
     throw new Error(error);
