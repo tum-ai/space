@@ -2,7 +2,7 @@ import Header from "@components/Header";
 import "@styles/globals.css";
 import { ThemeProvider } from "@components/theme-provider";
 import { Toaster } from "@components/ui/sonner";
-import { TanstackProvider } from "@providers/tanstackProvider";
+import { TRPCReactProvider } from "trpc/react";
 
 interface Props {
   children: React.ReactNode;
@@ -12,7 +12,7 @@ export default function RootLayout({ children }: Props) {
   return (
     <html lang="en">
       <body>
-        <TanstackProvider>
+        <TRPCReactProvider>
           <ThemeProvider
             attribute="class"
             defaultTheme="system"
@@ -23,7 +23,7 @@ export default function RootLayout({ children }: Props) {
             <main>{children}</main>
             <Toaster />
           </ThemeProvider>
-        </TanstackProvider>
+        </TRPCReactProvider>
       </body>
     </html>
   );

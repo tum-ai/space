@@ -14,8 +14,6 @@ export async function GET(
     profile = await prisma.user.findUnique({
       select: {
         id: true,
-        firstName: true,
-        lastName: true,
         email: true,
         image: true,
         departmentMemberships: {

@@ -24,11 +24,13 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@components/ui/popover";
-import { CalendarIcon } from "lucide-react";
+import { CalendarIcon, ChevronRightIcon } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@lib/utils";
 import { Calendar } from "@components/ui/calendar";
 import { Separator } from "@components/ui/separator";
+import { api } from "trpc/react";
+import { toast } from "sonner";
 
 const mockAdmins = [
   {
@@ -89,12 +91,12 @@ export default function CreateOpportunity() {
   const formSchema = z
     .object({
       tallyId: z.string(),
-      name: z.string(),
+      title: z.string(),
       description: z.string(),
-      begin: z.date(),
+      start: z.date(),
       end: z.date(),
     })
-    .refine((data) => data.begin < data.end, {
+    .refine((data) => data.start < data.end, {
       message: "End must be later than begin",
       path: ["end"],
     });
@@ -103,15 +105,23 @@ export default function CreateOpportunity() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       tallyId: undefined,
-      name: undefined,
-      begin: undefined,
+      title: undefined,
+      start: undefined,
       end: undefined,
       description: undefined,
     },
   });
 
+  const createOpportunity = api.opportunity.create.useMutation();
+
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    console.log(values); //TODO: actually submit via API
+    const id = toast.loading("Creating opportunity");
+    try {
+      await createOpportunity.mutateAsync(values);
+      toast.success("Opportunity created", { id });
+    } catch (error) {
+      toast.error("Failed to create opportunity", { id });
+    }
   };
 
   return (
@@ -125,139 +135,142 @@ export default function CreateOpportunity() {
       </div>
 
       <Form {...form}>
-        <form className="grid grid-cols-2 gap-4">
-          <FormField
-            control={form.control}
-            name="tallyId"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Tally Id</FormLabel>
-                <FormControl>
-                  <Input placeholder="venture-campaign-ws-2023" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="name"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Opportunity name</FormLabel>
-                <FormControl>
-                  <Input placeholder="Venture campaign WS2023" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+        <form onSubmit={void form.handleSubmit(onSubmit)}>
+          <div className="grid grid-cols-2 gap-4">
+            <FormField
+              control={form.control}
+              name="tallyId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Tally Id</FormLabel>
+                  <FormControl>
+                    <Input placeholder="venture-campaign-ws-2023" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="title"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Opportunity title</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Venture campaign WS2023" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-          <FormField
-            control={form.control}
-            name="begin"
-            render={({ field }) => (
-              <FormItem className="flex flex-col">
-                <FormLabel>Begin</FormLabel>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <FormControl>
-                      <Button
-                        variant={"outline"}
-                        className={cn(
-                          "w-full pl-3 text-left font-normal",
-                          !field.value && "text-muted-foreground",
-                        )}
-                      >
-                        {field.value ? (
-                          format(field.value, "PPP")
-                        ) : (
-                          <span>Pick a date</span>
-                        )}
-                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                      </Button>
-                    </FormControl>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
-                    <Calendar
-                      mode="single"
-                      selected={field.value}
-                      onSelect={field.onChange}
-                      disabled={(date) =>
-                        date > new Date() || date < new Date("1900-01-01")
-                      }
-                      initialFocus
-                    />
-                  </PopoverContent>
-                </Popover>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+            <FormField
+              control={form.control}
+              name="start"
+              render={({ field }) => (
+                <FormItem className="flex flex-col">
+                  <FormLabel>Begin</FormLabel>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <FormControl>
+                        <Button
+                          variant={"outline"}
+                          className={cn(
+                            "w-full pl-3 text-left font-normal",
+                            !field.value && "text-muted-foreground",
+                          )}
+                        >
+                          {field.value ? (
+                            format(field.value, "PPP")
+                          ) : (
+                            <span>Pick a date</span>
+                          )}
+                          <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                        </Button>
+                      </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={field.value}
+                        onSelect={field.onChange}
+                        disabled={(date) =>
+                          date > new Date() || date < new Date("1900-01-01")
+                        }
+                        initialFocus
+                      />
+                    </PopoverContent>
+                  </Popover>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-          <FormField
-            control={form.control}
-            name="end"
-            render={({ field }) => (
-              <FormItem className="flex flex-col">
-                <FormLabel>End</FormLabel>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <FormControl>
-                      <Button
-                        variant={"outline"}
-                        className={cn(
-                          "w-full pl-3 text-left font-normal",
-                          !field.value && "text-muted-foreground",
-                        )}
-                      >
-                        {field.value ? (
-                          format(field.value, "PPP")
-                        ) : (
-                          <span>Pick a date</span>
-                        )}
-                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                      </Button>
-                    </FormControl>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
-                    <Calendar
-                      mode="single"
-                      selected={field.value}
-                      onSelect={field.onChange}
-                      disabled={(date) =>
-                        date < new Date() || date < new Date("1900-01-01")
-                      }
-                      initialFocus
-                    />
-                  </PopoverContent>
-                </Popover>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+            <FormField
+              control={form.control}
+              name="end"
+              render={({ field }) => (
+                <FormItem className="flex flex-col">
+                  <FormLabel>End</FormLabel>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <FormControl>
+                        <Button
+                          variant={"outline"}
+                          className={cn(
+                            "w-full pl-3 text-left font-normal",
+                            !field.value && "text-muted-foreground",
+                          )}
+                        >
+                          {field.value ? (
+                            format(field.value, "PPP")
+                          ) : (
+                            <span>Pick a date</span>
+                          )}
+                          <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                        </Button>
+                      </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={field.value}
+                        onSelect={field.onChange}
+                        disabled={(date) =>
+                          date < new Date() || date < new Date("1900-01-01")
+                        }
+                        initialFocus
+                      />
+                    </PopoverContent>
+                  </Popover>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-          <FormField
-            control={form.control}
-            name="description"
-            render={({ field }) => (
-              <FormItem className="col-span-2">
-                <FormLabel>Description</FormLabel>
-                <FormControl>
-                  <Input placeholder="Venture campaign WS2023" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+            <FormField
+              control={form.control}
+              name="description"
+              render={({ field }) => (
+                <FormItem className="col-span-2">
+                  <FormLabel>Description</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Venture campaign WS2023" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
 
           <Separator className="col-span-2" />
 
           <MemberSection />
 
-          <div>
-            <Button className="justify-self-end" type="submit">
+          <div className="mt-8 flex w-full justify-end">
+            <Button type="submit">
               Next
+              <ChevronRightIcon className="ml-1" />
             </Button>
           </div>
         </form>

@@ -110,17 +110,17 @@ model DepartmentMembership {
 }
 
 model Opportunity {
-  id               Int                 @id @default(autoincrement())
-  title            String
-  description      String
-  configuration    Json
-  opportunityStart DateTime
-  opportunityEnd   DateTime?
-  createdAt        DateTime            @default(now())
-  updatedAt        DateTime            @updatedAt
-  users            UserOnOpportunity[]
-  applications     Application[]
-  tags             Tag[]
+  id            Int                 @id @default(autoincrement())
+  title         String
+  description   String
+  configuration Json
+  start         DateTime
+  end           DateTime?
+  createdAt     DateTime            @default(now())
+  updatedAt     DateTime            @updatedAt
+  users         UserOnOpportunity[]
+  applications  Application[]
+  tags          Tag[]
 }
 
 model UserOnOpportunity {
