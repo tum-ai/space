@@ -1,24 +1,17 @@
 "use client";
 import OpportunityCard from "./components/opportunityCard";
-import { useState } from "react";
 import { Button } from "@components/ui/button";
-import { Section } from "@components/Section";
 import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
-import { Opportunity } from "@prisma/client";
-import { is } from "date-fns/locale";
 import LoadingWheel from "@components/LoadingWheel";
 import { fetchOpportunities } from "../../lib/services/opportunityService";
 import { getReviewCounts } from "@lib/services/reviewService";
 
-export default function Main() {
-  const {
-    data: opportunities,
-    isLoading,
-    isError,
-    error,
-  } = useQuery(["opportunities"], fetchOpportunities);
+export default function OpportunitiesPage() {
+  const { data: opportunities, isLoading } = useQuery(
+    ["opportunities"],
+    fetchOpportunities,
+  );
 
   const ids = opportunities?.map((item) => item.id);
 
@@ -31,15 +24,19 @@ export default function Main() {
   );
 
   return (
-    <Section>
+    <div className="h-full flex-1 flex-col space-y-8 p-8 md:flex">
       <div className="flex flex-col gap-8">
         <div className="flex justify-between">
-          <h1 className="text-5xl font-thin">Opportunities</h1>
+          <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
+            Opportunities
+          </h1>
           <Link href={"./opportunities/create"}>
             <Button>Create Opportunity</Button>
           </Link>
         </div>
+
         {isLoading && <LoadingWheel />}
+
         <div className="grid grid-cols-3 gap-4">
           {opportunities?.map((item, index) => {
             return (
@@ -57,6 +54,6 @@ export default function Main() {
           })}
         </div>
       </div>
-    </Section>
+    </div>
   );
 }

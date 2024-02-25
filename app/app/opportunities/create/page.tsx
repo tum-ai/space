@@ -115,10 +115,13 @@ export default function CreateOpportunity() {
   };
 
   return (
-    <div className="mx-4 mb-12 flex flex-col gap-8 self-center md:mx-24">
+    <div className="h-full flex-1 flex-col space-y-8 p-8 md:flex">
       <div className="flex flex-col gap-3">
-        <h1 className="text-6xl">Opportunity</h1>
-        <p>Configure a new opportunity</p>
+        <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
+          Create new opportunity
+        </h1>
+
+        <p className="text-muted-foreground">Configure a new opportunity</p>
       </div>
 
       <Form {...form}>
