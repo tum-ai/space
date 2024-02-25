@@ -30,10 +30,10 @@ export async function POST(req: Request) {
     const { password: newUserPassword, ...rest } = newUser;
 
     return NextResponse.json(
-      { user: rest, message: "Great success!" },
+      { user: rest, message: "Success" },
       { status: 201 },
     );
   } catch (error) {
-    return NextResponse.json({ message: "Error!" }, { status: 500 });
+    return NextResponse.json({ message: "Error", error }, { status: 500 });
   }
 }

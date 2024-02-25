@@ -3,9 +3,9 @@ import NavBar from "@components/NavBar";
 import "@styles/globals.css";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createContext } from "react";
-import { Toaster } from "react-hot-toast";
 import { useStores } from "../providers/StoreProvider";
 import { ThemeProvider } from "@components/theme-provider";
+import { Toaster } from "@components/ui/sonner";
 
 const StoresContext = createContext(null);
 const queryClient = new QueryClient();
