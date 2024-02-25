@@ -1,18 +1,35 @@
 "use client";
 
-import Input from "@components/Input";
+import { Input } from "@components/ui/input";
 import { Button } from "@components/ui/button";
 import { Cross1Icon, QuestionMarkCircledIcon } from "@radix-ui/react-icons";
 import Select from "@components/Select";
-import { Field, Form, Formik } from "formik";
-import * as Yup from "yup";
 import { MemberBar, AddMemberBar } from "../components/MemberBar";
 import Dialog from "@components/Dialog";
 import { useState } from "react";
-import ErrorMessage from "@components/ErrorMessage";
 import Textarea from "@components/Textarea";
 import Tooltip from "@components/Tooltip";
-import { DatePicker } from "@components/DatePicker";
+import { useForm } from "react-hook-form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@components/ui/form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@components/ui/popover";
+import { CalendarIcon } from "lucide-react";
+import { format } from "date-fns";
+import { cn } from "@lib/utils";
+import { Calendar } from "@components/ui/calendar";
+import { Separator } from "@components/ui/separator";
 
 const mockAdmins = [
   {
@@ -70,123 +87,179 @@ enum Roles {
 }
 
 export default function CreateOpportunity() {
+  const formSchema = z
+    .object({
+      tallyId: z.string(),
+      name: z.string(),
+      description: z.string(),
+      begin: z.date(),
+      end: z.date(),
+    })
+    .refine((data) => data.begin < data.end, {
+      message: "End must be later than begin",
+      path: ["end"],
+    });
+
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      tallyId: undefined,
+      name: undefined,
+      begin: undefined,
+      end: undefined,
+      description: undefined,
+    },
+  });
+
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    console.log(values); //TODO: actually submit via API
+  };
+
   return (
-    // center element
-    <div className="mx-0 mx-4 mb-12 flex flex-col gap-8 self-center md:mx-24">
+    <div className="mx-4 mb-12 flex flex-col gap-8 self-center md:mx-24">
       <div className="flex flex-col gap-3">
         <h1 className="text-6xl">Opportunity</h1>
         <p>Configure a new opportunity</p>
       </div>
-      {/* TODO: Create placeholder logic */}
-      <div className="text-lg">General information {"->"} Define steps</div>
-      {/* Setup form */}
-      <Formik
-        validationSchema={Yup.object().shape({
-          tallyId: Yup.string(),
-          name: Yup.string().required(),
-          begin: Yup.date().required(),
-          end: Yup.date().test(
-            "is-greater",
-            "End date must be later than begin date",
-            function (value) {
-              const beginDate = this.parent.begin;
-              if (!value || !beginDate) return true;
-              return value >= beginDate;
-            },
-          ),
-          description: Yup.string(),
-        })}
-        initialValues={{
-          tallyId: undefined,
-          name: undefined,
-          begin: undefined,
-          end: undefined,
-          description: undefined,
-        }}
-        onSubmit={async (values) => {
-          console.log(values); //TODO: actually submit via API
-        }}
-      >
-        {({ errors, touched, setValues, values }) => (
-          <Form className="flex flex-col gap-4">
-            <div>
-              <Field
-                as={Input}
-                label="Tally ID"
-                name="tallyId"
-                placeholder="venture-campaign-ws-2023"
-                state={touched.tallyId && errors.tallyId && "error"}
-                fullWidth
-              />
-              <ErrorMessage name="tallyId" />
-            </div>
-            <div>
-              <Field
-                as={Input}
-                label="Opportunity name"
-                name="name"
-                placeholder="Venture campaign WS2023"
-                state={touched.name && errors.name && "error"}
-                fullWidth
-              />
-              <ErrorMessage name="name" />
-            </div>
-            <div className="flex flex-col gap-4 md:flex-row">
-              <div className="flex-1">
-                <DatePicker
-                  label="Begin"
-                  placeholder="Pick a date"
-                  state={
-                    (touched.begin && errors.begin && "error") || "default"
-                  }
-                  fullWidth
-                  value={values.begin}
-                  setValue={(value: Date) =>
-                    setValues({ ...values, begin: value })
-                  }
-                />
-                <ErrorMessage name="begin" />
-              </div>
-              <div className="flex-1">
-                <DatePicker
-                  label="End"
-                  placeholder="Pick a date"
-                  state={
-                    (touched.begin && errors.begin && "error") || "default"
-                  }
-                  fullWidth
-                  value={values.end}
-                  setValue={(value: Date) =>
-                    setValues({ ...values, end: value })
-                  }
-                />
-                <ErrorMessage name="end" />
-              </div>
-            </div>
-            <div>
-              <Field
-                as={Textarea}
-                label="Description"
-                variant="outlined"
-                name="description"
-                placeholder="Venture campaign for the winter semester 2023 in partnership with OpenAI."
-                state={touched.description && errors.description && "error"}
-                fullWidth
-              />
-              <ErrorMessage name="description" />
-            </div>
-            <hr className="col-span-2" />
 
-            <MemberSection />
+      <Form {...form}>
+        <form className="grid grid-cols-2 gap-4">
+          <FormField
+            control={form.control}
+            name="tallyId"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Tally Id</FormLabel>
+                <FormControl>
+                  <Input placeholder="venture-campaign-ws-2023" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="name"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Opportunity name</FormLabel>
+                <FormControl>
+                  <Input placeholder="Venture campaign WS2023" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-            <div className="grid w-full">
-              <Button className="justify-self-end" type="submit">
-                Next
-              </Button>
-            </div>
-          </Form>
-        )}
-      </Formik>
+          <FormField
+            control={form.control}
+            name="begin"
+            render={({ field }) => (
+              <FormItem className="flex flex-col">
+                <FormLabel>Begin</FormLabel>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <FormControl>
+                      <Button
+                        variant={"outline"}
+                        className={cn(
+                          "w-full pl-3 text-left font-normal",
+                          !field.value && "text-muted-foreground",
+                        )}
+                      >
+                        {field.value ? (
+                          format(field.value, "PPP")
+                        ) : (
+                          <span>Pick a date</span>
+                        )}
+                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                      </Button>
+                    </FormControl>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={field.value}
+                      onSelect={field.onChange}
+                      disabled={(date) =>
+                        date > new Date() || date < new Date("1900-01-01")
+                      }
+                      initialFocus
+                    />
+                  </PopoverContent>
+                </Popover>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="end"
+            render={({ field }) => (
+              <FormItem className="flex flex-col">
+                <FormLabel>End</FormLabel>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <FormControl>
+                      <Button
+                        variant={"outline"}
+                        className={cn(
+                          "w-full pl-3 text-left font-normal",
+                          !field.value && "text-muted-foreground",
+                        )}
+                      >
+                        {field.value ? (
+                          format(field.value, "PPP")
+                        ) : (
+                          <span>Pick a date</span>
+                        )}
+                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                      </Button>
+                    </FormControl>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={field.value}
+                      onSelect={field.onChange}
+                      disabled={(date) =>
+                        date > new Date() || date < new Date("1900-01-01")
+                      }
+                      initialFocus
+                    />
+                  </PopoverContent>
+                </Popover>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="description"
+            render={({ field }) => (
+              <FormItem className="col-span-2">
+                <FormLabel>Description</FormLabel>
+                <FormControl>
+                  <Input placeholder="Venture campaign WS2023" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <Separator className="col-span-2" />
+
+          <MemberSection />
+
+          <div>
+            <Button className="justify-self-end" type="submit">
+              Next
+            </Button>
+          </div>
+        </form>
+      </Form>
     </div>
   );
 }
