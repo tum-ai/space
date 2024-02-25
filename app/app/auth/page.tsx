@@ -15,7 +15,7 @@ const Auth = () => {
       <div className="mx-auto max-w-lg space-y-8">
         {isDevelopment && <LoginForm />}
         {!isDevelopment && (
-          <Button className="w-full" onClick={() => signIn("slack")}>
+          <Button className="w-full" onClick={() => void signIn("slack")}>
             <SlackLogo size={20} className="mr-2" /> Log in with Slack
           </Button>
         )}

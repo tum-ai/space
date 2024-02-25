@@ -1,6 +1,6 @@
 "use client";
 import { Button } from "@components/ui/button";
-import Input from "@components/Input";
+import { Input } from "@components/ui/input";
 import { Section } from "@components/Section";
 import { useRouter } from "next/navigation";
 import axios from "axios";
