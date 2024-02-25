@@ -131,9 +131,7 @@ export const columns: ExtendedColumnDef<User>[] = [
       <DataTableColumnHeader column={column} title={column.columnDef.label} />
     ),
     filterFn: (row, id, filterValues) => {
-      const aRoles: UserRole[] = row.original.userToUserRoles.map(
-        (role) => role.role,
-      );
+      const aRoles: UserRole[] = row.original.role;
       for (let i = 0; i < filterValues.length; i++) {
         const filterValue = filterValues[i].toLowerCase();
         if (!aRoles) {
@@ -150,10 +148,8 @@ export const columns: ExtendedColumnDef<User>[] = [
     },
     cell: ({ row }) => {
       const user = row.original;
-      const roleNames = user.userToUserRoles.map((role) => {
-        return role.role.name;
-      });
-      const value = roleNames.join(", ");
+      const roleNames = user.role;
+      const value = roleNames;
       return (
         <div className="lowercase">{value ? value.replace(/_/g, " ") : ""}</div>
       );

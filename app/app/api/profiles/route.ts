@@ -11,15 +11,6 @@ export async function GET(req: NextRequest) {
         firstName: true,
         lastName: true,
         email: true,
-        userToUserRoles: {
-          select: {
-            role: {
-              select: {
-                name: true,
-              },
-            },
-          },
-        },
         image: true,
         departmentMemberships: {
           select: {

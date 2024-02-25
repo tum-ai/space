@@ -1,6 +1,7 @@
 import { User } from "@prisma/client";
 import { Session } from "next-auth";
 import { compare } from "bcrypt";
+import db from "database/db";
 
 /**
  *  Checks if the user already exists
@@ -12,7 +13,7 @@ import { compare } from "bcrypt";
  * @see {@link https://www.prisma.io/docs}
  */
 async function checkUserExistence(email: string): Promise<boolean> {
-  const potentialUser = await prisma.user
+  const potentialUser = await db.user
     .findFirst({
       where: {
         email: email,
@@ -39,7 +40,7 @@ async function checkUsersCredentials(
   email: string,
   password: string,
 ): Promise<boolean> {
-  const existingUser = await prisma.user.findUnique({
+  const existingUser = await db.user.findUnique({
     where: { email: email },
   });
 
@@ -62,7 +63,7 @@ async function checkUsersCredentials(
  *
  * @see {@link https://www.prisma.io/docs} {@link https://www.databricks.com/glossary/acid-transactions}
  */
-async function persistUser(profile, prisma): Promise<User> {
+async function persistUser(profile): Promise<User> {
   const {
     email,
     given_name: firstName,
@@ -73,32 +74,23 @@ async function persistUser(profile, prisma): Promise<User> {
 
   const defaultRole = "member";
 
-  let role = await prisma.userRole.findUnique({
+  let role = await db.userRole.findUnique({
     where: { name: defaultRole },
   });
 
   if (!role) {
-    role = await prisma.userRole.create({
+    role = await db.userRole.create({
       data: { name: defaultRole },
     });
   }
 
-  const newUser = await prisma.user.create({
+  const newUser = await db.user.create({
     data: {
       email,
       firstName,
       lastName,
       image,
       emailVerified: new Date(emailVerifiedTimestamp * 1000),
-      userToUserRoles: {
-        create: [
-          {
-            role: {
-              connect: { name: defaultRole },
-            },
-          },
-        ],
-      },
     },
   });
 
@@ -116,11 +108,7 @@ async function persistUser(profile, prisma): Promise<User> {
  *
  * @see {@link https://www.prisma.io/docs} {@link https://www.databricks.com/glossary/acid-transactions}
  */
-async function persistAccount(
-  account,
-  persistedUser,
-  prisma,
-): Promise<boolean> {
+async function persistAccount(account, persistedUser: User): Promise<boolean> {
   const {
     id_token: idToken,
     type,
@@ -132,7 +120,7 @@ async function persistAccount(
     token_type: tokenType,
   } = account;
 
-  await prisma.account
+  await db.account
     .create({
       data: {
         userId: persistedUser.id,
@@ -165,7 +153,7 @@ async function persistAccount(
  * @see {@link https://github.com/nextauthjs/next-auth/blob/v4/packages/next-auth/src/providers/slack.ts}
  */
 export async function signIn({ profile, account }): Promise<boolean> {
-  return await prisma.$transaction(async (prisma) => {
+  return await db.$transaction(async (prisma) => {
     const isUserPersisted = await checkUserExistence(profile.email);
 
     if (!isUserPersisted) {
@@ -188,7 +176,7 @@ export async function signIn({ profile, account }): Promise<boolean> {
  * @see {@link https://github.com/nextauthjs/next-auth/blob/v4/packages/next-auth/src/providers/slack.ts}
  */
 export async function signInCred({ credentials, account }): Promise<boolean> {
-  return await prisma.$transaction(async (prisma) => {
+  return await db.$transaction(async (prisma) => {
     if (credentials.email && credentials.password) {
       const isUserAuthenticated = await checkUsersCredentials(
         credentials.email,
@@ -208,28 +196,6 @@ export async function signInCred({ credentials, account }): Promise<boolean> {
 /**
  *  Modifies the JWT by adding user roles, first/last name, id and images before sending the JWT to the client
  *
- * @param id - The id of the user for which roles should be found
- *
- * @returns Promise of an array of the role names a user possesses
- *
- * @see {@link https://www.prisma.io/docs}
- */
-async function findRoles(id: string): Promise<string[]> {
-  const rolesOfUser = await prisma.userToUserRole.findMany({
-    where: {
-      userId: id,
-    },
-    select: {
-      roleId: true,
-    },
-  });
-
-  return rolesOfUser.map((object) => object.roleId);
-}
-
-/**
- *  Modifies the JWT by adding user roles, first/last name, id and images before sending the JWT to the client
- *
  * @param token - The JWT that is being returned to the client
  * @param user - The authenticated user object that is returned by the provider and used to sign int the JWT
  *
@@ -237,12 +203,18 @@ async function findRoles(id: string): Promise<string[]> {
  * @returns Returns the JWT object for storing encrypted user and session data to authorize requests
  * @see {@link https://next-auth.js.org/configuration/callbacks}
  */
-export async function jwt({ token, user }): Promise<User> {
+export async function jwt({
+  token,
+  user,
+}: {
+  token: any;
+  user: User;
+}): Promise<User> {
   delete token.name;
 
   if (user) {
     try {
-      const roles = await findRoles(user.id);
+      const roles = user.role;
       const { firstName, lastName, id, image } = await user;
       token.user = { firstName, lastName, id, image, roles };
     } catch (error) {

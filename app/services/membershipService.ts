@@ -147,14 +147,3 @@ export async function deleteMembership(membershipId: number) {
     throw new Error(error);
   }
 }
-
-async function deleteUserToUserRole(user_id: string, role_id: string) {
-  try {
-    const response = await axios.get(
-      `/api/userToUserRoles/userId/${user_id}/roleId/${role_id}`,
-    );
-    return response;
-  } catch (error) {
-    throw new Error(error);
-  }
-}

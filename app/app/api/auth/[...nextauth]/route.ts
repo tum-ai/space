@@ -6,6 +6,7 @@ import prisma from "database/db";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { compare } from "bcrypt";
 import { jwt, signIn, createNewSession, signInCred } from "./signIn";
+import { env } from "env.mjs";
 
 export const authOptions: NextAuthOptions = {
   session: {
@@ -18,8 +19,8 @@ export const authOptions: NextAuthOptions = {
   },
   providers: [
     SlackProvider({
-      clientId: process.env.SLACK_CLIENT_ID,
-      clientSecret: process.env.SLACK_CLIENT_SECRET,
+      clientId: env.NEXT_PUBLIC_SLACK_CLIENT_ID,
+      clientSecret: env.NEXT_PUBLIC_SLACK_CLIENT_SECRET,
     }),
     CredentialsProvider({
       name: "Credentials",
@@ -42,23 +43,6 @@ export const authOptions: NextAuthOptions = {
 
         const existingUser = await prisma.user.findUnique({
           where: { email: credentials?.email },
-          include: {
-            userToUserRoles: {
-              select: {
-                role: {
-                  select: {
-                    name: true,
-                    userPermissions: {
-                      select: {
-                        id: true,
-                        name: true,
-                      },
-                    },
-                  },
-                },
-              },
-            },
-          },
         });
 
         if (!existingUser) {
@@ -67,7 +51,7 @@ export const authOptions: NextAuthOptions = {
 
         const passwordMatch = await compare(
           credentials.password,
-          existingUser.password,
+          existingUser.password ?? "",
         );
 
         if (!passwordMatch) {
@@ -79,11 +63,6 @@ export const authOptions: NextAuthOptions = {
           firstName: existingUser.firstName,
           lastName: existingUser.lastName,
           // TODO: add roles and permissions to the user object, jwt and session.
-          // Best practice is to modify the type -> includes the roles and permissions
-          // roles: existingUser.userToUserRoles.map((role) => role.role.name),
-          // permissions: existingUser.userToUserRoles
-          //   .map((role) => role.role.userPermissions)
-          //   .flat(),
           image: existingUser.image,
         };
       },
@@ -91,7 +70,7 @@ export const authOptions: NextAuthOptions = {
   ],
   callbacks: {
     async signIn({ credentials, profile, account }) {
-      if (account.provider === "slack") {
+      if (account?.provider === "slack") {
         return signIn({ profile, account });
       } else {
         return signInCred({ credentials, account });
@@ -108,6 +87,7 @@ export const authOptions: NextAuthOptions = {
   },
 };
 
+// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 const handler = NextAuth(authOptions);
 
 export { handler as GET, handler as POST };

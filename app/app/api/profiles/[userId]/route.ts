@@ -17,15 +17,6 @@ export async function GET(
         firstName: true,
         lastName: true,
         email: true,
-        userToUserRoles: {
-          select: {
-            role: {
-              select: {
-                name: true,
-              },
-            },
-          },
-        },
         image: true,
         departmentMemberships: {
           select: {
