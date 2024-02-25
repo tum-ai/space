@@ -23,7 +23,7 @@ export default function Dashboard({ params }) {
     <Section>
       <div className="flex flex-col gap-8">
         <div className="flex flex-col gap-4">
-          <h1 className="text-6xl font-thin">{opportunity.title}</h1>
+          <h1 className="text-6xl font-thin">{opportunity?.title}</h1>
           <p>ID: {opportunityId}</p>
           <p className="mt-5 text-2xl">General Overview</p>
 
