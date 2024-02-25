@@ -1,4 +1,0 @@
-{
-  "ignorePatterns": [".github"],
-  "extends": ["next/core-web-vitals"]
-}
