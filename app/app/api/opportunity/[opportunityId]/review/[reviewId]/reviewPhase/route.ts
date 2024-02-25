@@ -52,7 +52,7 @@ export const validateReviewPhaseRequest = async (
  * GET opportunity/[opportunityId]/review/[reviewId]/reviewPhase
  *
  * Gets all phases for a review
- * 
+ *
  * @param NextRequest request
  * @param number reviewId
  * @param number opportunityId
@@ -65,12 +65,21 @@ export const GET = async (
   try {
     const reviewIdNum = parseInt(reviewId);
     if (isNaN(reviewIdNum)) {
-      return NextResponse.json({ Error: "Invalid review ID." }, { status: 400 });
+      return NextResponse.json(
+        { Error: "Invalid review ID." },
+        { status: 400 },
+      );
     }
 
-    const isValidReviewPhaseRequest = await validateReviewPhaseRequest(parseInt(opportunityId), reviewIdNum);
+    const isValidReviewPhaseRequest = await validateReviewPhaseRequest(
+      parseInt(opportunityId),
+      reviewIdNum,
+    );
     if (!isValidReviewPhaseRequest) {
-      return NextResponse.json({ Error: "Opportunity or Review does not exist." }, { status: 404 });
+      return NextResponse.json(
+        { Error: "Opportunity or Review does not exist." },
+        { status: 404 },
+      );
     }
 
     const reviewPhases = await prisma.phaseReview.findMany({
@@ -82,7 +91,10 @@ export const GET = async (
     return NextResponse.json(reviewPhases, { status: 200 });
   } catch (error) {
     console.error(error);
-    return NextResponse.json({ Error: "Internal Server Error" }, { status: 500 });
+    return NextResponse.json(
+      { Error: "Internal Server Error" },
+      { status: 500 },
+    );
   }
 };
 
@@ -90,7 +102,7 @@ export const GET = async (
  * POST opportunity/[opportunityId]/review/[reviewId]/reviewPhase
  *
  * Adds a reviewPhase to a particular review
- * 
+ *
  * @param NextRequest request
  * @param number opportunityId
  * @param number reviewId
@@ -107,17 +119,29 @@ export const POST = async (
     const { phase, assigneeId, content } = await request.json();
 
     if (!phase || !assigneeId || !content) {
-      return NextResponse.json({ Error: "Phase, assigneeId, and content are required." }, { status: 400 });
+      return NextResponse.json(
+        { Error: "Phase, assigneeId, and content are required." },
+        { status: 400 },
+      );
     }
 
     const reviewIdNum = parseInt(reviewId);
     if (isNaN(reviewIdNum)) {
-      return NextResponse.json({ Error: "Invalid review ID or assignee ID." }, { status: 400 });
+      return NextResponse.json(
+        { Error: "Invalid review ID or assignee ID." },
+        { status: 400 },
+      );
     }
 
-    const isValidReviewPhaseRequest = await validateReviewPhaseRequest(parseInt(opportunityId), reviewIdNum);
+    const isValidReviewPhaseRequest = await validateReviewPhaseRequest(
+      parseInt(opportunityId),
+      reviewIdNum,
+    );
     if (!isValidReviewPhaseRequest) {
-      return NextResponse.json({ Error: "Opportunity or Review does not exist." }, { status: 404 });
+      return NextResponse.json(
+        { Error: "Opportunity or Review does not exist." },
+        { status: 404 },
+      );
     }
 
     const createReviewPhase = await prisma.phaseReview.create({
@@ -132,7 +156,9 @@ export const POST = async (
     return NextResponse.json(createReviewPhase, { status: 201 }); // Use 201 for created resources
   } catch (error) {
     console.error(error);
-    return NextResponse.json({ Error: "Internal Server Error" }, { status: 500 });
+    return NextResponse.json(
+      { Error: "Internal Server Error" },
+      { status: 500 },
+    );
   }
 };
-

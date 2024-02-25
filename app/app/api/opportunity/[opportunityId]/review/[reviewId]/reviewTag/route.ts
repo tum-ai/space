@@ -41,7 +41,7 @@ export const validateReviewTagRequest = async (
 
 /**
  * GET opportunity/[opportunityId]/review/[reviewId]/reviewTag
- * 
+ *
  * Gets all ReviewTags for this Review
  *
  * @param NextRequest request
@@ -57,9 +57,15 @@ export const GET = async (
     const opportunityIdNum = parseInt(opportunityId);
     const reviewIdNum = parseInt(reviewId);
 
-    const isValidReviewTagRequest = await validateReviewTagRequest(opportunityIdNum, reviewIdNum);
+    const isValidReviewTagRequest = await validateReviewTagRequest(
+      opportunityIdNum,
+      reviewIdNum,
+    );
     if (!isValidReviewTagRequest) {
-      return NextResponse.json({ Error: "Invalid review or opportunity ID." }, { status: 400 });
+      return NextResponse.json(
+        { Error: "Invalid review or opportunity ID." },
+        { status: 400 },
+      );
     }
 
     const reviewTags = await prisma.reviewTag.findMany({
@@ -74,19 +80,22 @@ export const GET = async (
     return NextResponse.json(reviewTags, { status: 200 });
   } catch (error) {
     console.error(error);
-    return NextResponse.json({ Error: "Internal Server Error" }, { status: 500 });
+    return NextResponse.json(
+      { Error: "Internal Server Error" },
+      { status: 500 },
+    );
   }
 };
 
 /**
  * POST opportunity/[opportunityId]/review/[reviewId]/reviewTag
- * 
+ *
  * Creates a new ReviewTag
  *
  * @param NextRequest request
  * @param number opportunityId
  * @param number reviewId
- * @param @async tag - The tag that this ReviewTag points to 
+ * @param @async tag - The tag that this ReviewTag points to
  * @returns ReviewTag reviewTag
  */
 export const POST = async (
@@ -102,9 +111,15 @@ export const POST = async (
       return NextResponse.json({ Error: "Tag is required." }, { status: 400 });
     }
 
-    const isValidReviewTagRequest = await validateReviewTagRequest(opportunityIdNum, reviewIdNum);
+    const isValidReviewTagRequest = await validateReviewTagRequest(
+      opportunityIdNum,
+      reviewIdNum,
+    );
     if (!isValidReviewTagRequest) {
-      return NextResponse.json({ Error: "Invalid review or opportunity ID." }, { status: 400 });
+      return NextResponse.json(
+        { Error: "Invalid review or opportunity ID." },
+        { status: 400 },
+      );
     }
 
     const tagRecord = await prisma.tag.findFirst({
@@ -131,7 +146,9 @@ export const POST = async (
     return NextResponse.json(createReviewTag, { status: 201 }); // Use 201 for creation
   } catch (error) {
     console.error(error);
-    return NextResponse.json({ Error: "Internal Server Error" }, { status: 500 });
+    return NextResponse.json(
+      { Error: "Internal Server Error" },
+      { status: 500 },
+    );
   }
 };
-

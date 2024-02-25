@@ -78,7 +78,7 @@ export const authOptions: NextAuthOptions = {
           id: `${existingUser.id}`,
           firstName: existingUser.firstName,
           lastName: existingUser.lastName,
-          // TODO: add roles and permissions to the user object, jwt and session. 
+          // TODO: add roles and permissions to the user object, jwt and session.
           // Best practice is to modify the type -> includes the roles and permissions
           // roles: existingUser.userToUserRoles.map((role) => role.role.name),
           // permissions: existingUser.userToUserRoles
