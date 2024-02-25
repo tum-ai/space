@@ -3,8 +3,8 @@ import { auth } from "@config/firebase";
 import axios, { AxiosError } from "axios";
 import { signOut } from "firebase/auth";
 import { makeAutoObservable } from "mobx";
-import { toast } from "react-hot-toast";
 import { RootModel } from "./root";
+import { toast } from "sonner";
 
 export class MeModel {
   root: RootModel;

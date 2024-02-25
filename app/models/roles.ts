@@ -1,6 +1,6 @@
 import axios, { AxiosError } from "axios";
 import { makeAutoObservable } from "mobx";
-import toast from "react-hot-toast";
+import { toast } from "sonner";
 import { RootModel } from "./root";
 
 export class RolesModel {
