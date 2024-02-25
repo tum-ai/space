@@ -1,9 +1,8 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@components/ui/avatar";
-import { getServerSession } from "next-auth";
-import { authOptions } from "server/auth";
+import { getServerAuthSession } from "server/auth";
 
 export const UserAvatar = async () => {
-  const session = await getServerSession(authOptions);
+  const session = await getServerAuthSession();
 
   if (!session) {
     return <></>;
