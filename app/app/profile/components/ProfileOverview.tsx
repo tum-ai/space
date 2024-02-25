@@ -1,19 +1,122 @@
 "use client";
 import { Button } from "@components/ui/button";
 import Icon from "@components/Icon";
-import { Profile } from "@models/profile";
 import Image from "next/image";
-import Link from "next/link";
-import { PencilSquareIcon } from "@heroicons/react/24/outline";
-import ProfileEditor from "../../profile/components/ProfileEditor";
+import {
+  PencilSquareIcon,
+  AcademicCapIcon,
+  PencilIcon,
+  UserIcon,
+} from "@heroicons/react/24/outline";
+import ProfileEditor from "./ProfileEditor";
+import Tag from "@components/Tag";
 
-interface Props {
-  profile: Profile;
+const IconProps = "w-5 h-5 mr-2";
+
+function restructureData(data) {
+  const {
+    id,
+    email,
+    image,
+    activity_status,
+    current_department,
+    current_department_position,
+    first_name,
+    last_name,
+    nationality,
+    birthday,
+    university,
+    degree_level,
+    degree_name,
+    degree_semester,
+    description,
+  } = data;
+
+  return {
+    general: {
+      id,
+      email,
+      image,
+      activity_status,
+      current_department,
+      current_department_position,
+    },
+    personal: {
+      first_name,
+      last_name,
+      nationality,
+      birthday: new Date(birthday),
+    },
+    academia: {
+      university,
+      degree_level,
+      degree_name,
+      degree_semester,
+    },
+    description,
+  };
 }
-function ProfileOverview({ profile }: Props) {
+
+function formatKey(key) {
+  return key.replace(/_/g, " ").replace(/^\w/, (c) => c.toUpperCase());
+}
+
+function ProfileOverview({ profile }) {
+  const data = restructureData(profile);
+
   return (
-    <div className="relative m-auto max-w-3xl">
-      <div className="absolute top-0 flex w-full justify-end p-4">
+    <div className="flex justify-center">
+      <div className="max-w-[850px] space-y-10">
+        <ProfileHeader data={profile} />
+        <ProfileContent data={data} />
+      </div>
+    </div>
+  );
+}
+
+function ProfilePicture({ image }) {
+  return (
+    <>
+      {image ? (
+        <Image
+          className="h-32 w-32 rounded-full object-cover"
+          src={image}
+          width={150}
+          height={150}
+          alt="Your profile picture"
+        />
+      ) : (
+        <div className="flex h-32 w-32 rounded-full bg-gray-300 text-center drop-shadow-lg dark:bg-gray-800">
+          <Icon name={"FaUser"} className="m-auto text-4xl text-white" />
+        </div>
+      )}
+    </>
+  );
+}
+
+function ProfileHeader({ data }) {
+  return (
+    <div className="grid grid-cols-2 items-center gap-4 lg:grid-cols-4">
+      <div className="col-span-2 flex items-center gap-4">
+        <ProfilePicture image={data.image} />
+        <div>
+          <h3 className="text-3xl font-medium">
+            {data.first_name} {data.last_name}
+          </h3>
+          <a
+            href={`mailto:${data.email}`}
+            className="text-gray-500 hover:text-blue-500"
+          >
+            {data.email}
+          </a>
+        </div>
+      </div>
+      <div className="flex gap-2 lg:justify-self-end">
+        <Tag text={data.current_department} color="blue" />
+        <Tag text={data.current_department_position} color="purple" />
+        <Tag text={data.activity_status} color="green" />
+      </div>
+      <div className="justify-self-end">
         <ProfileEditor
           trigger={
             <Button>
@@ -21,61 +124,52 @@ function ProfileOverview({ profile }: Props) {
               Edit
             </Button>
           }
+          profile={data}
         />
       </div>
+    </div>
+  );
+}
 
-      {profile.image && (
-        <Image
-          className="m-auto h-28 w-28 rounded-full border object-cover drop-shadow-lg"
-          src={profile.image}
-          width={100}
-          height={100}
-          alt="Your profile picture"
-        />
-      )}
-      {!profile.image && (
-        <div className="m-auto flex h-28 w-28 rounded-full bg-gray-300 text-center drop-shadow-lg dark:bg-gray-800">
-          <Icon name={"FaUser"} className="m-auto text-4xl text-white" />
+function ProfileContent({ data }) {
+  return (
+    <div className="grid grid-cols-1 gap-8 sm:grid-cols-2">
+      <div className="sm:col-span-2">
+        <div className="mb-2 flex flex-row items-center">
+          <PencilIcon className={IconProps} />
+          <h3 className="text-2xl font-medium">Description</h3>
         </div>
-      )}
-
-      <div className="mt-6 space-y-12">
-        <div className="max-w-90 flex flex-col items-center space-y-3 xl:col-span-2">
-          <h1 className="w-full text-center text-6xl font-thin">
-            {profile.firstName + " " + profile.lastName}
-          </h1>
-          <Link
-            className="mx-auto text-lg hover:text-blue-800"
-            href={`mailto:${profile.email}`}
-          >
-            {profile.email}
-          </Link>
-        </div>
-        <dl className="divide-y divide-gray-600">
-          <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-            <dt className="font-medium">Degree</dt>
-            <dd>
-              {profile.degreeLevel} {profile.degreeName}
-            </dd>
-          </div>
-          <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-            <dt className="font-medium">Semester</dt>
-            <dd>{profile.degreeSemester}</dd>
-          </div>
-          <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-            <dt className="font-medium">University</dt>
-            <dd>{profile.university}</dd>
-          </div>
-          <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-            <dt className="font-medium">Description</dt>
-            <dd>{profile.description}</dd>
-          </div>
-          <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-            <dt className="font-medium">Nationality</dt>
-            <dd>{profile.nationality}</dd>
-          </div>
-        </dl>
+        <p className="text-gray-400">{data.description}</p>
       </div>
+      <div>
+        <div className="mb-2 flex flex-row items-center">
+          <UserIcon className={IconProps} />
+          <h3 className="text-2xl font-medium">Personal</h3>
+        </div>
+        <ContentList data={data.personal} />
+      </div>
+      <div>
+        <div className="mb-2 flex flex-row items-center">
+          <AcademicCapIcon className={IconProps} />
+          <h3 className="text-2xl font-medium">Academic</h3>
+        </div>
+        <ContentList data={data.academia} />
+      </div>
+    </div>
+  );
+}
+
+function ContentList({ data }) {
+  return (
+    <div className="flex flex-col gap-3">
+      {Object.entries(data).map(([iKey, iVal]) => (
+        <div className="grid grid-cols-2" key={`${iKey}-${iVal}`}>
+          <p className="text-gray-400">{formatKey(iKey)}</p>
+          <p>
+            {iVal instanceof Date ? iVal.toLocaleDateString() : String(iVal)}
+          </p>
+        </div>
+      ))}
     </div>
   );
 }
