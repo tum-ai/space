@@ -8,43 +8,54 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// Necessary for Next auth
 model Account {
-  id                String   @id @default(cuid())
+  id                String  @id @default(cuid())
   userId            String
   type              String
   provider          String
   providerAccountId String
-  ok                Boolean
-  state             String
-  accessToken       String?
-  tokenType         String?
-  idToken           String?
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
-  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  refresh_token     String? // @db.Text
+  access_token      String? // @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? // @db.Text
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Required for slack
+  ok    Boolean
+  state String
 
   @@unique([provider, providerAccountId])
-  @@index([userId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model User {
   id                       String                 @id @default(cuid())
-  profileId                Int?                   @unique
   email                    String                 @unique
-  password                 String?
-  firstName                String?
-  lastName                 String?
-  image                    String?
   emailVerified            DateTime?
+  password                 String?
+  name                     String?
+  image                    String?
   createdAt                DateTime               @default(now())
   updatedAt                DateTime               @updatedAt
   accounts                 Account[]
   departmentMemberships    DepartmentMembership[]
-  createdOpportunities     Opportunity[]
   opportunityParticipation UserOnOpportunity[]
   reviews                  Review[]
-  profile                  Profile?               @relation(fields: [profileId], references: [id])
-  role                     SpaceRole
+  roles                    SpaceRole[]            @default([USER])
+  profileId                Int?                   @unique
+  Profile                  Profile[]
+  Session                  Session[]
 }
 
 model Profile {
@@ -63,7 +74,7 @@ model Profile {
   createdAt        DateTime  @default(now())
   updatedAt        DateTime  @updatedAt
   contacts         Contact[]
-  user             User?
+  user             User?     @relation(fields: [userId], references: [id])
 }
 
 model Contact {
@@ -83,7 +94,6 @@ model Department {
   createdAt             DateTime               @default(now())
   updatedAt             DateTime               @updatedAt
   departmentMemberships DepartmentMembership[]
-  opportunities         Opportunity[]
 }
 
 model DepartmentMembership {
@@ -101,17 +111,13 @@ model DepartmentMembership {
 
 model Opportunity {
   id               Int                 @id @default(autoincrement())
-  creatorId        String?
   title            String
   description      String
   configuration    Json
-  departmentId     Int
   opportunityStart DateTime
   opportunityEnd   DateTime?
   createdAt        DateTime            @default(now())
   updatedAt        DateTime            @updatedAt
-  creator          User?               @relation(fields: [creatorId], references: [id])
-  department       Department          @relation(fields: [departmentId], references: [id])
   users            UserOnOpportunity[]
   applications     Application[]
   tags             Tag[]

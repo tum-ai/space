@@ -1,4 +1,4 @@
-import prisma from "database/db";
+import prisma from "server/db";
 import { Application } from "@prisma/client";
 import { env } from "env.mjs";
 import { createHmac } from "crypto";

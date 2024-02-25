@@ -1,5 +1,4 @@
 "use client";
-import { Section } from "@components/Section";
 import { LoginForm } from "./components/LoginForm";
 import { env } from "env.mjs";
 import { Button } from "@components/ui/button";
@@ -11,11 +10,11 @@ const Auth = () => {
   const isDevelopment = env.NEXT_PUBLIC_VERCEL_ENV === "development";
 
   return (
-    <Section>
+    <section>
       <div className="mx-auto max-w-lg space-y-8">
         {isDevelopment && <LoginForm />}
         {!isDevelopment && (
-          <Button className="w-full" onClick={() => void signIn("slack")}>
+          <Button className="w-full" onClick={() => signIn("slack")}>
             <SlackLogo size={20} className="mr-2" /> Log in with Slack
           </Button>
         )}
@@ -28,7 +27,7 @@ const Auth = () => {
           </p>
         )}
       </div>
-    </Section>
+    </section>
   );
 };
 

@@ -1,7 +1,7 @@
 //Path api/profiles/[userId]/route.ts:
 
 import { NextRequest, NextResponse } from "next/server";
-import prisma from "database/db";
+import prisma from "server/db";
 
 export async function GET(
   req: NextRequest,

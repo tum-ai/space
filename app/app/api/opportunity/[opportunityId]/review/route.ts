@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import prisma from "database/db";
+import prisma from "server/db";
 
 /**
  * Checks if the opportunity exists.
