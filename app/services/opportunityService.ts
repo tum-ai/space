@@ -4,12 +4,14 @@ import { Opportunity } from "@prisma/client";
 export async function fetchOpportunities(): Promise<Opportunity[]> {
   const res = await axios.get("/api/opportunity");
 
-  const opportunities: Opportunity[] = res.data.map((opportunity) => {
-    opportunity.opportunityStart = new Date(opportunity.opportunityStart);
-    opportunity.opportunityEnd =
-      opportunity.opportunityEnd && new Date(opportunity.opportunityEnd);
-    return opportunity;
-  });
+  const opportunities: Opportunity[] = res.data.map(
+    (opportunity: Opportunity) => {
+      opportunity.opportunityStart = new Date(opportunity.opportunityStart);
+      opportunity.opportunityEnd =
+        opportunity.opportunityEnd && new Date(opportunity.opportunityEnd);
+      return opportunity;
+    },
+  );
 
   return opportunities;
 }

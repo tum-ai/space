@@ -4,8 +4,8 @@ import { Button } from "@components/ui/button";
 import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
 import LoadingWheel from "@components/LoadingWheel";
-import { fetchOpportunities } from "../../lib/services/opportunityService";
-import { getReviewCounts } from "@lib/services/reviewService";
+import { fetchOpportunities } from "@services/opportunityService";
+import { getReviewCounts } from "@services/reviewService";
 
 export default function OpportunitiesPage() {
   const { data: opportunities, isLoading } = useQuery(

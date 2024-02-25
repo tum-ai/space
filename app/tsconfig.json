@@ -19,8 +19,8 @@
     "paths": {
       "@styles/*": ["./styles/*"],
       "@components/*": ["./components/*"],
+      "@services/*": ["./services/*"],
       "@lib/*": ["./lib/*"],
-      "@models/*": ["./models/*"],
       "@providers/*": ["./providers/*"],
       "@hooks/*": ["./hooks/*"],
       "@config/*": ["./config/*"]
