@@ -30,6 +30,9 @@ export const labelStyles = cva("text-sm", {
   },
 });
 
+/**
+ * @deprecated use ui/input
+ **/
 function Input({ label, state, className, ...props }: Props) {
   const InnerInput = (
     <input {...props} className={styles({ state, className })} />

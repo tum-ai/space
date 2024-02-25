@@ -3,6 +3,9 @@ interface Props {
   name: string;
 }
 
+/**
+ * @deprecated use react-hook-form
+ */
 const ErrorMessage = ({ name }: Props) => {
   return (
     <FormikErrorMessage

@@ -4,7 +4,6 @@ import { Button } from "@components/ui/button";
 import ErrorMessage from "@components/ErrorMessage";
 import Dialog from "@components/Dialog";
 import Input from "@components/Input";
-import { useStores } from "@providers/StoreProvider";
 import { Field, Form, Formik } from "formik";
 import * as DialogRadix from "@radix-ui/react-dialog";
 import Image from "next/image";
