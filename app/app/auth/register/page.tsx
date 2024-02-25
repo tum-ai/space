@@ -3,7 +3,7 @@ import { Button } from "@components/ui/button";
 import Input from "@components/Input";
 import { Section } from "@components/Section";
 import { useRouter } from "next/navigation";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { useForm } from "react-hook-form";
 import { env } from "env.mjs";
 import { z } from "zod";
@@ -16,6 +16,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@components/ui/form";
+import { toast } from "sonner";
 
 const Register = () => {
   const router = useRouter();
@@ -51,14 +52,31 @@ const Register = () => {
   });
 
   const onSubmit = async (values: z.infer<typeof registerFormSchema>) => {
-    await axios.post("/api/auth/signup", {
-      body: {
+    const id = toast.loading("Creating account...");
+    try {
+      await axios.post("/api/auth/signup", {
         firstName: values.firstName,
         lastName: values.lastName,
         email: values.email,
         password: values.password,
-      },
-    });
+      });
+      toast.success("Account created successfully", { id });
+    } catch (err) {
+      if (err.response?.status === 409) {
+        toast.error(
+          "An account with this email already exists. Please log in instead",
+          {
+            id,
+            action: {
+              label: "Log in",
+              onClick: () => router.push("/auth"),
+            },
+          },
+        );
+      } else {
+        toast.error("An error occurred. Please try again later", { id });
+      }
+    }
   };
 
   return (
