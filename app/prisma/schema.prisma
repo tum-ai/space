@@ -28,47 +28,23 @@ model Account {
 }
 
 model User {
-  id                       String                     @id @default(cuid())
-  profileId                Int?                       @unique
-  email                    String                     @unique
+  id                       String                 @id @default(cuid())
+  profileId                Int?                   @unique
+  email                    String                 @unique
   password                 String?
   firstName                String?
   lastName                 String?
-  image                    String?           
-  userToUserRoles          UserToUserRole[]          
+  image                    String?
   emailVerified            DateTime?
-  createdAt                DateTime                   @default(now())
-  updatedAt                DateTime                   @updatedAt
+  createdAt                DateTime               @default(now())
+  updatedAt                DateTime               @updatedAt
   accounts                 Account[]
   departmentMemberships    DepartmentMembership[]
   createdOpportunities     Opportunity[]
-  opportunityParticipation OpportunityParticipation[]
-  reviews                  PhaseReview[]
-  profile                  Profile?                   @relation(fields: [profileId], references: [id])
-}
-
-model UserRole {
-  name            String           @id   
-  userToUserRoles UserToUserRole[] 
-  userPermissions UserPermission[] 
-}
-
-model UserToUserRole { 
-  userId String
-  roleId String
-  user   User   @relation(fields: [userId], references: [id], onDelete : Cascade)
-  role   UserRole   @relation(fields: [roleId], references: [name], onDelete : Cascade)
-
-  @@id(name: "userToUserRoleId", [userId, roleId])
-  @@index([userId])
-}
-
-model UserPermission {
-  id          Int      @id @default(autoincrement())
-  name        String   @unique
-  description String
-  role        String
-  userRole    UserRole @relation(fields: [role], references: [name], onDelete: Cascade)
+  opportunityParticipation UserOnOpportunity[]
+  reviews                  Review[]
+  profile                  Profile?               @relation(fields: [profileId], references: [id])
+  role                     SpaceRole
 }
 
 model Profile {
@@ -103,7 +79,6 @@ model Contact {
 model Department {
   id                    Int                    @id @default(autoincrement())
   name                  String
-  type                  DepartmentType
   creationDate          DateTime               @default(now())
   createdAt             DateTime               @default(now())
   updatedAt             DateTime               @updatedAt
@@ -125,93 +100,88 @@ model DepartmentMembership {
 }
 
 model Opportunity {
-  id                       Int                        @id @default(autoincrement())
-  creatorId                String?
-  title                    String
-  description              String
-  configuration            Json
-  departmentId             Int
-  opportunityStart         DateTime
-  opportunityEnd           DateTime?
-  createdAt                DateTime                   @default(now())
-  updatedAt                DateTime                   @updatedAt
-  creator                  User?                      @relation(fields: [creatorId], references: [id])
-  department               Department                 @relation(fields: [departmentId], references: [id])
-  opportunityParticipation OpportunityParticipation[]
-  reviews                  Review[]
-  tags                     Tag[]
+  id               Int                 @id @default(autoincrement())
+  creatorId        String?
+  title            String
+  description      String
+  configuration    Json
+  departmentId     Int
+  opportunityStart DateTime
+  opportunityEnd   DateTime?
+  createdAt        DateTime            @default(now())
+  updatedAt        DateTime            @updatedAt
+  creator          User?               @relation(fields: [creatorId], references: [id])
+  department       Department          @relation(fields: [departmentId], references: [id])
+  users            UserOnOpportunity[]
+  applications     Application[]
+  tags             Tag[]
 }
 
-model OpportunityParticipation {
+model UserOnOpportunity {
   userId          String
   opportunityId   Int
-  role            String
   createdAt       DateTime        @default(now())
   updatedAt       DateTime        @updatedAt
   opportunity     Opportunity     @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
-  opportunityRole OpportunityRole @relation(fields: [role], references: [name])
+  opportunityRole OpportunityRole
   user            User            @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@id([userId, opportunityId], name: "opportunityParticipationId")
+  @@id([userId, opportunityId], name: "userOnOpportunity")
 }
 
-model OpportunityRole {
-  name                      String                     @id
-  opportunityParticipations OpportunityParticipation[]
-  rolePermissions           OpportunityPermission[]
-}
-
-model OpportunityPermission {
-  id              Int             @id @default(autoincrement())
-  name            String          @unique
-  description     String
-  role            String
-  opportunityRole OpportunityRole @relation(fields: [role], references: [name], onDelete: Cascade)
-}
-
-model Review {
-  id            Int           @id @default(autoincrement())
+model Application {
+  id            Int                  @id @default(autoincrement())
   application   Json
   opportunityId Int
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @updatedAt
-  phaseReviews  PhaseReview[]
-  opportunity   Opportunity   @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
-  reviewTags    ReviewTag[]
+  createdAt     DateTime             @default(now())
+  updatedAt     DateTime             @updatedAt
+  reviews       Review[]
+  opportunity   Opportunity          @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
+  tags          TagsOnApplications[]
 }
 
 model Tag {
-  id            Int         @id @default(autoincrement())
+  id            Int                  @id @default(autoincrement())
   opportunityId Int
   tallyLabel    String
   name          String
-  reviewTags    ReviewTag[]
-  opportunity   Opportunity @relation(fields: [opportunityId], references: [id])
+  applications  TagsOnApplications[]
+  opportunity   Opportunity          @relation(fields: [opportunityId], references: [id])
 
   @@unique([opportunityId, name])
 }
 
-model ReviewTag {
-  id       Int    @id @default(autoincrement())
-  reviewId Int
-  tagId    Int
-  review   Review @relation(fields: [reviewId], references: [id])
-  tag      Tag    @relation(fields: [tagId], references: [id])
+model TagsOnApplications {
+  id            Int         @id @default(autoincrement())
+  tagId         Int
+  applicationId Int
+  application   Application @relation(fields: [applicationId], references: [id])
+  tag           Tag         @relation(fields: [tagId], references: [id])
 
-  @@unique([tagId, reviewId])
+  @@unique([tagId, applicationId])
 }
 
-model PhaseReview {
+model Review {
   phase      String
   reviewId   Int
   assigneeId String
   content    Json
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-  assignee   User     @relation(fields: [assigneeId], references: [id])
-  review     Review   @relation(fields: [reviewId], references: [id])
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+  assignee   User        @relation(fields: [assigneeId], references: [id])
+  review     Application @relation(fields: [reviewId], references: [id])
 
   @@id([phase, reviewId], name: "id")
+}
+
+enum SpaceRole {
+  ADMIN
+  USER
+}
+
+enum OpportunityRole {
+  OWNER
+  SCREENER
 }
 
 enum ContactType {
@@ -221,11 +191,6 @@ enum ContactType {
   FACEBOOK
   INSTAGRAM
   PHONE
-}
-
-enum DepartmentType {
-  FUNCTIONAL
-  MISSION_BASED
 }
 
 enum DepartmentPosition {
