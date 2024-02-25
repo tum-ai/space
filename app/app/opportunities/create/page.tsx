@@ -7,7 +7,6 @@ import Select from "@components/Select";
 import { MemberBar, AddMemberBar } from "../components/MemberBar";
 import Dialog from "@components/Dialog";
 import { useState } from "react";
-import Textarea from "@components/Textarea";
 import Tooltip from "@components/Tooltip";
 import { useForm } from "react-hook-form";
 import {
