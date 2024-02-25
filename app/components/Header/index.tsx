@@ -11,8 +11,8 @@ async function Header() {
     <header className="w-full">
       <div className="flex w-full justify-between px-2 py-4">
         <Navigation />
-        {session.user && <User />}
-        {!session.user && <Link href="/auth">Sign in</Link>}
+        {session?.user && <User />}
+        {!session?.user && <Link href="/auth">Sign in</Link>}
       </div>
     </header>
   );
