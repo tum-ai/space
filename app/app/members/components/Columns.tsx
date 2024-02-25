@@ -12,9 +12,9 @@ import {
   DropdownMenuTrigger,
 } from "@components/ui/dropdown-menu";
 import { DataTableColumnHeader } from "./DataTabelHeader";
-import { User, UserRole } from "@prisma/client";
+import { User } from "@prisma/client";
 import { Avatar, AvatarFallback, AvatarImage } from "@components/ui/avatar";
-import { deleteProfile } from "@lib/retrievals";
+import { deleteProfile } from "@services/membershipService";
 
 // ExtendedColumnDef extends ColumnDef with additional properties for table rendering.
 type ExtendedColumnDef<T extends object> = ColumnDef<T> & {
@@ -76,10 +76,7 @@ export const columns: ExtendedColumnDef<User>[] = [
     accessorKey: "id",
     label: "Id",
     header: ({ column }) => (
-      <DataTableColumnHeader
-        column={column}
-        title={column.columnDef.label}
-      />
+      <DataTableColumnHeader column={column} title={column.columnDef.label} />
     ),
     cell: ({ row }) => {
       const value = row.getValue("id");
@@ -92,10 +89,7 @@ export const columns: ExtendedColumnDef<User>[] = [
     accessorKey: "email",
     label: "Email",
     header: ({ column }) => (
-      <DataTableColumnHeader
-        column={column}
-        title={column.columnDef.label}
-      />
+      <DataTableColumnHeader column={column} title={column.columnDef.label} />
     ),
     cell: ({ row }) => {
       const value = row.getValue("email");
@@ -108,10 +102,7 @@ export const columns: ExtendedColumnDef<User>[] = [
     accessorKey: "firstName",
     label: "First Name",
     header: ({ column }) => (
-      <DataTableColumnHeader
-        column={column}
-        title={column.columnDef.label}
-      />
+      <DataTableColumnHeader column={column} title={column.columnDef.label} />
     ),
     cell: ({ row }) => {
       const value = row.getValue("firstName");
@@ -124,10 +115,7 @@ export const columns: ExtendedColumnDef<User>[] = [
     accessorKey: "lastName",
     label: "Last Name",
     header: ({ column }) => (
-      <DataTableColumnHeader
-        column={column}
-        title={column.columnDef.label}
-      />
+      <DataTableColumnHeader column={column} title={column.columnDef.label} />
     ),
     cell: ({ row }) => {
       const value = row.getValue("lastName");
@@ -140,10 +128,7 @@ export const columns: ExtendedColumnDef<User>[] = [
     accessorKey: "userRoles",
     label: "Roles",
     header: ({ column }) => (
-      <DataTableColumnHeader
-        column={column}
-        title={column.columnDef.label}
-      />
+      <DataTableColumnHeader column={column} title={column.columnDef.label} />
     ),
     filterFn: (row, id, filterValues) => {
       const aRoles: UserRole[] = row.original.userToUserRoles.map(
@@ -178,15 +163,11 @@ export const columns: ExtendedColumnDef<User>[] = [
     accessorKey: "currentDepartment",
     label: "Department",
     header: ({ column }) => (
-      <DataTableColumnHeader
-        column={column}
-        title={column.columnDef.label}
-      />
+      <DataTableColumnHeader column={column} title={column.columnDef.label} />
     ),
     filterFn: (row, id, filterValues) => {
       for (let i = 0; i < filterValues.length; i++) {
-        const rowValue =
-          row.original.departmentMemberships[0]?.department.id;
+        const rowValue = row.original.departmentMemberships[0]?.department.id;
         const filterValue = filterValues[i];
 
         if (!rowValue) {
@@ -209,10 +190,7 @@ export const columns: ExtendedColumnDef<User>[] = [
     accessorKey: "currentDepartmentPosition",
     label: "Position",
     header: ({ column }) => (
-      <DataTableColumnHeader
-        column={column}
-        title={column.columnDef.label}
-      />
+      <DataTableColumnHeader column={column} title={column.columnDef.label} />
     ),
     filterFn: (row, id, filterValues) => {
       for (let i = 0; i < filterValues.length; i++) {
