@@ -1,8 +1,8 @@
-import { authOptions } from "app/api/auth/[...nextauth]/route";
 import { getServerSession } from "next-auth";
 import { Navigation } from "./components/navigation";
 import { User } from "./components/user";
 import Link from "next/link";
+import { authOptions } from "server/auth";
 
 async function Header() {
   const session = await getServerSession(authOptions);

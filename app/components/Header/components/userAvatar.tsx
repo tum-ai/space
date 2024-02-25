@@ -1,26 +1,33 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@components/ui/avatar";
-import { authOptions } from "app/api/auth/[...nextauth]/route";
 import { getServerSession } from "next-auth";
+import { authOptions } from "server/auth";
 
 export const UserAvatar = async () => {
   const session = await getServerSession(authOptions);
-  const user = session?.user;
 
-  if (!user) {
+  if (!session) {
     return <></>;
   }
 
+  const user = session.user;
+
+  const extractInitials = (name: string): string => {
+    // Split the name into individual words
+    const words = name.split(" ");
+
+    // Extract the first letter of each word and join them
+    const initials = words.map((word) => word.charAt(0)).join("");
+
+    return initials.toUpperCase(); // Convert to uppercase for consistency
+  };
+
   return (
-    <div className="flex items-center space-x-4 rounded-full hover:text-black dark:bg-gray-700 dark:hover:text-white sm:bg-gray-100 sm:p-2 sm:px-4">
+    <div className="flex items-center space-x-4 rounded-full bg-background sm:p-3">
       <Avatar>
         <AvatarImage src={user.image ?? undefined} />
-        <AvatarFallback>
-          {`${user.firstName?.at(0)}${user.lastName?.at(0)}`}
-        </AvatarFallback>
+        <AvatarFallback>{extractInitials(user.name ?? "")}</AvatarFallback>
       </Avatar>
-      <p className="hidden sm:flex">
-        {user.firstName} {user.lastName}
-      </p>
+      <p className="hidden pr-3 sm:flex">{user.name}</p>
     </div>
   );
 };

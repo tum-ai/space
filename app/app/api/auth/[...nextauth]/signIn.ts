@@ -1,7 +1,7 @@
 import { User } from "@prisma/client";
 import { Session } from "next-auth";
 import { compare } from "bcrypt";
-import db from "database/db";
+import db from "server/db";
 
 /**
  *  Checks if the user already exists
