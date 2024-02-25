@@ -51,7 +51,7 @@ export const columns: ExtendedColumnDef<User>[] = [
     accessorKey: "image",
     label: "Image",
     header: ({ column }) => (
-      <div className="ml-2 mr-2">{column.columnDef["label"]}</div>
+      <div className="ml-2 mr-2">{column.columnDef.label}</div>
     ),
     cell: ({ row }) => {
       const profil = row.original;
@@ -78,11 +78,11 @@ export const columns: ExtendedColumnDef<User>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader
         column={column}
-        title={column.columnDef["label"]}
+        title={column.columnDef.label}
       />
     ),
     cell: ({ row }) => {
-      const value = row.getValue("id") as string;
+      const value = row.getValue("id");
       return (
         <div className="lowercase">{value ? value.replace(/_/g, " ") : ""}</div>
       );
@@ -94,11 +94,11 @@ export const columns: ExtendedColumnDef<User>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader
         column={column}
-        title={column.columnDef["label"]}
+        title={column.columnDef.label}
       />
     ),
     cell: ({ row }) => {
-      const value = row.getValue("email") as string;
+      const value = row.getValue("email");
       return (
         <div className="lowercase">{value ? value.replace(/_/g, " ") : ""}</div>
       );
@@ -110,11 +110,11 @@ export const columns: ExtendedColumnDef<User>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader
         column={column}
-        title={column.columnDef["label"]}
+        title={column.columnDef.label}
       />
     ),
     cell: ({ row }) => {
-      const value = row.getValue("firstName") as string;
+      const value = row.getValue("firstName");
       return (
         <div className="lowercase">{value ? value.replace(/_/g, " ") : ""}</div>
       );
@@ -126,11 +126,11 @@ export const columns: ExtendedColumnDef<User>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader
         column={column}
-        title={column.columnDef["label"]}
+        title={column.columnDef.label}
       />
     ),
     cell: ({ row }) => {
-      const value = row.getValue("lastName") as string;
+      const value = row.getValue("lastName");
       return (
         <div className="lowercase">{value ? value.replace(/_/g, " ") : ""}</div>
       );
@@ -142,11 +142,11 @@ export const columns: ExtendedColumnDef<User>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader
         column={column}
-        title={column.columnDef["label"]}
+        title={column.columnDef.label}
       />
     ),
     filterFn: (row, id, filterValues) => {
-      const aRoles: UserRole[] = row.original["userToUserRoles"].map(
+      const aRoles: UserRole[] = row.original.userToUserRoles.map(
         (role) => role.role,
       );
       for (let i = 0; i < filterValues.length; i++) {
@@ -165,7 +165,7 @@ export const columns: ExtendedColumnDef<User>[] = [
     },
     cell: ({ row }) => {
       const user = row.original;
-      const roleNames = user["userToUserRoles"].map((role) => {
+      const roleNames = user.userToUserRoles.map((role) => {
         return role.role.name;
       });
       const value = roleNames.join(", ");
@@ -180,13 +180,13 @@ export const columns: ExtendedColumnDef<User>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader
         column={column}
-        title={column.columnDef["label"]}
+        title={column.columnDef.label}
       />
     ),
     filterFn: (row, id, filterValues) => {
       for (let i = 0; i < filterValues.length; i++) {
         const rowValue =
-          row.original["departmentMemberships"][0]?.department.id;
+          row.original.departmentMemberships[0]?.department.id;
         const filterValue = filterValues[i];
 
         if (!rowValue) {
@@ -199,7 +199,7 @@ export const columns: ExtendedColumnDef<User>[] = [
       return false;
     },
     cell: ({ row }) => {
-      const value = row.getValue("currentDepartment") as string;
+      const value = row.getValue("currentDepartment");
       return (
         <div className="lowercase">{value ? value.replace(/_/g, " ") : ""}</div>
       );
@@ -211,7 +211,7 @@ export const columns: ExtendedColumnDef<User>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader
         column={column}
-        title={column.columnDef["label"]}
+        title={column.columnDef.label}
       />
     ),
     filterFn: (row, id, filterValues) => {
@@ -228,7 +228,7 @@ export const columns: ExtendedColumnDef<User>[] = [
       return false;
     },
     cell: ({ row }) => {
-      const value = row.getValue("currentDepartmentPosition") as string;
+      const value = row.getValue("currentDepartmentPosition");
       return (
         <div className="lowercase">{value ? value.replace(/_/g, " ") : ""}</div>
       );

@@ -126,7 +126,7 @@ export default function DataTableEditDialog({ rows, tableData, ...props }) {
     };
 
     if (selectedDepartment) {
-      membershipData["department"] = {
+      membershipData.department = {
         connect: {
           id: selectedDepartment,
         },
@@ -134,7 +134,7 @@ export default function DataTableEditDialog({ rows, tableData, ...props }) {
     }
 
     if (selectedPosition) {
-      membershipData["departmentPosition"] = selectedPosition;
+      membershipData.departmentPosition = selectedPosition;
     }
 
     if (selectedDepartment && selectedPosition) {

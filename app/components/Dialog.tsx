@@ -13,7 +13,7 @@ interface Props {
  * @deprecated use component in @component/ui
  */
 function Dialog({ trigger, isOpenOutside, setIsOpenOutside, children }: Props) {
-  let [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   return (
     <DialogRadix.Root
       open={isOpenOutside || isOpen}

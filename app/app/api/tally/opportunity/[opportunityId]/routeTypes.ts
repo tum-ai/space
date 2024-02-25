@@ -1,6 +1,6 @@
 import mime from "mime-types";
 
-export type ParsedFormData = {
+export interface ParsedFormData {
   responseId: string;
   submissionId: string;
   respondentId: string;
@@ -8,9 +8,9 @@ export type ParsedFormData = {
   formName: string;
   createdAt: Date;
   fields: FormField[];
-};
+}
 
-export type FormField = {
+export interface FormField {
   key: string;
   label: string;
   type:
@@ -46,27 +46,25 @@ export type FormField = {
   options?: IdTextPair[];
   rows?: IdTextPair[];
   columns?: IdTextPair[];
-};
+}
 
 const mimeTypes = Object.keys(mime.extensions);
 
-export type FileUploadValue = {
+export interface FileUploadValue {
   id: string;
   name: string;
   url: URL;
   mimeType: typeof mimeTypes;
   size: number;
-};
+}
 
-export type MatrixValue = {
-  [key: string]: string[];
-};
+export type MatrixValue = Record<string, string[]>;
 
-export type IdTextPair = {
+export interface IdTextPair {
   id: string;
   text: string;
-};
+}
 
-export type LabelTextPair = {
+export interface LabelTextPair {
   [label: string]: string | string[] | LabelTextPair;
-};
+}

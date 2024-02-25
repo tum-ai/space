@@ -53,7 +53,7 @@ function isSignatureValidated(req: Request, webhookPayload: any): boolean {
 function restructureReceivedJSON(formData: ParsedFormData): LabelTextPair {
   const newFormData: LabelTextPair = {};
 
-  (formData.fields as FormField[]).forEach((field) => {
+  (formData.fields).forEach((field) => {
     const fieldType = field.type;
     const label = field.label;
     let text: string | string[] | LabelTextPair;
@@ -95,13 +95,13 @@ function handleFileUploadField(field: FormField): string[] {
 }
 
 function hanldeMatrixField(field: FormField): LabelTextPair {
-  let matrixRowColumnsPairs: LabelTextPair = {};
+  const matrixRowColumnsPairs: LabelTextPair = {};
 
   Object.entries(field.value as MatrixValue).forEach(([key, value]) => {
     const row = field.rows.find((row) => row.id === key);
     const rowLabel = row.text;
 
-    let labelsOfColumns: string[] = [];
+    const labelsOfColumns: string[] = [];
 
     value.forEach((columnId) => {
       const column = field.columns.find((column) => column.id === columnId);

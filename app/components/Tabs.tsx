@@ -1,7 +1,7 @@
 import * as RadixTabs from "@radix-ui/react-tabs";
 
 export interface Props extends RadixTabs.TabsProps {
-  tabs: { [name: string]: React.ReactNode };
+  tabs: Record<string, React.ReactNode>;
 }
 
 /**

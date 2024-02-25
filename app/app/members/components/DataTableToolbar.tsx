@@ -64,9 +64,7 @@ export function DataTableToolbar<TData>({
         style={{ maxWidth: "100%" }}
       >
         <Input
-          placeholder={`Filter ${table.getColumn("email")?.columnDef[
-            "label"
-          ]}...`}
+          placeholder={`Filter ${table.getColumn("email")?.columnDef.label}...`}
           value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
             table.getColumn("email")?.setFilterValue(event.target.value)
@@ -74,9 +72,7 @@ export function DataTableToolbar<TData>({
           className="h-8 w-full sm:w-[150px] lg:w-[250px]"
         />
         <Input
-          placeholder={`Filter ${table.getColumn("lastName")?.columnDef[
-            "label"
-          ]}...`}
+          placeholder={`Filter ${table.getColumn("lastName")?.columnDef.label}...`}
           value={
             (table.getColumn("lastName")?.getFilterValue() as string) ?? ""
           }
@@ -88,14 +84,14 @@ export function DataTableToolbar<TData>({
         {table.getColumn("userRoles") && (
           <DataTableFacetedFilter
             column={table.getColumn("userRoles")}
-            title={table.getColumn("userRoles").columnDef["label"]}
+            title={table.getColumn("userRoles").columnDef.label}
             options={roles}
           />
         )}
         {table.getColumn("currentDepartment") && (
           <DataTableFacetedFilter
             column={table.getColumn("currentDepartment")}
-            title={table.getColumn("currentDepartment").columnDef["label"]}
+            title={table.getColumn("currentDepartment").columnDef.label}
             options={departments}
           />
         )}
@@ -103,7 +99,7 @@ export function DataTableToolbar<TData>({
           <DataTableFacetedFilter
             column={table.getColumn("currentDepartmentPosition")}
             title={
-              table.getColumn("currentDepartmentPosition").columnDef["label"]
+              table.getColumn("currentDepartmentPosition").columnDef.label
             }
             options={positions}
           />
