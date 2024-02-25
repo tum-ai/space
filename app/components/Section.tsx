@@ -18,6 +18,9 @@ const sectionVariants = cva("p-8 lg:p-12 py-6 lg:py-6 container m-auto", {
   },
 });
 
+/**
+ * @deprecated. unnecessary abstraction. just copy-paste html
+ */
 const Section = React.forwardRef<HTMLInputElement, SectionProps>(
   ({ children, variant, className }, ref) => {
     return (

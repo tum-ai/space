@@ -6,6 +6,9 @@ interface Props extends IconBaseProps {
   className?: string;
 }
 
+/**
+ * @deprecated any icon component
+ */
 function Icon({ name, className, ...props }: Props) {
   const IconComponent = Icons[name];
 

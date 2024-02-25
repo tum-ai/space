@@ -1,5 +1,8 @@
 import * as TooltipRadix from "@radix-ui/react-tooltip";
 
+/**
+ * @deprecated: use https://ui.shadcn.com/docs/components/tooltip
+ **/
 export default function Tooltip({ trigger, children }) {
   return (
     <TooltipRadix.Provider delayDuration={0}>

@@ -15,7 +15,6 @@ import {
   FormLabel,
   FormMessage,
 } from "@components/ui/form";
-import axios from "axios";
 import { toast } from "sonner";
 
 export const LoginForm = () => {

@@ -4,6 +4,9 @@ export interface Props extends RadixTabs.TabsProps {
   tabs: { [name: string]: React.ReactNode };
 }
 
+/**
+ * @deprecated ui/tabs
+ */
 const Tabs = ({ tabs, ...props }: Props) => {
   return (
     <RadixTabs.Root {...props}>
