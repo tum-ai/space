@@ -8,13 +8,12 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuSeparator,
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@components/ui/dropdown-menu";
 import { DataTableColumnHeader } from "./DataTabelHeader";
 import { User, UserRole } from "@prisma/client";
-import { Avatar } from "@components/Avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@components/ui/avatar";
 import { deleteProfile } from "@lib/retrievals";
 
 // ExtendedColumnDef extends ColumnDef with additional properties for table rendering.
@@ -59,15 +58,16 @@ export const columns: ExtendedColumnDef<User>[] = [
 
       return (
         <>
-          <Avatar
-            variant={"circle"}
-            profilePicture={profil.image}
-            initials={(
-              "" +
-              row.getValue("firstName")[0] +
-              row.getValue("lastName")[0]
-            ).toUpperCase()}
-          />
+          <Avatar>
+            <AvatarImage src={profil.image} />
+            <AvatarFallback>
+              {(
+                "" +
+                row.getValue("firstName")[0] +
+                row.getValue("lastName")[0]
+              ).toUpperCase()}
+            </AvatarFallback>
+          </Avatar>
         </>
       );
     },
