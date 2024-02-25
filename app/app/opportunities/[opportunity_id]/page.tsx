@@ -152,12 +152,18 @@ function OverviewHeader({ opportunityId, opportunityTitle }) {
   return (
     <div className="flex flex-col gap-1.5">
       <div className="flex w-full flex-row items-center justify-between">
-        <h1 className="text-6xl font-thin">Applications</h1>
+        <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
+          Applications
+        </h1>
         <Link href="../opportunities">
           <Button>All opportunities</Button>
         </Link>
       </div>
-      <p>View all available Applications for</p>
+
+      <p className="text-muted-foreground">
+        View all available Applications for
+      </p>
+
       <div className="flex w-full items-center justify-between">
         <h2 className="text-2xl">Winter Semester 2024/2025 Application</h2>
         <h2 className="text-2x">ID: {opportunityId}</h2>
