@@ -105,7 +105,7 @@ export async function updateMembership(
   data: Prisma.DepartmentMembershipUpdateInput,
 ) {
   try {
-    let response = await axios.put(
+    const response = await axios.put(
       `/api/departmentMemberships/${departmentId}`,
       data,
     );

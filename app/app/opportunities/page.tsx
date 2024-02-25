@@ -44,8 +44,7 @@ export default function OpportunitiesPage() {
                 opportunity={item}
                 key={index}
                 count={
-                  applicationCounts &&
-                  applicationCounts.find(
+                  applicationCounts?.find(
                     (count) => count.opportunityId === item.id,
                   ).count
                 }

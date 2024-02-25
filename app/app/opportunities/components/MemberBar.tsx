@@ -29,8 +29,7 @@ export function MemberBar(props: DisplayMember) {
         )}
         <div className="flex items-center gap-2 truncate">
           <h2 className="text-md">{props.name}</h2>
-          {props.tags &&
-            props.tags.map((tag) => {
+          {props.tags?.map((tag) => {
               return <Tag key={tag.text} text={tag.text} color={tag.color} />;
             })}
         </div>

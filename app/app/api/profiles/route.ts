@@ -79,13 +79,13 @@ function prepareMembershipData(profiles: any) {
       profile.departmentMemberships &&
       profile.departmentMemberships?.length > 0
     ) {
-      profile["currentDepartment"] =
+      profile.currentDepartment =
         profile.departmentMemberships[0]?.department?.name;
-      profile["currentDepartmentPosition"] =
+      profile.currentDepartmentPosition =
         profile.departmentMemberships[0]?.departmentPosition;
     } else {
-      profile["currentDepartment"] = "";
-      profile["currentDepartmentPosition"] = "";
+      profile.currentDepartment = "";
+      profile.currentDepartmentPosition = "";
     }
   });
 

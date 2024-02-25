@@ -32,17 +32,17 @@ interface DataEntry {
   finished: boolean;
 }
 
-type Data = { [key: string]: DataEntry };
+type Data = Record<string, DataEntry>;
 
-let simon: Reviewer = {
+const simon: Reviewer = {
   name: "Simon Huang",
   imgSrc: "https://placekitten.com/204/204",
 };
-let bryan: Reviewer = {
+const bryan: Reviewer = {
   name: "Bryan Alvin",
   imgSrc: "https://placekitten.com/201/201",
 };
-let tim: Reviewer = {
+const tim: Reviewer = {
   name: "Tim Baum",
   imgSrc: "https://placekitten.com/203/203",
 };

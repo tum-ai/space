@@ -17,15 +17,13 @@ interface RowProps {
 }
 
 interface OverviewRowsProps {
-  data: {
-    [key: string]: {
+  data: Record<string, {
       firstName: string;
       lastName: string;
       phase: string;
       score: number;
       reviewer: Reviewer[];
-    };
-  };
+    }>;
 }
 
 function OverviewRows({ data }: OverviewRowsProps) {
