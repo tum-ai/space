@@ -1,11 +1,10 @@
-import { getServerSession } from "next-auth";
+import { getServerAuthSession } from "server/auth";
 import { Navigation } from "./components/navigation";
 import { User } from "./components/user";
 import Link from "next/link";
-import { authOptions } from "server/auth";
 
 async function Header() {
-  const session = await getServerSession(authOptions);
+  const session = await getServerAuthSession();
 
   return (
     <header className="w-full">
