@@ -3,7 +3,7 @@ import { Button } from "@components/ui/button";
 import Input from "@components/Input";
 import { Section } from "@components/Section";
 import { useRouter } from "next/navigation";
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 import { useForm } from "react-hook-form";
 import { env } from "env.mjs";
 import { z } from "zod";

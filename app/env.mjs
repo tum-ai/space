@@ -13,6 +13,8 @@ export const env = createEnv({
     NEXT_PUBLIC_ENVIRONMENT: z.enum(["development", "production", "preview"]),
     NEXT_PUBLIC_TALLY_SIGNING_SECRET: z.string(),
     NEXT_PUBLIC_VERCEL_ENV: z.enum(["development", "production", "preview"]),
+    NEXT_PUBLIC_SLACK_CLIENT_ID: z.string(),
+    NEXT_PUBLIC_SLACK_CLIENT_SECRET: z.string(),
   },
   /*
    * Due to how Next.js bundles environment variables on Edge and Client,
@@ -26,5 +28,8 @@ export const env = createEnv({
     NEXT_PUBLIC_TALLY_SIGNING_SECRET:
       process.env.NEXT_PUBLIC_TALLY_SIGNING_SECRET ?? "",
     NEXT_PUBLIC_VERCEL_ENV: process.env.NEXT_PUBLIC_VERCEL_ENV,
+    NEXT_PUBLIC_SLACK_CLIENT_ID: process.env.NEXT_PUBLIC_SLACK_CLIENT_ID,
+    NEXT_PUBLIC_SLACK_CLIENT_SECRET:
+      process.env.NEXT_PUBLIC_SLACK_CLIENT_SECRET,
   },
 });
