@@ -14,7 +14,13 @@ import { getServerSession } from "next-auth";
 import Link from "next/link";
 
 export const User = async () => {
-  const { user } = await getServerSession(authOptions);
+  const session = await getServerSession(authOptions);
+  const user = session?.user;
+
+  if (!user) {
+    return <></>;
+  }
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
@@ -23,9 +29,9 @@ export const User = async () => {
         }
       >
         <Avatar>
-          <AvatarImage src={user.image} />
+          <AvatarImage src={user.image ?? undefined} />
           <AvatarFallback>
-            {`${user.firstName[0]}${user.lastName[0]}`}
+            {`${user.firstName?.at(0)}${user.lastName?.at(0)}`}
           </AvatarFallback>
         </Avatar>
         <p className="hidden sm:flex">

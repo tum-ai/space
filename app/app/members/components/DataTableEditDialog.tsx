@@ -32,10 +32,9 @@ import {
   CardHeader,
   CardDescription,
   CardTitle,
-  CardFooter,
 } from "@components/ui/card";
 
-export default function DataTableEditDialog({ rows, tableData, ...props }) {
+export default function DataTableEditDialog({ rows, tableData }) {
   const [assign, setAssign] = useState("add");
   const [rowData, setRowData] = useState([]);
   const [departments, setDepartments] = useState([]);
@@ -265,7 +264,7 @@ export default function DataTableEditDialog({ rows, tableData, ...props }) {
                               </SelectTrigger>
                               <SelectContent>
                                 <SelectGroup>
-                                  {roles.map((role) => (
+                                  {roles?.map((role) => (
                                     <SelectItem
                                       key={role.label}
                                       value={role.value}
