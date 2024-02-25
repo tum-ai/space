@@ -1,9 +1,9 @@
 "use client";
-import DetailedInfoCard from "../components/DetailedInfoCard";
+import DetailedInfoCard from "./components/DetailedInfoCard";
 import { AreaGraph } from "@components/Graph/AreaGraph";
 import Select from "@components/Select";
 import { useState } from "react";
-import ClickableInfoCard from "../components/ClickableInfoCard";
+import ClickableInfoCard from "./components/ClickableInfoCard";
 import { PersonIcon } from "@radix-ui/react-icons";
 import { Card } from "@components/ui/card";
 import { Button } from "@components/ui/button";
