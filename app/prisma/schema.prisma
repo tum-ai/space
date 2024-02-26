@@ -95,16 +95,16 @@ model Department {
 }
 
 model DepartmentMembership {
-  id                 Int                @id @default(autoincrement())
-  userId             String?
-  departmentId       Int?
-  membershipStart    DateTime
-  membershipEnd      DateTime?
-  departmentPosition DepartmentPosition
-  createdAt          DateTime           @default(now())
-  updatedAt          DateTime           @updatedAt
-  department         Department?        @relation(fields: [departmentId], references: [id])
-  user               User?              @relation(fields: [userId], references: [id])
+  id              Int            @id @default(autoincrement())
+  userId          String?
+  departmentId    Int?
+  membershipStart DateTime
+  membershipEnd   DateTime?
+  role            DepartmentRole
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+  department      Department?    @relation(fields: [departmentId], references: [id])
+  user            User?          @relation(fields: [userId], references: [id])
 }
 
 model Opportunity {
@@ -197,7 +197,7 @@ enum ContactType {
   PHONE
 }
 
-enum DepartmentPosition {
+enum DepartmentRole {
   PRESIDENT
   HEAD_OF_DEPARTMENT
   BOARD_MEMBER
