@@ -27,7 +27,7 @@ export const QuestionSchema = z
   );
 
 export const FormSchema = z.object({
-  formName: z.string(),
+  name: z.string(),
   questions: z.array(QuestionSchema),
 });
 

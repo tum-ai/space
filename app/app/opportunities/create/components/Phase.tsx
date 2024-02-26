@@ -1,8 +1,3 @@
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@components/ui/popover";
 import { Badge } from "@components/ui/badge";
 import {
   UseFieldArrayRemove,
@@ -10,13 +5,12 @@ import {
   useFieldArray,
   useFormContext,
 } from "react-hook-form";
-import { TrashIcon } from "@radix-ui/react-icons";
 import { Button } from "@components/ui/button";
-import { PopoverClose } from "@radix-ui/react-popover";
 import { Separator } from "@components/ui/separator";
 import { z } from "zod";
 import { FullFormSchema, PhaseSchema } from "../schema";
-import { Card } from "@components/ui/card";
+import { AddQuestionairePopover } from "./AddQuestionairePopover";
+import { X } from "lucide-react";
 
 interface Props {
   index: number;
@@ -25,9 +19,13 @@ interface Props {
   update: UseFieldArrayUpdate<z.infer<typeof FullFormSchema>, "defineSteps">;
 }
 
-export default function Phase({ index, phase, remove }: Props) {
+export default function Phase({ index, phase, remove: removePhase }: Props) {
   const form = useFormContext<z.infer<typeof FullFormSchema>>();
-  const { fields: questionaires } = useFieldArray({
+  const {
+    fields: questionaires,
+    append,
+    remove,
+  } = useFieldArray({
     control: form.control,
     name: `defineSteps.${index}.forms`,
   });
@@ -37,44 +35,34 @@ export default function Phase({ index, phase, remove }: Props) {
       <div className="flex h-14 w-5/6 items-center justify-between">
         <div className="flex items-center space-x-1.5 text-sm font-medium">
           <Badge variant="secondary">{index + 1}</Badge>
-          <h4>{phase.name}</h4>
+          <h4 className="scroll-m-20 text-xl font-semibold tracking-tight">
+            {phase.name}
+          </h4>
         </div>
-        <Button onClick={() => remove(index)} size="icon" variant="ghost">
-          <TrashIcon width={18} height={18} />
+        <Button onClick={() => removePhase(index)} size="icon" variant="ghost">
+          <X />
         </Button>
       </div>
       <Separator className="mb-4 mt-1 h-[2px]" />
       <div className="flex h-full w-4/5 flex-col items-center justify-center gap-2">
-        {questionaires.map((form, index) => (
-          <Card
-            key={form.id + index}
-            className="flex w-full items-center justify-between py-2 pl-3 text-sm font-light hover:bg-gray-100"
+        {questionaires.map((questionaire, index) => (
+          <div
+            key={questionaire.id + index}
+            className="flex w-full justify-between rounded-md border border-input bg-background"
           >
-            <Button className="mr-3 text-gray-300 transition-colors duration-100 ease-in-out hover:text-gray-800">
-              <TrashIcon width={18} height={18} />
+            <Button
+              className="w-full justify-start"
+              variant="ghost"
+              type="button"
+            >
+              {questionaire.name}
             </Button>
-          </Card>
+            <Button variant="ghost" type="button" onClick={() => remove(index)}>
+              <X />
+            </Button>
+          </div>
         ))}
-        <Popover>
-          <PopoverTrigger asChild>
-            <Button variant="outline" className="w-full">
-              + add form
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-80">
-            <div className="grid gap-4">
-              <div className="space-y-2">
-                <h4 className="font-medium leading-none">Forms</h4>
-                <p className="text-sm text-muted-foreground">
-                  Add spcialized forms to phases.
-                </p>
-              </div>
-              <PopoverClose asChild>
-                <Button variant="secondary">Add</Button>
-              </PopoverClose>
-            </div>
-          </PopoverContent>
-        </Popover>
+        <AddQuestionairePopover append={append} />
       </div>
     </div>
   );
