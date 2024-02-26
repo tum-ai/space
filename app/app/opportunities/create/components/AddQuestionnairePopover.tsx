@@ -6,7 +6,7 @@ import {
   PopoverTrigger,
 } from "@components/ui/popover";
 import { SubmitHandler, UseFieldArrayAppend, useForm } from "react-hook-form";
-import { FormSchema, FullFormSchema, PhaseSchema } from "../schema";
+import { FormSchema, FullFormSchema } from "../schema";
 import { z } from "zod";
 import { useState } from "react";
 import {
@@ -25,7 +25,7 @@ interface AddQuestionairePopoverProps {
   >;
 }
 
-export const AddQuestionairePopover = ({
+export const AddQuestionnairePopover = ({
   append,
 }: AddQuestionairePopoverProps) => {
   const [popoverOpen, setPopoverOpen] = useState(false);
@@ -47,7 +47,7 @@ export const AddQuestionairePopover = ({
           variant="secondary"
           className="w-full text-sm font-medium text-gray-300 dark:text-gray-600"
         >
-          + Add Questionaire
+          + Add questionaire
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-80 space-y-4">

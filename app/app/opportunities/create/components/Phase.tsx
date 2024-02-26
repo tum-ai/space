@@ -9,7 +9,7 @@ import { Button } from "@components/ui/button";
 import { Separator } from "@components/ui/separator";
 import { z } from "zod";
 import { FullFormSchema, PhaseSchema } from "../schema";
-import { AddQuestionairePopover } from "./AddQuestionairePopover";
+import { AddQuestionnairePopover } from "./AddQuestionnairePopover";
 import { X } from "lucide-react";
 
 interface Props {
@@ -62,7 +62,7 @@ export default function Phase({ index, phase, remove: removePhase }: Props) {
             </Button>
           </div>
         ))}
-        <AddQuestionairePopover append={append} />
+        <AddQuestionnairePopover append={append} />
       </div>
     </div>
   );

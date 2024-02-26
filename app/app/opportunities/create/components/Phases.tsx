@@ -33,7 +33,7 @@ export function Phases() {
             <Separator className="mb-4 mt-1 h-[2px]" />
 
             <div className="w-full p-2 text-center text-sm font-light text-gray-300 dark:text-gray-600">
-              Add phases to define forms
+              Add phases to define questionnaires
             </div>
           </div>
         </div>
