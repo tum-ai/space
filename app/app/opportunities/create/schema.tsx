@@ -23,6 +23,7 @@ export const QuestionSchema = z
       data.type !== "select" || (data.options && data.options.length > 0),
     {
       message: "Options are required when type is 'select'.",
+      path: ["type"],
     },
   );
 

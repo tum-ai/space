@@ -4,6 +4,7 @@ import {
   useForm,
 } from "react-hook-form";
 import {
+  Form,
   FormControl,
   FormField,
   FormItem,
@@ -70,66 +71,67 @@ export const Question = ({
         </Button>
       </DialogTrigger>
       <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Edit question</DialogTitle>
-          <DialogDescription>
-            This is a question that will be asked screeners
-          </DialogDescription>
+        <Form {...form}>
+          <DialogHeader>
+            <DialogTitle>Edit question</DialogTitle>
+            <DialogDescription>
+              This is a question that will be asked screeners
+            </DialogDescription>
 
-          <FormField
-            control={form.control}
-            name="type"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Type</FormLabel>
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
+            <FormField
+              control={form.control}
+              name="type"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Type</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select a question type" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="select">Select</SelectItem>
+                      <SelectItem value="textarea">Textarea</SelectItem>
+                      <SelectItem value="slider">Slider</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="question"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Question</FormLabel>
                   <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select a question type" />
-                    </SelectTrigger>
+                    <Input placeholder="Is this applicant good?" {...field} />
                   </FormControl>
-                  <SelectContent>
-                    <SelectItem value="select">Select</SelectItem>
-                    <SelectItem value="textarea">Textarea</SelectItem>
-                    <SelectItem value="slider">Slider</SelectItem>
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-          <FormField
-            control={form.control}
-            name="question"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Question</FormLabel>
-                <FormControl>
-                  <Input placeholder="Is this applicant good?" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <div className="grid w-full grid-cols-2 gap-2 pt-8">
-            <Button variant="destructive" onClick={() => remove(index)}>
-              Remove
-            </Button>
-            <Button
-              variant="secondary"
-              onClick={() => {
-                update(index, form.getValues());
-              }}
-            >
-              Save
-            </Button>
-          </div>
-        </DialogHeader>
+            <div className="grid w-full grid-cols-2 gap-2 pt-8">
+              <Button variant="destructive" onClick={() => remove(index)}>
+                Remove
+              </Button>
+              <Button
+                variant="secondary"
+                // eslint-disable-next-line @typescript-eslint/no-misused-promises
+                onClick={form.handleSubmit((data) => update(index, data))}
+              >
+                Save
+              </Button>
+            </div>
+          </DialogHeader>
+        </Form>
       </DialogContent>
     </Dialog>
   );
