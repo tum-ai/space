@@ -5,7 +5,7 @@ import { z } from "zod";
 import { FullFormSchema } from "../schema";
 import { CardDescription, CardTitle } from "@components/ui/card";
 import { Button } from "@components/ui/button";
-import { Question } from "./Question";
+import { Question } from "./question";
 
 interface Props {
   selected: [number, number]; // index of selected phase and questionnaire

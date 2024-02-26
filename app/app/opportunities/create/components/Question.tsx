@@ -1,12 +1,10 @@
 import {
-  SubmitHandler,
   UseFieldArrayRemove,
   UseFieldArrayUpdate,
   useForm,
 } from "react-hook-form";
 import {
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,

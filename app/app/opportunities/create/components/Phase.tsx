@@ -9,7 +9,7 @@ import { Button } from "@components/ui/button";
 import { Separator } from "@components/ui/separator";
 import { z } from "zod";
 import { FullFormSchema, PhaseSchema } from "../schema";
-import { AddQuestionnairePopover } from "./AddQuestionnairePopover";
+import { AddQuestionnairePopover } from "./addQuestionnairePopover";
 import { X } from "lucide-react";
 import { Dispatch, SetStateAction } from "react";
 

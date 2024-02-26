@@ -8,11 +8,10 @@ import { z } from "zod";
 import { FullFormSchema } from "./schema";
 import { ArrowRightIcon } from "@radix-ui/react-icons";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Phases } from "./components/Phases";
+import { Phases } from "./components/phases";
 
 export default function CreateOpportunity() {
   const form = useForm<z.infer<typeof FullFormSchema>>({
-    mode: "all",
     resolver: zodResolver(FullFormSchema),
     defaultValues: {
       generalInformation: {
@@ -54,7 +53,10 @@ export default function CreateOpportunity() {
           </TabsList>
         </div>
         <Form {...form}>
-          <form onSubmit={void form.handleSubmit(onSubmit)}>
+          <form
+            // eslint-disable-next-line @typescript-eslint/no-misused-promises
+            onSubmit={form.handleSubmit(onSubmit, (err) => console.error(err))}
+          >
             <TabsContent value="general">
               <GeneralInformation />
             </TabsContent>

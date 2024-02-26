@@ -26,14 +26,14 @@ export const QuestionSchema = z
     },
   );
 
-export const FormSchema = z.object({
-  name: z.string(),
+export const QuestionnaireSchema = z.object({
+  name: z.string().min(1, "Questionnaire name is required"),
   questions: z.array(QuestionSchema),
 });
 
 export const PhaseSchema = z.object({
-  name: z.string(),
-  forms: z.array(FormSchema),
+  name: z.string().min(1, "Phase name is required"),
+  forms: z.array(QuestionnaireSchema),
 });
 
 export const GeneralInformationSchema = z

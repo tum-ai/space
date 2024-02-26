@@ -6,10 +6,11 @@ import {
   PopoverTrigger,
 } from "@components/ui/popover";
 import { SubmitHandler, UseFieldArrayAppend, useForm } from "react-hook-form";
-import { FormSchema, FullFormSchema } from "../schema";
+import { QuestionnaireSchema, FullFormSchema } from "../schema";
 import { z } from "zod";
 import { useState } from "react";
 import {
+  Form,
   FormControl,
   FormField,
   FormItem,
@@ -29,12 +30,14 @@ export const AddQuestionnairePopover = ({
   append,
 }: AddQuestionairePopoverProps) => {
   const [popoverOpen, setPopoverOpen] = useState(false);
-  const form = useForm<z.infer<typeof FormSchema>>({
-    resolver: zodResolver(FormSchema),
+  const form = useForm<z.infer<typeof QuestionnaireSchema>>({
+    resolver: zodResolver(QuestionnaireSchema),
     defaultValues: { name: "", questions: [] },
   });
 
-  const onSubmit: SubmitHandler<z.infer<typeof FormSchema>> = (data) => {
+  const onSubmit: SubmitHandler<z.infer<typeof QuestionnaireSchema>> = (
+    data,
+  ) => {
     append({ name: data.name, questions: [] });
     form.reset();
     setPopoverOpen(false);
@@ -51,34 +54,34 @@ export const AddQuestionnairePopover = ({
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-80 space-y-4">
-        <h4 className="scroll-m-20 text-xl font-semibold tracking-tight">
-          Add Questionaire
-        </h4>
+        <Form {...form}>
+          <h4 className="scroll-m-20 text-xl font-semibold tracking-tight">
+            Add Questionaire
+          </h4>
 
-        <FormField
-          control={form.control}
-          name="name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Name</FormLabel>
-              <FormControl>
-                <Input placeholder="Screening" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+          <FormField
+            control={form.control}
+            name="name"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Name*</FormLabel>
+                <FormControl>
+                  <Input placeholder="General" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-        <Button
-          variant="secondary"
-          className="w-full"
-          onClick={() => {
-            // TODO: Fix handle submit not validating
-            onSubmit(form.getValues());
-          }}
-        >
-          Add
-        </Button>
+          <Button
+            variant="secondary"
+            className="w-full"
+            // eslint-disable-next-line @typescript-eslint/no-misused-promises
+            onClick={form.handleSubmit(onSubmit, (err) => console.error(err))}
+          >
+            Add
+          </Button>
+        </Form>
       </PopoverContent>
     </Popover>
   );

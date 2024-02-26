@@ -1,12 +1,12 @@
 import { useFieldArray, useFormContext } from "react-hook-form";
-import { Button } from "@components/ui/button";
 import { FullFormSchema } from "../schema";
-import Phase from "./Phase";
+import Phase from "./phase";
 import { z } from "zod";
-import { AddPhasePopover } from "./AddPhasePopover";
+import { AddPhasePopover } from "./addPhasePopover";
 import { Separator } from "@components/ui/separator";
 import { useState } from "react";
-import { Questionnaires } from "./Questionnaires";
+import { Questionnaires } from "./questionnaires";
+import { Button } from "@components/ui/button";
 
 export function Phases() {
   const form = useFormContext<z.infer<typeof FullFormSchema>>();

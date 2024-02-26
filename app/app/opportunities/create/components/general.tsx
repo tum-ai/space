@@ -1,8 +1,6 @@
-"use client";
-
 import React from "react";
 import { Input } from "@components/ui/input";
-import { MemberBar, AddMemberBar } from "./MemberBar";
+import { MemberBar, AddMemberBar } from "./memberBar";
 import { Button } from "@components/ui/button";
 import {
   FormControl,
