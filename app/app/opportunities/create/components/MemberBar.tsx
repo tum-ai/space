@@ -42,7 +42,7 @@ export const MemberBar = ({ member, onDelete }: MemberBarProps) => {
         </div>
       </div>
       {onDelete && (
-        <Button size="icon" onClick={onDelete} className="text-gray-300">
+        <Button size="icon" onClick={onDelete} variant="ghost">
           <TrashIcon width={24} height={24} />
         </Button>
       )}
