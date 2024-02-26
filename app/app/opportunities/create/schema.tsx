@@ -1,13 +1,13 @@
 import { z } from "zod";
 
-const PersonSchema = z.object({
+export const PersonSchema = z.object({
   id: z.string(),
   name: z.string(),
   tags: z.array(z.object({ text: z.string(), color: z.string() })),
   image: z.string(),
 });
 
-const QuestionSchema = z
+export const QuestionSchema = z
   .object({
     type: z.union([
       z.literal("select"),
@@ -26,14 +26,14 @@ const QuestionSchema = z
     },
   );
 
-const FormSchema = z.object({
+export const FormSchema = z.object({
   formName: z.string(),
   questions: z.array(QuestionSchema),
 });
 
-const PhaseSchema = z.object({
-  phaseName: z.string(),
-  forms: z.array(FormSchema).min(1, "At least one form required"),
+export const PhaseSchema = z.object({
+  name: z.string(),
+  forms: z.array(FormSchema),
 });
 
 export const GeneralInformationSchema = z

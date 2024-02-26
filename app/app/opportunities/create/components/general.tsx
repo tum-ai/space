@@ -12,7 +12,7 @@ import {
   FormMessage,
 } from "@components/ui/form";
 import { Textarea } from "@components/ui/textarea";
-import { UseFormReturn, useFieldArray } from "react-hook-form";
+import { useFieldArray, useFormContext } from "react-hook-form";
 import {
   Popover,
   PopoverContent,
@@ -34,11 +34,9 @@ interface Tag {
 
 export type Member = Pick<User, "id" | "name" | "image"> & { tags: Tag[] };
 
-interface Props {
-  form: UseFormReturn<z.infer<typeof FullFormSchema>>;
-}
+export function GeneralInformation() {
+  const form = useFormContext<z.infer<typeof FullFormSchema>>();
 
-export function GeneralInformation({ form }: Props) {
   return (
     <div className="grid grid-cols-2 gap-6">
       <FormField
@@ -168,15 +166,14 @@ export function GeneralInformation({ form }: Props) {
         />
       </div>
 
-      <MemberSection form={form} />
+      <MemberSection />
     </div>
   );
 }
 
-interface MemberSectionProps {
-  form: Props["form"];
-}
-const MemberSection = ({ form }: MemberSectionProps) => {
+const MemberSection = () => {
+  const form = useFormContext<z.infer<typeof FullFormSchema>>();
+
   const {
     fields: admins,
     remove,

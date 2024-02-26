@@ -2,7 +2,7 @@ import Tag from "@components/Tag";
 import { Card } from "@components/ui/card";
 import { TrashIcon } from "@radix-ui/react-icons";
 import Image from "next/image";
-import { Member } from "./GeneralInformation";
+import { Member } from "./general";
 import { Button } from "@components/ui/button";
 import {
   Dialog,

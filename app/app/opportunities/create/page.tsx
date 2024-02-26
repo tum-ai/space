@@ -1,7 +1,6 @@
 "use client";
 
-import { GeneralInformation } from "./components/GeneralInformation";
-import { DefineSteps } from "./components/DefineSteps";
+import { GeneralInformation } from "./components/general";
 import { Tabs, TabsTrigger, TabsContent, TabsList } from "@components/ui/tabs";
 import { Form } from "@components/ui/form";
 import { UseFormReturn, useForm } from "react-hook-form";
@@ -9,6 +8,7 @@ import { z } from "zod";
 import { FullFormSchema } from "./schema";
 import { ArrowRightIcon, CheckIcon, Cross2Icon } from "@radix-ui/react-icons";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Phases } from "./components/Phases";
 
 interface CreateOpportunityHeaderProps {
   form: UseFormReturn<z.infer<typeof FullFormSchema>>;
@@ -73,10 +73,11 @@ export default function CreateOpportunity() {
         <Form {...form}>
           <form onSubmit={void form.handleSubmit(onSubmit)}>
             <TabsContent value="general">
-              <GeneralInformation form={form} />
+              <GeneralInformation />
             </TabsContent>
+
             <TabsContent value="steps">
-              <DefineSteps form={form} />
+              <Phases />
             </TabsContent>
           </form>
         </Form>
