@@ -177,7 +177,11 @@ interface MemberSectionProps {
   form: Props["form"];
 }
 const MemberSection = ({ form }: MemberSectionProps) => {
-  const { fields: admins, remove: removeAdmins } = useFieldArray({
+  const {
+    fields: admins,
+    remove,
+    append,
+  } = useFieldArray({
     control: form.control,
     name: "generalInformation.admins",
   });
@@ -193,10 +197,10 @@ const MemberSection = ({ form }: MemberSectionProps) => {
             <MemberBar
               key={member.id}
               member={member}
-              onDelete={() => removeAdmins(index)}
+              onDelete={() => remove(index)}
             />
           ))}
-          <AddMemberBar text={`+ Add Admin`} />
+          <AddMemberBar append={append}>+ Add admin</AddMemberBar>
         </div>
       </div>
     </div>
