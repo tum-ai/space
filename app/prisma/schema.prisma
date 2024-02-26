@@ -186,7 +186,7 @@ enum SpaceRole {
 }
 
 enum OpportunityRole {
-  OWNER
+  ADMIN
   SCREENER
 }
 

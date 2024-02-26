@@ -3,14 +3,10 @@ import Tag from "@components/Tag";
 import { Card } from "@components/ui/card";
 import { TrashIcon } from "@radix-ui/react-icons";
 import Image from "next/image";
+import { Member } from "./GeneralInformation";
 
 interface DisplayMember {
-  photoUrl?: string;
-  name: string;
-  tags?: {
-    text: string;
-    color: string;
-  }[];
+  member: Member;
   onDelete?: () => void;
 }
 
@@ -30,8 +26,8 @@ export function MemberBar(props: DisplayMember) {
         <div className="flex items-center gap-2 truncate">
           <h2 className="text-md">{props.name}</h2>
           {props.tags?.map((tag) => {
-              return <Tag key={tag.text} text={tag.text} color={tag.color} />;
-            })}
+            return <Tag key={tag.text} text={tag.text} color={tag.color} />;
+          })}
         </div>
       </div>
       {props.onDelete && (

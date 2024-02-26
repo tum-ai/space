@@ -1,89 +1,22 @@
 "use client";
 
-import GeneralInformation from "./components/GeneralInformation";
-import DefineSteps from "./components/DefineSteps";
+import { GeneralInformation } from "./components/GeneralInformation";
+import { DefineSteps } from "./components/DefineSteps";
 import { Tabs, TabsTrigger, TabsContent, TabsList } from "@components/ui/tabs";
-import { Section } from "@components/Section";
 import { Form } from "@components/ui/form";
-import { useForm } from "react-hook-form";
+import { UseFormReturn, useForm } from "react-hook-form";
 import { z } from "zod";
 import { FullFormSchema } from "./schema";
 import { ArrowRightIcon, CheckIcon, Cross2Icon } from "@radix-ui/react-icons";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-function submitOpportunity(values) {
-  console.log(values);
+interface CreateOpportunityHeaderProps {
+  form: UseFormReturn<z.infer<typeof FullFormSchema>>;
 }
-
-const mockMembers = [
-  {
-    memberId: "1",
-    memberName: "Simon Huang",
-    tags: [
-      { text: "Owner", color: "yellow" },
-      { text: "Development", color: "blue" },
-    ],
-    photoUrl: "https://placekitten.com/200/200",
-  },
-  {
-    memberId: "2",
-    memberName: "Max von Storch",
-    tags: [{ text: "RnD", color: "green" }],
-    photoUrl: "https://placekitten.com/201/201",
-  },
-  {
-    memberId: "3",
-    memberName: "Tim Baum",
-    tags: [{ text: "Legal and finance", color: "orange" }],
-    photoUrl: "https://placekitten.com/202/202",
-  },
-];
-
-// TODO: defaultValues should be retrieved from DB and passed
-const defaultSchemaValues2 = {
-  generalInformation: {
-    tallyID: "",
-    name: "",
-    begin: undefined,
-    end: undefined,
-    description: "",
-    admins: [],
-    screeners: [],
-  },
-  defineSteps: [],
-};
-
-export default function CreateOpportunity( defaultValues ) {
-  const form = useForm<z.infer<typeof FullFormSchema>>({
-    mode: 'all',
-    resolver: zodResolver(FullFormSchema),
-    defaultValues: defaultSchemaValues2,
-  });
-
-  return (
-    <Section>
-      <Tabs defaultValue="general">
-        <CreateOpportunityHeader form={form} />
-        <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit((values) => submitOpportunity(values))}
-          >
-            <TabsContent value="general">
-              <GeneralInformation form={form} members={mockMembers} />
-            </TabsContent>
-            <TabsContent value="steps">
-              <DefineSteps form={form} />
-            </TabsContent>
-          </form>
-        </Form>
-      </Tabs>
-    </Section>
-  );
-}
-
-function CreateOpportunityHeader({ form }) {
+function CreateOpportunityHeader({ form }: CreateOpportunityHeaderProps) {
   const isFormSubmitted = form.formState.isSubmitted;
-  const hasNoGeneralInformationErrors = (!form.formState.errors.generalInformation) && isFormSubmitted;
+  const hasNoGeneralInformationErrors =
+    !form.formState.errors.generalInformation && isFormSubmitted;
 
   return (
     <div className="mb-12 flex flex-col space-y-6">
@@ -97,13 +30,57 @@ function CreateOpportunityHeader({ form }) {
       <TabsList className="self-center">
         <TabsTrigger value="general">
           <div className="flex flex-row items-center space-x-1">
-            {hasNoGeneralInformationErrors ? <CheckIcon className="w-4 h-4 text-green-500"/> : <Cross2Icon className="w-4 h-4 text-red-500"/>}
+            {hasNoGeneralInformationErrors ? (
+              <CheckIcon className="h-4 w-4 text-green-500" />
+            ) : (
+              <Cross2Icon className="h-4 w-4 text-red-500" />
+            )}
             <p>General information</p>
           </div>
         </TabsTrigger>
         <ArrowRightIcon className="mx-2 h-5 w-5" />
         <TabsTrigger value="steps">Define steps</TabsTrigger>
       </TabsList>
+    </div>
+  );
+}
+
+export default function CreateOpportunity() {
+  const form = useForm<z.infer<typeof FullFormSchema>>({
+    mode: "all",
+    resolver: zodResolver(FullFormSchema),
+    defaultValues: {
+      generalInformation: {
+        tallyID: "",
+        title: "",
+        start: undefined,
+        end: undefined,
+        description: "",
+        admins: [],
+        screeners: [],
+      },
+      defineSteps: [],
+    },
+  });
+
+  function onSubmit(values: z.infer<typeof FullFormSchema>) {
+    console.log(values);
+  }
+  return (
+    <div className="h-full p-8">
+      <Tabs defaultValue="general">
+        <CreateOpportunityHeader form={form} />
+        <Form {...form}>
+          <form onSubmit={void form.handleSubmit(onSubmit)}>
+            <TabsContent value="general">
+              <GeneralInformation form={form} />
+            </TabsContent>
+            <TabsContent value="steps">
+              <DefineSteps form={form} />
+            </TabsContent>
+          </form>
+        </Form>
+      </Tabs>
     </div>
   );
 }

@@ -1,7 +1,6 @@
 "use client";
 
 import { Card } from "@components/ui/card";
-import { Section } from "@components/Section";
 import Input from "@components/Input";
 import { TrashIcon } from "lucide-react";
 import { Button } from "@components/ui/button";
@@ -17,7 +16,7 @@ export interface Question {
 }
 
 export default function DefineQuestions({ formData }) {
-  const {form, questionField, appendQuestion, removeQuestion} = formData;
+  const { form, questionField, appendQuestion, removeQuestion } = formData;
   const [formName, setFormName] = useState("");
   const [numberOfReview, setNumberOfReview] = useState(0);
   //List of already saved questions
@@ -92,7 +91,6 @@ export default function DefineQuestions({ formData }) {
   };
 
   console.log(questionField);
-
 
   return (
     <Card className="flex flex-col gap-8 p-4">

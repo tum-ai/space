@@ -10,7 +10,6 @@ export default function Form({
   removeForm,
   control,
 }) {
-
   const {
     fields: questionFields,
     append: appendQuestion,
@@ -23,7 +22,14 @@ export default function Form({
   return (
     <Card
       className="flex w-full items-center justify-between py-2 pl-3 text-sm font-light hover:bg-gray-100"
-      onClick={() => questionHandler(formName, questionFields, appendQuestion, removeQuestion)}
+      onClick={() =>
+        questionHandler(
+          formName,
+          questionFields,
+          appendQuestion,
+          removeQuestion,
+        )
+      }
     >
       {formName}
       <button

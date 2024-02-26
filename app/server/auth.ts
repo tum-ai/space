@@ -1,7 +1,7 @@
 import { AuthOptions, DefaultSession, getServerSession } from "next-auth";
 import SlackProvider from "next-auth/providers/slack";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
-import prisma from "server/db";
+import { db } from "server/db";
 import { env } from "env.mjs";
 import { SpaceRole } from "@prisma/client";
 
@@ -26,7 +26,7 @@ declare module "next-auth" {
 }
 
 export const authOptions: AuthOptions = {
-  adapter: PrismaAdapter(prisma),
+  adapter: PrismaAdapter(db),
   secret: process.env.NEXTAUTH_SECRET,
   pages: {
     signIn: "/auth",

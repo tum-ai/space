@@ -1,10 +1,10 @@
 import { z } from "zod";
 
 const PersonSchema = z.object({
-  memberId: z.string(),
-  memberName: z.string(),
-  tags: z.array(z.object({ text: z.string(), color: z.string() })).optional(),
-  photoUrl: z.string(),
+  id: z.string(),
+  name: z.string(),
+  tags: z.array(z.object({ text: z.string(), color: z.string() })),
+  image: z.string(),
 });
 
 const QuestionSchema = z
@@ -36,11 +36,11 @@ const PhaseSchema = z.object({
   forms: z.array(FormSchema).min(1, "At least one form required"),
 });
 
-const GeneralInformationSchema = z
+export const GeneralInformationSchema = z
   .object({
     tallyID: z.string().min(1, "TallyID is required"),
-    name: z.string().min(1, "Opportunity name is required"),
-    begin: z
+    title: z.string().min(1, "Opportunity name is required"),
+    start: z
       .date()
       .refine(
         (date) => date.toString() !== "Invalid Date",
@@ -58,7 +58,7 @@ const GeneralInformationSchema = z
   })
   .refine(
     (data) => {
-      return data.begin && data.end && data.begin <= data.end;
+      return data.start && data.end && data.start <= data.end;
     },
     {
       message: "Begin date must be before end date",
@@ -66,10 +66,7 @@ const GeneralInformationSchema = z
     },
   );
 
-
-const FullFormSchema = z.object({
+export const FullFormSchema = z.object({
   generalInformation: GeneralInformationSchema,
   defineSteps: z.array(PhaseSchema).min(1, "Add at least one phase"),
 });
-
-export { FullFormSchema };
