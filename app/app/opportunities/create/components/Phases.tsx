@@ -5,14 +5,20 @@ import Phase from "./Phase";
 import { z } from "zod";
 import { AddPhasePopover } from "./AddPhasePopover";
 import { Separator } from "@components/ui/separator";
+import { useState } from "react";
+import { Questionnaires } from "./Questionnaires";
 
 export function Phases() {
   const form = useFormContext<z.infer<typeof FullFormSchema>>();
-
   const { fields, append, remove, update } = useFieldArray({
     control: form.control,
     name: "defineSteps",
   });
+
+  const [selectedQuestionnaire, setSelectedQuestionnaire] = useState<
+    [number, number] | undefined
+  >(undefined);
+
   return (
     <div className="space-y-14">
       <div>
@@ -24,6 +30,7 @@ export function Phases() {
               phase={phase}
               remove={remove}
               update={update}
+              setSelectedQuestionnaire={setSelectedQuestionnaire}
             />
           ))}
 
@@ -39,7 +46,12 @@ export function Phases() {
         </div>
       </div>
 
-      {/* <DefineQuestions />*/}
+      {selectedQuestionnaire && (
+        <Questionnaires
+          key={`questionnaire-${selectedQuestionnaire[0]}-${selectedQuestionnaire[1]}`}
+          selected={selectedQuestionnaire}
+        />
+      )}
 
       <div className="flex justify-end">
         <Button type="submit">Create Opportunity</Button>
