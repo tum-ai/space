@@ -6,7 +6,7 @@ import {
   PopoverTrigger,
 } from "@components/ui/popover";
 import { SubmitHandler, UseFieldArrayAppend, useForm } from "react-hook-form";
-import { QuestionnaireSchema, FullFormSchema } from "../../../../lib/schemas/opportunity";
+import { QuestionnaireSchema, FullFormSchema } from "../../../../../lib/schemas/opportunity";
 import { z } from "zod";
 import { useState } from "react";
 import {

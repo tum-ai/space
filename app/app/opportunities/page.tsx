@@ -1,5 +1,5 @@
 "use client";
-import OpportunityCard from "./components/opportunityCard";
+import OpportunityCard from "./_components/opportunityCard";
 import { Button } from "@components/ui/button";
 import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
@@ -37,19 +37,9 @@ export default function OpportunitiesPage() {
 
         {isLoading && <LoadingWheel />}
 
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid auto-cols-max grid-flow-col gap-8">
           {opportunities?.map((item, index) => {
-            return (
-              <OpportunityCard
-                opportunity={item}
-                key={index}
-                count={
-                  applicationCounts?.find(
-                    (count) => count.opportunityId === item.id,
-                  ).count
-                }
-              />
-            );
+            return <OpportunityCard opportunity={item} key={index} count={0} />;
           })}
         </div>
       </div>

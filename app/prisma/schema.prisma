@@ -110,7 +110,7 @@ model DepartmentMembership {
 model Opportunity {
   id            Int                 @id @default(autoincrement())
   title         String
-  description   String
+  description   String?
   configuration Json
   start         DateTime
   end           DateTime?

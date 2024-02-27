@@ -2,7 +2,7 @@
 
 import { useFieldArray, useFormContext } from "react-hook-form";
 import { z } from "zod";
-import { FullFormSchema } from "../../../../lib/schemas/opportunity";
+import { FullFormSchema } from "../../../../../lib/schemas/opportunity";
 import { CardDescription, CardTitle } from "@components/ui/card";
 import { Button } from "@components/ui/button";
 import { QuestionForm } from "./question";

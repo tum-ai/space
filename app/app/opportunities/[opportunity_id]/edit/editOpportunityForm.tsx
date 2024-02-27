@@ -1,15 +1,14 @@
 "use client";
 
-import { GeneralInformation } from "../_components/general";
+import { GeneralInformation } from "./_components/general";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@components/ui/tabs";
 import { Form } from "@components/ui/form";
 import { UseFormProps, useForm } from "react-hook-form";
 import { z } from "zod";
 import { FullFormSchema } from "@lib/schemas/opportunity";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Phases } from "../_components/phases";
-import { TallyForm } from "../_components/tallyForm";
-import { api } from "trpc/react";
+import { Phases } from "./_components/phases";
+import { TallyForm } from "./_components/tallyForm";
 import { ArrowRightIcon } from "lucide-react";
 
 export interface EditOpportunityFormProps {
@@ -24,10 +23,8 @@ export const EditOpportunityForm = ({
     defaultValues: initialValues,
   });
 
-  const createMutation = api.opportunity.create.useMutation();
-  async function onSubmit(values: z.infer<typeof FullFormSchema>) {
+  function onSubmit(values: z.infer<typeof FullFormSchema>) {
     console.log(values);
-    await createMutation.mutateAsync(values);
   }
 
   return (
@@ -35,10 +32,12 @@ export const EditOpportunityForm = ({
       <div className="mb-12 flex flex-col space-y-6">
         <div className="flex flex-col gap-3">
           <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
-            Create new opportunity
+            Edit opportunity
           </h1>
 
-          <p className="text-muted-foreground">Configure a new opportunity</p>
+          <p className="text-muted-foreground">
+            Configure an existing opportunity
+          </p>
         </div>
         <TabsList className="self-center">
           <TabsTrigger value="general">General information</TabsTrigger>

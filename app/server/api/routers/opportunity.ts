@@ -1,27 +1,38 @@
 import { createTRPCRouter, protectedProcedure } from "server/api/trpc";
-import { FullFormSchema } from "@lib/schemas/opportunity";
+import { GeneralInformationSchema } from "@lib/schemas/opportunity";
 import { z } from "zod";
 
 export const opportunityRouter = createTRPCRouter({
   create: protectedProcedure
-    .input(FullFormSchema)
+    .input(GeneralInformationSchema)
     .mutation(async ({ input, ctx }) => {
-      const { generalInformation, defineSteps, ...rest } = input;
+      const admins = input.admins.map((user) => ({
+        user: { connect: { id: user.id } },
+        opportunityRole: "ADMIN" as const,
+      }));
 
-      const { title, description, start, end } = generalInformation;
+      const screeners = input.screeners.map((user) => ({
+        user: { connect: { id: user.id } },
+        opportunityRole: "SCREENER" as const,
+      }));
 
-      const data = {
-        title,
-        description,
-        start,
-        end,
-        configuration: {},
-      };
-
-      await ctx.db.opportunity.create({
-        data,
+      const opportunity = await ctx.db.opportunity.create({
+        data: {
+          title: input.title,
+          description: input.description,
+          start: input.start,
+          end: input.end,
+          configuration: {},
+          status: "MISSING_CONFIG",
+          users: {
+            create: [...admins, ...screeners],
+          },
+        },
       });
+
+      return opportunity.id;
     }),
+
   getById: protectedProcedure
     .input(z.object({ id: z.number() }))
     .query(async ({ input, ctx }) => {
