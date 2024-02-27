@@ -21,27 +21,26 @@ export function Phases() {
 
   return (
     <div className="space-y-14">
-      <div>
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 sm:gap-x-0 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-          {fields.map((phase, index) => (
-            <Phase
-              key={phase.name}
-              index={index}
-              phase={phase}
-              remove={remove}
-              update={update}
-              setSelectedQuestionnaire={setSelectedQuestionnaire}
-            />
-          ))}
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 sm:gap-x-0 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+        {fields.map((phase, index) => (
+          <Phase
+            key={phase.name}
+            index={index}
+            phase={phase}
+            remove={remove}
+            update={update}
+            setSelectedQuestionnaire={setSelectedQuestionnaire}
+          />
+        ))}
 
-          <div className="flex min-h-[250px] flex-col items-start">
-            <AddPhasePopover append={append} />
+        <div className="grid min-h-[250px] grid-rows-[3rem,_1fr]">
+          <AddPhasePopover append={append} />
 
-            <Separator className="mb-4 mt-1 h-[2px]" />
-
-            <div className="w-full p-2 text-center text-sm font-light text-gray-300 dark:text-gray-600">
+          <div>
+            <Separator />
+            <p className="mt-4 w-full text-center text-sm text-muted-foreground">
               Add phases to define questionnaires
-            </div>
+            </p>
           </div>
         </div>
       </div>
