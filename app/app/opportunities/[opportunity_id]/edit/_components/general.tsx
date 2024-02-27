@@ -23,7 +23,7 @@ import {
   FullFormSchema,
   GeneralInformationSchema,
   PersonSchema,
-} from "../../../../../lib/schemas/opportunity";
+} from "@lib/schemas/opportunity";
 import { z } from "zod";
 import { MemberSection } from "./memberSection";
 
