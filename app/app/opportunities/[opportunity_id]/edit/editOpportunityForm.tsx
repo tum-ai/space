@@ -12,7 +12,6 @@ import { TallyForm } from "./_components/tallyForm";
 import { ArrowRightIcon } from "lucide-react";
 import { api } from "trpc/react";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
 
 export interface EditOpportunityFormProps {
   initialValues: UseFormProps<z.infer<typeof FullFormSchema>>["defaultValues"];

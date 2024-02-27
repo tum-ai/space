@@ -20,7 +20,7 @@ const Auth = () => {
             onClick={() =>
               toast.promise(signIn("slack"), {
                 loading: "Logging in with slack",
-                success: "Welcome back",
+                success: "Redirecting to slack. See you soon!",
                 error: "Failed to login. Please retry later",
               })
             }

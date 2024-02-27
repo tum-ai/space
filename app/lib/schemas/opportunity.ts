@@ -40,7 +40,7 @@ export const GeneralInformationSchema = z
   })
   .refine(
     (data) => {
-      return data.start && data.end && data.start <= data.end;
+      return !data.end || data.start <= data.end;
     },
     {
       message: "Begin date must be before end date",

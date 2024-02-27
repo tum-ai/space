@@ -36,7 +36,7 @@ export const CreateOpportunityForm = () => {
         values.generalInformation,
       );
       toast.success("Successfully created opportunity", { id });
-      router.push(`/opportunities/edit/${opportunity.id}`);
+      router.push(`/opportunities/${opportunity.id}/edit`);
     } catch (err) {
       toast.error("Failed to create opportunity", { id });
     }
