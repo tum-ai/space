@@ -13,7 +13,9 @@ export default function OpportunitiesPage() {
     fetchOpportunities,
   );
 
-  const ids = opportunities?.map((item) => item.id);
+  const filteredOpportunities = opportunities?.filter(opportunity => opportunity.status !== 'MISSING_CONFIG');
+
+  const ids = filteredOpportunities?.map((item) => item.id);
 
   const { data: applicationCounts } = useQuery(
     ["reviews/numbers"],
@@ -38,7 +40,7 @@ export default function OpportunitiesPage() {
         {isLoading && <LoadingWheel />}
 
         <div className="grid grid-cols-3 gap-4">
-          {opportunities?.map((item, index) => {
+          {filteredOpportunities?.map((item, index) => {
             return (
               <OpportunityCard
                 opportunity={item}
