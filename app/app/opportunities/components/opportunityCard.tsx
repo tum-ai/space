@@ -36,13 +36,13 @@ export default function OpportunityCard({
         {opportunity.description}
       </CardContent>
       <CardFooter className="flex-cols flex gap-4">
-        <Link href={"./dashboard/" + +opportunity.id} className="w-full">
+        <Link href={"./opportunities/" + +opportunity.id+ "/dashboard"} className="w-full">
           <Button className="w-full">Dashboard</Button>
         </Link>
         <Link href={"./edit/" + +opportunity.id} className="w-full">
           <Button className="w-full">Edit</Button>
         </Link>
-        <Link href={"./reviews/" + +opportunity.id} className="w-full">
+        <Link href={"./opportunities/" + +opportunity.id} className="w-full">
           <Button className="w-full">View</Button>
         </Link>
       </CardFooter>
