@@ -2,6 +2,8 @@ import { getServerAuthSession } from "server/auth";
 import { Navigation } from "./components/navigation";
 import { User } from "./components/user";
 import Link from "next/link";
+import { LogIn } from "lucide-react";
+import { Button } from "@components/ui/button";
 
 async function Header() {
   const session = await getServerAuthSession();
@@ -11,7 +13,14 @@ async function Header() {
       <div className="flex w-full justify-between px-2 py-4">
         <Navigation />
         {session?.user && <User />}
-        {!session?.user && <Link href="/auth">Sign in</Link>}
+        {!session?.user && (
+          <Button asChild className="flex gap-2">
+            <Link href="/auth">
+              <LogIn />
+              Sign in
+            </Link>
+          </Button>
+        )}
       </div>
     </header>
   );
