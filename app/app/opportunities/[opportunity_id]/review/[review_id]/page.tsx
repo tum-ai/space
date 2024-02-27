@@ -83,8 +83,8 @@ export default function Review({ params }) {
               view === "application"
                 ? "col-span-2 block"
                 : view === "both"
-                ? "col-span-1"
-                : "hidden"
+                  ? "col-span-1"
+                  : "hidden"
             }
           >
             <ReviewInfoColumn application={mockApplicationData} />
@@ -94,8 +94,8 @@ export default function Review({ params }) {
               view === "review"
                 ? "col-span-2 block"
                 : view === "both"
-                ? "col-span-1"
-                : "hidden"
+                  ? "col-span-1"
+                  : "hidden"
             }
           >
             <ReviewInputColumn

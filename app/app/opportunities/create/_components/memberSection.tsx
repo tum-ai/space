@@ -1,6 +1,6 @@
 import React from "react";
 import { Button } from "@components/ui/button";
-import { useFieldArray, useFormContext, useWatch } from "react-hook-form";
+import { useFieldArray, useFormContext } from "react-hook-form";
 import { Plus, X } from "lucide-react";
 import { FullFormSchema } from "../schema";
 import { z } from "zod";

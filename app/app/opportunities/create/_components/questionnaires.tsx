@@ -5,7 +5,7 @@ import { z } from "zod";
 import { FullFormSchema } from "../schema";
 import { CardDescription, CardTitle } from "@components/ui/card";
 import { Button } from "@components/ui/button";
-import { Question } from "./question";
+import { QuestionForm } from "./question";
 
 interface Props {
   selected: [number, number]; // index of selected phase and questionnaire
@@ -31,7 +31,7 @@ export const Questionnaires = ({ selected }: Props) => {
       </div>
       <div className="space-y-4">
         {fields.map((question, index) => (
-          <Question
+          <QuestionForm
             key={question.id + index}
             question={question}
             index={index}
@@ -44,7 +44,7 @@ export const Questionnaires = ({ selected }: Props) => {
           className="w-full"
           variant="secondary"
           type="button"
-          onClick={() => append({ type: "textarea", question: "" })}
+          onClick={() => append({ type: "text", question: "" })}
         >
           Add Question
         </Button>
