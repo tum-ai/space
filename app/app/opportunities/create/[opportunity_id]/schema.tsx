@@ -49,6 +49,7 @@ export const GeneralInformationSchema = z
   );
 
 export const FullFormSchema = z.object({
+  id: z.string().uuid(),
   generalInformation: GeneralInformationSchema,
   defineSteps: z.array(PhaseSchema).min(1, "Add at least one phase"),
 });

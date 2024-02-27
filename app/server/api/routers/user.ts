@@ -1,9 +1,6 @@
 import { z } from "zod";
 
-import {
-  createTRPCRouter,
-  protectedProcedure,
-} from "server/api/trpc";
+import { createTRPCRouter, protectedProcedure } from "server/api/trpc";
 
 export const userRouter = createTRPCRouter({
   getAll: protectedProcedure.query(async ({ ctx }) => {
@@ -15,17 +12,19 @@ export const userRouter = createTRPCRouter({
     }
   }),
 
-  /**
-   * Get profile by id
-   * @param input - user id
-   **/
   getById: protectedProcedure
-    .input(z.string())
+    .input(
+      z.object({
+        id: z.string(),
+        options: z.object({ withProfile: z.boolean().optional() }).optional(),
+      }),
+    )
     .query(async ({ input, ctx }) => {
       return await ctx.db.user.findUnique({
         where: {
-          id: input,
+          id: input.id,
         },
+        include: input.options?.withProfile ? { Profile: true } : {},
       });
     }),
 });
