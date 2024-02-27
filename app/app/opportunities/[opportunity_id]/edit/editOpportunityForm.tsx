@@ -10,6 +10,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Phases } from "./_components/phases";
 import { TallyForm } from "./_components/tallyForm";
 import { ArrowRightIcon } from "lucide-react";
+import { api } from "trpc/react";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 export interface EditOpportunityFormProps {
   initialValues: UseFormProps<z.infer<typeof FullFormSchema>>["defaultValues"];
@@ -23,8 +26,16 @@ export const EditOpportunityForm = ({
     defaultValues: initialValues,
   });
 
-  function onSubmit(values: z.infer<typeof FullFormSchema>) {
-    console.log(values);
+  const updateMutation = api.opportunity.update.useMutation();
+
+  async function onSubmit(values: z.infer<typeof FullFormSchema>) {
+    const id = toast.loading("Updating opportunity");
+    try {
+      await updateMutation.mutateAsync(values);
+      toast.success("Successfully updated opportunity", { id });
+    } catch (err) {
+      toast.error("Failed to update opportunity", { id });
+    }
   }
 
   return (

@@ -5,22 +5,11 @@ import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
 import LoadingWheel from "@components/LoadingWheel";
 import { fetchOpportunities } from "@services/opportunityService";
-import { getReviewCounts } from "@services/reviewService";
 
 export default function OpportunitiesPage() {
   const { data: opportunities, isLoading } = useQuery(
     ["opportunities"],
     fetchOpportunities,
-  );
-
-  const ids = opportunities?.map((item) => item.id);
-
-  const { data: applicationCounts } = useQuery(
-    ["reviews/numbers"],
-    () => getReviewCounts(ids),
-    {
-      enabled: !!ids,
-    },
   );
 
   return (

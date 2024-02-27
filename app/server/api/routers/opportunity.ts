@@ -1,21 +1,32 @@
 import { createTRPCRouter, protectedProcedure } from "server/api/trpc";
-import { GeneralInformationSchema } from "@lib/schemas/opportunity";
+import {
+  FullFormSchema,
+  GeneralInformationSchema,
+  PersonSchema,
+} from "@lib/schemas/opportunity";
 import { z } from "zod";
+
+const parseUsers = (
+  admins: z.infer<typeof PersonSchema>[],
+  screeners: z.infer<typeof PersonSchema>[],
+) => {
+  const userAdmins = admins.map((user) => ({
+    user: { connect: { id: user.id } },
+    opportunityRole: "ADMIN" as const,
+  }));
+
+  const userScreeners = screeners.map((user) => ({
+    user: { connect: { id: user.id } },
+    opportunityRole: "SCREENER" as const,
+  }));
+
+  return [...userAdmins, ...userScreeners];
+};
 
 export const opportunityRouter = createTRPCRouter({
   create: protectedProcedure
     .input(GeneralInformationSchema)
     .mutation(async ({ input, ctx }) => {
-      const admins = input.admins.map((user) => ({
-        user: { connect: { id: user.id } },
-        opportunityRole: "ADMIN" as const,
-      }));
-
-      const screeners = input.screeners.map((user) => ({
-        user: { connect: { id: user.id } },
-        opportunityRole: "SCREENER" as const,
-      }));
-
       const opportunity = await ctx.db.opportunity.create({
         data: {
           title: input.title,
@@ -25,12 +36,38 @@ export const opportunityRouter = createTRPCRouter({
           configuration: {},
           status: "MISSING_CONFIG",
           users: {
-            create: [...admins, ...screeners],
+            create: parseUsers(input.admins, input.screeners),
           },
         },
       });
 
-      return opportunity.id;
+      return opportunity;
+    }),
+
+  update: protectedProcedure
+    .input(FullFormSchema)
+    .mutation(async ({ input, ctx }) => {
+      const opportunity = await ctx.db.opportunity.update({
+        where: {
+          id: input.id,
+        },
+        data: {
+          title: input.generalInformation.title,
+          description: input.generalInformation.description,
+          start: input.generalInformation.start,
+          end: input.generalInformation.end,
+          configuration: { steps: input.defineSteps },
+          users: {
+            deleteMany: {},
+            create: parseUsers(
+              input.generalInformation.admins,
+              input.generalInformation.screeners,
+            ),
+          },
+        },
+      });
+
+      return opportunity;
     }),
 
   getById: protectedProcedure

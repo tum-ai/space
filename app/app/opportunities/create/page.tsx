@@ -1,6 +1,5 @@
 "use client";
 
-import { GeneralInformation } from "../[opportunity_id]/edit/_components/general";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@components/ui/tabs";
 import { Form } from "@components/ui/form";
 import { useForm } from "react-hook-form";
@@ -12,6 +11,7 @@ import { ArrowRightIcon, Save } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@components/ui/button";
 import { useRouter } from "next/navigation";
+import { GeneralInformation } from "../[opportunity_id]/edit/_components/general";
 
 export const CreateOpportunityForm = () => {
   const router = useRouter();
@@ -32,11 +32,11 @@ export const CreateOpportunityForm = () => {
   async function onSubmit(values: z.infer<typeof FullFormSchema>) {
     const id = toast.loading("Creating opportunity");
     try {
-      const opportunityId = await createMutation.mutateAsync(
+      const opportunity = await createMutation.mutateAsync(
         values.generalInformation,
       );
       toast.success("Successfully created opportunity", { id });
-      router.push(`/opportunities/${opportunityId}/edit`);
+      router.push(`/opportunities/edit/${opportunity.id}`);
     } catch (err) {
       toast.error("Failed to create opportunity", { id });
     }

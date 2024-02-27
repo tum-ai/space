@@ -49,6 +49,7 @@ export const GeneralInformationSchema = z
   );
 
 export const FullFormSchema = z.object({
+  id: z.number().optional(),
   generalInformation: GeneralInformationSchema,
   defineSteps: z.array(PhaseSchema),
 });
