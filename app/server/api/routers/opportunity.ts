@@ -1,24 +1,24 @@
-import { z } from "zod";
-
 import { createTRPCRouter, protectedProcedure } from "server/api/trpc";
+import { FullFormSchema } from "app/opportunities/create/schema";
 
 export const opportunityRouter = createTRPCRouter({
   create: protectedProcedure
-    .input(
-      z.object({
-        tallyId: z.string(),
-        title: z.string(),
-        description: z.string(),
-        start: z.date(),
-        end: z.date(),
-      }),
-    )
+    .input(FullFormSchema)
     .mutation(async ({ input, ctx }) => {
+      const { generalInformation, defineSteps, ...rest } = input;
+
+      const { title, description, start, end } = generalInformation;
+
+      const data = {
+        title,
+        description,
+        start,
+        end,
+        configuration: {},
+      };
+
       await ctx.db.opportunity.create({
-        data: {
-          ...input,
-          configuration: {},
-        },
+        data,
       });
     }),
 });

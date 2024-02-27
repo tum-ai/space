@@ -53,7 +53,7 @@ export function GeneralInformation() {
         <FormItem>
           <FormLabel>Tally Webhook URL</FormLabel>
           <FormControl>
-            <div className="flex gap-2">
+            {/* <div className="flex gap-2">
               <Input
                 readOnly
                 value={`https://space.tum-ai.com/opportunities/${form.getValues("id")}`}
@@ -74,7 +74,7 @@ export function GeneralInformation() {
                 <Copy />
                 Copy
               </Button>
-            </div>
+            </div> */}
           </FormControl>
           <FormMessage />
         </FormItem>
@@ -179,6 +179,7 @@ export function GeneralInformation() {
       </div>
 
       <MemberSection />
+      <Button type="submit">Next</Button>
     </div>
   );
 }
