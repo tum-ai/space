@@ -18,10 +18,11 @@ import {
 import { cn } from "@lib/utils";
 import { format } from "date-fns";
 import { Calendar } from "@components/ui/calendar";
-import { CalendarIcon } from "lucide-react";
+import { CalendarIcon, Copy } from "lucide-react";
 import { FullFormSchema, PersonSchema } from "../schema";
 import { z } from "zod";
 import { MemberSection } from "./memberSection";
+import { toast } from "sonner";
 
 export type Member = z.infer<typeof PersonSchema>;
 
@@ -37,12 +38,33 @@ export function GeneralInformation() {
       <div className="grid grid-cols-2 gap-3">
         <FormField
           control={form.control}
-          name="generalInformation.tallyID"
+          name="generalInformation.title"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Tally Id</FormLabel>
+              <FormLabel>Tally Webhook URL</FormLabel>
               <FormControl>
-                <Input placeholder="venture-campaign-ws-2023" {...field} />
+                <div className="flex gap-2">
+                  <Input
+                    readOnly
+                    value={`https://space.tum-ai.com/opportunities/${form.getValues("id")}`}
+                  />
+                  <Button
+                    size="sm"
+                    type="button"
+                    className="gap-2"
+                    onClick={() =>
+                      toast.promise(
+                        navigator.clipboard.writeText(
+                          `https://space.tum-ai.com/opportunities/${form.getValues("id")}`,
+                        ),
+                        { loading: "Copying...", success: "Copied!" },
+                      )
+                    }
+                  >
+                    <Copy />
+                    Copy
+                  </Button>
+                </div>
               </FormControl>
               <FormMessage />
             </FormItem>

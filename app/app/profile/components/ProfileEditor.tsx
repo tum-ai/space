@@ -1,10 +1,8 @@
 "use client";
 
 import { Button } from "@components/ui/button";
-import ErrorMessage from "@components/ErrorMessage";
 import Dialog from "@components/Dialog";
 import Input from "@components/Input";
-import { Field, Form, Formik } from "formik";
 import * as DialogRadix from "@radix-ui/react-dialog";
 import Image from "next/image";
 import { UploadIcon, DownloadIcon } from "@radix-ui/react-icons";
@@ -177,20 +175,6 @@ const ProfileDetails = () => (
       type="text"
     />
   </>
-);
-
-const InputFieldComponent = ({ name, label, placeholder, type }) => (
-  <div>
-    <Field
-      as={Input}
-      name={name}
-      label={label}
-      placeholder={placeholder}
-      type={type}
-      fullWidth
-    />
-    <ErrorMessage name={name} />
-  </div>
 );
 
 export default ProfileEditor;
