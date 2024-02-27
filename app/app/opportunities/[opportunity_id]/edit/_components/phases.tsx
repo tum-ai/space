@@ -1,5 +1,5 @@
 import { useFieldArray, useFormContext } from "react-hook-form";
-import { FullFormSchema } from "../schema";
+import { FullFormSchema } from "@lib/schemas/opportunity";
 import Phase from "./phase";
 import { z } from "zod";
 import { AddPhasePopover } from "./addPhasePopover";

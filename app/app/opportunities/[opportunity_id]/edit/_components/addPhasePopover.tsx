@@ -6,7 +6,7 @@ import {
   PopoverTrigger,
 } from "@components/ui/popover";
 import { SubmitHandler, UseFieldArrayAppend, useForm } from "react-hook-form";
-import { FullFormSchema, PhaseSchema } from "../schema";
+import { FullFormSchema, PhaseSchema } from "@lib/schemas/opportunity";
 import { z } from "zod";
 import { useState } from "react";
 import {

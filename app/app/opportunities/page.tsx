@@ -1,11 +1,10 @@
 "use client";
-import OpportunityCard from "./components/opportunityCard";
+import OpportunityCard from "./_components/opportunityCard";
 import { Button } from "@components/ui/button";
 import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
 import LoadingWheel from "@components/LoadingWheel";
 import { fetchOpportunities } from "@services/opportunityService";
-import { getReviewCounts } from "@services/reviewService";
 
 export default function OpportunitiesPage() {
   const { data: opportunities, isLoading } = useQuery(
@@ -13,16 +12,8 @@ export default function OpportunitiesPage() {
     fetchOpportunities,
   );
 
-  const filteredOpportunities = opportunities?.filter(opportunity => opportunity.status !== 'MISSING_CONFIG');
-
-  const ids = filteredOpportunities?.map((item) => item.id);
-
-  const { data: applicationCounts } = useQuery(
-    ["reviews/numbers"],
-    () => getReviewCounts(ids),
-    {
-      enabled: !!ids,
-    },
+  const filteredOpportunities = opportunities?.filter(
+    (opportunity) => opportunity.status !== "MISSING_CONFIG",
   );
 
   return (
@@ -39,19 +30,9 @@ export default function OpportunitiesPage() {
 
         {isLoading && <LoadingWheel />}
 
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid auto-cols-max grid-flow-col gap-8">
           {filteredOpportunities?.map((item, index) => {
-            return (
-              <OpportunityCard
-                opportunity={item}
-                key={index}
-                count={
-                  applicationCounts?.find(
-                    (count) => count.opportunityId === item.id,
-                  ).count
-                }
-              />
-            );
+            return <OpportunityCard opportunity={item} key={index} count={0} />;
           })}
         </div>
       </div>
