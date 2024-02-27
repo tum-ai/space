@@ -19,7 +19,7 @@ import { cn } from "@lib/utils";
 import { format } from "date-fns";
 import { Calendar } from "@components/ui/calendar";
 import { CalendarIcon, Copy } from "lucide-react";
-import { FullFormSchema, PersonSchema } from "../schema";
+import { FullFormSchema, PersonSchema } from "../../../../lib/schemas/opportunity";
 import { z } from "zod";
 import { MemberSection } from "./memberSection";
 import { toast } from "sonner";

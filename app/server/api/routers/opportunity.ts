@@ -1,5 +1,6 @@
 import { createTRPCRouter, protectedProcedure } from "server/api/trpc";
-import { FullFormSchema } from "app/opportunities/create/schema";
+import { FullFormSchema } from "@lib/schemas/opportunity";
+import { z } from "zod";
 
 export const opportunityRouter = createTRPCRouter({
   create: protectedProcedure
@@ -19,6 +20,15 @@ export const opportunityRouter = createTRPCRouter({
 
       await ctx.db.opportunity.create({
         data,
+      });
+    }),
+  getById: protectedProcedure
+    .input(z.object({ id: z.number() }))
+    .query(async ({ input, ctx }) => {
+      return await ctx.db.opportunity.findUnique({
+        where: {
+          id: input.id,
+        },
       });
     }),
 });

@@ -12,7 +12,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@components/ui/form";
-import { FullFormSchema } from "../../schema";
+import { FullFormSchema } from "../../../../../lib/schemas/opportunity";
 import { z } from "zod";
 import { Button } from "@components/ui/button";
 import {
