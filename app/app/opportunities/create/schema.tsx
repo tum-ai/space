@@ -1,3 +1,4 @@
+import { QuestionSchema } from "@lib/schemas/question";
 import { z } from "zod";
 
 export const PersonSchema = z.object({
@@ -6,26 +7,6 @@ export const PersonSchema = z.object({
   tags: z.array(z.object({ text: z.string(), color: z.string() })).optional(),
   image: z.string().optional(),
 });
-
-export const QuestionSchema = z
-  .object({
-    type: z.union([
-      z.literal("select"),
-      z.literal("slider"),
-      z.literal("textarea"),
-    ]),
-    question: z.string(),
-    options: z.array(z.string()).optional(),
-    maxValue: z.number().optional(),
-  })
-  .refine(
-    (data) =>
-      data.type !== "select" || (data.options && data.options.length > 0),
-    {
-      message: "Options are required when type is 'select'.",
-      path: ["type"],
-    },
-  );
 
 export const QuestionnaireSchema = z.object({
   name: z.string().min(1, "Questionnaire name is required"),

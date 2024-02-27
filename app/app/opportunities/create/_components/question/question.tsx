@@ -2,6 +2,7 @@ import {
   UseFieldArrayRemove,
   UseFieldArrayUpdate,
   useForm,
+  useFormContext,
 } from "react-hook-form";
 import {
   Form,
@@ -11,7 +12,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@components/ui/form";
-import { FullFormSchema, QuestionSchema } from "../schema";
+import { FullFormSchema } from "../../schema";
 import { z } from "zod";
 import { Button } from "@components/ui/button";
 import {
@@ -31,8 +32,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@components/ui/select";
+import { QuestionSchema } from "@lib/schemas/question";
+import { Type } from "lucide-react";
 
-interface QuestionProps {
+interface QuestionFormProps {
   question: z.infer<typeof QuestionSchema>;
   index: number;
   update: UseFieldArrayUpdate<
@@ -42,40 +45,30 @@ interface QuestionProps {
   remove: UseFieldArrayRemove;
 }
 
-export const Question = ({
+export const QuestionForm = ({
   question,
   index,
   update,
   remove,
-}: QuestionProps) => {
+}: QuestionFormProps) => {
   const form = useForm<z.infer<typeof QuestionSchema>>({
     resolver: zodResolver(QuestionSchema),
     defaultValues: question,
   });
 
   return (
-    <Dialog>
-      <DialogTrigger asChild>
-        <Button
-          className="w-full justify-between"
-          variant="outline"
-          size="lg"
-          type="button"
-        >
-          <div className="flex gap-4">
-            <p>{question.type}</p>
-            <div>
-              <p>{question.question}</p>
-            </div>
-          </div>
-        </Button>
-      </DialogTrigger>
-      <DialogContent>
-        <Form {...form}>
+    <Form {...form}>
+      <Dialog>
+        <DialogTrigger asChild>
+          <button className="flex w-full justify-between rounded-md border border-input bg-background">
+            <TypeSpecificView />
+          </button>
+        </DialogTrigger>
+        <DialogContent>
           <DialogHeader>
             <DialogTitle>Edit question</DialogTitle>
             <DialogDescription>
-              This is a question that will be asked screeners
+              Edit question that will be asked screeners regarding applicants
             </DialogDescription>
 
             <FormField
@@ -95,7 +88,7 @@ export const Question = ({
                     </FormControl>
                     <SelectContent>
                       <SelectItem value="select">Select</SelectItem>
-                      <SelectItem value="textarea">Textarea</SelectItem>
+                      <SelectItem value="text">Text</SelectItem>
                       <SelectItem value="slider">Slider</SelectItem>
                     </SelectContent>
                   </Select>
@@ -118,6 +111,8 @@ export const Question = ({
               )}
             />
 
+            <TypeSpecificOptions />
+
             <div className="grid w-full grid-cols-2 gap-2 pt-8">
               <Button variant="destructive" onClick={() => remove(index)}>
                 Remove
@@ -131,8 +126,87 @@ export const Question = ({
               </Button>
             </div>
           </DialogHeader>
-        </Form>
-      </DialogContent>
-    </Dialog>
+        </DialogContent>
+      </Dialog>
+    </Form>
   );
+};
+
+const TypeSpecificView = () => {
+  const form = useFormContext<z.infer<typeof QuestionSchema>>();
+  const type = form.watch("type");
+
+  switch (type) {
+    case "text":
+      return (
+        <div className="m-8 flex gap-4">
+          <Type />
+          <div className="flex items-center">
+            <p>{form.watch("question")}</p>
+          </div>
+        </div>
+      );
+    case "slider":
+      return (
+        <div className="m-8 flex gap-4">
+          <Type />
+          <div className="flex items-center">
+            <p>{form.watch("question")}</p>
+          </div>
+        </div>
+      );
+    case "select":
+      return (
+        <div className="m-8 flex gap-4">
+          <Type />
+          <div className="flex items-center">
+            <p>{form.watch("question")}</p>
+          </div>
+        </div>
+      );
+  }
+};
+
+const TypeSpecificOptions = () => {
+  const form = useFormContext<z.infer<typeof QuestionSchema>>();
+  const type = form.watch("type");
+
+  switch (type) {
+    case "text":
+      return <></>;
+    case "slider":
+      return (
+        <div className="grid grid-cols-2 gap-2">
+          <FormField
+            control={form.control}
+            name="range.0"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Min</FormLabel>
+                <FormControl>
+                  <Input type="number" placeholder="0" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="range.1"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Max</FormLabel>
+                <FormControl>
+                  <Input type="number" placeholder="10" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+      );
+    case "select":
+      return <>Choices</>;
+  }
 };
