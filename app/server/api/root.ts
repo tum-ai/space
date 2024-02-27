@@ -1,5 +1,5 @@
 import { createTRPCRouter } from "server/api/trpc";
-import { profileRouter } from "./routers/profile";
+import { userRouter } from "./routers/user";
 import { opportunityRouter } from "./routers/opportunity";
 
 /**
@@ -8,7 +8,7 @@ import { opportunityRouter } from "./routers/opportunity";
  * All routers added in /api/routers should be manually added here.
  */
 export const appRouter = createTRPCRouter({
-  profile: profileRouter,
+  user: userRouter,
   opportunity: opportunityRouter,
 });
 

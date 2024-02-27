@@ -1,6 +1,6 @@
 "use client";
 
-import { GeneralInformation } from "./components/general";
+import { GeneralInformation } from "./_components/general";
 import { Tabs, TabsTrigger, TabsContent, TabsList } from "@components/ui/tabs";
 import { Form } from "@components/ui/form";
 import { useForm } from "react-hook-form";
@@ -8,7 +8,7 @@ import { z } from "zod";
 import { FullFormSchema } from "./schema";
 import { ArrowRightIcon } from "@radix-ui/react-icons";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Phases } from "./components/phases";
+import { Phases } from "./_components/phases";
 
 export default function CreateOpportunity() {
   const form = useForm<z.infer<typeof FullFormSchema>>({
