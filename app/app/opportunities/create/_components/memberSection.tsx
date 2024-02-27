@@ -54,24 +54,36 @@ export const MemberSection = () => {
 
   const {
     fields: admins,
-    remove,
-    append,
+    remove: removeAdmin,
+    append: appendAdmin,
   } = useFieldArray({
     control: form.control,
     name: "generalInformation.admins",
+  });
+  const {
+    fields: screeners,
+    remove: removeScreener,
+    append: appendScreener,
+  } = useFieldArray({
+    control: form.control,
+    name: "generalInformation.screeners",
   });
   const { data, isLoading } = api.user.getAll.useQuery();
 
   return (
     <div className="grid grid-cols-2 gap-3">
       <div>
-        <h2 className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0">
+        <h3 className="mb-3 scroll-m-20 text-2xl font-semibold tracking-tight">
           Admins
-        </h2>
+        </h3>
         <div className="flex flex-col gap-2">
           {admins.map((member, index) => (
             <MemberBar key={member.id} member={member}>
-              <Button size="icon" onClick={() => remove(index)} variant="ghost">
+              <Button
+                size="icon"
+                onClick={() => removeAdmin(index)}
+                variant="ghost"
+              >
                 <X />
               </Button>
             </MemberBar>
@@ -101,7 +113,66 @@ export const MemberSection = () => {
                     <MemberBar key={user.id} member={member}>
                       <Button
                         size="icon"
-                        onClick={() => append(member)}
+                        onClick={() => appendAdmin(member)}
+                        variant="ghost"
+                      >
+                        <Plus />
+                      </Button>
+                    </MemberBar>
+                  );
+                })}
+              </div>
+
+              <Button asChild>
+                <DialogClose>Done</DialogClose>
+              </Button>
+            </DialogContent>
+          </Dialog>
+        </div>
+      </div>
+
+      <div>
+        <h3 className="mb-3 scroll-m-20 text-2xl font-semibold tracking-tight">
+          Screeners
+        </h3>
+        <div className="flex flex-col gap-2">
+          {screeners.map((member, index) => (
+            <MemberBar key={member.id} member={member}>
+              <Button
+                size="icon"
+                onClick={() => removeScreener(index)}
+                variant="ghost"
+              >
+                <X />
+              </Button>
+            </MemberBar>
+          ))}
+          <Dialog>
+            <Button variant="outline" asChild>
+              <DialogTrigger>+ Add screener</DialogTrigger>
+            </Button>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Add screener</DialogTitle>
+                <DialogDescription>
+                  Screeners can review applications
+                </DialogDescription>
+              </DialogHeader>
+
+              <div className="mb-6 space-y-4">
+                {isLoading && <p>Loading...</p>}
+                {data?.map((user) => {
+                  const member = {
+                    ...user,
+                    name: user.name ?? undefined,
+                    image: user.image ?? undefined,
+                  };
+
+                  return (
+                    <MemberBar key={user.id} member={member}>
+                      <Button
+                        size="icon"
+                        onClick={() => appendScreener(member)}
                         variant="ghost"
                       >
                         <Plus />
