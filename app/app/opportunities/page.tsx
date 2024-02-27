@@ -12,6 +12,10 @@ export default function OpportunitiesPage() {
     fetchOpportunities,
   );
 
+  const filteredOpportunities = opportunities?.filter(
+    (opportunity) => opportunity.status !== "MISSING_CONFIG",
+  );
+
   return (
     <div className="h-full flex-1 flex-col space-y-8 p-8 md:flex">
       <div className="flex flex-col gap-8">
@@ -27,7 +31,7 @@ export default function OpportunitiesPage() {
         {isLoading && <LoadingWheel />}
 
         <div className="grid auto-cols-max grid-flow-col gap-8">
-          {opportunities?.map((item, index) => {
+          {filteredOpportunities?.map((item, index) => {
             return <OpportunityCard opportunity={item} key={index} count={0} />;
           })}
         </div>
