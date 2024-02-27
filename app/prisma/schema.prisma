@@ -43,7 +43,6 @@ model User {
   id                       String                 @id @default(cuid())
   email                    String                 @unique
   emailVerified            DateTime?
-  password                 String?
   name                     String?
   image                    String?
   createdAt                DateTime               @default(now())
@@ -53,14 +52,12 @@ model User {
   opportunityParticipation UserOnOpportunity[]
   reviews                  Review[]
   roles                    SpaceRole[]            @default([USER])
-  profileId                Int?                   @unique
   Profile                  Profile[]
   Session                  Session[]
 }
 
 model Profile {
   id               Int       @id @default(autoincrement())
-  userId           String
   birthday         DateTime?
   nationality      String?
   description      String?
@@ -74,6 +71,7 @@ model Profile {
   createdAt        DateTime  @default(now())
   updatedAt        DateTime  @updatedAt
   contacts         Contact[]
+  userId           String
   user             User?     @relation(fields: [userId], references: [id])
 }
 
@@ -97,16 +95,16 @@ model Department {
 }
 
 model DepartmentMembership {
-  id                 Int                @id @default(autoincrement())
-  userId             String?
-  departmentId       Int?
-  membershipStart    DateTime
-  membershipEnd      DateTime?
-  departmentPosition DepartmentPosition
-  createdAt          DateTime           @default(now())
-  updatedAt          DateTime           @updatedAt
-  department         Department?        @relation(fields: [departmentId], references: [id])
-  user               User?              @relation(fields: [userId], references: [id])
+  id              Int            @id @default(autoincrement())
+  userId          String?
+  departmentId    Int?
+  membershipStart DateTime
+  membershipEnd   DateTime?
+  role            DepartmentRole
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+  department      Department?    @relation(fields: [departmentId], references: [id])
+  user            User?          @relation(fields: [userId], references: [id])
 }
 
 model Opportunity {
@@ -186,7 +184,7 @@ enum SpaceRole {
 }
 
 enum OpportunityRole {
-  OWNER
+  ADMIN
   SCREENER
 }
 
@@ -199,7 +197,7 @@ enum ContactType {
   PHONE
 }
 
-enum DepartmentPosition {
+enum DepartmentRole {
   PRESIDENT
   HEAD_OF_DEPARTMENT
   BOARD_MEMBER
