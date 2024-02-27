@@ -41,6 +41,7 @@
     "@types/eslint": "^8.56.3",
     "@types/node": "^20.8.2",
     "@types/react-dom": "18.2.7",
+    "@types/uuid": "^9.0.8",
     "@typescript-eslint/eslint-plugin": "^7.0.2",
     "@typescript-eslint/parser": "^7.0.2",
     "axios": "^1.4.0",
@@ -73,6 +74,7 @@
     "tailwindcss-animate": "^1.0.7",
     "tailwindcss-radix": "^2.8.0",
     "typescript": "^5.2.2",
+    "uuid": "^9.0.1",
     "yup": "^1.2.0",
     "zod": "^3.22.4"
   },
