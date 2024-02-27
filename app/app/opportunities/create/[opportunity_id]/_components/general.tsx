@@ -41,41 +41,7 @@ export function GeneralInformation() {
           name="generalInformation.title"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Tally Webhook URL</FormLabel>
-              <FormControl>
-                <div className="flex gap-2">
-                  <Input
-                    readOnly
-                    value={`https://space.tum-ai.com/opportunities/${form.getValues("id")}`}
-                  />
-                  <Button
-                    size="sm"
-                    type="button"
-                    className="gap-2"
-                    onClick={() =>
-                      toast.promise(
-                        navigator.clipboard.writeText(
-                          `https://space.tum-ai.com/opportunities/${form.getValues("id")}`,
-                        ),
-                        { loading: "Copying...", success: "Copied!" },
-                      )
-                    }
-                  >
-                    <Copy />
-                    Copy
-                  </Button>
-                </div>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="generalInformation.title"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Opportunity title</FormLabel>
+              <FormLabel>Title</FormLabel>
               <FormControl>
                 <Input placeholder="Venture campaign WS2023" {...field} />
               </FormControl>
@@ -83,6 +49,35 @@ export function GeneralInformation() {
             </FormItem>
           )}
         />
+
+        <FormItem>
+          <FormLabel>Tally Webhook URL</FormLabel>
+          <FormControl>
+            <div className="flex gap-2">
+              <Input
+                readOnly
+                value={`https://space.tum-ai.com/opportunities/${form.getValues("id")}`}
+              />
+              <Button
+                size="sm"
+                type="button"
+                className="gap-2"
+                onClick={() =>
+                  toast.promise(
+                    navigator.clipboard.writeText(
+                      `https://space.tum-ai.com/opportunities/${form.getValues("id")}`,
+                    ),
+                    { loading: "Copying...", success: "Copied!" },
+                  )
+                }
+              >
+                <Copy />
+                Copy
+              </Button>
+            </div>
+          </FormControl>
+          <FormMessage />
+        </FormItem>
 
         <FormField
           control={form.control}
