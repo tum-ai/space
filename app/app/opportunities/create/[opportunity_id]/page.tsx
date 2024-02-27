@@ -9,8 +9,13 @@ import { FullFormSchema } from "./schema";
 import { ArrowRightIcon } from "@radix-ui/react-icons";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Phases } from "./_components/phases";
+import { TallyForm } from "./_components/tallyForm";
 
-export default function CreateOpportunity({ params }: { params: { opportunity_id: string } }) {
+export default function CreateOpportunity({
+  params,
+}: {
+  params: { opportunity_id: string };
+}) {
   const form = useForm<z.infer<typeof FullFormSchema>>({
     resolver: zodResolver(FullFormSchema),
     defaultValues: {
@@ -44,11 +49,9 @@ export default function CreateOpportunity({ params }: { params: { opportunity_id
             <p className="text-muted-foreground">Configure a new opportunity</p>
           </div>
           <TabsList className="self-center">
-            <TabsTrigger value="general">
-              <div className="flex flex-row items-center space-x-1">
-                <p>General information</p>
-              </div>
-            </TabsTrigger>
+            <TabsTrigger value="general">General information</TabsTrigger>
+            <ArrowRightIcon className="mx-2 h-5 w-5" />
+            <TabsTrigger value="tally">Tally Form</TabsTrigger>
             <ArrowRightIcon className="mx-2 h-5 w-5" />
             <TabsTrigger value="steps">Define steps</TabsTrigger>
           </TabsList>
@@ -60,6 +63,10 @@ export default function CreateOpportunity({ params }: { params: { opportunity_id
           >
             <TabsContent value="general">
               <GeneralInformation />
+            </TabsContent>
+
+            <TabsContent value="tally">
+              <TallyForm />
             </TabsContent>
 
             <TabsContent value="steps">
