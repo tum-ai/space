@@ -119,6 +119,7 @@ model Opportunity {
   users         UserOnOpportunity[]
   applications  Application[]
   tags          Tag[]
+  status        OpportunityStatus
 }
 
 model UserOnOpportunity {
@@ -206,4 +207,10 @@ enum DepartmentRole {
   PROJECT_LEAD
   ACTIVE_MEMBER
   ALUMNI
+}
+
+enum OpportunityStatus {
+  MISSING_CONFIG
+  IN_PROGRESS
+  DONE
 }
