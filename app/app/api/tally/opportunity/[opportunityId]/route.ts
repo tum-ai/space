@@ -24,6 +24,7 @@ export async function POST(
       const formData = webhookPayload.data;
       const newFormData = restructureReceivedJSON(formData);
 
+
       return saveFormData(newFormData, parseInt(opportunityId));
     } else {
       return NextResponse.json(
@@ -53,7 +54,7 @@ function isSignatureValidated(req: Request, webhookPayload: any): boolean {
 function restructureReceivedJSON(formData: ParsedFormData): LabelTextPair {
   const newFormData: LabelTextPair = {};
 
-  (formData.fields).forEach((field) => {
+  formData.fields.forEach((field) => {
     const fieldType = field.type;
     const label = field.label;
     let text: string | string[] | LabelTextPair;
@@ -117,12 +118,12 @@ function hanldeMatrixField(field: FormField): LabelTextPair {
 }
 
 async function saveFormData(formData: LabelTextPair, opportunityId: number) {
-  const newFormDataJSON = JSON.stringify(formData);
+  // const newFormDataJSON = JSON.stringify(formData);
 
   const createApplication = await prisma.application.create({
     data: {
       opportunityId,
-      content: newFormDataJSON,
+      application: formData,
     },
   });
 
