@@ -18,16 +18,21 @@ import {
 import { cn } from "@lib/utils";
 import { format } from "date-fns";
 import { Calendar } from "@components/ui/calendar";
-import { CalendarIcon, Copy } from "lucide-react";
-import { FullFormSchema, PersonSchema } from "../schema";
+import { CalendarIcon } from "lucide-react";
+import {
+  FullFormSchema,
+  GeneralInformationSchema,
+  PersonSchema,
+} from "@lib/schemas/opportunity";
 import { z } from "zod";
 import { MemberSection } from "./memberSection";
-import { toast } from "sonner";
 
 export type Member = z.infer<typeof PersonSchema>;
 
 export function GeneralInformation() {
-  const form = useFormContext<z.infer<typeof FullFormSchema>>();
+  const form = useFormContext<
+    z.infer<typeof FullFormSchema> | z.infer<typeof GeneralInformationSchema>
+  >();
 
   return (
     <div>
@@ -40,7 +45,7 @@ export function GeneralInformation() {
           control={form.control}
           name="generalInformation.title"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className="col-span-2">
               <FormLabel>Title</FormLabel>
               <FormControl>
                 <Input placeholder="Venture campaign WS2023" {...field} />
@@ -49,35 +54,6 @@ export function GeneralInformation() {
             </FormItem>
           )}
         />
-
-        <FormItem>
-          <FormLabel>Tally Webhook URL</FormLabel>
-          <FormControl>
-            {/* <div className="flex gap-2">
-              <Input
-                readOnly
-                value={`https://space.tum-ai.com/opportunities/${form.getValues("id")}`}
-              />
-              <Button
-                size="sm"
-                type="button"
-                className="gap-2"
-                onClick={() =>
-                  toast.promise(
-                    navigator.clipboard.writeText(
-                      `https://space.tum-ai.com/opportunities/${form.getValues("id")}`,
-                    ),
-                    { loading: "Copying...", success: "Copied!" },
-                  )
-                }
-              >
-                <Copy />
-                Copy
-              </Button>
-            </div> */}
-          </FormControl>
-          <FormMessage />
-        </FormItem>
 
         <FormField
           control={form.control}
@@ -179,7 +155,6 @@ export function GeneralInformation() {
       </div>
 
       <MemberSection />
-      <Button type="submit">Next</Button>
     </div>
   );
 }

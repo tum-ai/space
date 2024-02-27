@@ -20,7 +20,6 @@ export const PhaseSchema = z.object({
 
 export const GeneralInformationSchema = z
   .object({
-    tallyID: z.string(),
     title: z.string().min(1, "Opportunity name is required"),
     start: z
       .date()
@@ -33,8 +32,9 @@ export const GeneralInformationSchema = z
       .refine(
         (date) => date.toString() !== "Invalid Date",
         "End date is required",
-      ),
-    description: z.string().min(1, "Description is required"),
+      )
+      .optional(),
+    description: z.string().optional(),
     admins: z.array(PersonSchema).min(1, "At least one admin required"),
     screeners: z.array(PersonSchema),
   })
@@ -49,6 +49,7 @@ export const GeneralInformationSchema = z
   );
 
 export const FullFormSchema = z.object({
+  id: z.number().optional(),
   generalInformation: GeneralInformationSchema,
   defineSteps: z.array(PhaseSchema),
 });
