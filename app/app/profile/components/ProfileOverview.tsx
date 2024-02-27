@@ -1,82 +1,49 @@
 "use client";
-import { Button } from "@components/ui/button";
+
 import Image from "next/image";
 import {
-  PencilSquareIcon,
   AcademicCapIcon,
   PencilIcon,
   UserIcon,
 } from "@heroicons/react/24/outline";
-import ProfileEditor from "./ProfileEditor";
 import Tag from "@components/Tag";
-import { Profile } from "@prisma/client";
 import { User } from "lucide-react";
-
-function restructureData(data) {
-  const {
-    id,
-    email,
-    image,
-    activity_status,
-    current_department,
-    current_department_position,
-    first_name,
-    last_name,
-    nationality,
-    birthday,
-    university,
-    degree_level,
-    degree_name,
-    degree_semester,
-    description,
-  } = data;
-
-  return {
-    general: {
-      id,
-      email,
-      image,
-      activity_status,
-      current_department,
-      current_department_position,
-    },
-    personal: {
-      first_name,
-      last_name,
-      nationality,
-      birthday: new Date(birthday),
-    },
-    academia: {
-      university,
-      degree_level,
-      degree_name,
-      degree_semester,
-    },
-    description,
-  };
-}
-
-function formatKey(key) {
-  return key.replace(/_/g, " ").replace(/^\w/, (c) => c.toUpperCase());
-}
+import { api } from "trpc/react";
 
 interface ProfileOverviewProps {
-  profile: Profile;
+  profile_id: string;
 }
 
-function ProfileOverview({ profile }: ProfileOverviewProps) {
-  const data = restructureData(profile);
+function ProfileOverview({ profile_id }: ProfileOverviewProps) {
+  const { data, isLoading } = api.user.getById.useQuery({
+    id: profile_id,
+    options: { withProfile: false },
+  });
+
+  if (isLoading) return <div>Loading...</div>;
+
+  if (!data) return <div>Profile not found</div>;
 
   return (
     <div className="flex justify-center">
       <div className="max-w-[850px] space-y-10">
         <div className="grid grid-cols-2 items-center gap-4 lg:grid-cols-4">
           <div className="col-span-2 flex items-center gap-4">
-            <ProfilePicture image={data.image} />
+            {data.image ? (
+              <Image
+                className="h-32 w-32 rounded-full object-cover"
+                src={data.image}
+                width={150}
+                height={150}
+                alt="Your profile picture"
+              />
+            ) : (
+              <div className="flex h-32 w-32 rounded-full bg-gray-300 text-center drop-shadow-lg dark:bg-gray-800">
+                <User name={"FaUser"} className="m-auto text-4xl text-white" />
+              </div>
+            )}
             <div>
-              <h3 className="text-3xl font-medium">
-                {data.first_name} {data.last_name}
-              </h3>
+              <h3 className="text-3xl font-medium">{data.name}</h3>
               <a
                 href={`mailto:${data.email}`}
                 className="text-gray-500 hover:text-blue-500"
@@ -86,9 +53,9 @@ function ProfileOverview({ profile }: ProfileOverviewProps) {
             </div>
           </div>
           <div className="flex gap-2 lg:justify-self-end">
-            <Tag text={data.current_department} color="blue" />
+            {/* <Tag text={data.current_department} color="blue" />
             <Tag text={data.current_department_position} color="purple" />
-            <Tag text={data.activity_status} color="green" />
+            <Tag text={data.activity_status} color="green" /> */}
           </div>
           <div className="justify-self-end">
             {/*
@@ -110,45 +77,25 @@ function ProfileOverview({ profile }: ProfileOverviewProps) {
               <PencilIcon className={"mr-2 h-5 w-5"} />
               <h3 className="text-2xl font-medium">Description</h3>
             </div>
-            <p className="text-gray-400">{data.description}</p>
+            {/* <p className="text-gray-400">{data.description}</p> */}
           </div>
           <div>
             <div className="mb-2 flex flex-row items-center">
               <UserIcon className={"mr-2 h-5 w-5"} />
               <h3 className="text-2xl font-medium">Personal</h3>
             </div>
-            <ContentList data={data.personal} />
+            {/* <ContentList data={data.personal} /> */}
           </div>
           <div>
             <div className="mb-2 flex flex-row items-center">
               <AcademicCapIcon className={"mr-2 h-5 w-5"} />
               <h3 className="text-2xl font-medium">Academic</h3>
             </div>
-            <ContentList data={data.academia} />
+            {/* <ContentList data={data.academia} /> */}
           </div>
         </div>
       </div>
     </div>
-  );
-}
-
-function ProfilePicture({ image }: { image: string }) {
-  return (
-    <>
-      {image ? (
-        <Image
-          className="h-32 w-32 rounded-full object-cover"
-          src={image}
-          width={150}
-          height={150}
-          alt="Your profile picture"
-        />
-      ) : (
-        <div className="flex h-32 w-32 rounded-full bg-gray-300 text-center drop-shadow-lg dark:bg-gray-800">
-          <User name={"FaUser"} className="m-auto text-4xl text-white" />
-        </div>
-      )}
-    </>
   );
 }
 
