@@ -1,9 +1,10 @@
+import { redirect } from "next/navigation";
 import {
   EditOpportunityForm,
   EditOpportunityFormProps,
 } from "./editOpportunityForm";
+import { getServerAuthSession } from "server/auth";
 import db from "server/db";
-
 interface EditOpportunityProps {
   params: { opportunity_id: string };
 }
@@ -11,8 +12,17 @@ interface EditOpportunityProps {
 export default async function EditOpportunity({
   params,
 }: EditOpportunityProps) {
+  const session = await getServerAuthSession();
+  const userId = session?.user.id;
+  if (!userId) redirect("/auth");
+
   const opportunity = await db.opportunity.findUnique({
-    where: { id: Number(params.opportunity_id) },
+    where: {
+      id: Number(params.opportunity_id),
+      users: {
+        some: { userId, opportunityRole: "ADMIN" },
+      },
+    },
     include: { users: { include: { user: true } } },
   });
 
