@@ -4,7 +4,9 @@ import { PersonSchema } from "./person";
 
 export const QuestionnaireSchema = z.object({
   name: z.string().min(1, "Questionnaire name is required"),
+  requiredReviews: z.number().int().min(1, "At least one review is required"),
   questions: z.array(QuestionSchema),
+  reviewers: z.array(PersonSchema),
 });
 
 export const PhaseSchema = z.object({
@@ -29,8 +31,6 @@ export const GeneralInformationSchema = z
       )
       .optional(),
     description: z.string().optional(),
-    admins: z.array(PersonSchema).min(1, "At least one admin required"),
-    screeners: z.array(PersonSchema),
   })
   .refine(
     (data) => {
