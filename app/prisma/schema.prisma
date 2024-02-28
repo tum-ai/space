@@ -40,20 +40,21 @@ model Session {
 }
 
 model User {
-  id                       String                 @id @default(cuid())
-  email                    String                 @unique
-  emailVerified            DateTime?
-  name                     String?
-  image                    String?
-  createdAt                DateTime               @default(now())
-  updatedAt                DateTime               @updatedAt
-  accounts                 Account[]
-  departmentMemberships    DepartmentMembership[]
-  opportunityParticipation UserOnOpportunity[]
-  reviews                  Review[]
-  roles                    SpaceRole[]            @default([USER])
-  Profile                  Profile[]
-  Session                  Session[]
+  id                    String                 @id @default(cuid())
+  email                 String                 @unique
+  emailVerified         DateTime?
+  name                  String?
+  image                 String?
+  createdAt             DateTime               @default(now())
+  updatedAt             DateTime               @updatedAt
+  accounts              Account[]
+  departmentMemberships DepartmentMembership[]
+  reviews               Review[]
+  roles                 SpaceRole[]            @default([USER])
+  Profile               Profile[]
+  Session               Session[]
+  UserOnQuestionnaire   UserOnQuestionnaire[]
+  OpportunityAdmin      Opportunity[]
 }
 
 model Profile {
@@ -108,85 +109,69 @@ model DepartmentMembership {
 }
 
 model Opportunity {
-  id            Int                 @id @default(autoincrement())
-  title         String
-  description   String?
-  configuration Json
-  start         DateTime
-  end           DateTime?
-  createdAt     DateTime            @default(now())
-  updatedAt     DateTime            @updatedAt
-  users         UserOnOpportunity[]
-  applications  Application[]
-  tags          Tag[]
-  status        OpportunityStatus
+  id             Int               @id @default(autoincrement())
+  title          String
+  description    String?
+  start          DateTime
+  end            DateTime?
+  questionnaires Questionnaire[]
+  adminId        String
+  admin          User              @relation(fields: [adminId], references: [id])
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
+  applications   Application[]
+  status         OpportunityStatus
 }
 
-model UserOnOpportunity {
-  userId          String
-  opportunityId   Int
-  createdAt       DateTime        @default(now())
-  updatedAt       DateTime        @updatedAt
-  opportunity     Opportunity     @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
-  opportunityRole OpportunityRole
-  user            User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+model Questionnaire {
+  id                  Int                   @id @default(autoincrement())
+  requiredReviews     Int
+  phaseName           String
+  name                String
+  questions           Json
+  opportunityId       Int
+  opportunity         Opportunity           @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
+  UserOnQuestionnaire UserOnQuestionnaire[]
+  Review              Review[]
+}
 
-  @@id([userId, opportunityId], name: "userOnOpportunity")
+model UserOnQuestionnaire {
+  userId          String
+  user            User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  questionnaireId Int
+  questionnaire   Questionnaire @relation(fields: [questionnaireId], references: [id], onDelete: Cascade)
+
+  @@id([userId, questionnaireId])
 }
 
 model Application {
-  id            Int                  @id @default(autoincrement())
-  application   Json
-  opportunityId Int
-  createdAt     DateTime             @default(now())
-  updatedAt     DateTime             @updatedAt
-  reviews       Review[]
-  opportunity   Opportunity          @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
-  tags          TagsOnApplications[]
-}
-
-model Tag {
-  id            Int                  @id @default(autoincrement())
-  opportunityId Int
-  tallyLabel    String
-  name          String
-  applications  TagsOnApplications[]
-  opportunity   Opportunity          @relation(fields: [opportunityId], references: [id])
-
-  @@unique([opportunityId, name])
-}
-
-model TagsOnApplications {
   id            Int         @id @default(autoincrement())
-  tagId         Int
-  applicationId Int
-  application   Application @relation(fields: [applicationId], references: [id])
-  tag           Tag         @relation(fields: [tagId], references: [id])
-
-  @@unique([tagId, applicationId])
+  content       Json
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  reviews       Review[]
+  opportunityId Int
+  opportunity   Opportunity @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
 }
 
 model Review {
-  phase      String
-  reviewId   Int
-  assigneeId String
-  content    Json
-  createdAt  DateTime    @default(now())
-  updatedAt  DateTime    @updatedAt
-  assignee   User        @relation(fields: [assigneeId], references: [id])
-  review     Application @relation(fields: [reviewId], references: [id])
+  id              Int           @id @default(autoincrement())
+  content         Json
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  userId          String        @map("assigneeId")
+  user            User          @relation(fields: [userId], references: [id])
+  applicationId   Int           @map("reviewId")
+  application     Application   @relation(fields: [applicationId], references: [id])
+  questionnaireId Int
+  questionnaire   Questionnaire @relation(fields: [questionnaireId], references: [id])
 
-  @@id([phase, reviewId], name: "id")
+  @@unique([applicationId, userId])
 }
 
 enum SpaceRole {
   ADMIN
   USER
-}
-
-enum OpportunityRole {
-  ADMIN
-  SCREENER
 }
 
 enum ContactType {
