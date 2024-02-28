@@ -19,37 +19,43 @@ export function Phases() {
   >(undefined);
 
   return (
-    <div className="space-y-14">
-      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 sm:gap-x-0 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-        {fields.map((phase, index) => (
-          <Phase
-            key={phase.name}
-            index={index}
-            phase={phase}
-            remove={remove}
-            update={update}
-            setSelectedQuestionnaire={setSelectedQuestionnaire}
-          />
-        ))}
+    <div>
+      <h2 className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0">
+        Phases
+      </h2>
 
-        <div className="grid min-h-[250px] grid-rows-[3rem,_1fr]">
-          <AddPhasePopover append={append} />
+      <div className="space-y-14">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 sm:gap-x-0 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+          {fields.map((phase, index) => (
+            <Phase
+              key={phase.name}
+              index={index}
+              phase={phase}
+              remove={remove}
+              update={update}
+              setSelectedQuestionnaire={setSelectedQuestionnaire}
+            />
+          ))}
 
-          <div>
-            <Separator />
-            <p className="mt-4 w-full text-center text-sm text-muted-foreground">
-              Add phases to define questionnaires
-            </p>
+          <div className="grid min-h-[250px] grid-rows-[3rem,_1fr]">
+            <AddPhasePopover append={append} />
+
+            <div>
+              <Separator />
+              <p className="mt-4 w-full text-center text-sm text-muted-foreground">
+                Add phases to define questionnaires
+              </p>
+            </div>
           </div>
         </div>
-      </div>
 
-      {selectedQuestionnaire && (
-        <Questionnaires
-          key={`questionnaire-${selectedQuestionnaire[0]}-${selectedQuestionnaire[1]}`}
-          selected={selectedQuestionnaire}
-        />
-      )}
+        {selectedQuestionnaire && (
+          <Questionnaires
+            key={`questionnaire-${selectedQuestionnaire[0]}-${selectedQuestionnaire[1]}`}
+            selected={selectedQuestionnaire}
+          />
+        )}
+      </div>
     </div>
   );
 }
