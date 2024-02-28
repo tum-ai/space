@@ -125,7 +125,6 @@ model Opportunity {
 
 model Phase {
   id             Int             @id @default(autoincrement())
-  index          Int // for ordering
   name           String
   questionnaires Questionnaire[]
   opportunityId  Int

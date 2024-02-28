@@ -10,7 +10,6 @@ export const QuestionnaireSchema = z.object({
 
 export const PhaseSchema = z.object({
   name: z.string().min(1, "Phase name is required"),
-  index: z.number().int().optional(),
   forms: z.array(QuestionnaireSchema),
 });
 

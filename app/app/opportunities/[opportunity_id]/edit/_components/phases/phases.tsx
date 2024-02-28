@@ -38,10 +38,7 @@ export function Phases() {
           ))}
 
           <div className="grid min-h-[250px] grid-rows-[3rem,_1fr]">
-            <AddPhasePopover
-              append={append}
-              index={form.watch("defineSteps").length}
-            />
+            <AddPhasePopover append={append} />
 
             <div>
               <Separator />

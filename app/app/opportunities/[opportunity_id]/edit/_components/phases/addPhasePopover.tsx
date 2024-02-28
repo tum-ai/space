@@ -22,17 +22,15 @@ import { Plus } from "lucide-react";
 
 interface AddPhasePopoverProps {
   append: UseFieldArrayAppend<z.infer<typeof OpportunitySchema>, "defineSteps">;
-  index: number;
 }
 
-export const AddPhasePopover = ({ append, index }: AddPhasePopoverProps) => {
+export const AddPhasePopover = ({ append }: AddPhasePopoverProps) => {
   const [popoverOpen, setPopoverOpen] = useState(false);
   const form = useForm<z.infer<typeof PhaseSchema>>({
     resolver: zodResolver(PhaseSchema),
     defaultValues: {
       name: "",
       forms: [],
-      index,
     },
   });
 
