@@ -71,11 +71,11 @@ export const EditOpportunityForm = ({
             </div>
 
             <TabsList className="self-center">
-              <TabsTrigger value="general">General information</TabsTrigger>
+              <TabsTrigger value="general">General</TabsTrigger>
               <ArrowRightIcon className="mx-2 h-5 w-5" />
-              <TabsTrigger value="tally">Tally form</TabsTrigger>
+              <TabsTrigger value="tally">Tally</TabsTrigger>
               <ArrowRightIcon className="mx-2 h-5 w-5" />
-              <TabsTrigger value="steps">Define phases</TabsTrigger>
+              <TabsTrigger value="steps">Phases</TabsTrigger>
             </TabsList>
           </div>
           <TabsContent value="general">

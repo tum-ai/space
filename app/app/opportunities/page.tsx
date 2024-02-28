@@ -6,6 +6,8 @@ import { redirect } from "next/navigation";
 import { getServerAuthSession } from "server/auth";
 import db from "server/db";
 
+export const dynamic = "force-dynamic";
+
 export default async function OpportunitiesPage() {
   const session = await getServerAuthSession();
   const userId = session?.user.id;
