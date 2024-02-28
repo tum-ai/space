@@ -15,21 +15,19 @@ export default async function OpportunitiesPage() {
 
   const opportunities = await db.opportunity.findMany({
     where: {
-      AND: {
-        users: { some: { userId } },
-        NOT: {
-          AND: [
-            { status: "MISSING_CONFIG" },
-            {
-              users: {
-                none: { AND: [{ userId }, { opportunityRole: "ADMIN" }] },
+      OR: [
+        { adminId: userId },
+        {
+          phases: {
+            some: {
+              questionnaires: {
+                some: { userOnQuestionnaire: { some: { userId } } },
               },
             },
-          ],
+          },
         },
-      },
+      ],
     },
-    include: { users: { where: { userId } } },
   });
 
   return (
@@ -67,7 +65,7 @@ export default async function OpportunitiesPage() {
             {opportunities?.map((item, index) => {
               return (
                 <OpportunityCard
-                  canEdit={item.users.at(0)?.opportunityRole === "ADMIN"}
+                  canEdit={item.adminId === userId}
                   opportunity={item}
                   key={index}
                 />
