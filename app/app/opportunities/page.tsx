@@ -53,7 +53,7 @@ export default async function OpportunitiesPage() {
           </div>
         )}
         {!!opportunities.length && (
-          <div className="grid auto-cols-max grid-flow-col gap-8">
+          <div className="grid gap-8 md:grid-cols-2 xl:grid-cols-3">
             {opportunities?.map((item, index) => {
               return (
                 <OpportunityCard opportunity={item} key={index} count={0} />

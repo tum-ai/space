@@ -43,44 +43,46 @@ export const CreateOpportunityForm = () => {
   }
 
   return (
-    <Tabs defaultValue="general" className="p-8">
-      <div className="mb-12 flex flex-col space-y-6">
-        <div className="flex flex-col gap-3">
-          <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
-            Create new opportunity
-          </h1>
+    <Form {...form}>
+      <form
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
+        onSubmit={form.handleSubmit(onSubmit, (err) => console.error(err))}
+      >
+        <Tabs defaultValue="general" className="p-8">
+          <div className="mb-12 flex flex-col space-y-6">
+            <div className="flex justify-between">
+              <div className="flex flex-col gap-3">
+                <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
+                  Create new opportunity
+                </h1>
+                <p className="text-muted-foreground">
+                  Configure a new opportunity
+                </p>
+              </div>
 
-          <p className="text-muted-foreground">Configure a new opportunity</p>
-        </div>
-        <TabsList className="self-center">
-          <TabsTrigger value="general">General information</TabsTrigger>
-          <ArrowRightIcon className="mx-2 h-5 w-5" />
-          <TabsTrigger disabled value="tally">
-            Tally Form
-          </TabsTrigger>
-          <ArrowRightIcon className="mx-2 h-5 w-5" />
-          <TabsTrigger disabled value="steps">
-            Define steps
-          </TabsTrigger>
-        </TabsList>
-      </div>
-      <Form {...form}>
-        <form
-          // eslint-disable-next-line @typescript-eslint/no-misused-promises
-          onSubmit={form.handleSubmit(onSubmit, (err) => console.error(err))}
-        >
+              <Button type="submit">
+                <Save className="mr-2" />
+                Create
+              </Button>
+            </div>
+            <TabsList className="self-center">
+              <TabsTrigger value="general">General information</TabsTrigger>
+              <ArrowRightIcon className="mx-2 h-5 w-5" />
+              <TabsTrigger disabled value="tally">
+                Tally Form
+              </TabsTrigger>
+              <ArrowRightIcon className="mx-2 h-5 w-5" />
+              <TabsTrigger disabled value="steps">
+                Define steps
+              </TabsTrigger>
+            </TabsList>
+          </div>
           <TabsContent value="general">
             <GeneralInformation />
           </TabsContent>
-          <div className="mt-16 flex justify-end">
-            <Button type="submit">
-              <Save className="mr-2" />
-              Create
-            </Button>
-          </div>
-        </form>
-      </Form>
-    </Tabs>
+        </Tabs>
+      </form>
+    </Form>
   );
 };
 

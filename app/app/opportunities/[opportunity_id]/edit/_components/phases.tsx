@@ -6,7 +6,6 @@ import { AddPhasePopover } from "./addPhasePopover";
 import { Separator } from "@components/ui/separator";
 import { useState } from "react";
 import { Questionnaires } from "./questionnaires";
-import { Button } from "@components/ui/button";
 
 export function Phases() {
   const form = useFormContext<z.infer<typeof FullFormSchema>>();
@@ -51,10 +50,6 @@ export function Phases() {
           selected={selectedQuestionnaire}
         />
       )}
-
-      <div className="flex justify-end">
-        <Button type="submit">Create Opportunity</Button>
-      </div>
     </div>
   );
 }
