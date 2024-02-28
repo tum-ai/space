@@ -69,8 +69,8 @@ export const DeleteButton = ({ title, id }: DeleteButtonProps) => {
                   <Input placeholder="My cool opportunity" {...field} />
                 </FormControl>
                 <FormDescription>
-                  Confirm the title of the opportunity to proceed.
-                  <p>{title}</p>
+                  <p>Confirm the title of the opportunity to proceed.</p>
+                  <p>{`Your opportunity is called "${title}"`}</p>
                 </FormDescription>
                 <FormMessage />
               </FormItem>

@@ -31,6 +31,9 @@ export default async function EditOpportunity({
     typeof OpportunitySchema
   >["defineSteps"];
 
+  // TODO: Unauthorized redirect
+  if (!opportunity) redirect("/opportunities");
+
   const initialValues: EditOpportunityFormProps["initialValues"] = {
     id: opportunity?.id,
     generalInformation: {
