@@ -51,10 +51,10 @@ model User {
   departmentMemberships DepartmentMembership[]
   reviews               Review[]
   roles                 SpaceRole[]            @default([USER])
-  Profile               Profile[]
-  Session               Session[]
-  UserOnQuestionnaire   UserOnQuestionnaire[]
-  OpportunityAdmin      Opportunity[]
+  profile               Profile[]
+  session               Session[]
+  userOnQuestionnaire   UserOnQuestionnaire[]
+  opportunityAdmin      Opportunity[]
 }
 
 model Profile {
@@ -131,8 +131,8 @@ model Questionnaire {
   questions           Json
   opportunityId       Int
   opportunity         Opportunity           @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
-  UserOnQuestionnaire UserOnQuestionnaire[]
-  Review              Review[]
+  userOnQuestionnaire UserOnQuestionnaire[]
+  review              Review[]
 }
 
 model UserOnQuestionnaire {
