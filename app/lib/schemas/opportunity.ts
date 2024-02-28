@@ -1,10 +1,11 @@
 import { QuestionSchema } from "@lib/schemas/question";
 import { z } from "zod";
-import { PersonSchema } from "./person";
 
 export const QuestionnaireSchema = z.object({
   name: z.string().min(1, "Questionnaire name is required"),
+  requiredReviews: z.number().int().min(1, "At least one review is required"),
   questions: z.array(QuestionSchema),
+  reviewers: z.array(z.string()),
 });
 
 export const PhaseSchema = z.object({
@@ -29,8 +30,6 @@ export const GeneralInformationSchema = z
       )
       .optional(),
     description: z.string().optional(),
-    admins: z.array(PersonSchema).min(1, "At least one admin required"),
-    screeners: z.array(PersonSchema),
   })
   .refine(
     (data) => {
@@ -44,6 +43,7 @@ export const GeneralInformationSchema = z
 
 export const OpportunitySchema = z.object({
   id: z.number().optional(),
+  adminId: z.string().optional(),
   generalInformation: GeneralInformationSchema,
   defineSteps: z.array(PhaseSchema),
 });

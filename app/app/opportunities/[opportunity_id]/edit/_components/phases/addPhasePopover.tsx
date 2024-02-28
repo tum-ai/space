@@ -18,6 +18,7 @@ import {
   FormMessage,
 } from "@components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Plus } from "lucide-react";
 
 interface AddPhasePopoverProps {
   append: UseFieldArrayAppend<z.infer<typeof OpportunitySchema>, "defineSteps">;
@@ -27,11 +28,14 @@ export const AddPhasePopover = ({ append }: AddPhasePopoverProps) => {
   const [popoverOpen, setPopoverOpen] = useState(false);
   const form = useForm<z.infer<typeof PhaseSchema>>({
     resolver: zodResolver(PhaseSchema),
-    defaultValues: { name: "", forms: [] },
+    defaultValues: {
+      name: "",
+      forms: [],
+    },
   });
 
   const onSubmit: SubmitHandler<z.infer<typeof PhaseSchema>> = (data) => {
-    append({ name: data.name, forms: [] });
+    append(data);
     form.reset();
     setPopoverOpen(false);
   };
@@ -39,11 +43,9 @@ export const AddPhasePopover = ({ append }: AddPhasePopoverProps) => {
   return (
     <Popover open={popoverOpen} onOpenChange={(open) => setPopoverOpen(open)}>
       <PopoverTrigger asChild>
-        <Button
-          variant="secondary"
-          className="w-full text-sm font-medium text-gray-300 dark:text-gray-600"
-        >
-          + Add phase
+        <Button variant="secondary" className="w-full">
+          <Plus className="mr-2" />
+          Add phase
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-80 space-y-4">
