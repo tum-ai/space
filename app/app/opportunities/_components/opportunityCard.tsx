@@ -3,22 +3,33 @@ import { Button } from "@components/ui/button";
 import { CalendarIcon } from "@radix-ui/react-icons";
 import Link from "next/link";
 import { Opportunity } from "@prisma/client";
-import LoadingWheel from "@components/LoadingWheel";
 import { format } from "date-fns";
+import { Badge } from "@components/ui/badge";
 
 interface OpportunityCardProps {
   opportunity: Opportunity;
-  count?: number;
+  canEdit?: boolean;
 }
 
 export default function OpportunityCard({
   opportunity,
-  count,
+  canEdit = false,
 }: OpportunityCardProps) {
   return (
     <Card className="flex flex-col justify-between overflow-hidden">
       <div>
-        <CardHeader className="text-3xl">{opportunity.title}</CardHeader>
+        <CardHeader>
+          <div className="flex justify-between">
+            <h2 className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0">
+              {opportunity.title}
+            </h2>
+            {opportunity.status === "MISSING_CONFIG" && (
+              <div>
+                <Badge variant="destructive">Incomplete</Badge>
+              </div>
+            )}
+          </div>
+        </CardHeader>
         <CardContent className="flex flex-col gap-4">
           <span className="flex flex-row items-center gap-2 text-slate-500">
             <CalendarIcon />
@@ -27,13 +38,6 @@ export default function OpportunityCard({
               {opportunity.end && ` - ${format(opportunity.end, "PPP")}`}
             </p>
           </span>
-          {count !== undefined ? (
-            <p className="text-2xl">
-              {count} applicant{count !== 1 && "s"}
-            </p>
-          ) : (
-            <LoadingWheel />
-          )}
           {opportunity.description}
         </CardContent>
       </div>
@@ -44,9 +48,13 @@ export default function OpportunityCard({
           </Link>
         </Button>
 
-        <Button className="rounded-none" asChild variant="ghost">
-          <Link href={"/opportunities/" + +opportunity.id + "/edit"}>Edit</Link>
-        </Button>
+        {canEdit && (
+          <Button className="rounded-none" asChild variant="ghost">
+            <Link href={"/opportunities/" + +opportunity.id + "/edit"}>
+              Edit
+            </Link>
+          </Button>
+        )}
 
         <Button className="rounded-none" asChild variant="ghost">
           <Link href={"/opportunities/" + +opportunity.id}>Applications</Link>

@@ -20,10 +20,10 @@ import { format } from "date-fns";
 import { Calendar } from "@components/ui/calendar";
 import { CalendarIcon } from "lucide-react";
 import {
-  FullFormSchema,
+  OpportunitySchema,
   GeneralInformationSchema,
-  PersonSchema,
 } from "@lib/schemas/opportunity";
+import { PersonSchema } from "@lib/schemas/person";
 import { z } from "zod";
 import { MemberSection } from "./memberSection";
 
@@ -31,7 +31,7 @@ export type Member = z.infer<typeof PersonSchema>;
 
 export function GeneralInformation() {
   const form = useFormContext<
-    z.infer<typeof FullFormSchema> | z.infer<typeof GeneralInformationSchema>
+    z.infer<typeof OpportunitySchema> | z.infer<typeof GeneralInformationSchema>
   >();
 
   return (

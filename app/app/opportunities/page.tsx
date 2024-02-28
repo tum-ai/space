@@ -1,10 +1,12 @@
-import { Rabbit } from "lucide-react";
+import { Plus, Rabbit } from "lucide-react";
 import OpportunityCard from "./_components/opportunityCard";
 import { Button } from "@components/ui/button";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getServerAuthSession } from "server/auth";
 import db from "server/db";
+
+export const dynamic = "force-dynamic";
 
 export default async function OpportunitiesPage() {
   const session = await getServerAuthSession();
@@ -13,17 +15,21 @@ export default async function OpportunitiesPage() {
 
   const opportunities = await db.opportunity.findMany({
     where: {
-      NOT: {
-        AND: [
-          { status: "MISSING_CONFIG" },
-          {
-            users: {
-              none: { AND: [{ userId }, { opportunityRole: "ADMIN" }] },
+      AND: {
+        users: { some: { userId } },
+        NOT: {
+          AND: [
+            { status: "MISSING_CONFIG" },
+            {
+              users: {
+                none: { AND: [{ userId }, { opportunityRole: "ADMIN" }] },
+              },
             },
-          },
-        ],
+          ],
+        },
       },
     },
+    include: { users: { where: { userId } } },
   });
 
   return (
@@ -34,7 +40,10 @@ export default async function OpportunitiesPage() {
             Opportunities
           </h1>
           <Link href="./opportunities/create">
-            <Button>Create Opportunity</Button>
+            <Button>
+              <Plus className="mr-2" />
+              Create new
+            </Button>
           </Link>
         </div>
 
@@ -43,6 +52,7 @@ export default async function OpportunitiesPage() {
             <div className="flex flex-col items-center text-muted-foreground">
               <Rabbit className="mb-8 h-16 w-16" />
               <p>
+                {/* TODO: Not correct for non-admin users */}
                 No opportunities found. Create a new opportunity to get started.
               </p>
             </div>
@@ -53,10 +63,14 @@ export default async function OpportunitiesPage() {
           </div>
         )}
         {!!opportunities.length && (
-          <div className="grid auto-cols-max grid-flow-col gap-8">
+          <div className="grid gap-8 md:grid-cols-2 xl:grid-cols-3">
             {opportunities?.map((item, index) => {
               return (
-                <OpportunityCard opportunity={item} key={index} count={0} />
+                <OpportunityCard
+                  canEdit={item.users.at(0)?.opportunityRole === "ADMIN"}
+                  opportunity={item}
+                  key={index}
+                />
               );
             })}
           </div>

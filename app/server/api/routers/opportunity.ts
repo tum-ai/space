@@ -1,9 +1,9 @@
 import { createTRPCRouter, protectedProcedure } from "server/api/trpc";
 import {
-  FullFormSchema,
+  OpportunitySchema,
   GeneralInformationSchema,
-  PersonSchema,
 } from "@lib/schemas/opportunity";
+import { PersonSchema } from "@lib/schemas/person";
 import { z } from "zod";
 
 const parseUsers = (
@@ -45,7 +45,7 @@ export const opportunityRouter = createTRPCRouter({
     }),
 
   update: protectedProcedure
-    .input(FullFormSchema)
+    .input(OpportunitySchema)
     .mutation(async ({ input, ctx }) => {
       const opportunity = await ctx.db.opportunity.update({
         where: {
@@ -56,7 +56,7 @@ export const opportunityRouter = createTRPCRouter({
           description: input.generalInformation.description,
           start: input.generalInformation.start,
           end: input.generalInformation.end,
-          configuration: { steps: input.defineSteps },
+          configuration: input.defineSteps,
           users: {
             deleteMany: {},
             create: parseUsers(
@@ -74,6 +74,16 @@ export const opportunityRouter = createTRPCRouter({
     .input(z.object({ id: z.number() }))
     .query(async ({ input, ctx }) => {
       return await ctx.db.opportunity.findUnique({
+        where: {
+          id: input.id,
+        },
+      });
+    }),
+
+  deleteById: protectedProcedure
+    .input(z.object({ id: z.number() }))
+    .mutation(async ({ input, ctx }) => {
+      return await ctx.db.opportunity.delete({
         where: {
           id: input.id,
         },

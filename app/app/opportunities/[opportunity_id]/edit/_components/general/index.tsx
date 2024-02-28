@@ -1,0 +1,1 @@
+export { GeneralInformation } from "./general";

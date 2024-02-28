@@ -2,16 +2,16 @@
 
 import { useFieldArray, useFormContext } from "react-hook-form";
 import { z } from "zod";
-import { FullFormSchema } from "@lib/schemas/opportunity";
+import { OpportunitySchema } from "@lib/schemas/opportunity";
 import { CardDescription, CardTitle } from "@components/ui/card";
 import { Button } from "@components/ui/button";
-import { QuestionForm } from "./question";
+import { QuestionForm } from "../question";
 
 interface Props {
   selected: [number, number]; // index of selected phase and questionnaire
 }
 export const Questionnaires = ({ selected }: Props) => {
-  const form = useFormContext<z.infer<typeof FullFormSchema>>();
+  const form = useFormContext<z.infer<typeof OpportunitySchema>>();
   const { fields, append, remove, update } = useFieldArray({
     control: form.control,
     name: `defineSteps.${selected[0]}.forms.${selected[1]}.questions`,

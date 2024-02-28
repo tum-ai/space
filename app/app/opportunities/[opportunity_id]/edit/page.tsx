@@ -5,6 +5,8 @@ import {
 } from "./editOpportunityForm";
 import { getServerAuthSession } from "server/auth";
 import db from "server/db";
+import { OpportunitySchema } from "@lib/schemas/opportunity";
+import { z } from "zod";
 interface EditOpportunityProps {
   params: { opportunity_id: string };
 }
@@ -25,6 +27,12 @@ export default async function EditOpportunity({
     },
     include: { users: { include: { user: true } } },
   });
+  const configuration = opportunity?.configuration as z.infer<
+    typeof OpportunitySchema
+  >["defineSteps"];
+
+  // TODO: Unauthorized redirect
+  if (!opportunity) redirect("/opportunities");
 
   const initialValues: EditOpportunityFormProps["initialValues"] = {
     id: opportunity?.id,
@@ -48,7 +56,7 @@ export default async function EditOpportunity({
           image: user.user.image ?? undefined,
         })),
     },
-    defineSteps: [],
+    defineSteps: configuration,
   };
 
   return <EditOpportunityForm initialValues={initialValues} />;

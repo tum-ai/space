@@ -6,7 +6,7 @@ import {
   PopoverTrigger,
 } from "@components/ui/popover";
 import { SubmitHandler, UseFieldArrayAppend, useForm } from "react-hook-form";
-import { QuestionnaireSchema, FullFormSchema } from "@lib/schemas/opportunity";
+import { OpportunitySchema, PhaseSchema } from "@lib/schemas/opportunity";
 import { z } from "zod";
 import { useState } from "react";
 import {
@@ -19,26 +19,19 @@ import {
 } from "@components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-interface AddQuestionairePopoverProps {
-  append: UseFieldArrayAppend<
-    z.infer<typeof FullFormSchema>,
-    `defineSteps.${number}.forms`
-  >;
+interface AddPhasePopoverProps {
+  append: UseFieldArrayAppend<z.infer<typeof OpportunitySchema>, "defineSteps">;
 }
 
-export const AddQuestionnairePopover = ({
-  append,
-}: AddQuestionairePopoverProps) => {
+export const AddPhasePopover = ({ append }: AddPhasePopoverProps) => {
   const [popoverOpen, setPopoverOpen] = useState(false);
-  const form = useForm<z.infer<typeof QuestionnaireSchema>>({
-    resolver: zodResolver(QuestionnaireSchema),
-    defaultValues: { name: "", questions: [] },
+  const form = useForm<z.infer<typeof PhaseSchema>>({
+    resolver: zodResolver(PhaseSchema),
+    defaultValues: { name: "", forms: [] },
   });
 
-  const onSubmit: SubmitHandler<z.infer<typeof QuestionnaireSchema>> = (
-    data,
-  ) => {
-    append({ name: data.name, questions: [] });
+  const onSubmit: SubmitHandler<z.infer<typeof PhaseSchema>> = (data) => {
+    append({ name: data.name, forms: [] });
     form.reset();
     setPopoverOpen(false);
   };
@@ -50,13 +43,13 @@ export const AddQuestionnairePopover = ({
           variant="secondary"
           className="w-full text-sm font-medium text-gray-300 dark:text-gray-600"
         >
-          + Add questionaire
+          + Add phase
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-80 space-y-4">
         <Form {...form}>
           <h4 className="scroll-m-20 text-xl font-semibold tracking-tight">
-            Add Questionaire
+            Add Phase
           </h4>
 
           <FormField
@@ -66,7 +59,7 @@ export const AddQuestionnairePopover = ({
               <FormItem>
                 <FormLabel>Name*</FormLabel>
                 <FormControl>
-                  <Input placeholder="General" {...field} />
+                  <Input placeholder="Screening" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
