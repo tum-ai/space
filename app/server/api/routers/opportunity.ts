@@ -3,25 +3,7 @@ import {
   OpportunitySchema,
   GeneralInformationSchema,
 } from "@lib/schemas/opportunity";
-import { PersonSchema } from "@lib/schemas/person";
 import { z } from "zod";
-
-const parseUsers = (
-  admins: z.infer<typeof PersonSchema>[],
-  screeners: z.infer<typeof PersonSchema>[],
-) => {
-  const userAdmins = admins.map((user) => ({
-    user: { connect: { id: user.id } },
-    opportunityRole: "ADMIN" as const,
-  }));
-
-  const userScreeners = screeners.map((user) => ({
-    user: { connect: { id: user.id } },
-    opportunityRole: "SCREENER" as const,
-  }));
-
-  return [...userAdmins, ...userScreeners];
-};
 
 export const opportunityRouter = createTRPCRouter({
   create: protectedProcedure
@@ -33,11 +15,8 @@ export const opportunityRouter = createTRPCRouter({
           description: input.description,
           start: input.start,
           end: input.end,
-          configuration: {},
           status: "MISSING_CONFIG",
-          users: {
-            create: parseUsers(input.admins, input.screeners),
-          },
+          admin: { connect: { id: ctx.session.user.id } },
         },
       });
 
@@ -47,27 +26,43 @@ export const opportunityRouter = createTRPCRouter({
   update: protectedProcedure
     .input(OpportunitySchema)
     .mutation(async ({ input, ctx }) => {
-      const opportunity = await ctx.db.opportunity.update({
+      const deletePhases = ctx.db.phase.deleteMany({
+        where: { opportunityId: input.id },
+      });
+
+      const updateOpportunity = ctx.db.opportunity.update({
         where: {
           id: input.id,
+          adminId: ctx.session.user.id,
         },
         data: {
           title: input.generalInformation.title,
           description: input.generalInformation.description,
           start: input.generalInformation.start,
           end: input.generalInformation.end,
-          configuration: input.defineSteps,
-          users: {
+          phases: {
             deleteMany: {},
-            create: parseUsers(
-              input.generalInformation.admins,
-              input.generalInformation.screeners,
-            ),
+            create: input.defineSteps.map((phase) => ({
+              name: phase.name,
+              index: phase.index,
+              questionnaires: {
+                create: phase.forms.map((form) => ({
+                  name: form.name,
+                  requiredReviews: form.requiredReviews,
+                  questions: form.questions,
+                  userOnQuestionnaire: {
+                    create: form.reviewers.map((reviewer) => ({
+                      userId: reviewer,
+                    })),
+                  },
+                })),
+              },
+            })),
           },
         },
       });
 
-      return opportunity;
+      return await ctx.db.$transaction([deletePhases, updateOpportunity]);
     }),
 
   getById: protectedProcedure

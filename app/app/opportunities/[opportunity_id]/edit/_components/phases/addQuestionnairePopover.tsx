@@ -6,7 +6,10 @@ import {
   PopoverTrigger,
 } from "@components/ui/popover";
 import { SubmitHandler, UseFieldArrayAppend, useForm } from "react-hook-form";
-import { QuestionnaireSchema, OpportunitySchema } from "@lib/schemas/opportunity";
+import {
+  OpportunitySchema,
+  QuestionnaireSchema,
+} from "@lib/schemas/opportunity";
 import { z } from "zod";
 import { useState } from "react";
 import {
@@ -18,6 +21,7 @@ import {
   FormMessage,
 } from "@components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Plus } from "lucide-react";
 
 interface AddQuestionairePopoverProps {
   append: UseFieldArrayAppend<
@@ -32,13 +36,18 @@ export const AddQuestionnairePopover = ({
   const [popoverOpen, setPopoverOpen] = useState(false);
   const form = useForm<z.infer<typeof QuestionnaireSchema>>({
     resolver: zodResolver(QuestionnaireSchema),
-    defaultValues: { name: "", questions: [] },
+    defaultValues: {
+      name: "",
+      questions: [],
+      reviewers: [],
+      requiredReviews: 1,
+    },
   });
 
   const onSubmit: SubmitHandler<z.infer<typeof QuestionnaireSchema>> = (
     data,
   ) => {
-    append({ name: data.name, questions: [] });
+    append(data);
     form.reset();
     setPopoverOpen(false);
   };
@@ -46,11 +55,9 @@ export const AddQuestionnairePopover = ({
   return (
     <Popover open={popoverOpen} onOpenChange={(open) => setPopoverOpen(open)}>
       <PopoverTrigger asChild>
-        <Button
-          variant="secondary"
-          className="w-full text-sm font-medium text-gray-300 dark:text-gray-600"
-        >
-          + Add questionaire
+        <Button variant="secondary" className="w-full">
+          <Plus className="mr-2" />
+          Add questionaire
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-80 space-y-4">
