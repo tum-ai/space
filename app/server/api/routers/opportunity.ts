@@ -56,7 +56,7 @@ export const opportunityRouter = createTRPCRouter({
           description: input.generalInformation.description,
           start: input.generalInformation.start,
           end: input.generalInformation.end,
-          configuration: { steps: input.defineSteps },
+          configuration: input.defineSteps,
           users: {
             deleteMany: {},
             create: parseUsers(
