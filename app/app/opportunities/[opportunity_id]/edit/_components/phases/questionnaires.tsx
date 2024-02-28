@@ -5,7 +5,7 @@ import { z } from "zod";
 import { OpportunitySchema } from "@lib/schemas/opportunity";
 import { CardDescription, CardTitle } from "@components/ui/card";
 import { Button } from "@components/ui/button";
-import { QuestionForm } from "./question";
+import { QuestionForm } from "../question";
 
 interface Props {
   selected: [number, number]; // index of selected phase and questionnaire

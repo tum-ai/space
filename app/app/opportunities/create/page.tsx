@@ -1,13 +1,12 @@
 "use client";
 
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@components/ui/tabs";
 import { Form } from "@components/ui/form";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { OpportunitySchema } from "@lib/schemas/opportunity";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { api } from "trpc/react";
-import { ArrowRightIcon, Save } from "lucide-react";
+import { Save } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@components/ui/button";
 import { useRouter } from "next/navigation";
@@ -48,7 +47,7 @@ export const CreateOpportunityForm = () => {
         // eslint-disable-next-line @typescript-eslint/no-misused-promises
         onSubmit={form.handleSubmit(onSubmit, (err) => console.error(err))}
       >
-        <Tabs defaultValue="general" className="p-8">
+        <div className="mt-12 p-8">
           <div className="mb-12 flex flex-col space-y-6">
             <div className="flex justify-between">
               <div className="flex flex-col gap-3">
@@ -65,22 +64,9 @@ export const CreateOpportunityForm = () => {
                 Create
               </Button>
             </div>
-            <TabsList className="self-center">
-              <TabsTrigger value="general">General information</TabsTrigger>
-              <ArrowRightIcon className="mx-2 h-5 w-5" />
-              <TabsTrigger disabled value="tally">
-                Tally Form
-              </TabsTrigger>
-              <ArrowRightIcon className="mx-2 h-5 w-5" />
-              <TabsTrigger disabled value="steps">
-                Define steps
-              </TabsTrigger>
-            </TabsList>
           </div>
-          <TabsContent value="general">
-            <GeneralInformation />
-          </TabsContent>
-        </Tabs>
+          <GeneralInformation />
+        </div>
       </form>
     </Form>
   );
