@@ -12,7 +12,7 @@ import { Button } from "@components/ui/button";
 import { useRouter } from "next/navigation";
 import { GeneralInformation } from "../[opportunity_id]/edit/_components/general";
 
-export const CreateOpportunityForm = () => {
+const CreateOpportunityForm = () => {
   const router = useRouter();
   const form = useForm<z.infer<typeof OpportunitySchema>>({
     resolver: zodResolver(OpportunitySchema),
@@ -47,7 +47,7 @@ export const CreateOpportunityForm = () => {
         // eslint-disable-next-line @typescript-eslint/no-misused-promises
         onSubmit={form.handleSubmit(onSubmit, (err) => console.error(err))}
       >
-        <div className="mt-12 p-8">
+        <div className="p-8">
           <div className="mb-12 flex flex-col space-y-6">
             <div className="flex justify-between">
               <div className="flex flex-col gap-3">
