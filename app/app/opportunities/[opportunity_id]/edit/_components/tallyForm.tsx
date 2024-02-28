@@ -40,6 +40,7 @@ export const TallyForm = () => {
                     value={`${window.location.origin}/api/tally/${field.value}`}
                   />
                   <Button
+                    type="button"
                     onClick={() => {
                       toast.promise(
                         navigator.clipboard.writeText(
@@ -68,7 +69,7 @@ export const TallyForm = () => {
         <Card className="col-span-2 h-96">
           <CardHeader>Application Form</CardHeader>
           <CardContent>
-            Your application will show up here once you submit a test
+            Your application schema will show up here once you submit a test
             application
           </CardContent>
         </Card>
