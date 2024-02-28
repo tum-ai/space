@@ -1,42 +1,80 @@
+"use client";
+import React from "react";
 import { Application } from "@prisma/client";
-import { ColumnDef } from "@tanstack/react-table";
-import { useSearchParams } from "next/navigation";
-import { api } from "trpc/react";
+import {
+  ColumnDef,
+  useReactTable,
+  getCoreRowModel,
+  flexRender,
+} from "@tanstack/react-table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHeader,
+  TableRow,
+} from "@components/ui/table";
 
 export const columns: ColumnDef<Application>[] = [
   {
-    accessorKey: "status",
-    header: "Status",
+    accessorKey: 'id', // Direct key access, no change needed
+    header: () => 'ID',
+    cell: info => info.getValue().toString(), // Ensure string representation
   },
   {
-    accessorKey: "email",
-    header: "Email",
+    accessorKey: 'createdAt', // Assuming direct key access
+    header: () => 'Created At',
+    cell: info => info.getValue().toLocaleString(), // Format date appropriately
   },
-  {
-    accessorKey: "amount",
-    header: "Amount",
-  },
+  // Add other columns as needed
 ];
 
 interface ApplicationsTableProps {
-  opportunity_id: number;
+  applications: Application[];
 }
 
-export const ApplicationsTable = ({
-  opportunity_id,
+export const ApplicationsTable = async ({
+  applications,
 }: ApplicationsTableProps) => {
-  const searchParams = useSearchParams();
-  const { data, error } = api.application.getAllByOpportunityId.useQuery({
-    opportunityId: opportunity_id,
+  // const { data, error } = api.application.getAllByOpportunityId.useQuery({
+  //   opportunityId: opportunity_id,
+  // });
+
+  const table = useReactTable({
+    data: applications,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
   });
 
-  if (error) {
-    return <div>Error: {error.message}</div>;
-  }
-
-  if (!data) {
-    return <div>Loading...</div>;
-  }
-
-  return <>asd</>;
+  return (
+    <div className="rounded-md border">
+      <Table>
+        <TableHeader>
+          {table.getHeaderGroups().map((headerGroup) => (
+            <TableRow key={headerGroup.id}>
+              {headerGroup.headers.map((header) => (
+                <th key={header.id}>
+                  {flexRender(
+                    header.column.columnDef.header,
+                    header.getContext(),
+                  )}
+                </th>
+              ))}
+            </TableRow>
+          ))}
+        </TableHeader>
+        <TableBody>
+          {table.getRowModel().rows.map((row) => (
+            <TableRow key={row.id}>
+              {row.getVisibleCells().map((cell) => (
+                <TableCell key={cell.id}>
+                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                </TableCell>
+              ))}
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </div>
+  );
 };
