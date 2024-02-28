@@ -1,5 +1,5 @@
 import { useFieldArray, useFormContext } from "react-hook-form";
-import { FullFormSchema } from "@lib/schemas/opportunity";
+import { OpportunitySchema } from "@lib/schemas/opportunity";
 import Phase from "./phase";
 import { z } from "zod";
 import { AddPhasePopover } from "./addPhasePopover";
@@ -8,7 +8,7 @@ import { useState } from "react";
 import { Questionnaires } from "./questionnaires";
 
 export function Phases() {
-  const form = useFormContext<z.infer<typeof FullFormSchema>>();
+  const form = useFormContext<z.infer<typeof OpportunitySchema>>();
   const { fields, append, remove, update } = useFieldArray({
     control: form.control,
     name: "defineSteps",

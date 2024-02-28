@@ -8,7 +8,7 @@ import {
 import { Button } from "@components/ui/button";
 import { Separator } from "@components/ui/separator";
 import { z } from "zod";
-import { FullFormSchema, PhaseSchema } from "@lib/schemas/opportunity";
+import { OpportunitySchema, PhaseSchema } from "@lib/schemas/opportunity";
 import { AddQuestionnairePopover } from "./addQuestionnairePopover";
 import { X } from "lucide-react";
 import { Dispatch, SetStateAction } from "react";
@@ -17,7 +17,7 @@ interface Props {
   index: number;
   phase: z.infer<typeof PhaseSchema>;
   remove: UseFieldArrayRemove;
-  update: UseFieldArrayUpdate<z.infer<typeof FullFormSchema>, "defineSteps">;
+  update: UseFieldArrayUpdate<z.infer<typeof OpportunitySchema>, "defineSteps">;
   setSelectedQuestionnaire: Dispatch<
     SetStateAction<[number, number] | undefined>
   >;
@@ -29,7 +29,7 @@ export default function Phase({
   remove: removePhase,
   setSelectedQuestionnaire,
 }: Props) {
-  const form = useFormContext<z.infer<typeof FullFormSchema>>();
+  const form = useFormContext<z.infer<typeof OpportunitySchema>>();
   const {
     fields: questionaires,
     append,

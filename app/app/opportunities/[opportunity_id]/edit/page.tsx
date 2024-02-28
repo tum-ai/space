@@ -5,7 +5,7 @@ import {
 } from "./editOpportunityForm";
 import { getServerAuthSession } from "server/auth";
 import db from "server/db";
-import { FullFormSchema } from "@lib/schemas/opportunity";
+import { OpportunitySchema } from "@lib/schemas/opportunity";
 import { z } from "zod";
 interface EditOpportunityProps {
   params: { opportunity_id: string };
@@ -28,7 +28,7 @@ export default async function EditOpportunity({
     include: { users: { include: { user: true } } },
   });
   const configuration = opportunity?.configuration as z.infer<
-    typeof FullFormSchema
+    typeof OpportunitySchema
   >["defineSteps"];
 
   const initialValues: EditOpportunityFormProps["initialValues"] = {

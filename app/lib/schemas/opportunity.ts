@@ -1,12 +1,6 @@
 import { QuestionSchema } from "@lib/schemas/question";
 import { z } from "zod";
-
-export const PersonSchema = z.object({
-  id: z.string(),
-  name: z.string().optional(),
-  tags: z.array(z.object({ text: z.string(), color: z.string() })).optional(),
-  image: z.string().optional(),
-});
+import { PersonSchema } from "./person";
 
 export const QuestionnaireSchema = z.object({
   name: z.string().min(1, "Questionnaire name is required"),
@@ -48,7 +42,7 @@ export const GeneralInformationSchema = z
     },
   );
 
-export const FullFormSchema = z.object({
+export const OpportunitySchema = z.object({
   id: z.number().optional(),
   generalInformation: GeneralInformationSchema,
   defineSteps: z.array(PhaseSchema),

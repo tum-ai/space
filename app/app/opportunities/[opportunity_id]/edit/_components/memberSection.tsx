@@ -2,7 +2,7 @@ import React from "react";
 import { Button } from "@components/ui/button";
 import { useFieldArray, useFormContext } from "react-hook-form";
 import { Plus, X } from "lucide-react";
-import { FullFormSchema } from "@lib/schemas/opportunity";
+import { OpportunitySchema } from "@lib/schemas/opportunity";
 import { z } from "zod";
 import {
   Dialog,
@@ -51,7 +51,7 @@ export const MemberBar = ({ member, children }: MemberBarProps) => {
 };
 
 export const MemberSection = () => {
-  const form = useFormContext<z.infer<typeof FullFormSchema>>();
+  const form = useFormContext<z.infer<typeof OpportunitySchema>>();
 
   const {
     fields: admins,

@@ -6,7 +6,7 @@ import {
   PopoverTrigger,
 } from "@components/ui/popover";
 import { SubmitHandler, UseFieldArrayAppend, useForm } from "react-hook-form";
-import { QuestionnaireSchema, FullFormSchema } from "@lib/schemas/opportunity";
+import { QuestionnaireSchema, OpportunitySchema } from "@lib/schemas/opportunity";
 import { z } from "zod";
 import { useState } from "react";
 import {
@@ -21,7 +21,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 interface AddQuestionairePopoverProps {
   append: UseFieldArrayAppend<
-    z.infer<typeof FullFormSchema>,
+    z.infer<typeof OpportunitySchema>,
     `defineSteps.${number}.forms`
   >;
 }
