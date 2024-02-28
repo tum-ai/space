@@ -73,9 +73,9 @@ export const EditOpportunityForm = ({
             <TabsList className="self-center">
               <TabsTrigger value="general">General information</TabsTrigger>
               <ArrowRightIcon className="mx-2 h-5 w-5" />
-              <TabsTrigger value="tally">Tally Form</TabsTrigger>
+              <TabsTrigger value="tally">Tally form</TabsTrigger>
               <ArrowRightIcon className="mx-2 h-5 w-5" />
-              <TabsTrigger value="steps">Define steps</TabsTrigger>
+              <TabsTrigger value="steps">Define phases</TabsTrigger>
             </TabsList>
           </div>
           <TabsContent value="general">
