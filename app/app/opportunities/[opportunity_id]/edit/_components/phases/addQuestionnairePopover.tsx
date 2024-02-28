@@ -21,6 +21,7 @@ import {
   FormMessage,
 } from "@components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Plus } from "lucide-react";
 
 interface AddQuestionairePopoverProps {
   append: UseFieldArrayAppend<
@@ -54,11 +55,9 @@ export const AddQuestionnairePopover = ({
   return (
     <Popover open={popoverOpen} onOpenChange={(open) => setPopoverOpen(open)}>
       <PopoverTrigger asChild>
-        <Button
-          variant="secondary"
-          className="w-full text-sm font-medium text-gray-300 dark:text-gray-600"
-        >
-          + Add questionaire
+        <Button variant="secondary" className="w-full">
+          <Plus className="mr-2" />
+          Add questionaire
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-80 space-y-4">
