@@ -1,9 +1,9 @@
 import { createTRPCRouter, protectedProcedure } from "server/api/trpc";
 import {
-  FullFormSchema,
+  OpportunitySchema,
   GeneralInformationSchema,
-  PersonSchema,
 } from "@lib/schemas/opportunity";
+import { PersonSchema } from "@lib/schemas/person";
 import { z } from "zod";
 
 const parseUsers = (
@@ -45,7 +45,7 @@ export const opportunityRouter = createTRPCRouter({
     }),
 
   update: protectedProcedure
-    .input(FullFormSchema)
+    .input(OpportunitySchema)
     .mutation(async ({ input, ctx }) => {
       const opportunity = await ctx.db.opportunity.update({
         where: {

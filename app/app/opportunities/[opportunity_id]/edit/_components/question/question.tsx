@@ -12,7 +12,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@components/ui/form";
-import { FullFormSchema } from "@lib/schemas/opportunity";
+import { OpportunitySchema } from "@lib/schemas/opportunity";
 import { z } from "zod";
 import { Button } from "@components/ui/button";
 import {
@@ -39,7 +39,7 @@ interface QuestionFormProps {
   question: z.infer<typeof QuestionSchema>;
   index: number;
   update: UseFieldArrayUpdate<
-    z.infer<typeof FullFormSchema>,
+    z.infer<typeof OpportunitySchema>,
     `defineSteps.${number}.forms.${number}.questions`
   >;
   remove: UseFieldArrayRemove;

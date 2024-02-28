@@ -5,7 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@components/ui/tabs";
 import { Form } from "@components/ui/form";
 import { UseFormProps, useForm } from "react-hook-form";
 import { z } from "zod";
-import { FullFormSchema } from "@lib/schemas/opportunity";
+import { OpportunitySchema } from "@lib/schemas/opportunity";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Phases } from "./_components/phases";
 import { TallyForm } from "./_components/tallyForm";
@@ -15,20 +15,20 @@ import { toast } from "sonner";
 import { Button } from "@components/ui/button";
 import { DeleteButton } from "./_components/deleteButton";
 export interface EditOpportunityFormProps {
-  initialValues: UseFormProps<z.infer<typeof FullFormSchema>>["defaultValues"];
+  initialValues: UseFormProps<z.infer<typeof OpportunitySchema>>["defaultValues"];
 }
 
 export const EditOpportunityForm = ({
   initialValues,
 }: EditOpportunityFormProps) => {
-  const form = useForm<z.infer<typeof FullFormSchema>>({
-    resolver: zodResolver(FullFormSchema),
+  const form = useForm<z.infer<typeof OpportunitySchema>>({
+    resolver: zodResolver(OpportunitySchema),
     defaultValues: initialValues,
   });
 
   const updateMutation = api.opportunity.update.useMutation();
 
-  async function onSubmit(values: z.infer<typeof FullFormSchema>) {
+  async function onSubmit(values: z.infer<typeof OpportunitySchema>) {
     const id = toast.loading("Updating opportunity");
     try {
       await updateMutation.mutateAsync(values);

@@ -4,7 +4,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@components/ui/tabs";
 import { Form } from "@components/ui/form";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { FullFormSchema } from "@lib/schemas/opportunity";
+import { OpportunitySchema } from "@lib/schemas/opportunity";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { api } from "trpc/react";
 import { ArrowRightIcon, Save } from "lucide-react";
@@ -15,8 +15,8 @@ import { GeneralInformation } from "../[opportunity_id]/edit/_components/general
 
 export const CreateOpportunityForm = () => {
   const router = useRouter();
-  const form = useForm<z.infer<typeof FullFormSchema>>({
-    resolver: zodResolver(FullFormSchema),
+  const form = useForm<z.infer<typeof OpportunitySchema>>({
+    resolver: zodResolver(OpportunitySchema),
     defaultValues: {
       generalInformation: {
         title: "",
@@ -29,7 +29,7 @@ export const CreateOpportunityForm = () => {
   });
   const createMutation = api.opportunity.create.useMutation();
 
-  async function onSubmit(values: z.infer<typeof FullFormSchema>) {
+  async function onSubmit(values: z.infer<typeof OpportunitySchema>) {
     const id = toast.loading("Creating opportunity");
     try {
       const opportunity = await createMutation.mutateAsync(
