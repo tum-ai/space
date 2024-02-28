@@ -5,8 +5,10 @@ import {
 } from "./editOpportunityForm";
 import { getServerAuthSession } from "server/auth";
 import db from "server/db";
-import { OpportunitySchema } from "@lib/schemas/opportunity";
+import { Prisma } from "@prisma/client";
 import { z } from "zod";
+import { PhaseSchema } from "@lib/schemas/opportunity";
+
 interface EditOpportunityProps {
   params: { opportunity_id: string };
 }
@@ -18,45 +20,51 @@ export default async function EditOpportunity({
   const userId = session?.user.id;
   if (!userId) redirect("/auth");
 
-  const opportunity = await db.opportunity.findUnique({
-    where: {
-      id: Number(params.opportunity_id),
-      users: {
-        some: { userId, opportunityRole: "ADMIN" },
+  const opportunityQuery = Prisma.validator<Prisma.OpportunityFindUniqueArgs>()(
+    {
+      where: {
+        id: Number(params.opportunity_id),
+        admin: { id: userId },
+      },
+      include: {
+        admin: true,
+        phases: {
+          include: {
+            questionnaires: {
+              include: { userOnQuestionnaire: { select: { userId: true } } },
+            },
+          },
+        },
       },
     },
-    include: { users: { include: { user: true } } },
-  });
-  const configuration = opportunity?.configuration as z.infer<
-    typeof OpportunitySchema
-  >["defineSteps"];
+  );
 
-  // TODO: Unauthorized redirect
+  type DbOpportunity = Prisma.OpportunityGetPayload<typeof opportunityQuery>;
+
+  const opportunity: DbOpportunity | null =
+    await db.opportunity.findUnique(opportunityQuery);
   if (!opportunity) redirect("/opportunities");
+
+  const phases = opportunity.phases.map((phase) => ({
+    name: phase.name,
+    forms: phase.questionnaires.map((questionnaire) => ({
+      name: questionnaire.name,
+      requiredReviews: questionnaire.requiredReviews,
+      questions: questionnaire.questions,
+      reviewers: questionnaire.userOnQuestionnaire.map(({ userId }) => userId),
+    })),
+  })) as z.infer<typeof PhaseSchema>[];
 
   const initialValues: EditOpportunityFormProps["initialValues"] = {
     id: opportunity?.id,
+    adminId: opportunity.admin.id,
     generalInformation: {
       title: opportunity?.title,
       description: opportunity?.description ?? "",
       start: opportunity?.start,
       end: opportunity?.end ?? undefined,
-      admins: opportunity?.users
-        .filter((user) => user.opportunityRole === "ADMIN")
-        .map((user) => ({
-          id: user.userId,
-          name: user.user.name ?? undefined,
-          image: user.user.image ?? undefined,
-        })),
-      screeners: opportunity?.users
-        .filter((user) => user.opportunityRole === "SCREENER")
-        .map((user) => ({
-          id: user.userId,
-          name: user.user.name ?? undefined,
-          image: user.user.image ?? undefined,
-        })),
     },
-    defineSteps: configuration,
+    defineSteps: phases,
   };
 
   return <EditOpportunityForm initialValues={initialValues} />;

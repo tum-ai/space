@@ -6,7 +6,10 @@ import {
   PopoverTrigger,
 } from "@components/ui/popover";
 import { SubmitHandler, UseFieldArrayAppend, useForm } from "react-hook-form";
-import { QuestionnaireSchema, OpportunitySchema } from "@lib/schemas/opportunity";
+import {
+  OpportunitySchema,
+  QuestionnaireSchema,
+} from "@lib/schemas/opportunity";
 import { z } from "zod";
 import { useState } from "react";
 import {
@@ -32,13 +35,18 @@ export const AddQuestionnairePopover = ({
   const [popoverOpen, setPopoverOpen] = useState(false);
   const form = useForm<z.infer<typeof QuestionnaireSchema>>({
     resolver: zodResolver(QuestionnaireSchema),
-    defaultValues: { name: "", questions: [] },
+    defaultValues: {
+      name: "",
+      questions: [],
+      reviewers: [],
+      requiredReviews: 1,
+    },
   });
 
   const onSubmit: SubmitHandler<z.infer<typeof QuestionnaireSchema>> = (
     data,
   ) => {
-    append({ name: data.name, questions: [] });
+    append(data);
     form.reset();
     setPopoverOpen(false);
   };

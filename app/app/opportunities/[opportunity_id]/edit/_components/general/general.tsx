@@ -25,7 +25,6 @@ import {
 } from "@lib/schemas/opportunity";
 import { PersonSchema } from "@lib/schemas/person";
 import { z } from "zod";
-import { MemberSection } from "./memberSection";
 
 export type Member = z.infer<typeof PersonSchema>;
 
@@ -153,8 +152,6 @@ export function GeneralInformation() {
           />
         </div>
       </div>
-
-      <MemberSection />
     </div>
   );
 }

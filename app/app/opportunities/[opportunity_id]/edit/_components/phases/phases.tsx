@@ -2,10 +2,10 @@ import { useFieldArray, useFormContext } from "react-hook-form";
 import { OpportunitySchema } from "@lib/schemas/opportunity";
 import Phase from "./phase";
 import { z } from "zod";
-import { AddPhasePopover } from "./addPhasePopover";
 import { Separator } from "@components/ui/separator";
 import { useState } from "react";
 import { Questionnaires } from "./questionnaires";
+import { AddPhasePopover } from "./addPhasePopover";
 
 export function Phases() {
   const form = useFormContext<z.infer<typeof OpportunitySchema>>();
@@ -38,7 +38,10 @@ export function Phases() {
           ))}
 
           <div className="grid min-h-[250px] grid-rows-[3rem,_1fr]">
-            <AddPhasePopover append={append} />
+            <AddPhasePopover
+              append={append}
+              index={form.watch("defineSteps").length}
+            />
 
             <div>
               <Separator />

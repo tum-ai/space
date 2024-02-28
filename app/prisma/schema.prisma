@@ -109,30 +109,38 @@ model DepartmentMembership {
 }
 
 model Opportunity {
-  id             Int               @id @default(autoincrement())
-  title          String
-  description    String?
-  start          DateTime
-  end            DateTime?
+  id           Int               @id @default(autoincrement())
+  title        String
+  description  String?
+  start        DateTime
+  end          DateTime?
+  adminId      String
+  admin        User              @relation(fields: [adminId], references: [id])
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+  applications Application[]
+  status       OpportunityStatus
+  phases       Phase[]
+}
+
+model Phase {
+  id             Int             @id @default(autoincrement())
+  index          Int // for ordering
+  name           String
   questionnaires Questionnaire[]
-  adminId        String
-  admin          User              @relation(fields: [adminId], references: [id])
-  createdAt      DateTime          @default(now())
-  updatedAt      DateTime          @updatedAt
-  applications   Application[]
-  status         OpportunityStatus
+  opportunityId  Int
+  opportunity    Opportunity     @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
 }
 
 model Questionnaire {
   id                  Int                   @id @default(autoincrement())
   requiredReviews     Int
-  phaseName           String
   name                String
   questions           Json
-  opportunityId       Int
-  opportunity         Opportunity           @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
   userOnQuestionnaire UserOnQuestionnaire[]
   review              Review[]
+  Phase               Phase?                @relation(fields: [phaseId], references: [id])
+  phaseId             Int?
 }
 
 model UserOnQuestionnaire {
