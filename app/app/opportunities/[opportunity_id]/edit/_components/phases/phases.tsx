@@ -9,7 +9,7 @@ export function Phases() {
   const form = useFormContext<z.infer<typeof OpportunitySchema>>();
   const { fields, append, remove, update } = useFieldArray({
     control: form.control,
-    name: "defineSteps",
+    name: "phases",
   });
 
   return (

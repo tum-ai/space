@@ -38,7 +38,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@components/ui/avatar";
 interface QuestionnaireProps {
   append: UseFieldArrayAppend<
     z.infer<typeof OpportunitySchema>,
-    `defineSteps.${number}.forms`
+    `phases.${number}.questionnaires`
   >;
   onRemove: () => void;
   defaultValues: UseFormProps<

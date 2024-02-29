@@ -13,7 +13,7 @@ export const QuestionnaireSchema = z.object({
 export const PhaseSchema = z.object({
   id: z.number().optional(),
   name: z.string().min(1, "Phase name is required"),
-  forms: z.array(QuestionnaireSchema),
+  questionnaires: z.array(QuestionnaireSchema),
 });
 
 export const GeneralInformationSchema = z
@@ -48,5 +48,5 @@ export const OpportunitySchema = z.object({
   id: z.number().optional(),
   adminId: z.string().optional(),
   generalInformation: GeneralInformationSchema,
-  defineSteps: z.array(PhaseSchema),
+  phases: z.array(PhaseSchema),
 });

@@ -47,7 +47,7 @@ export default async function EditOpportunity({
 
   const phases = opportunity.phases.map((phase) => ({
     name: phase.name,
-    forms: phase.questionnaires.map((questionnaire) => ({
+    questionnaires: phase.questionnaires.map((questionnaire) => ({
       name: questionnaire.name,
       requiredReviews: questionnaire.requiredReviews,
       questions: questionnaire.questions,
@@ -68,7 +68,7 @@ export default async function EditOpportunity({
       start: opportunity?.start,
       end: opportunity?.end ?? undefined,
     },
-    defineSteps: phases,
+    phases: phases,
   };
 
   return <EditOpportunityForm initialValues={initialValues} />;
