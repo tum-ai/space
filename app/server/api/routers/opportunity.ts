@@ -4,6 +4,7 @@ import {
   GeneralInformationSchema,
 } from "@lib/schemas/opportunity";
 import { z } from "zod";
+import { Prisma } from "@prisma/client";
 
 export const opportunityRouter = createTRPCRouter({
   create: protectedProcedure
@@ -27,7 +28,9 @@ export const opportunityRouter = createTRPCRouter({
     .input(OpportunitySchema)
     .mutation(async ({ input, ctx }) => {
       const deletePhases = ctx.db.phase.deleteMany({
-        where: { opportunityId: input.id },
+        where: {
+          opportunityId: input.id,
+        },
       });
 
       const updateOpportunity = ctx.db.opportunity.update({
@@ -41,20 +44,14 @@ export const opportunityRouter = createTRPCRouter({
           start: input.generalInformation.start,
           end: input.generalInformation.end,
           phases: {
-            deleteMany: {},
             create: input.defineSteps.map((phase) => ({
               name: phase.name,
-              index: phase.index,
               questionnaires: {
                 create: phase.forms.map((form) => ({
                   name: form.name,
                   requiredReviews: form.requiredReviews,
                   questions: form.questions,
-                  userOnQuestionnaire: {
-                    create: form.reviewers.map((reviewer) => ({
-                      userId: reviewer,
-                    })),
-                  },
+                  // TODO: Add reviewers
                 })),
               },
             })),

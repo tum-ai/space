@@ -31,7 +31,7 @@ export default async function EditOpportunity({
         phases: {
           include: {
             questionnaires: {
-              include: { userOnQuestionnaire: { select: { userId: true } } },
+              include: { reviewers: true },
             },
           },
         },
@@ -51,7 +51,11 @@ export default async function EditOpportunity({
       name: questionnaire.name,
       requiredReviews: questionnaire.requiredReviews,
       questions: questionnaire.questions,
-      reviewers: questionnaire.userOnQuestionnaire.map(({ userId }) => userId),
+      reviewers: questionnaire.reviewers.map((user) => ({
+        id: user.id,
+        name: user.name,
+        image: user.image,
+      })),
     })),
   })) as z.infer<typeof PhaseSchema>[];
 
