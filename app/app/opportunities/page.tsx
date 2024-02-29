@@ -52,7 +52,7 @@ export default async function OpportunitiesPage() {
             {opportunities?.map((item, index) => {
               return (
                 <OpportunityCard
-                  canEdit={item.adminId === userId}
+                  isAdmin={item.adminId === userId}
                   opportunity={item}
                   key={index}
                 />

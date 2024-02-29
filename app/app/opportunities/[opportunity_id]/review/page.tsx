@@ -1,3 +1,4 @@
+import { Prisma } from "@prisma/client";
 import { redirect } from "next/navigation";
 import { getServerAuthSession } from "server/auth";
 import db from "server/db";
@@ -11,20 +12,27 @@ export default async function ReviewPage({
   const user = session?.user;
   if (!user?.id) redirect("/auth");
 
-  const awaitingReviews = db.questionnaire.findMany({
+  const applicationToReview = await db.application.findFirst({
     where: {
-      phase: { opportunity: { id: Number(params.opportunity_id) } },
-      // TODO: Filter by questionnaire.requiredReviews and received reviews
-      reviewers: {
-        some: {
-          id: user.id,
-        },
-      },
+      opportunityId: Number(params.opportunity_id),
+      questionnaire: { reviewers: { some: { id: user.id } } },
+    },
+    include: {
+      opportunity: true,
+      questionnaire: { include: { phase: true } },
     },
   });
 
-  await db.questionnaire.findMany({});
-  // TODO: Show questionnaires where user can start a review
-  // When user clicks on a questionnaire, a DB object of type review is already created (He locks this questionnaire)
-  return <div></div>;
+  if (!applicationToReview) redirect("/nothing-to-review");
+
+  const review = await db.review.create({
+    data: {
+      content: {},
+      user: { connect: { id: user.id } },
+      application: { connect: { id: applicationToReview.id } },
+      questionnaire: { connect: { id: applicationToReview.questionnaire.id } },
+    },
+  } satisfies Prisma.ReviewCreateArgs);
+
+  redirect("/opportunities/" + params.opportunity_id + "/review/" + review.id);
 }
