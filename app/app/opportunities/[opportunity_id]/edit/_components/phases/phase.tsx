@@ -17,7 +17,7 @@ interface Props {
   index: number;
   phase: z.infer<typeof PhaseSchema>;
   remove: UseFieldArrayRemove;
-  update: UseFieldArrayUpdate<z.infer<typeof OpportunitySchema>, "defineSteps">;
+  update: UseFieldArrayUpdate<z.infer<typeof OpportunitySchema>, "phases">;
 }
 
 export default function Phase({ index, phase, remove: removePhase }: Props) {
@@ -28,7 +28,7 @@ export default function Phase({ index, phase, remove: removePhase }: Props) {
     remove,
   } = useFieldArray({
     control: form.control,
-    name: `defineSteps.${index}.forms`,
+    name: `phases.${index}.questionnaires`,
   });
 
   return (
