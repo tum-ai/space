@@ -14,37 +14,36 @@ import {
   TableHeader,
   TableRow,
 } from "@components/ui/table";
+import { useRouter } from "next/navigation";
 
 export const columns: ColumnDef<Application>[] = [
   {
-    accessorKey: 'id', // Direct key access, no change needed
-    header: () => 'ID',
-    cell: info => info.getValue().toString(), // Ensure string representation
+    accessorKey: "id",
+    header: () => "ID",
+    cell: (info) => info.getValue().toString(),
   },
   {
-    accessorKey: 'createdAt', // Assuming direct key access
-    header: () => 'Created At',
-    cell: info => info.getValue().toLocaleString(), // Format date appropriately
+    accessorKey: "createdAt",
+    header: () => "Created At",
+    cell: (info) => info.getValue().toLocaleString(),
   },
-  // Add other columns as needed
 ];
 
 interface ApplicationsTableProps {
   applications: Application[];
 }
 
-export const ApplicationsTable = async ({
-  applications,
-}: ApplicationsTableProps) => {
-  // const { data, error } = api.application.getAllByOpportunityId.useQuery({
-  //   opportunityId: opportunity_id,
-  // });
-
+export const ApplicationsTable = ({ applications }: ApplicationsTableProps) => {
   const table = useReactTable({
     data: applications,
     columns,
     getCoreRowModel: getCoreRowModel(),
   });
+  const router = useRouter();
+
+  const handleRowClick = (applicationId: string) => {
+    router.push(`/opportunities/1/review/${applicationId}`);
+  };
 
   return (
     <div className="rounded-md border">
@@ -65,7 +64,12 @@ export const ApplicationsTable = async ({
         </TableHeader>
         <TableBody>
           {table.getRowModel().rows.map((row) => (
-            <TableRow key={row.id}>
+            // Use onClick event handler to navigate
+            <TableRow
+              key={row.id}
+              onClick={() => handleRowClick(row.original.id.toString())}
+              style={{ cursor: "pointer" }}
+            >
               {row.getVisibleCells().map((cell) => (
                 <TableCell key={cell.id}>
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
