@@ -31,6 +31,7 @@ export default async function ReviewPage({
       user: { connect: { id: user.id } },
       application: { connect: { id: applicationToReview.id } },
       questionnaire: { connect: { id: applicationToReview.questionnaire.id } },
+      status: "CREATED",
     },
   } satisfies Prisma.ReviewCreateArgs);
 

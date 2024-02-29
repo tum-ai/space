@@ -167,6 +167,7 @@ model Review {
   application     Application   @relation(fields: [applicationId], references: [id])
   questionnaireId Int
   questionnaire   Questionnaire @relation(fields: [questionnaireId], references: [id])
+  status          ReviewStatus
 
   @@unique([applicationId, userId])
 }
@@ -198,6 +199,12 @@ enum DepartmentRole {
 
 enum OpportunityStatus {
   MISSING_CONFIG
+  IN_PROGRESS
+  DONE
+}
+
+enum ReviewStatus {
+  CREATED
   IN_PROGRESS
   DONE
 }
