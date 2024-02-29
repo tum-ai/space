@@ -31,7 +31,9 @@ import {
 import { Input } from "@components/ui/input";
 import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { FileMinus, FilePlus2, Plus, Save, UserPlus } from "lucide-react";
+import { FileMinus, FilePlus2, Save } from "lucide-react";
+import { AddReviewerPopup } from "./addReviewerPopup";
+import { Avatar, AvatarFallback, AvatarImage } from "@components/ui/avatar";
 
 interface QuestionnaireProps {
   append: UseFieldArrayAppend<
@@ -142,13 +144,20 @@ export const Questionnaire = ({
           </h3>
           <div className="space-y-4">
             {reviewers.map((reviewer) => (
-              <>{reviewer.name}</>
+              <div
+                className="flex w-full justify-between rounded-md border border-input"
+                key={reviewer.id}
+              >
+                <div className="flex w-full items-center gap-6 p-4">
+                  <Avatar>
+                    <AvatarImage src={reviewer.image} />
+                    <AvatarFallback>{reviewer.name}</AvatarFallback>
+                  </Avatar>
+                  <h3>{reviewer.name}</h3>
+                </div>
+              </div>
             ))}
-
-            <Button className="w-full" variant="secondary" type="button">
-              <UserPlus className="mr-2" />
-              Add reviewer
-            </Button>
+            <AddReviewerPopup append={appendReviewer} />
           </div>
         </div>
 
