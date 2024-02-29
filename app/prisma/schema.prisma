@@ -53,8 +53,9 @@ model User {
   roles                 SpaceRole[]            @default([USER])
   profile               Profile[]
   session               Session[]
-  userOnQuestionnaire   UserOnQuestionnaire[]
   opportunityAdmin      Opportunity[]
+  Questionnaire         Questionnaire?         @relation(fields: [questionnaireId], references: [id])
+  questionnaireId       Int?
 }
 
 model Profile {
@@ -132,23 +133,14 @@ model Phase {
 }
 
 model Questionnaire {
-  id                  Int                   @id @default(autoincrement())
-  requiredReviews     Int
-  name                String
-  questions           Json
-  userOnQuestionnaire UserOnQuestionnaire[]
-  review              Review[]
-  Phase               Phase?                @relation(fields: [phaseId], references: [id])
-  phaseId             Int?
-}
-
-model UserOnQuestionnaire {
-  userId          String
-  user            User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-  questionnaireId Int
-  questionnaire   Questionnaire @relation(fields: [questionnaireId], references: [id], onDelete: Cascade)
-
-  @@id([userId, questionnaireId])
+  id              Int      @id @default(autoincrement())
+  requiredReviews Int
+  name            String
+  questions       Json
+  review          Review[]
+  Phase           Phase    @relation(fields: [phaseId], references: [id])
+  phaseId         Int
+  reviewers       User[]
 }
 
 model Application {

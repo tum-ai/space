@@ -1,14 +1,17 @@
 import { QuestionSchema } from "@lib/schemas/question";
 import { z } from "zod";
+import { PersonSchema } from "./person";
 
 export const QuestionnaireSchema = z.object({
+  id: z.number().optional(),
   name: z.string().min(1, "Questionnaire name is required"),
   requiredReviews: z.number().int().min(1, "At least one review is required"),
   questions: z.array(QuestionSchema),
-  reviewers: z.array(z.string()),
+  reviewers: z.array(PersonSchema),
 });
 
 export const PhaseSchema = z.object({
+  id: z.number().optional(),
   name: z.string().min(1, "Phase name is required"),
   forms: z.array(QuestionnaireSchema),
 });
