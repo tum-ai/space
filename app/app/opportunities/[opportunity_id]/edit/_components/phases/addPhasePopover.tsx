@@ -21,7 +21,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Plus } from "lucide-react";
 
 interface AddPhasePopoverProps {
-  append: UseFieldArrayAppend<z.infer<typeof OpportunitySchema>, "defineSteps">;
+  append: UseFieldArrayAppend<z.infer<typeof OpportunitySchema>, "phases">;
 }
 
 export const AddPhasePopover = ({ append }: AddPhasePopoverProps) => {
@@ -30,7 +30,7 @@ export const AddPhasePopover = ({ append }: AddPhasePopoverProps) => {
     resolver: zodResolver(PhaseSchema),
     defaultValues: {
       name: "",
-      forms: [],
+      questionnaires: [],
     },
   });
 
@@ -41,7 +41,7 @@ export const AddPhasePopover = ({ append }: AddPhasePopoverProps) => {
   };
 
   return (
-    <Popover open={popoverOpen} onOpenChange={(open) => setPopoverOpen(open)}>
+    <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
       <PopoverTrigger asChild>
         <Button variant="secondary" className="w-full">
           <Plus className="mr-2" />

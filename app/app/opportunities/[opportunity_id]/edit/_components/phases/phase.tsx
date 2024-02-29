@@ -11,24 +11,16 @@ import { z } from "zod";
 import { OpportunitySchema, PhaseSchema } from "@lib/schemas/opportunity";
 import { AddQuestionnairePopover } from "./addQuestionnairePopover";
 import { X } from "lucide-react";
-import { Dispatch, SetStateAction } from "react";
+import { Questionnaire } from "./questionnaire";
 
 interface Props {
   index: number;
   phase: z.infer<typeof PhaseSchema>;
   remove: UseFieldArrayRemove;
-  update: UseFieldArrayUpdate<z.infer<typeof OpportunitySchema>, "defineSteps">;
-  setSelectedQuestionnaire: Dispatch<
-    SetStateAction<[number, number] | undefined>
-  >;
+  update: UseFieldArrayUpdate<z.infer<typeof OpportunitySchema>, "phases">;
 }
 
-export default function Phase({
-  index,
-  phase,
-  remove: removePhase,
-  setSelectedQuestionnaire,
-}: Props) {
+export default function Phase({ index, phase, remove: removePhase }: Props) {
   const form = useFormContext<z.infer<typeof OpportunitySchema>>();
   const {
     fields: questionaires,
@@ -36,7 +28,7 @@ export default function Phase({
     remove,
   } = useFieldArray({
     control: form.control,
-    name: `defineSteps.${index}.forms`,
+    name: `phases.${index}.questionnaires`,
   });
 
   return (
@@ -55,30 +47,15 @@ export default function Phase({
       <div>
         <Separator />
         <div className="flex h-full w-4/5 flex-col items-center justify-center gap-2">
-          {questionaires.map((questionaire, questionaireIndex) => (
-            <div
-              key={questionaire.id + questionaireIndex}
-              className="flex w-full justify-between rounded-md border border-input bg-background"
-            >
-              <Button
-                className="w-full justify-start"
-                variant="ghost"
-                type="button"
-                onClick={() =>
-                  setSelectedQuestionnaire([index, questionaireIndex])
-                }
-              >
-                {questionaire.name}
-              </Button>
-              <Button
-                variant="ghost"
-                type="button"
-                onClick={() => remove(questionaireIndex)}
-              >
-                <X />
-              </Button>
-            </div>
+          {questionaires.map((questionaire) => (
+            <Questionnaire
+              key={questionaire.id}
+              defaultValues={questionaire}
+              append={append}
+              onRemove={() => remove(index)}
+            />
           ))}
+
           <AddQuestionnairePopover append={append} />
         </div>
       </div>

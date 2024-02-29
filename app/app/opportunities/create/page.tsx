@@ -23,7 +23,7 @@ const CreateOpportunityForm = () => {
         end: undefined,
         description: "",
       },
-      defineSteps: [],
+      phases: [],
     },
   });
   const createMutation = api.opportunity.create.useMutation();

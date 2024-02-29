@@ -26,7 +26,7 @@ import { Plus } from "lucide-react";
 interface AddQuestionairePopoverProps {
   append: UseFieldArrayAppend<
     z.infer<typeof OpportunitySchema>,
-    `defineSteps.${number}.forms`
+    `phases.${number}.questionnaires`
   >;
 }
 

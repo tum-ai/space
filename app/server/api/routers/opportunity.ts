@@ -43,10 +43,10 @@ export const opportunityRouter = createTRPCRouter({
           start: input.generalInformation.start,
           end: input.generalInformation.end,
           phases: {
-            create: input.defineSteps.map((phase) => ({
+            create: input.phases.map((phase) => ({
               name: phase.name,
               questionnaires: {
-                create: phase.forms.map((form) => ({
+                create: phase.questionnaires.map((form) => ({
                   name: form.name,
                   requiredReviews: form.requiredReviews,
                   questions: form.questions,

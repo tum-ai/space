@@ -12,7 +12,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@components/ui/form";
-import { OpportunitySchema } from "@lib/schemas/opportunity";
+import { QuestionnaireSchema } from "@lib/schemas/opportunity";
 import { z } from "zod";
 import { Button } from "@components/ui/button";
 import {
@@ -38,10 +38,7 @@ import { Type } from "lucide-react";
 interface QuestionFormProps {
   question: z.infer<typeof QuestionSchema>;
   index: number;
-  update: UseFieldArrayUpdate<
-    z.infer<typeof OpportunitySchema>,
-    `defineSteps.${number}.forms.${number}.questions`
-  >;
+  update: UseFieldArrayUpdate<z.infer<typeof QuestionnaireSchema>, `questions`>;
   remove: UseFieldArrayRemove;
 }
 
