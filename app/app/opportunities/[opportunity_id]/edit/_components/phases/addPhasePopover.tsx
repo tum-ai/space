@@ -41,7 +41,7 @@ export const AddPhasePopover = ({ append }: AddPhasePopoverProps) => {
   };
 
   return (
-    <Popover open={popoverOpen} onOpenChange={(open) => setPopoverOpen(open)}>
+    <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
       <PopoverTrigger asChild>
         <Button variant="secondary" className="w-full">
           <Plus className="mr-2" />
