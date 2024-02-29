@@ -16,37 +16,15 @@ export const Navigation = () => {
     <NavigationMenu>
       <NavigationMenuList>
         <NavigationMenuItem>
-          <NavigationMenuTrigger>Opportunities</NavigationMenuTrigger>
-          <NavigationMenuContent>
-            <ul>
-              <li>
-                <NavigationMenuItem>
-                  <Link href="/opportunities" legacyBehavior passHref>
-                    <NavigationMenuLink
-                      className={navigationMenuTriggerStyle()}
-                    >
-                      Current opportunities
-                    </NavigationMenuLink>
-                  </Link>
-                </NavigationMenuItem>
-              </li>
-              <li>
-                <NavigationMenuItem>
-                  <Link href="/opportunities/create" legacyBehavior passHref>
-                    <NavigationMenuLink
-                      className={navigationMenuTriggerStyle()}
-                    >
-                      Create
-                    </NavigationMenuLink>
-                  </Link>
-                </NavigationMenuItem>
-              </li>
-            </ul>
-          </NavigationMenuContent>
+          <Link href="/opportunities" passHref>
+            <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+              Opportunities
+            </NavigationMenuLink>
+          </Link>
         </NavigationMenuItem>
 
         <NavigationMenuItem>
-          <Link href="/members" legacyBehavior passHref>
+          <Link href="/members" passHref>
             <NavigationMenuLink className={navigationMenuTriggerStyle()}>
               Members
             </NavigationMenuLink>
