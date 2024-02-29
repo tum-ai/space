@@ -4,7 +4,6 @@ import {
   GeneralInformationSchema,
 } from "@lib/schemas/opportunity";
 import { z } from "zod";
-import { Prisma } from "@prisma/client";
 
 export const opportunityRouter = createTRPCRouter({
   create: protectedProcedure
