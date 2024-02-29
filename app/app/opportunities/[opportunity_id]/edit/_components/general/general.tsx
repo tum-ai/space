@@ -23,10 +23,7 @@ import {
   OpportunitySchema,
   GeneralInformationSchema,
 } from "@lib/schemas/opportunity";
-import { PersonSchema } from "@lib/schemas/person";
 import { z } from "zod";
-
-export type Member = z.infer<typeof PersonSchema>;
 
 export function GeneralInformation() {
   const form = useFormContext<
