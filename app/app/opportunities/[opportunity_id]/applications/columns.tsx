@@ -23,7 +23,7 @@ export const columns: ColumnDef<Application>[] = [
 
       return (
         <Button size="icon" asChild>
-          <Link href={`application/${application.id}`}>
+          <Link href={`applications/${application.id}`}>
             <Edit />
           </Link>
         </Button>
