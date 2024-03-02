@@ -6,7 +6,7 @@ interface ApplicationFormProps {
   application: Application;
 }
 
-const ApplicationForm: React.FC<ApplicationFormProps> = ({ application }) => {
+const ApplicationForm = ({ application }: ApplicationFormProps) => {
   const content = application.content;
 
   // Function to check if a string is a URL

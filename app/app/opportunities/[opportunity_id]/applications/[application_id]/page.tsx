@@ -1,4 +1,5 @@
 import ApplicationForm from "app/opportunities/_components/ApplicationForm";
+import { redirect } from "next/navigation";
 import db from "server/db";
 
 export default async function ApplicationOverview({
@@ -11,6 +12,9 @@ export default async function ApplicationOverview({
       id: Number(params.application_id),
     },
   });
+
+  // TODO: Better handling
+  if (!application) redirect("/");
 
   return (
     <div>
