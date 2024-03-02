@@ -60,7 +60,7 @@
     "mobx": "^6.7.0",
     "mobx-react": "^7.6.0",
     "mobx-react-lite": "^4.0.3",
-    "next": "^14.0.3",
+    "next": "latest",
     "next-auth": "^4.24.5",
     "next-themes": "^0.2.1",
     "react": "18.2.0",

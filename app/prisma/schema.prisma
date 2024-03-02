@@ -133,24 +133,27 @@ model Phase {
 }
 
 model Questionnaire {
-  id              Int      @id @default(autoincrement())
+  id              Int           @id @default(autoincrement())
   requiredReviews Int
   name            String
   questions       Json
   review          Review[]
-  phase           Phase    @relation(fields: [phaseId], references: [id])
+  phase           Phase         @relation(fields: [phaseId], references: [id])
   phaseId         Int
   reviewers       User[]
+  application     Application[]
 }
 
 model Application {
-  id            Int         @id @default(autoincrement())
-  content       Json
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
-  reviews       Review[]
-  opportunityId Int
-  opportunity   Opportunity @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
+  id              Int           @id @default(autoincrement())
+  content         Json
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  reviews         Review[]
+  opportunityId   Int
+  opportunity     Opportunity   @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
+  questionnaire   Questionnaire @relation(fields: [questionnaireId], references: [id])
+  questionnaireId Int
 }
 
 model Review {
@@ -164,6 +167,7 @@ model Review {
   application     Application   @relation(fields: [applicationId], references: [id])
   questionnaireId Int
   questionnaire   Questionnaire @relation(fields: [questionnaireId], references: [id])
+  status          ReviewStatus
 
   @@unique([applicationId, userId])
 }
@@ -195,6 +199,12 @@ enum DepartmentRole {
 
 enum OpportunityStatus {
   MISSING_CONFIG
+  IN_PROGRESS
+  DONE
+}
+
+enum ReviewStatus {
+  CREATED
   IN_PROGRESS
   DONE
 }

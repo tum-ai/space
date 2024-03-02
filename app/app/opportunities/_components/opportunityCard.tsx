@@ -8,12 +8,12 @@ import { Badge } from "@components/ui/badge";
 
 interface OpportunityCardProps {
   opportunity: Opportunity;
-  canEdit?: boolean;
+  isAdmin?: boolean;
 }
 
 export default function OpportunityCard({
   opportunity,
-  canEdit = false,
+  isAdmin = false,
 }: OpportunityCardProps) {
   return (
     <Card className="flex flex-col justify-between overflow-hidden">
@@ -42,18 +42,20 @@ export default function OpportunityCard({
         </CardContent>
       </div>
       <CardFooter className="mt-auto grid grid-cols-3 divide-x divide-solid border-t p-0">
-        <Button className="rounded-none" asChild variant="ghost">
-          <Link href={"/opportunities/" + +opportunity.id + "/dashboard"}>
-            Dashboard
-          </Link>
-        </Button>
+        {isAdmin && (
+          <>
+            <Button className="rounded-none" asChild variant="ghost">
+              <Link href={"/opportunities/" + +opportunity.id + "/review"}>
+                Review
+              </Link>
+            </Button>
 
-        {canEdit && (
-          <Button className="rounded-none" asChild variant="ghost">
-            <Link href={"/opportunities/" + +opportunity.id + "/edit"}>
-              Edit
-            </Link>
-          </Button>
+            <Button className="rounded-none" asChild variant="ghost">
+              <Link href={"/opportunities/" + +opportunity.id + "/edit"}>
+                Edit
+              </Link>
+            </Button>
+          </>
         )}
 
         <Button className="rounded-none" asChild variant="ghost">
