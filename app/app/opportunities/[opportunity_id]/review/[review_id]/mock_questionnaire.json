@@ -1,0 +1,33 @@
+[
+  {
+    "label": "TUM.ai is not responsible for integrating your stay into your degree, even if the project is labeled a thesis. Turning this into a thesis at your university is your responsibility. 📝",
+    "type": "CHECKBOXES",
+    "options": [
+      {
+        "id": "c4a618da-60e3-4e81-829d-91ff1b2da976",
+        "text": "Understood"
+      }
+    ]
+  },
+  {
+    "type": "INPUT_TEXT",
+    "label": "First Name",
+  },
+  {
+    "label": "Status at TUM.ai (advisors are considered alumni) - no advantage or disadvantage to this 😊",
+    "type": "DROPDOWN",
+    "options": [
+      {
+        "text": "Active Member"
+      },
+      {
+        "text": "Alumni"
+      }
+    ],
+  },
+  {
+    "label": "Anything you want us to know about your Github (e.g. point us to relevant projects)?",
+    "type": "TEXTAREA",
+    "value": null
+  },
+]
