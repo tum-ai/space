@@ -9,8 +9,8 @@ import {
 } from "@components/ui/resizable";
 import { Button } from "@components/ui/button";
 import { Save } from "lucide-react";
-import MockApplication from "./mock_tally.json";
-import MockQuestionnaire from "./mock_questionnaire.json";
+import { TallyApplicationData } from "./mock_tally";
+import { QuestionaireData } from "./mock_questionnaire";
 
 interface ReviewProps {
   params: {
@@ -37,11 +37,11 @@ export default function Review({ params }: ReviewProps) {
 
       <ResizablePanelGroup direction="horizontal" className="flex gap-4">
         <ResizablePanel>
-          <ReviewInfoColumn application={[]} />
+          <ReviewInfoColumn application={TallyApplicationData} />
         </ResizablePanel>
         <ResizableHandle />
         <ResizablePanel>
-          <ReviewInputColumn questions={[]} />
+          <ReviewInputColumn questions={QuestionaireData} />
         </ResizablePanel>
       </ResizablePanelGroup>
     </div>
