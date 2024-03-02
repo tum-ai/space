@@ -4,7 +4,7 @@ import { Card } from "@components/ui/card";
 import { EditIcon } from "lucide-react";
 import { Slider } from "@components/ui/slider";
 
-export default function SliderCard({ data, handler }) {
+export default function SliderCard({ data }) {
   //DEFAULT MAXIMUM VALUE OF 5
   return (
     <div>
@@ -19,7 +19,7 @@ export default function SliderCard({ data, handler }) {
             value={[data.answer]}
             max={5}
             step={1}
-            onValueChange={(evt) => handler(data.id, evt[0])}
+            onValueChange={(evt) => console.log(evt)}
           />
         </div>
       </Card>

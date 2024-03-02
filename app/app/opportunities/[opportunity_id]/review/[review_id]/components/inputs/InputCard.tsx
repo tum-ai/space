@@ -4,7 +4,7 @@ import { Card } from "@components/ui/card";
 import { EditIcon } from "lucide-react";
 import { Textarea } from "@components/ui/textarea";
 
-export default function InputCard({ data, handler }) {
+export default function InputCard({ data }) {
   return (
     <div>
       <Card className="flex min-w-full flex-col gap-4 p-4">
@@ -13,11 +13,7 @@ export default function InputCard({ data, handler }) {
           <p>{data.title}</p>
         </div>
         <p>{data.question}</p>
-        <Textarea
-          onChange={(evt) => {
-            handler(data.id, evt.target.value);
-          }}
-        />
+        <Textarea onChange={(evt) => {}} />
       </Card>
     </div>
   );

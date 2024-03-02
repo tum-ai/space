@@ -5,7 +5,7 @@ import { EditIcon } from "lucide-react";
 import Select from "@components/Select";
 import { Answer } from "../../types";
 
-export default function SelectCard({ data, handler }) {
+export default function SelectCard({ data }) {
   return (
     <div>
       <Card className="flex min-w-full flex-col gap-4 p-4">
@@ -23,7 +23,7 @@ export default function SelectCard({ data, handler }) {
             };
           })}
           value={data.answer}
-          setSelectedItem={(item: Answer) => handler(data.id, item)}
+          setSelectedItem={(item: Answer) => console.log(item)}
         />
       </Card>
     </div>
