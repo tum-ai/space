@@ -1,42 +1,84 @@
+"use client";
+import React from "react";
 import { Application } from "@prisma/client";
-import { ColumnDef } from "@tanstack/react-table";
-import { useSearchParams } from "next/navigation";
-import { api } from "trpc/react";
+import {
+  ColumnDef,
+  useReactTable,
+  getCoreRowModel,
+  flexRender,
+} from "@tanstack/react-table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHeader,
+  TableRow,
+} from "@components/ui/table";
+import { useRouter } from "next/navigation";
 
 export const columns: ColumnDef<Application>[] = [
   {
-    accessorKey: "status",
-    header: "Status",
+    accessorKey: "id",
+    header: () => "ID",
+    cell: (info) => info.getValue().toString(),
   },
   {
-    accessorKey: "email",
-    header: "Email",
-  },
-  {
-    accessorKey: "amount",
-    header: "Amount",
+    accessorKey: "createdAt",
+    header: () => "Created At",
+    cell: (info) => info.getValue().toLocaleString(),
   },
 ];
 
 interface ApplicationsTableProps {
-  opportunity_id: number;
+  applications: Application[];
 }
 
-export const ApplicationsTable = ({
-  opportunity_id,
-}: ApplicationsTableProps) => {
-  const searchParams = useSearchParams();
-  const { data, error } = api.application.getAllByOpportunityId.useQuery({
-    opportunityId: opportunity_id,
+export const ApplicationsTable = ({ applications }: ApplicationsTableProps) => {
+  const table = useReactTable({
+    data: applications,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
   });
+  const router = useRouter();
 
-  if (error) {
-    return <div>Error: {error.message}</div>;
-  }
+  const handleRowClick = (applicationId: string) => {
+    router.push(`/opportunities/1/review/${applicationId}`);
+  };
 
-  if (!data) {
-    return <div>Loading...</div>;
-  }
-
-  return <>asd</>;
+  return (
+    <div className="rounded-md border">
+      <Table>
+        <TableHeader>
+          {table.getHeaderGroups().map((headerGroup) => (
+            <TableRow key={headerGroup.id}>
+              {headerGroup.headers.map((header) => (
+                <th key={header.id}>
+                  {flexRender(
+                    header.column.columnDef.header,
+                    header.getContext(),
+                  )}
+                </th>
+              ))}
+            </TableRow>
+          ))}
+        </TableHeader>
+        <TableBody>
+          {table.getRowModel().rows.map((row) => (
+            // Use onClick event handler to navigate
+            <TableRow
+              key={row.id}
+              onClick={() => handleRowClick(row.original.id.toString())}
+              style={{ cursor: "pointer" }}
+            >
+              {row.getVisibleCells().map((cell) => (
+                <TableCell key={cell.id}>
+                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                </TableCell>
+              ))}
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </div>
+  );
 };

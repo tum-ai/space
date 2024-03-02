@@ -42,25 +42,27 @@ export default function OpportunityCard({
         </CardContent>
       </div>
       <CardFooter className="mt-auto grid grid-cols-3 divide-x divide-solid border-t p-0">
-        {isAdmin && (
-          <>
-            <Button className="rounded-none" asChild variant="ghost">
-              <Link href={"/opportunities/" + +opportunity.id + "/review"}>
-                Review
-              </Link>
-            </Button>
+        <Button className="rounded-none" asChild variant="ghost">
+          <Link href={"opportunities/" + +opportunity.id + "/review"}>
+            Review
+          </Link>
+        </Button>
 
-            <Button className="rounded-none" asChild variant="ghost">
-              <Link href={"/opportunities/" + +opportunity.id + "/edit"}>
-                Edit
-              </Link>
-            </Button>
-          </>
+        {isAdmin && (
+          <Button className="rounded-none" asChild variant="ghost">
+            <Link href={"opportunities/" + +opportunity.id + "/applications"}>
+              Applications
+            </Link>
+          </Button>
         )}
 
-        <Button className="rounded-none" asChild variant="ghost">
-          <Link href={"/opportunities/" + +opportunity.id}>Applications</Link>
-        </Button>
+        {isAdmin && (
+          <Button className="rounded-none" asChild variant="ghost">
+            <Link href={"opportunities/" + +opportunity.id + "/edit"}>
+              Edit
+            </Link>
+          </Button>
+        )}
       </CardFooter>
     </Card>
   );

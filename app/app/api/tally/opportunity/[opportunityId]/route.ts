@@ -123,7 +123,7 @@ async function saveFormData(formData: LabelTextPair, opportunityId: number) {
   const createApplication = await prisma.application.create({
     data: {
       opportunityId,
-      application: formData,
+      content: formData,
     },
   });
 
