@@ -18,7 +18,7 @@ export default async function OpportunitiesPage() {
   });
 
   return (
-    <div className="h-full flex-1 flex-col space-y-8 p-8 md:flex">
+    <div className="space-y-8 p-8">
       <div className="flex flex-col gap-8">
         <div className="flex justify-between">
           <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
