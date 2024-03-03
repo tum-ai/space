@@ -1,6 +1,5 @@
 "use client";
 import DetailedInfoCard from "./components/DetailedInfoCard";
-import { AreaGraph } from "@components/Graph/AreaGraph";
 import Select from "@components/Select";
 import { useState } from "react";
 import ClickableInfoCard from "./components/ClickableInfoCard";
@@ -10,6 +9,56 @@ import { Button } from "@components/ui/button";
 import { Section } from "@components/Section";
 import { fetchOpportunity } from "@services/opportunityService";
 import { useQuery } from "@tanstack/react-query";
+import { AreaChart, Title } from "@tremor/react";
+import React from "react";
+
+const AreaGraph = (props: any) => {
+  const mockData = [
+    {
+      date: "Jan 22",
+      "Applicants Processed": 10,
+      "Total Applicants": 20,
+    },
+    {
+      date: "Feb 22",
+      "Applicants Processed": 15,
+      "Total Applicants": 30,
+    },
+    {
+      date: "Mar 22",
+      "Applicants Processed": 19,
+      "Total Applicants": 40,
+    },
+    {
+      date: "Apr 22",
+      "Applicants Processed": 30,
+      "Total Applicants": 50,
+    },
+    {
+      date: "May 22",
+      "Applicants Processed": 45,
+      "Total Applicants": 60,
+    },
+    {
+      date: "Jun 22",
+      "Applicants Processed": 50,
+      "Total Applicants": 70,
+    },
+  ];
+
+  return (
+    <Card>
+      <Title>Growth Data of ID: {props.id}</Title>
+      <AreaChart
+        className="mt-4 h-72"
+        data={mockData}
+        index="date"
+        categories={["Applicants Processed", "Total Applicants"]}
+        colors={["indigo", "cyan"]}
+      />
+    </Card>
+  );
+};
 
 export default function Dashboard({ params }) {
   const opportunityId = decodeURIComponent(params.opportunity_id);
