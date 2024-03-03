@@ -1,26 +1,36 @@
 import { z } from "zod";
 
-const TextQuestionSchema = z.object({
-  type: z.literal("text"),
+const CheckboxQuestionSchema = z.object({
+  type: z.literal("CHECKBOXES"),
+  options: z.array(
+    z.object({
+      id: z.string().uuid(),
+      text: z.string(),
+    }),
+  ),
   value: z.string().optional(),
 });
 
-const SelectQuestionSchema = z.object({
-  type: z.literal("select"),
-  options: z.array(z.string()),
+const TextQuestionSchema = z.object({
+  type: z.literal("INPUT_TEXT"),
   value: z.string().optional(),
 });
 
 const SliderSchema = z.object({
-  type: z.literal("slider"),
-  range: z.tuple([z.number(), z.number()]),
+  type: z.literal("DROPDOWN"),
+  options: z.array(
+    z.object({
+      id: z.string().uuid(),
+      text: z.string(),
+    }),
+  ),
   value: z.number().optional(),
 });
 
 export const QuestionSchema = z
   .object({
-    question: z.string(),
+    label: z.string(),
   })
-  .and(TextQuestionSchema.or(SelectQuestionSchema).or(SliderSchema));
+  .and(TextQuestionSchema.or(SliderSchema).or(CheckboxQuestionSchema));
 
 export type Question = z.infer<typeof QuestionSchema>;
