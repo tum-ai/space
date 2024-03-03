@@ -11,14 +11,8 @@ import { TallyApplicationData } from "./mock_tally";
 import { QuestionaireData } from "./mock_questionnaire";
 import { Form, useForm } from "react-hook-form";
 import { Question } from "@lib/schemas/question";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@components/ui/card";
-import { ApplicationField } from "./_components/applicationField";
+import { Card, CardContent, CardHeader, CardTitle } from "@components/ui/card";
+import { ApplicationField } from "@components/application/applicationField";
 
 interface ReviewProps {
   params: {
