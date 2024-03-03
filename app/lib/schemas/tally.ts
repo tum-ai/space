@@ -1,20 +1,10 @@
 import { z } from "zod";
 
-const TallyCheckboxesBoolean = z.object({
+const TallyCheckboxes = z.object({
   type: z.literal("CHECKBOXES"),
-  value: z.boolean(),
+  value: z.union([z.boolean(), z.array(z.string().uuid())]),
+  options: z.array(z.object({ id: z.string(), text: z.string() })).optional(),
 });
-
-const TallyCheckboxesOptions = z.object({
-  type: z.literal("CHECKBOXES"),
-  value: z.array(z.string().uuid()),
-  options: z.array(z.object({ id: z.string(), text: z.string() })),
-});
-
-const TallyCheckboxes = z.union([
-  TallyCheckboxesBoolean,
-  TallyCheckboxesOptions,
-]);
 
 const TallyFileUpload = z.object({
   type: z.literal("FILE_UPLOAD"),

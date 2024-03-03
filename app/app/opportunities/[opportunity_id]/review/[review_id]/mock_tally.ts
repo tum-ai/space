@@ -94,7 +94,7 @@ export const TallyApplicationData: Tally = {
         key: "question_Dqpx2R",
         label: "LinkedIn",
         type: "INPUT_LINK",
-        value: null,
+        value: "https://linked.in/asd",
       },
       {
         key: "question_OQXbD7",
