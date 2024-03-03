@@ -1,5 +1,11 @@
 import { Button } from "@components/ui/button";
-import { Card, CardContent, CardHeader } from "@components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@components/ui/card";
 import {
   FormField,
   FormItem,
@@ -10,13 +16,18 @@ import {
 } from "@components/ui/form";
 import { Input } from "@components/ui/input";
 import { OpportunitySchema } from "@lib/schemas/opportunity";
-import { Copy } from "lucide-react";
+import { Copy, Plus } from "lucide-react";
 import { useFormContext } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
+import { TallyApplicationData } from "../../review/[review_id]/mock_tally";
+import { ApplicationField } from "@components/application/applicationField";
 
 export const TallyForm = () => {
   const form = useFormContext<z.infer<typeof OpportunitySchema>>();
+
+  // TODO: Fetch from server
+  const applicationFields = TallyApplicationData.data.fields;
   return (
     <div>
       <h2 className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0">
@@ -41,6 +52,7 @@ export const TallyForm = () => {
                   />
                   <Button
                     type="button"
+                    variant="outline"
                     onClick={() => {
                       toast.promise(
                         navigator.clipboard.writeText(
@@ -66,11 +78,35 @@ export const TallyForm = () => {
           )}
         />
 
-        <Card className="col-span-2 h-96">
-          <CardHeader>Application Form</CardHeader>
+        <Card className="col-span-2">
+          <CardHeader>
+            <CardTitle>
+              <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
+                Application Form
+              </h3>
+            </CardTitle>
+            <CardDescription>
+              Your application schema will show up here once you submit a test
+              application
+            </CardDescription>
+          </CardHeader>
           <CardContent>
-            Your application schema will show up here once you submit a test
-            application
+            <div className="sticky grid gap-12">
+              {applicationFields
+                .filter((field) => !!field.value)
+                .map((field) => (
+                  <div key={field.key} className="flex gap-6">
+                    <div>
+                      {/* TODO: assign to phase with condition */}
+                      <Button size="icon" type="button" variant="outline">
+                        <Plus />
+                      </Button>
+                    </div>
+
+                    <ApplicationField key={field.key} field={field} />
+                  </div>
+                ))}
+            </div>
           </CardContent>
         </Card>
       </div>

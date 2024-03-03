@@ -1,110 +1,92 @@
 "use client";
 
-import { Section } from "@components/Section";
-import { useEffect, useState } from "react";
-import ReviewInputColumn from "./components/ReviewInputColumn";
-import ReviewInfoColumn from "./components/ReviewInfoColumn";
-import ReviewToolBar from "./components/ReviewToolBar";
-import { Question } from "./types";
+import {
+  ResizableHandle,
+  ResizablePanel,
+  ResizablePanelGroup,
+} from "@components/ui/resizable";
+import { Button } from "@components/ui/button";
+import { Save } from "lucide-react";
+import { TallyApplicationData } from "./mock_tally";
+import { QuestionaireData } from "./mock_questionnaire";
+import { Form, useForm } from "react-hook-form";
+import { Question } from "@lib/schemas/question";
+import { Card, CardContent, CardHeader, CardTitle } from "@components/ui/card";
+import { ApplicationField } from "@components/application/applicationField";
 
-export default function Review({ params }) {
-  const review_id = decodeURIComponent(params.review_id);
-  const [view, setView] = useState<"review" | "application" | "both">("both");
-  const mockApplicationData = {
-    first_name: "Bryan",
-    last_name: "Alvin",
-    nationality: "Indonesian",
-    date_of_birth: "08.11.2001",
-    university: "Technical University of Munich",
-    degree: "Computer Science",
-    semester: "5",
+interface ReviewProps {
+  params: {
+    review_id: string;
   };
+}
 
-  const [questions, setQuestions] = useState<Question[]>([
-    {
-      id: 1,
-      question: "Why is this participant a good fit?",
-      answer: "",
-    },
-    {
-      id: 2,
-      question: "Fit for TUM.ai",
-      answer: 0,
-    },
-    {
-      id: 3,
-      question: "Which category do you think they are?",
-      answer: "",
-      options: ["Definitely not", "Could be", "Definitely yes"],
-    },
-  ]);
+export default function Review({ params }: ReviewProps) {
+  console.log(Number(params.review_id));
 
-  useEffect(() => {
-    //TODO from the id, fetch the application information from backend, pass it to ReviewInfoColumn
-    //TODO get the opportunity questions from the backend, pass it to ReviewInputColumn
-  }, []);
-
-  const changeView = (newView: "review" | "application" | "both") => {
-    setView(newView);
-  };
-
-  const handleSave = () => {
-    //todo save the changes to db on the 'temporary save'
-  };
-
-  const handleSubmit = () => {
-    console.info(questions);
-  };
-
-  const handleAnswerChange = (
-    id: number,
-    newValue: string | number | string[],
-  ) => {
-    console.info("SOMETHING CHANGED!!!");
-    setQuestions((prevQuestions) =>
-      prevQuestions.map((question) =>
-        question.id === id ? { ...question, answer: newValue } : question,
-      ),
-    );
-  };
+  const form = useForm<Question[]>({});
+  const questions = QuestionaireData;
+  const applicationFields = TallyApplicationData.data.fields;
 
   return (
-    <Section>
-      <div className="flex flex-col gap-8">
-        <h1 className="text-6xl font-thin">Application: {review_id}</h1>
-        <ReviewToolBar
-          changeView={changeView}
-          handleSave={handleSave}
-          handleSubmit={handleSubmit}
-        ></ReviewToolBar>
-        <div className="grid grid-cols-2 gap-4">
-          <div
-            className={
-              view === "application"
-                ? "col-span-2 block"
-                : view === "both"
-                  ? "col-span-1"
-                  : "hidden"
-            }
-          >
-            <ReviewInfoColumn application={mockApplicationData} />
+    <Form {...form}>
+      {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
+      <form onSubmit={form.handleSubmit((data) => console.log(data))}>
+        <div className="space-y-8 p-8">
+          <div className="flex justify-between">
+            <div>
+              <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
+                Review application
+              </h1>
+              <p className="text-muted-foreground">Review a candidate</p>
+            </div>
+
+            <Button variant="default" type="submit">
+              <Save className="mr-2" />
+              Save
+            </Button>
           </div>
-          <div
-            className={
-              view === "review"
-                ? "col-span-2 block"
-                : view === "both"
-                  ? "col-span-1"
-                  : "hidden"
-            }
-          >
-            <ReviewInputColumn
-              questions={questions}
-              handler={handleAnswerChange}
-            />
+
+          <div className="h-[80vh]">
+            <ResizablePanelGroup direction="horizontal" className="flex gap-4">
+              <ResizablePanel>
+                <Card className="sticky max-h-full overflow-y-auto">
+                  <CardHeader>
+                    <CardTitle>
+                      <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
+                        Application
+                      </h3>
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="sticky grid gap-12">
+                      {applicationFields
+                        .filter((field) => !!field.value)
+                        .map((field) => (
+                          <ApplicationField key={field.key} field={field} />
+                        ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              </ResizablePanel>
+
+              <ResizableHandle />
+
+              <ResizablePanel>
+                <Card className="sticky max-h-full overflow-y-auto">
+                  <CardHeader>
+                    <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
+                      Review
+                    </h3>
+                  </CardHeader>
+                  <CardContent>
+                    {questions.map((question) => question.label)}
+                  </CardContent>
+                </Card>
+              </ResizablePanel>
+            </ResizablePanelGroup>
           </div>
         </div>
-      </div>
-    </Section>
+      </form>
+    </Form>
   );
 }
