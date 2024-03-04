@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-const CheckboxQuestionSchema = z.object({
+const CheckboxesSchema = z.object({
   type: z.literal("CHECKBOXES"),
   options: z.array(
     z.object({
@@ -8,15 +8,15 @@ const CheckboxQuestionSchema = z.object({
       text: z.string(),
     }),
   ),
-  value: z.string().optional(),
+  value: z.array(z.string()).optional(),
 });
 
-const TextQuestionSchema = z.object({
+const InputTextSchema = z.object({
   type: z.literal("INPUT_TEXT"),
   value: z.string().optional(),
 });
 
-const SliderSchema = z.object({
+const DropdownSchema = z.object({
   type: z.literal("DROPDOWN"),
   options: z.array(
     z.object({
@@ -24,13 +24,14 @@ const SliderSchema = z.object({
       text: z.string(),
     }),
   ),
-  value: z.number().optional(),
+  value: z.string().optional(),
 });
 
 export const QuestionSchema = z
   .object({
     label: z.string(),
+    key: z.string(),
   })
-  .and(TextQuestionSchema.or(SliderSchema).or(CheckboxQuestionSchema));
+  .and(InputTextSchema.or(DropdownSchema).or(CheckboxesSchema));
 
 export type Question = z.infer<typeof QuestionSchema>;

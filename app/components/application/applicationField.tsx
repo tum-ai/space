@@ -1,6 +1,5 @@
 import { Button } from "@components/ui/button";
 import { Input } from "@components/ui/input";
-import { Label } from "@components/ui/label";
 import { Tally } from "@lib/types/tally";
 import { format } from "date-fns";
 import Link from "next/link";
@@ -16,6 +15,7 @@ import {
 import { Textarea } from "@components/ui/textarea";
 import { Checkbox } from "@components/ui/checkbox";
 import { FileText, X } from "lucide-react";
+import { FormLabel } from "@components/ui/form";
 
 interface ApplicationFieldProps {
   field: Tally["data"]["fields"][number];
@@ -38,7 +38,6 @@ const ApplicationValue = ({ field }: ApplicationFieldProps) => {
             {field.options!.map((option) => (
               <div key={option.id} className="flex items-center space-x-2">
                 <Checkbox
-                  id="terms"
                   checked={
                     !!(field.value as string[]).find(
                       (value) => value === option.id,
@@ -59,7 +58,7 @@ const ApplicationValue = ({ field }: ApplicationFieldProps) => {
 
       return (
         <div className="mt-3 flex items-center space-x-2">
-          <Checkbox id="terms" checked={field.value} />
+          <Checkbox checked={field.value} />
           <label htmlFor="terms" className="text-sm font-medium leading-none">
             Accept
           </label>
@@ -129,7 +128,7 @@ const ApplicationValue = ({ field }: ApplicationFieldProps) => {
 
 export const ApplicationField = ({ field }: ApplicationFieldProps) => (
   <div className="flex flex-col gap-2">
-    <Label>{field.label}</Label>
+    <FormLabel>{field.label}</FormLabel>
     <ApplicationValue field={field} />
   </div>
 );

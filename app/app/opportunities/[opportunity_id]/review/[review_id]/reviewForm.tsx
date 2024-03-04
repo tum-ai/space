@@ -9,9 +9,11 @@ import { Button } from "@components/ui/button";
 import { Save } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@components/ui/card";
 import { ApplicationField } from "@components/application/applicationField";
-import { Form, useForm } from "react-hook-form";
+import { SubmitHandler, useForm } from "react-hook-form";
 import { Question } from "@lib/schemas/question";
 import { Tally } from "@lib/types/tally";
+import { QuestionField } from "./_components/questionField";
+import { Form } from "@components/ui/form";
 
 interface ReviewFormProps {
   applicationContent: Tally;
@@ -22,12 +24,14 @@ export const ReviewForm = ({
   questions,
 }: ReviewFormProps) => {
   const applicationFields = applicationContent.data.fields;
-  const form = useForm<Question[]>();
+  const form = useForm<Question[]>({ defaultValues: questions });
+
+  const onSubmit: SubmitHandler<Question[]> = (data) => console.log(data);
 
   return (
     <Form {...form}>
       {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
-      <form onSubmit={form.handleSubmit((data) => console.log(data))}>
+      <form onSubmit={form.handleSubmit(onSubmit)}>
         <div className="space-y-8 p-8">
           <div className="flex justify-between">
             <div>
@@ -46,7 +50,7 @@ export const ReviewForm = ({
           <div className="h-[80vh]">
             <ResizablePanelGroup direction="horizontal" className="flex gap-4">
               <ResizablePanel>
-                <Card className="sticky max-h-full overflow-y-auto">
+                <Card className="max-h-full overflow-y-auto">
                   <CardHeader>
                     <CardTitle>
                       <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
@@ -55,7 +59,7 @@ export const ReviewForm = ({
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <div className="sticky grid gap-12">
+                    <div className="grid gap-12">
                       {applicationFields
                         .filter((field) => !!field.value)
                         .map((field) => (
@@ -69,14 +73,22 @@ export const ReviewForm = ({
               <ResizableHandle />
 
               <ResizablePanel>
-                <Card className="sticky max-h-full overflow-y-auto">
+                <Card className="max-h-full overflow-y-auto">
                   <CardHeader>
                     <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
                       Review
                     </h3>
                   </CardHeader>
                   <CardContent>
-                    {questions.map((question) => question.label)}
+                    <div className="grid gap-12">
+                      {questions.map((question, index) => (
+                        <QuestionField
+                          question={question}
+                          index={index}
+                          key={question.key}
+                        />
+                      ))}
+                    </div>
                   </CardContent>
                 </Card>
               </ResizablePanel>
