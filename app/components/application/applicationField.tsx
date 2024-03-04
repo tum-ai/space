@@ -88,7 +88,7 @@ const ApplicationValue = ({ field }: ApplicationFieldProps) => {
       }
 
     case "TEXTAREA":
-      return <Textarea>{field.value}</Textarea>;
+      return <Textarea value={field.value} />;
 
     case "INPUT_TEXT":
       return <Input readOnly value={field.value} />;

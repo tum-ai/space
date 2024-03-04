@@ -47,52 +47,44 @@ export const ReviewForm = ({
             </Button>
           </div>
 
-          <div className="h-[80vh]">
-            <ResizablePanelGroup direction="horizontal" className="flex gap-4">
-              <ResizablePanel>
-                <Card className="max-h-full overflow-y-auto">
-                  <CardHeader>
-                    <CardTitle>
-                      <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
-                        Application
-                      </h3>
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="grid gap-12">
-                      {applicationFields
-                        .filter((field) => !!field.value)
-                        .map((field) => (
-                          <ApplicationField key={field.key} field={field} />
-                        ))}
-                    </div>
-                  </CardContent>
-                </Card>
-              </ResizablePanel>
+          <div className="grid gap-4 lg:grid-cols-2">
+            <Card>
+              <CardHeader>
+                <CardTitle>
+                  <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
+                    Application
+                  </h3>
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="h-[80vh] overflow-y-auto">
+                <div className="flex flex-col gap-12">
+                  {applicationFields
+                    .filter((field) => !!field.value)
+                    .map((field) => (
+                      <ApplicationField key={field.key} field={field} />
+                    ))}
+                </div>
+              </CardContent>
+            </Card>
 
-              <ResizableHandle />
-
-              <ResizablePanel>
-                <Card className="max-h-full overflow-y-auto">
-                  <CardHeader>
-                    <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
-                      Review
-                    </h3>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="grid gap-12">
-                      {questions.map((question, index) => (
-                        <QuestionField
-                          question={question}
-                          index={index}
-                          key={question.key}
-                        />
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
-              </ResizablePanel>
-            </ResizablePanelGroup>
+            <Card>
+              <CardHeader>
+                <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
+                  Review
+                </h3>
+              </CardHeader>
+              <CardContent className="h-[80vh] overflow-y-auto">
+                <div className="flex flex-col gap-12">
+                  {questions.map((question, index) => (
+                    <QuestionField
+                      question={question}
+                      index={index}
+                      key={question.key}
+                    />
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </form>
