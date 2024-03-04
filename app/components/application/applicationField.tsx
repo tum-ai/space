@@ -49,7 +49,7 @@ const ApplicationValue = ({ field }: ApplicationFieldProps) => {
                   htmlFor="terms"
                   className="text-sm font-medium leading-none"
                 >
-                  Accept terms and conditions
+                  {option.text}
                 </label>
               </div>
             ))}
@@ -61,7 +61,7 @@ const ApplicationValue = ({ field }: ApplicationFieldProps) => {
         <div className="mt-3 flex items-center space-x-2">
           <Checkbox id="terms" checked={field.value} />
           <label htmlFor="terms" className="text-sm font-medium leading-none">
-            Check
+            Accept
           </label>
         </div>
       );
