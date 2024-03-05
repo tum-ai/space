@@ -39,7 +39,7 @@ export const TallyForm = () => {
       <div className="mt-12 grid gap-8 md:grid-cols-3">
         <FormField
           control={form.control}
-          name="generalInformation.description"
+          name="id"
           render={({ field }) => (
             <FormItem className="w-full">
               <FormLabel>Webhook url</FormLabel>
@@ -48,7 +48,7 @@ export const TallyForm = () => {
                   <Input
                     type="text"
                     readOnly
-                    value={`${window.location.origin}/api/tally/${field.value}`}
+                    value={`${window.location.origin}/api/tally/opportunity/${field.value}`}
                   />
                   <Button
                     type="button"
