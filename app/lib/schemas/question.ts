@@ -32,6 +32,12 @@ export const QuestionSchema = z
     label: z.string(),
     key: z.string(),
   })
-  .and(InputTextSchema.or(DropdownSchema).or(CheckboxesSchema));
+  .and(
+    z.discriminatedUnion("type", [
+      InputTextSchema,
+      DropdownSchema,
+      CheckboxesSchema,
+    ]),
+  );
 
 export type Question = z.infer<typeof QuestionSchema>;

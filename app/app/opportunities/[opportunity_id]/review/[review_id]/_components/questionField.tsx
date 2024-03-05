@@ -1,3 +1,5 @@
+"use client";
+
 import { Question } from "@lib/types/question";
 import { Input } from "@components/ui/input";
 import {
@@ -24,6 +26,7 @@ interface QuestionFieldProps {
 
 export const QuestionField = ({ index, question }: QuestionFieldProps) => {
   const form = useFormContext<Question[]>();
+  form.register(`${index}.key`);
 
   switch (question.type) {
     case "INPUT_TEXT": {

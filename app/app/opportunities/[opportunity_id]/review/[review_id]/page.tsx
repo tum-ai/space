@@ -1,7 +1,6 @@
 import db from "server/db";
 import { ReviewForm } from "./reviewForm";
 import { redirect } from "next/navigation";
-import { Tally } from "@lib/types/tally";
 import { Question } from "@lib/types/question";
 import { getServerAuthSession } from "server/auth";
 
@@ -25,10 +24,13 @@ export default async function Review({ params }: ReviewProps) {
 
   if (!review) redirect("/404");
 
-  const applicationContent = review.application.content as Tally;
   const questions = review.questionnaire.questions as Question[];
 
   return (
-    <ReviewForm questions={questions} applicationContent={applicationContent} />
+    <ReviewForm
+      questions={questions}
+      application={review.application}
+      review={review}
+    />
   );
 }
