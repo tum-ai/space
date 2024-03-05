@@ -84,9 +84,9 @@ export const QuestionForm = ({
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="select">Select</SelectItem>
-                      <SelectItem value="text">Text</SelectItem>
-                      <SelectItem value="slider">Slider</SelectItem>
+                      <SelectItem value="INPUT_TEXT">Input text</SelectItem>
+                      <SelectItem value="DROPDOWN">Dropdown</SelectItem>
+                      <SelectItem value="CHECKBOXES">Checkboxes</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />
@@ -96,7 +96,7 @@ export const QuestionForm = ({
 
             <FormField
               control={form.control}
-              name="question"
+              name="label"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Question</FormLabel>
@@ -117,7 +117,10 @@ export const QuestionForm = ({
               <Button
                 variant="secondary"
                 // eslint-disable-next-line @typescript-eslint/no-misused-promises
-                onClick={form.handleSubmit((data) => update(index, data))}
+                onClick={form.handleSubmit(
+                  (data) => update(index, data),
+                  (err) => console.error(err),
+                )}
               >
                 Save
               </Button>
@@ -134,30 +137,30 @@ const TypeSpecificView = () => {
   const type = form.watch("type");
 
   switch (type) {
-    case "text":
+    case "INPUT_TEXT":
       return (
         <div className="m-8 flex gap-4">
           <Type />
           <div className="flex items-center">
-            <p>{form.watch("question")}</p>
+            <p>{form.watch("label")}</p>
           </div>
         </div>
       );
-    case "slider":
+    case "DROPDOWN":
       return (
         <div className="m-8 flex gap-4">
           <Type />
           <div className="flex items-center">
-            <p>{form.watch("question")}</p>
+            <p>{form.watch("label")}</p>
           </div>
         </div>
       );
-    case "select":
+    case "CHECKBOXES":
       return (
         <div className="m-8 flex gap-4">
           <Type />
           <div className="flex items-center">
-            <p>{form.watch("question")}</p>
+            <p>{form.watch("label")}</p>
           </div>
         </div>
       );
@@ -169,41 +172,13 @@ const TypeSpecificOptions = () => {
   const type = form.watch("type");
 
   switch (type) {
-    case "text":
+    case "INPUT_TEXT":
       return <></>;
-    case "slider":
-      return (
-        <div className="grid grid-cols-2 gap-2">
-          <FormField
-            control={form.control}
-            name="range.0"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Min</FormLabel>
-                <FormControl>
-                  <Input type="number" placeholder="0" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
 
-          <FormField
-            control={form.control}
-            name="range.1"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Max</FormLabel>
-                <FormControl>
-                  <Input type="number" placeholder="10" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-      );
-    case "select":
-      return <>Choices</>;
+    case "DROPDOWN":
+      return <></>;
+
+    case "CHECKBOXES":
+      return <></>;
   }
 };

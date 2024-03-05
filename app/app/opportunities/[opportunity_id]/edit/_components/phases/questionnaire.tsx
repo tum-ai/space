@@ -130,7 +130,9 @@ export const Questionnaire = ({
               className="w-full"
               variant="secondary"
               type="button"
-              onClick={() => appendQuestion({ type: "text", question: "" })}
+              onClick={() =>
+                appendQuestion({ type: "INPUT_TEXT", label: "", key: "" })
+              }
             >
               <FilePlus2 className="mr-2" />
               Add question
