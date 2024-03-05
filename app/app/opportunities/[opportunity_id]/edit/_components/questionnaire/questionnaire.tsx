@@ -20,7 +20,7 @@ import {
   QuestionnaireSchema,
 } from "@lib/schemas/opportunity";
 import { Button } from "@components/ui/button";
-import { QuestionForm } from "../question";
+import { QuestionForm } from "./editQuestionDialog";
 import {
   FormControl,
   FormField,
@@ -32,7 +32,7 @@ import { Input } from "@components/ui/input";
 import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FileMinus, FilePlus2, Save } from "lucide-react";
-import { AddReviewerPopup } from "./addReviewerPopup";
+import { AddReviewerPopup } from "../phases/addReviewerPopup";
 import { Avatar, AvatarFallback, AvatarImage } from "@components/ui/avatar";
 
 interface QuestionnaireProps {
@@ -74,12 +74,7 @@ export const Questionnaire = ({
     name: `questions`,
   });
 
-  const {
-    fields: reviewers,
-    append: appendReviewer,
-    remove: removeReviewer,
-    update: updateReviewer,
-  } = useFieldArray({
+  const { fields: reviewers, append: appendReviewer } = useFieldArray({
     control: form.control,
     name: `reviewers`,
   });

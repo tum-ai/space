@@ -9,9 +9,9 @@ import { Button } from "@components/ui/button";
 import { Separator } from "@components/ui/separator";
 import { z } from "zod";
 import { OpportunitySchema, PhaseSchema } from "@lib/schemas/opportunity";
-import { AddQuestionnairePopover } from "./addQuestionnairePopover";
+import { AddQuestionnairePopover } from "../questionnaire/addQuestionnairePopover";
 import { X } from "lucide-react";
-import { Questionnaire } from "./questionnaire";
+import { Questionnaire } from "../questionnaire";
 
 interface Props {
   index: number;
