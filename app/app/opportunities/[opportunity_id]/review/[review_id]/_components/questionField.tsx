@@ -64,7 +64,7 @@ export const QuestionField = ({ index, question }: QuestionFieldProps) => {
                 >
                   <FormControl>
                     <SelectTrigger>
-                      <SelectValue placeholder="Select a verified email to display" />
+                      <SelectValue />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
