@@ -169,9 +169,8 @@ export const Questionnaire = ({
           </Button>
           <Button
             type="button"
-            onClick={(event) => {
-              void form.handleSubmit(onSubmit, console.error)(event);
-            }}
+            // eslint-disable-next-line @typescript-eslint/no-misused-promises
+            onClick={form.handleSubmit(onSubmit, console.error)}
           >
             <Save className="mr-2" />
             Save
