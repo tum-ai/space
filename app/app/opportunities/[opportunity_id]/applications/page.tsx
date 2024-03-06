@@ -3,6 +3,9 @@ import { getServerAuthSession } from "server/auth";
 import { redirect } from "next/navigation";
 import { DataTable } from "@components/ui/data-table";
 import { columns } from "./columns";
+import { Rabbit } from "lucide-react";
+import { Button } from "@components/ui/button";
+import Link from "next/link";
 
 interface ApplicationsOverviewPageProps {
   params: {
@@ -25,6 +28,20 @@ export default async function OpportunityOverviewPage({
 
   const session = await getServerAuthSession();
   if (!session?.user?.id) redirect("/auth");
+
+  if (!applications.length)
+    return (
+      <div className="flex h-[50vh] flex-col items-center justify-center">
+        <div className="flex flex-col items-center text-muted-foreground">
+          <Rabbit className="mb-8 h-16 w-16" />
+          <p>No applications submitted yet.</p>
+        </div>
+
+        <Button variant="link">
+          <Link href="/opportunities">Back to opportunities</Link>
+        </Button>
+      </div>
+    );
 
   if (applications.length) {
     return (
