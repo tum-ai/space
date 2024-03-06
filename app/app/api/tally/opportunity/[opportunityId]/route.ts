@@ -21,11 +21,10 @@ export async function POST(
     const webhookPayload = await req.json();
 
     if (isSignatureValidated(req, webhookPayload)) {
-      const formData = webhookPayload.data;
-      const newFormData = restructureReceivedJSON(formData);
+      const formData = webhookPayload;
+      // const newFormData = restructureReceivedJSON(formData);
 
-
-      return saveFormData(newFormData, parseInt(opportunityId));
+      return saveFormData(formData, parseInt(opportunityId));
     } else {
       return NextResponse.json(
         { message: "Invalid signature." },
@@ -124,6 +123,7 @@ async function saveFormData(formData: LabelTextPair, opportunityId: number) {
     data: {
       opportunityId,
       content: formData,
+      questionnaireId: 1,
     },
   });
 
