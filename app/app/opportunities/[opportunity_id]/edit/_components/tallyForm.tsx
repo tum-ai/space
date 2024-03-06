@@ -23,25 +23,21 @@ import { z } from "zod";
 import { TallyApplicationData } from "../../review/[review_id]/mock_tally";
 import { ApplicationField } from "@components/application/applicationField";
 import { api } from "trpc/react";
+import { Tally } from "@lib/types/tally";
 
 export const TallyForm = async () => {
   const form = useFormContext<z.infer<typeof OpportunitySchema>>();
 
   const opportunityId = form.getValues().id;
 
-  const {
-    data: application,
-    isLoading,
-    isError,
-    error,
-  } = api.application.getFirstByOpportunityId.useQuery({
-    opportunityId: Number(opportunityId),
-  });
+  const { data: application, isLoading } =
+    api.application.getFirstByOpportunityId.useQuery({
+      opportunityId: Number(opportunityId),
+    });
 
   if (isLoading) return <div>Loading...</div>;
-  if (isError) return <div>Error: {error?.message}</div>;
 
-  const applicationFields = application?.content?.data?.fields ?? [];
+  const applicationFields = (application?.content as Tally).data.fields;
 
   return (
     <div>

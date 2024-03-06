@@ -1,67 +1,41 @@
 "use client";
 import React from "react";
 import { Application } from "@prisma/client";
+import { ApplicationField } from "@components/application/applicationField";
+import { Form } from "@components/ui/form";
+import { useForm } from "react-hook-form";
+import { Tally } from "@lib/types/tally";
+import { Card, CardContent, CardHeader, CardTitle } from "@components/ui/card";
 
 interface ApplicationFormProps {
   application: Application;
 }
 
 const ApplicationForm = ({ application }: ApplicationFormProps) => {
-  const content = application.content;
-
-  // Function to check if a string is a URL
-  const isURL = (string: string) => {
-    try {
-      new URL(string);
-      return true;
-    } catch (e) {
-      return false;
-    }
-  };
+  const form = useForm();
+  const applicationFields = (application.content as Tally).data.fields;
 
   return (
-    <div className="space-y-4">
-      {Object.entries(content).map(([key, value], index) => (
-        <div key={index} className="border-b-2 border-gray-200 py-2">
-          <strong>{key}:</strong>
-          {Array.isArray(value) ? (
-            <ul>
-              {value.map((item, itemIndex) => (
-                <li key={itemIndex}>
-                  {isURL(item) ? (
-                    <a
-                      href={item}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      style={{ textDecoration: "underline" }}
-                    >
-                      Link
-                    </a>
-                  ) : (
-                    item
-                  )}
-                </li>
+    <Form {...form}>
+      <Card>
+        <CardHeader>
+          <CardTitle>
+            <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
+              Application
+            </h3>
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="h-[80vh] overflow-y-auto">
+          <div className="flex flex-col gap-12">
+            {applicationFields
+              .filter((field) => !!field.value)
+              .map((field) => (
+                <ApplicationField key={field.key} field={field} />
               ))}
-            </ul>
-          ) : (
-            <p>
-              {isURL(value) ? (
-                <a
-                  href={value}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{ textDecoration: "underline" }}
-                >
-                  Link
-                </a>
-              ) : (
-                value
-              )}
-            </p>
-          )}
-        </div>
-      ))}
-    </div>
+          </div>
+        </CardContent>
+      </Card>
+    </Form>
   );
 };
 
