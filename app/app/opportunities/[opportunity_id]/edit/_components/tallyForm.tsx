@@ -37,7 +37,9 @@ export const TallyForm = async () => {
 
   if (isLoading) return <div>Loading...</div>;
 
-  const applicationFields = (application?.content as Tally).data.fields;
+  const applicationFields = application?.content
+    ? (application.content as Tally).data.fields
+    : [];
 
   return (
     <div>
@@ -96,10 +98,12 @@ export const TallyForm = async () => {
                 Application Form
               </h3>
             </CardTitle>
-            <CardDescription>
-              Your application schema will show up here once you submit a test
-              application
-            </CardDescription>
+            {applicationFields.length === 0 && (
+              <CardDescription>
+                Your application schema will show up here once you submit a test
+                application
+              </CardDescription>
+            )}
           </CardHeader>
           <CardContent>
             <div className="sticky grid gap-12">
