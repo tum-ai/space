@@ -21,7 +21,7 @@ const ApplicationForm = ({ application }: ApplicationFormProps) => {
         <CardHeader>
           <CardTitle>
             <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
-              Application
+              Application Content
             </h3>
           </CardTitle>
         </CardHeader>
