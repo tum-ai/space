@@ -24,6 +24,7 @@ import { TallyApplicationData } from "../../review/[review_id]/mock_tally";
 import { ApplicationField } from "@components/application/applicationField";
 import { api } from "trpc/react";
 import { Tally } from "@lib/types/tally";
+import LoadingWheel from "@components/LoadingWheel";
 
 export const TallyForm = async () => {
   const form = useFormContext<z.infer<typeof OpportunitySchema>>();
@@ -35,7 +36,12 @@ export const TallyForm = async () => {
       opportunityId: Number(opportunityId),
     });
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading)
+    return (
+      <div>
+        <LoadingWheel />
+      </div>
+    );
 
   const applicationFields = application?.content
     ? (application.content as Tally).data.fields
