@@ -16,4 +16,18 @@ export const applicationRouter = createTRPCRouter({
         },
       });
     }),
+
+  getFirstByOpportunityId: protectedProcedure
+    .input(
+      z.object({
+        opportunityId: z.number(),
+      }),
+    )
+    .query(async ({ input, ctx }) => {
+      return await ctx.db.application.findFirst({
+        where: {
+          opportunityId: input.opportunityId,
+        },
+      });
+    }),
 });

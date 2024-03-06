@@ -22,12 +22,27 @@ import { toast } from "sonner";
 import { z } from "zod";
 import { TallyApplicationData } from "../../review/[review_id]/mock_tally";
 import { ApplicationField } from "@components/application/applicationField";
+import { api } from "trpc/react";
 
-export const TallyForm = () => {
+export const TallyForm = async () => {
   const form = useFormContext<z.infer<typeof OpportunitySchema>>();
 
-  // TODO: Fetch from server
-  const applicationFields = TallyApplicationData.data.fields;
+  const opportunityId = form.getValues().id;
+
+  const {
+    data: application,
+    isLoading,
+    isError,
+    error,
+  } = api.application.getFirstByOpportunityId.useQuery({
+    opportunityId: Number(opportunityId),
+  });
+
+  if (isLoading) return <div>Loading...</div>;
+  if (isError) return <div>Error: {error?.message}</div>;
+
+  const applicationFields = application?.content?.data?.fields ?? [];
+
   return (
     <div>
       <h2 className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0">
@@ -93,8 +108,8 @@ export const TallyForm = () => {
           <CardContent>
             <div className="sticky grid gap-12">
               {applicationFields
-                .filter((field) => !!field.value)
-                .map((field) => (
+                .filter((field: { value: any }) => !!field.value)
+                .map((field: any) => (
                   <div key={field.key} className="flex gap-6">
                     <div>
                       {/* TODO: assign to phase with condition */}
