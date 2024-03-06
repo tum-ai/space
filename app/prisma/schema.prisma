@@ -138,7 +138,7 @@ model Questionnaire {
   name            String
   questions       Json
   review          Review[]
-  phase           Phase         @relation(fields: [phaseId], references: [id])
+  phase           Phase         @relation(fields: [phaseId], references: [id], onDelete: Cascade)
   phaseId         Int
   reviewers       User[]
   application     Application[]
