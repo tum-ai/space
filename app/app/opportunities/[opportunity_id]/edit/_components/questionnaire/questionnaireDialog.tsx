@@ -15,8 +15,9 @@ import {
   DialogTrigger,
 } from "@components/ui/dialog";
 import { QuestionnaireSchema } from "@lib/schemas/opportunity";
+import { v4 as uuidv4 } from "uuid";
 import { Button } from "@components/ui/button";
-import { QuestionPopover } from "./questionPopover";
+import { QuestionDialog } from "./questionDialog";
 import {
   FormControl,
   FormField,
@@ -34,21 +35,29 @@ import { QuestionView } from "./questionView";
 
 interface QuestionnaireProps {
   onSave: (data: z.infer<typeof QuestionnaireSchema>) => void;
-  onRemove: () => void;
-  defaultValues: UseFormProps<
+  onRemove?: () => void;
+  defaultValues?: UseFormProps<
     z.infer<typeof QuestionnaireSchema>
   >["defaultValues"];
+  children: React.ReactNode;
 }
 
-export const EditQuestionnaireDialog = ({
+export const QuestionnaireDialog = ({
   onSave,
   onRemove,
   defaultValues,
+  children,
 }: QuestionnaireProps) => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const form = useForm<z.infer<typeof QuestionnaireSchema>>({
     resolver: zodResolver(QuestionnaireSchema),
-    defaultValues,
+    defaultValues: defaultValues ?? {
+      id: uuidv4(),
+      name: "",
+      questions: [],
+      reviewers: [],
+      requiredReviews: 1,
+    },
   });
 
   const onSubmit: SubmitHandler<z.infer<typeof QuestionnaireSchema>> = (
@@ -56,12 +65,17 @@ export const EditQuestionnaireDialog = ({
   ) => {
     onSave(data);
     setDialogOpen(false);
+
+    if (!defaultValues) {
+      form.reset();
+    }
   };
 
   const {
     fields: questions,
     append: appendQuestion,
     update: updateQuestion,
+    remove: removeQuestion,
   } = useFieldArray({
     control: form.control,
     name: `questions`,
@@ -74,12 +88,12 @@ export const EditQuestionnaireDialog = ({
 
   return (
     <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-      <Button asChild variant="outline" className="w-full">
-        <DialogTrigger>{form.watch("name")}</DialogTrigger>
-      </Button>
+      <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Edit questionaire</DialogTitle>
+          <DialogTitle>
+            {defaultValues ? "Edit" : "Add"} questionaire
+          </DialogTitle>
           <DialogDescription>
             Configure questions and reviewer for {form.watch("name")}
           </DialogDescription>
@@ -105,10 +119,11 @@ export const EditQuestionnaireDialog = ({
           </h3>
           <div className="space-y-4">
             {questions.map((question, index) => (
-              <QuestionPopover
+              <QuestionDialog
                 key={question.key}
                 question={question}
                 onSave={(data) => updateQuestion(index, data)}
+                onRemove={() => removeQuestion(index)}
               >
                 <Button
                   className="w-full justify-between"
@@ -117,15 +132,15 @@ export const EditQuestionnaireDialog = ({
                 >
                   <QuestionView question={question} />
                 </Button>
-              </QuestionPopover>
+              </QuestionDialog>
             ))}
 
-            <QuestionPopover onSave={(data) => appendQuestion(data)}>
+            <QuestionDialog onSave={(data) => appendQuestion(data)}>
               <Button className="w-full" variant="secondary" type="button">
                 <FilePlus2 className="mr-2" />
                 Add question
               </Button>
-            </QuestionPopover>
+            </QuestionDialog>
           </div>
         </div>
 
@@ -153,10 +168,12 @@ export const EditQuestionnaireDialog = ({
         </div>
 
         <DialogFooter>
-          <Button type="button" variant="destructive" onClick={onRemove}>
-            <FileMinus className="mr-2" />
-            Remove
-          </Button>
+          {onRemove && (
+            <Button type="button" variant="destructive" onClick={onRemove}>
+              <FileMinus className="mr-2" />
+              Remove
+            </Button>
+          )}
           <Button
             type="button"
             // eslint-disable-next-line @typescript-eslint/no-misused-promises
