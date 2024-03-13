@@ -1,5 +1,5 @@
 import { QuestionSchema } from "@lib/schemas/question";
-import { Type } from "lucide-react";
+import { ChevronDownSquare, ListTodo, Type } from "lucide-react";
 import { z } from "zod";
 
 interface QuestionViewProps {
@@ -19,7 +19,7 @@ export const QuestionView = ({ question }: QuestionViewProps) => {
     case "DROPDOWN":
       return (
         <div className="flex gap-4">
-          <Type />
+          <ChevronDownSquare />
           <div className="flex items-center">
             <p>{question.label}</p>
           </div>
@@ -28,7 +28,7 @@ export const QuestionView = ({ question }: QuestionViewProps) => {
     case "CHECKBOXES":
       return (
         <div className="flex gap-4">
-          <Type />
+          <ListTodo />
           <div className="flex items-center">
             <p>{question.label}</p>
           </div>
