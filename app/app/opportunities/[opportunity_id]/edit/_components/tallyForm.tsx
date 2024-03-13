@@ -72,6 +72,7 @@ export const TallyForm = async () => {
                   <Button
                     type="button"
                     variant="outline"
+                    size="icon"
                     onClick={() => {
                       toast.promise(
                         navigator.clipboard.writeText(

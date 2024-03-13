@@ -1,6 +1,5 @@
 import {
   SubmitHandler,
-  UseFieldArrayAppend,
   UseFormProps,
   useFieldArray,
   useForm,
@@ -15,12 +14,9 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@components/ui/dialog";
-import {
-  OpportunitySchema,
-  QuestionnaireSchema,
-} from "@lib/schemas/opportunity";
+import { QuestionnaireSchema } from "@lib/schemas/opportunity";
 import { Button } from "@components/ui/button";
-import { QuestionForm } from "./editQuestionDialog";
+import { QuestionPopover } from "./questionPopover";
 import {
   FormControl,
   FormField,
@@ -34,21 +30,19 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { FileMinus, FilePlus2, Save } from "lucide-react";
 import { AddReviewerPopup } from "../phases/addReviewerPopup";
 import { Avatar, AvatarFallback, AvatarImage } from "@components/ui/avatar";
+import { QuestionView } from "./questionView";
 
 interface QuestionnaireProps {
-  append: UseFieldArrayAppend<
-    z.infer<typeof OpportunitySchema>,
-    `phases.${number}.questionnaires`
-  >;
+  onSave: (data: z.infer<typeof QuestionnaireSchema>) => void;
   onRemove: () => void;
   defaultValues: UseFormProps<
     z.infer<typeof QuestionnaireSchema>
   >["defaultValues"];
 }
 
-export const Questionnaire = ({
-  append,
-  onRemove: removeQuestionnaire,
+export const EditQuestionnaireDialog = ({
+  onSave,
+  onRemove,
   defaultValues,
 }: QuestionnaireProps) => {
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -60,14 +54,13 @@ export const Questionnaire = ({
   const onSubmit: SubmitHandler<z.infer<typeof QuestionnaireSchema>> = (
     data,
   ) => {
-    append(data);
+    onSave(data);
     setDialogOpen(false);
   };
 
   const {
     fields: questions,
     append: appendQuestion,
-    remove: removeQuestion,
     update: updateQuestion,
   } = useFieldArray({
     control: form.control,
@@ -112,26 +105,27 @@ export const Questionnaire = ({
           </h3>
           <div className="space-y-4">
             {questions.map((question, index) => (
-              <QuestionForm
-                key={question.id + index}
+              <QuestionPopover
+                key={question.key}
                 question={question}
-                index={index}
-                update={updateQuestion}
-                remove={removeQuestion}
-              />
+                onSave={(data) => updateQuestion(index, data)}
+              >
+                <Button
+                  className="w-full justify-between"
+                  variant="outline"
+                  type="button"
+                >
+                  <QuestionView question={question} />
+                </Button>
+              </QuestionPopover>
             ))}
 
-            <Button
-              className="w-full"
-              variant="secondary"
-              type="button"
-              onClick={() =>
-                appendQuestion({ type: "INPUT_TEXT", label: "", key: "" })
-              }
-            >
-              <FilePlus2 className="mr-2" />
-              Add question
-            </Button>
+            <QuestionPopover onSave={(data) => appendQuestion(data)}>
+              <Button className="w-full" variant="secondary" type="button">
+                <FilePlus2 className="mr-2" />
+                Add question
+              </Button>
+            </QuestionPopover>
           </div>
         </div>
 
@@ -159,11 +153,7 @@ export const Questionnaire = ({
         </div>
 
         <DialogFooter>
-          <Button
-            type="button"
-            variant="destructive"
-            onClick={removeQuestionnaire}
-          >
+          <Button type="button" variant="destructive" onClick={onRemove}>
             <FileMinus className="mr-2" />
             Remove
           </Button>

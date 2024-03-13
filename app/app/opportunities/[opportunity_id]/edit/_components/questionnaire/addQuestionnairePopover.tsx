@@ -10,6 +10,7 @@ import {
   OpportunitySchema,
   QuestionnaireSchema,
 } from "@lib/schemas/opportunity";
+import { v4 as uuidv4 } from "uuid";
 import { z } from "zod";
 import { useState } from "react";
 import {
@@ -37,6 +38,7 @@ export const AddQuestionnairePopover = ({
   const form = useForm<z.infer<typeof QuestionnaireSchema>>({
     resolver: zodResolver(QuestionnaireSchema),
     defaultValues: {
+      id: uuidv4(),
       name: "",
       questions: [],
       reviewers: [],

@@ -11,7 +11,7 @@ import { z } from "zod";
 import { OpportunitySchema, PhaseSchema } from "@lib/schemas/opportunity";
 import { AddQuestionnairePopover } from "../questionnaire/addQuestionnairePopover";
 import { X } from "lucide-react";
-import { Questionnaire } from "../questionnaire";
+import { EditQuestionnaireDialog } from "../questionnaire/editQuestionnaireDialog";
 
 interface Props {
   index: number;
@@ -26,6 +26,7 @@ export default function Phase({ index, phase, remove: removePhase }: Props) {
     fields: questionaires,
     append,
     remove,
+    update,
   } = useFieldArray({
     control: form.control,
     name: `phases.${index}.questionnaires`,
@@ -47,11 +48,11 @@ export default function Phase({ index, phase, remove: removePhase }: Props) {
       <div>
         <Separator />
         <div className="flex h-full w-4/5 flex-col items-center justify-center gap-2">
-          {questionaires.map((questionaire) => (
-            <Questionnaire
+          {questionaires.map((questionaire, index) => (
+            <EditQuestionnaireDialog
               key={questionaire.id}
               defaultValues={questionaire}
-              append={append}
+              onSave={(data) => update(index, data)}
               onRemove={() => remove(index)}
             />
           ))}

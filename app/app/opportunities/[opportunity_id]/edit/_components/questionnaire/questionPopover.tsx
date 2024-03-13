@@ -1,6 +1,6 @@
 import {
-  UseFieldArrayRemove,
-  UseFieldArrayUpdate,
+  SubmitHandler,
+  useFieldArray,
   useForm,
   useFormContext,
 } from "react-hook-form";
@@ -12,19 +12,16 @@ import {
   FormLabel,
   FormMessage,
 } from "@components/ui/form";
-import { QuestionnaireSchema } from "@lib/schemas/opportunity";
 import { z } from "zod";
 import { Button } from "@components/ui/button";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@components/ui/dialog";
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@components/ui/popover";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@components/ui/input";
+import { v4 as uuidv4 } from "uuid";
 import {
   Select,
   SelectContent,
@@ -33,41 +30,40 @@ import {
   SelectValue,
 } from "@components/ui/select";
 import { QuestionSchema } from "@lib/schemas/question";
-import { Type } from "lucide-react";
+import { useState } from "react";
+import { Plus, X } from "lucide-react";
 
 interface QuestionFormProps {
-  question: z.infer<typeof QuestionSchema>;
-  index: number;
-  update: UseFieldArrayUpdate<z.infer<typeof QuestionnaireSchema>, `questions`>;
-  remove: UseFieldArrayRemove;
+  onSave: (data: z.infer<typeof QuestionSchema>) => void;
+  question?: z.infer<typeof QuestionSchema>;
+  children?: React.ReactNode;
 }
 
-export const QuestionForm = ({
+export const QuestionPopover = ({
+  onSave,
+  children,
   question,
-  index,
-  update,
-  remove,
 }: QuestionFormProps) => {
   const form = useForm<z.infer<typeof QuestionSchema>>({
     resolver: zodResolver(QuestionSchema),
-    defaultValues: question,
+    defaultValues: question ?? { key: uuidv4() },
   });
+  const [popoverOpen, setPopoverOpen] = useState(false);
+
+  const onSubmit: SubmitHandler<z.infer<typeof QuestionSchema>> = (data) => {
+    onSave(data);
+    form.reset();
+    setPopoverOpen(false);
+  };
 
   return (
     <Form {...form}>
-      <Dialog>
-        <DialogTrigger asChild>
-          <button className="flex w-full justify-between rounded-md border border-input bg-background">
-            <TypeSpecificView />
-          </button>
-        </DialogTrigger>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Edit question</DialogTitle>
-            <DialogDescription>
-              Edit question that will be asked screeners regarding applicants
-            </DialogDescription>
+      <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
+        <PopoverTrigger asChild>{children}</PopoverTrigger>
+        <PopoverContent className="w-96">
+          <h3>{question ? "Edit" : "Add"} question</h3>
 
+          <div className="space-y-2">
             <FormField
               control={form.control}
               name="type"
@@ -101,7 +97,7 @@ export const QuestionForm = ({
                 <FormItem>
                   <FormLabel>Question</FormLabel>
                   <FormControl>
-                    <Input placeholder="Is this applicant good?" {...field} />
+                    <Input {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -111,74 +107,90 @@ export const QuestionForm = ({
             <TypeSpecificOptions />
 
             <div className="grid w-full grid-cols-2 gap-2 pt-8">
-              <Button variant="destructive" onClick={() => remove(index)}>
-                Remove
-              </Button>
               <Button
                 variant="secondary"
                 // eslint-disable-next-line @typescript-eslint/no-misused-promises
-                onClick={form.handleSubmit(
-                  (data) => update(index, data),
-                  (err) => console.error(err),
+                onClick={form.handleSubmit(onSubmit, (err) =>
+                  console.error(err),
                 )}
               >
                 Save
               </Button>
             </div>
-          </DialogHeader>
-        </DialogContent>
-      </Dialog>
+          </div>
+        </PopoverContent>
+      </Popover>
     </Form>
   );
 };
 
-const TypeSpecificView = () => {
-  const form = useFormContext<z.infer<typeof QuestionSchema>>();
-  const type = form.watch("type");
+const ChoiceOptions = () => {
+  const questionForm = useFormContext<z.infer<typeof QuestionSchema>>();
+  const {
+    fields: options,
+    append,
+    remove,
+  } = useFieldArray({
+    control: questionForm.control,
+    name: "options",
+  });
 
-  switch (type) {
-    case "INPUT_TEXT":
-      return (
-        <div className="m-8 flex gap-4">
-          <Type />
-          <div className="flex items-center">
-            <p>{form.watch("label")}</p>
-          </div>
+  const [optionName, setOptionName] = useState("");
+
+  return (
+    <div className="space-y-2">
+      <FormLabel>Options</FormLabel>
+      {!!options.length && (
+        <div className="divide-y rounded border">
+          {options.map((option, index) => (
+            <div key={option.id} className="flex justify-between px-2 py-1">
+              <p className="flex items-center">{option.text}</p>
+              <Button
+                size="icon"
+                className="px-2"
+                variant="ghost"
+                onClick={() => remove(index)}
+              >
+                <X />
+              </Button>
+            </div>
+          ))}
         </div>
-      );
-    case "DROPDOWN":
-      return (
-        <div className="m-8 flex gap-4">
-          <Type />
-          <div className="flex items-center">
-            <p>{form.watch("label")}</p>
-          </div>
-        </div>
-      );
-    case "CHECKBOXES":
-      return (
-        <div className="m-8 flex gap-4">
-          <Type />
-          <div className="flex items-center">
-            <p>{form.watch("label")}</p>
-          </div>
-        </div>
-      );
-  }
+      )}
+
+      <div className="flex gap-2">
+        <Input
+          value={optionName}
+          onChange={(event) => setOptionName(event.target.value)}
+        />
+
+        <Button
+          size="icon"
+          variant="outline"
+          className="px-2"
+          onClick={() => {
+            append({ id: uuidv4(), text: optionName });
+            setOptionName("");
+          }}
+        >
+          <Plus />
+        </Button>
+      </div>
+    </div>
+  );
 };
 
 const TypeSpecificOptions = () => {
   const form = useFormContext<z.infer<typeof QuestionSchema>>();
   const type = form.watch("type");
-
   switch (type) {
     case "INPUT_TEXT":
       return <></>;
 
     case "DROPDOWN":
-      return <></>;
+      return <ChoiceOptions />;
 
     case "CHECKBOXES":
-      return <></>;
+      return <ChoiceOptions />;
   }
 };
