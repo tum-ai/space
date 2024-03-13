@@ -15,10 +15,11 @@ import {
 import { z } from "zod";
 import { Button } from "@components/ui/button";
 import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@components/ui/popover";
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogTrigger,
+} from "@components/ui/dialog";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@components/ui/input";
 import { v4 as uuidv4 } from "uuid";
@@ -31,16 +32,18 @@ import {
 } from "@components/ui/select";
 import { QuestionSchema } from "@lib/schemas/question";
 import { useState } from "react";
-import { Plus, X } from "lucide-react";
+import { Minus, Plus, Save, X } from "lucide-react";
 
 interface QuestionFormProps {
   onSave: (data: z.infer<typeof QuestionSchema>) => void;
+  onRemove?: () => void;
   question?: z.infer<typeof QuestionSchema>;
   children?: React.ReactNode;
 }
 
-export const QuestionPopover = ({
+export const QuestionDialog = ({
   onSave,
+  onRemove,
   children,
   question,
 }: QuestionFormProps) => {
@@ -48,19 +51,21 @@ export const QuestionPopover = ({
     resolver: zodResolver(QuestionSchema),
     defaultValues: question ?? { key: uuidv4() },
   });
-  const [popoverOpen, setPopoverOpen] = useState(false);
+  const [popoverOpen, setDialogOpen] = useState(false);
 
   const onSubmit: SubmitHandler<z.infer<typeof QuestionSchema>> = (data) => {
     onSave(data);
     form.reset();
-    setPopoverOpen(false);
+    setDialogOpen(false);
   };
+
+  const type = form.watch("type");
 
   return (
     <Form {...form}>
-      <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
-        <PopoverTrigger asChild>{children}</PopoverTrigger>
-        <PopoverContent className="w-96">
+      <Dialog open={popoverOpen} onOpenChange={setDialogOpen}>
+        <DialogTrigger asChild>{children}</DialogTrigger>
+        <DialogContent className="w-96">
           <h3>{question ? "Edit" : "Add"} question</h3>
 
           <div className="space-y-2">
@@ -104,22 +109,28 @@ export const QuestionPopover = ({
               )}
             />
 
-            <TypeSpecificOptions />
-
-            <div className="grid w-full grid-cols-2 gap-2 pt-8">
-              <Button
-                variant="secondary"
-                // eslint-disable-next-line @typescript-eslint/no-misused-promises
-                onClick={form.handleSubmit(onSubmit, (err) =>
-                  console.error(err),
-                )}
-              >
-                Save
-              </Button>
-            </div>
+            {type === "DROPDOWN" && <ChoiceOptions />}
+            {type === "CHECKBOXES" && <ChoiceOptions />}
           </div>
-        </PopoverContent>
-      </Popover>
+
+          <DialogFooter>
+            {onRemove && (
+              <Button type="button" variant="destructive" onClick={onRemove}>
+                <Minus className="mr-2" />
+                Remove
+              </Button>
+            )}
+            <Button
+              type="button"
+              // eslint-disable-next-line @typescript-eslint/no-misused-promises
+              onClick={form.handleSubmit(onSubmit, console.error)}
+            >
+              <Save className="mr-2" />
+              Save
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </Form>
   );
 };
@@ -178,19 +189,4 @@ const ChoiceOptions = () => {
       </div>
     </div>
   );
-};
-
-const TypeSpecificOptions = () => {
-  const form = useFormContext<z.infer<typeof QuestionSchema>>();
-  const type = form.watch("type");
-  switch (type) {
-    case "INPUT_TEXT":
-      return <></>;
-
-    case "DROPDOWN":
-      return <ChoiceOptions />;
-
-    case "CHECKBOXES":
-      return <ChoiceOptions />;
-  }
 };

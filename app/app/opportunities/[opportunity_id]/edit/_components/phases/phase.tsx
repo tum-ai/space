@@ -9,9 +9,8 @@ import { Button } from "@components/ui/button";
 import { Separator } from "@components/ui/separator";
 import { z } from "zod";
 import { OpportunitySchema, PhaseSchema } from "@lib/schemas/opportunity";
-import { AddQuestionnairePopover } from "../questionnaire/addQuestionnairePopover";
-import { X } from "lucide-react";
-import { EditQuestionnaireDialog } from "../questionnaire/editQuestionnaireDialog";
+import { Plus, X } from "lucide-react";
+import { QuestionnaireDialog } from "../questionnaire/questionnaireDialog";
 
 interface Props {
   index: number;
@@ -48,16 +47,25 @@ export default function Phase({ index, phase, remove: removePhase }: Props) {
       <div>
         <Separator />
         <div className="flex h-full w-4/5 flex-col items-center justify-center gap-2">
-          {questionaires.map((questionaire, index) => (
-            <EditQuestionnaireDialog
-              key={questionaire.id}
-              defaultValues={questionaire}
+          {questionaires.map((questionnaire, index) => (
+            <QuestionnaireDialog
+              key={questionnaire.id}
+              defaultValues={questionnaire}
               onSave={(data) => update(index, data)}
               onRemove={() => remove(index)}
-            />
+            >
+              <Button variant="outline" className="w-full">
+                {questionnaire.name}
+              </Button>
+            </QuestionnaireDialog>
           ))}
 
-          <AddQuestionnairePopover append={append} />
+          <QuestionnaireDialog onSave={(data) => append(data)}>
+            <Button variant="secondary" className="w-full">
+              <Plus className="mr-2" />
+              Add questionaire
+            </Button>
+          </QuestionnaireDialog>
         </div>
       </div>
     </div>
