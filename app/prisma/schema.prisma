@@ -55,7 +55,7 @@ model User {
   session               Session[]
   opportunityAdmin      Opportunity[]
   Questionnaire         Questionnaire?         @relation(fields: [questionnaireId], references: [id])
-  questionnaireId       Int?
+  questionnaireId       String?
 }
 
 model Profile {
@@ -125,7 +125,7 @@ model Opportunity {
 }
 
 model Phase {
-  id             Int             @id @default(autoincrement())
+  id             String          @id @default(uuid())
   name           String
   questionnaires Questionnaire[]
   opportunityId  Int
@@ -133,13 +133,13 @@ model Phase {
 }
 
 model Questionnaire {
-  id              Int           @id @default(autoincrement())
+  id              String        @id @default(uuid())
   requiredReviews Int
   name            String
   questions       Json
   review          Review[]
   phase           Phase         @relation(fields: [phaseId], references: [id], onDelete: Cascade)
-  phaseId         Int
+  phaseId         String
   reviewers       User[]
   application     Application[]
 }
@@ -153,7 +153,7 @@ model Application {
   opportunityId   Int
   opportunity     Opportunity   @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
   questionnaire   Questionnaire @relation(fields: [questionnaireId], references: [id])
-  questionnaireId Int
+  questionnaireId String
 }
 
 model Review {
@@ -165,7 +165,7 @@ model Review {
   user            User          @relation(fields: [userId], references: [id])
   applicationId   Int           @map("reviewId")
   application     Application   @relation(fields: [applicationId], references: [id])
-  questionnaireId Int
+  questionnaireId String
   questionnaire   Questionnaire @relation(fields: [questionnaireId], references: [id])
   status          ReviewStatus
 

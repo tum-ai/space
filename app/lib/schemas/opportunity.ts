@@ -3,7 +3,7 @@ import { z } from "zod";
 import { PersonSchema } from "./person";
 
 export const QuestionnaireSchema = z.object({
-  id: z.number().optional(),
+  id: z.string().uuid(),
   name: z.string().min(1, "Questionnaire name is required"),
   requiredReviews: z.number().int().min(1, "At least one review is required"),
   questions: z.array(QuestionSchema),

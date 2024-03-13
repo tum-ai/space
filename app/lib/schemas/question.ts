@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-const CheckboxesSchema = z.object({
+export const CheckboxesSchema = z.object({
   type: z.literal("CHECKBOXES"),
   options: z.array(
     z.object({
@@ -11,12 +11,12 @@ const CheckboxesSchema = z.object({
   value: z.array(z.string()).optional(),
 });
 
-const InputTextSchema = z.object({
+export const InputTextSchema = z.object({
   type: z.literal("INPUT_TEXT"),
   value: z.string().optional(),
 });
 
-const DropdownSchema = z.object({
+export const DropdownSchema = z.object({
   type: z.literal("DROPDOWN"),
   options: z.array(
     z.object({
