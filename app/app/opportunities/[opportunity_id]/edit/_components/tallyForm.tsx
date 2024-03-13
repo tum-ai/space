@@ -20,13 +20,12 @@ import { Copy, Plus } from "lucide-react";
 import { useFormContext } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
-import { TallyApplicationData } from "../../review/[review_id]/mock_tally";
 import { ApplicationField } from "@components/application/applicationField";
 import { api } from "trpc/react";
 import { Tally } from "@lib/types/tally";
 import LoadingWheel from "@components/LoadingWheel";
 
-export const TallyForm = async () => {
+export const TallyForm = () => {
   const form = useFormContext<z.infer<typeof OpportunitySchema>>();
 
   const opportunityId = form.getValues().id;
@@ -43,9 +42,7 @@ export const TallyForm = async () => {
       </div>
     );
 
-  const applicationFields = application?.content
-    ? (application.content as Tally).data.fields
-    : [];
+  const applicationFields = (application?.content as Tally)?.data?.fields ?? [];
 
   return (
     <div>
@@ -115,8 +112,8 @@ export const TallyForm = async () => {
           <CardContent>
             <div className="sticky grid gap-12">
               {applicationFields
-                .filter((field: { value: any }) => !!field.value)
-                .map((field: any) => (
+                .filter((field) => !!field.value)
+                .map((field) => (
                   <div key={field.key} className="flex gap-6">
                     <div>
                       {/* TODO: assign to phase with condition */}
