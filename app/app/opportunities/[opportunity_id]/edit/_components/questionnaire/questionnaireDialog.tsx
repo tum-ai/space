@@ -28,7 +28,7 @@ import {
 import { Input } from "@components/ui/input";
 import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { FileMinus, FilePlus2, Save } from "lucide-react";
+import { FileMinus, FilePlus2, Save, UserMinus } from "lucide-react";
 import { AddReviewerPopup } from "../phases/addReviewerPopup";
 import { Avatar, AvatarFallback, AvatarImage } from "@components/ui/avatar";
 import { QuestionView } from "./questionView";
@@ -82,7 +82,11 @@ export const QuestionnaireDialog = ({
     name: `questions`,
   });
 
-  const { fields: reviewers, append: appendReviewer } = useFieldArray({
+  const {
+    fields: reviewers,
+    append: appendReviewer,
+    remove: removeReviewer,
+  } = useFieldArray({
     control: form.control,
     name: `reviewers`,
   });
@@ -90,7 +94,7 @@ export const QuestionnaireDialog = ({
   return (
     <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent>
+      <DialogContent className="max-h-[42rem] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>
             {defaultValues ? "Edit" : "Add"} questionaire
@@ -158,20 +162,32 @@ export const QuestionnaireDialog = ({
             Reviewer
           </h3>
           <div className="space-y-4">
-            {reviewers.map((reviewer) => (
+            {reviewers.map((reviewer, index) => (
               <div
-                className="flex w-full justify-between rounded-md border border-input"
+                className="flex w-full justify-between rounded-md border border-input p-4"
                 key={reviewer.id}
               >
-                <div className="flex w-full items-center gap-6 p-4">
+                <div className="flex w-full items-center gap-6">
                   <Avatar>
                     <AvatarImage src={reviewer.image} />
                     <AvatarFallback>{reviewer.name}</AvatarFallback>
                   </Avatar>
+
                   <h3>{reviewer.name}</h3>
                 </div>
+
+                <Button
+                  size="icon"
+                  variant="ghost"
+                  onClick={() => {
+                    removeReviewer(index);
+                  }}
+                >
+                  <UserMinus className="mx-2" />
+                </Button>
               </div>
             ))}
+
             <AddReviewerPopup append={appendReviewer} />
           </div>
         </div>
