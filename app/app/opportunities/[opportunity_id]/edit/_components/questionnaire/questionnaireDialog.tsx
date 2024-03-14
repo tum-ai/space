@@ -48,7 +48,6 @@ export const QuestionnaireDialog = ({
   defaultValues,
   children,
 }: QuestionnaireProps) => {
-  const [dialogOpen, setDialogOpen] = useState(false);
   const form = useForm<z.infer<typeof QuestionnaireSchema>>({
     resolver: zodResolver(QuestionnaireSchema),
     defaultValues: defaultValues ?? {
@@ -60,15 +59,17 @@ export const QuestionnaireDialog = ({
     },
   });
 
+  const [dialogOpen, setDialogOpen] = useState(false);
   const onSubmit: SubmitHandler<z.infer<typeof QuestionnaireSchema>> = (
     data,
   ) => {
     onSave(data);
-    setDialogOpen(false);
 
     if (!defaultValues) {
       form.reset();
     }
+
+    setDialogOpen(false);
   };
 
   const {
@@ -121,12 +122,15 @@ export const QuestionnaireDialog = ({
             {questions.map((question, index) => (
               <QuestionDialog
                 key={question.key}
-                question={question}
-                onSave={(data) => updateQuestion(index, data)}
+                defaultValues={question}
+                onSave={(data) => {
+                  updateQuestion(index, data);
+                  form.handleSubmit(onSave, console.error);
+                }}
                 onRemove={() => removeQuestion(index)}
               >
                 <Button
-                  className="w-full justify-between"
+                  className="h-max w-full justify-between"
                   variant="outline"
                   type="button"
                 >
@@ -135,7 +139,12 @@ export const QuestionnaireDialog = ({
               </QuestionDialog>
             ))}
 
-            <QuestionDialog onSave={(data) => appendQuestion(data)}>
+            <QuestionDialog
+              onSave={(data) => {
+                appendQuestion(data);
+                form.handleSubmit(onSave, console.error);
+              }}
+            >
               <Button className="w-full" variant="secondary" type="button">
                 <FilePlus2 className="mr-2" />
                 Add question
