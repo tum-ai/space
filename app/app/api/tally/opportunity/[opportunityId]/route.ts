@@ -1,36 +1,59 @@
-import prisma from "server/db";
-import { Application } from "@prisma/client";
+import { db } from "server/db";
+import { Prisma } from "@prisma/client";
 import { env } from "env.mjs";
 import { createHmac } from "crypto";
-import { NextRequest, NextResponse } from "next/server";
-import {
-  FileUploadValue,
-  FormField,
-  LabelTextPair,
-  MatrixValue,
-  ParsedFormData,
-} from "./routeTypes";
+import { NextResponse } from "next/server";
+import { Tally, TallyField } from "@lib/types/tally";
 
-// POST /api/tally/opportunity/[opportunityId]
 export async function POST(
   req: Request,
   { params }: { params: { opportunityId: string } },
 ) {
   try {
-    const { opportunityId } = params;
-    const webhookPayload = await req.json();
+    const tallyApplication = (await req.json()) as Tally;
 
-    if (isSignatureValidated(req, webhookPayload)) {
-      const formData = webhookPayload;
-      // const newFormData = restructureReceivedJSON(formData);
-
-      return saveFormData(formData, parseInt(opportunityId));
-    } else {
+    if (!isSignatureValidated(req, tallyApplication)) {
       return NextResponse.json(
         { message: "Invalid signature." },
         { status: 401 },
       );
     }
+
+    const { opportunityId } = params;
+
+    const questionnaires = await db.questionnaire.findMany({
+      where: {
+        phase: { opportunityId: parseInt(opportunityId) },
+      },
+    });
+
+    return await db.application.create({
+      data: {
+        content: tallyApplication,
+        opportunity: { connect: { id: parseInt(opportunityId) } },
+        questionnaires: {
+          connect: questionnaires
+            .filter((questionnaire) => {
+              for (const condition of questionnaire.conditions as Pick<
+                TallyField,
+                "key" | "value"
+              >[]) {
+                if (
+                  tallyApplication.data.fields.find(
+                    (field) =>
+                      field.key === condition.key &&
+                      field.value === condition.value,
+                  )
+                )
+                  return true;
+              }
+
+              return false;
+            })
+            .map((questionnaire) => ({ id: questionnaire.id })),
+        },
+      } satisfies Prisma.ApplicationCreateInput,
+    });
   } catch (error) {
     return NextResponse.json(
       { message: "An error occurred while processing the webhook." },
@@ -39,7 +62,7 @@ export async function POST(
   }
 }
 
-function isSignatureValidated(req: Request, webhookPayload: any): boolean {
+function isSignatureValidated(req: Request, webhookPayload: Tally): boolean {
   const receivedSignature = req.headers.get("tally-signature");
   const tallySigningSecret = env.NEXT_PUBLIC_TALLY_SIGNING_SECRET;
 
@@ -48,114 +71,4 @@ function isSignatureValidated(req: Request, webhookPayload: any): boolean {
     .digest("base64");
 
   return receivedSignature === calculatedSignature;
-}
-
-function restructureReceivedJSON(formData: ParsedFormData): LabelTextPair {
-  const newFormData: LabelTextPair = {};
-
-  formData.fields.forEach((field) => {
-    const fieldType = field.type;
-    const label = field.label;
-    let text: string | string[] | LabelTextPair;
-
-    if (
-      fieldType === "MULTIPLE_CHOICE" ||
-      fieldType === "CHECKBOXES" ||
-      fieldType === "DROPDOWN" ||
-      fieldType === "MULTI_SELECT" ||
-      fieldType === "RANKING"
-    ) {
-      text = handleChoiceField(field);
-    } else if (fieldType === "FILE_UPLOAD" || fieldType === "SIGNATURE") {
-      text = handleFileUploadField(field);
-    } else if (fieldType === "MATRIX") {
-      text = hanldeMatrixField(field);
-    } else {
-      text = field.value.toString();
-    }
-
-    newFormData[label] = text;
-  });
-
-  return newFormData;
-}
-
-function handleChoiceField(field: FormField): string | string[] {
-  if (typeof field.value === "boolean") {
-    return field.value.toString();
-  } else {
-    return field.options
-      .filter((option) => (field.value as string[]).includes(option.id))
-      .map((option) => option.text);
-  }
-}
-
-function handleFileUploadField(field: FormField): string[] {
-  return (field.value as FileUploadValue[]).map((file) => file.url.toString());
-}
-
-function hanldeMatrixField(field: FormField): LabelTextPair {
-  const matrixRowColumnsPairs: LabelTextPair = {};
-
-  Object.entries(field.value as MatrixValue).forEach(([key, value]) => {
-    const row = field.rows.find((row) => row.id === key);
-    const rowLabel = row.text;
-
-    const labelsOfColumns: string[] = [];
-
-    value.forEach((columnId) => {
-      const column = field.columns.find((column) => column.id === columnId);
-      const columnLabel = column.text;
-
-      labelsOfColumns.push(columnLabel);
-    });
-
-    matrixRowColumnsPairs[rowLabel] = labelsOfColumns;
-  });
-
-  return matrixRowColumnsPairs;
-}
-
-async function saveFormData(formData: LabelTextPair, opportunityId: number) {
-  // const newFormDataJSON = JSON.stringify(formData);
-
-  const createApplication = await prisma.application.create({
-    data: {
-      opportunityId,
-      content: formData,
-      questionnaireId: 1,
-    },
-  });
-
-  return NextResponse.json(createApplication, { status: 200 });
-}
-
-// GET /api/tally/opportunity/[opportunityId]
-export async function GET(
-  req: NextRequest,
-  { params }: { params: { opportunityId: string } },
-) {
-  try {
-    const { opportunityId } = params;
-    let readApplication: Application[];
-
-    try {
-      readApplication = await prisma.application.findMany({
-        where: {
-          opportunityId: parseInt(opportunityId),
-        },
-      });
-    } catch (error) {
-      console.log(error);
-
-      return NextResponse.json({ message: "Bad Request." }, { status: 400 });
-    }
-
-    return NextResponse.json(readApplication, { status: 200 });
-  } catch (error) {
-    return NextResponse.json(
-      { message: "Internal server error." },
-      { status: 500 },
-    );
-  }
 }

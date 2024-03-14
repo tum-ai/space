@@ -27,7 +27,7 @@ const TallyDropdown = z.object({
   options: z.array(z.object({ id: z.string(), text: z.string() })),
 });
 
-const TallyQuestion = z
+export const TallyField = z
   .object({
     key: z.string(),
     label: z.string(),
@@ -57,7 +57,7 @@ const TallyData = z.object({
   formId: z.string(),
   formName: z.string(),
   createdAt: z.string().datetime(),
-  fields: z.array(TallyQuestion),
+  fields: z.array(TallyField),
 });
 
 export const TallySchema = z.object({
