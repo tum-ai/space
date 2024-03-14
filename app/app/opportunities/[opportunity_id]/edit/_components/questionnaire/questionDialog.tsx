@@ -33,11 +33,12 @@ import {
 import { QuestionSchema } from "@lib/schemas/question";
 import { useState } from "react";
 import { Minus, Plus, Save, X } from "lucide-react";
+import { toast } from "sonner";
 
 interface QuestionFormProps {
   onSave: (data: z.infer<typeof QuestionSchema>) => void;
   onRemove?: () => void;
-  question?: z.infer<typeof QuestionSchema>;
+  defaultValues?: z.infer<typeof QuestionSchema>;
   children?: React.ReactNode;
 }
 
@@ -45,11 +46,11 @@ export const QuestionDialog = ({
   onSave,
   onRemove,
   children,
-  question,
+  defaultValues,
 }: QuestionFormProps) => {
   const form = useForm<z.infer<typeof QuestionSchema>>({
     resolver: zodResolver(QuestionSchema),
-    defaultValues: question ?? { key: uuidv4() },
+    defaultValues: defaultValues ?? { key: uuidv4() },
   });
   const [popoverOpen, setDialogOpen] = useState(false);
 
@@ -66,7 +67,7 @@ export const QuestionDialog = ({
       <Dialog open={popoverOpen} onOpenChange={setDialogOpen}>
         <DialogTrigger asChild>{children}</DialogTrigger>
         <DialogContent className="w-96">
-          <h3>{question ? "Edit" : "Add"} question</h3>
+          <h3>{defaultValues ? "Edit" : "Add"} question</h3>
 
           <div className="space-y-2">
             <FormField
@@ -180,6 +181,11 @@ const ChoiceOptions = () => {
           variant="outline"
           className="px-2"
           onClick={() => {
+            if (!optionName.length) {
+              toast.error("Option name is required");
+              return;
+            }
+
             append({ id: uuidv4(), text: optionName });
             setOptionName("");
           }}
