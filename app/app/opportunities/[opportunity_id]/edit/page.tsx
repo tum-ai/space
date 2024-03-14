@@ -48,6 +48,7 @@ export default async function EditOpportunity({
   const phases = opportunity.phases.map((phase) => ({
     name: phase.name,
     questionnaires: phase.questionnaires.map((questionnaire) => ({
+      id: questionnaire.id,
       name: questionnaire.name,
       requiredReviews: questionnaire.requiredReviews,
       questions: questionnaire.questions,
