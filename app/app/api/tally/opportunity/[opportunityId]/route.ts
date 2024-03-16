@@ -45,23 +45,32 @@ export async function POST(
         questionnaires: {
           connect: questionnaires
             .filter((questionnaire) => {
-              if ((questionnaire.conditions as any[]).length === 0) {
+              if (
+                !questionnaire.conditions ||
+                (questionnaire.conditions as any[]).length === 0
+              ) {
                 return true;
               }
               for (const condition of questionnaire.conditions as Pick<
                 TallyField,
                 "key" | "value"
               >[]) {
-                if (
-                  tallyApplication.data.fields.find(
-                    (field) =>
-                      field.key === condition.key &&
-                      field.value === condition.value,
-                  )
-                )
-                  return true;
-              }
+                const field = tallyApplication.data.fields.find(
+                  (f) => f.key === condition.key,
+                );
+                if (!field) continue;
 
+                const fieldValue = field.value;
+                let conditionMet = false;
+
+                if (isArrayofStrings(fieldValue)) {
+                  conditionMet = fieldValue.includes(condition.value as string);
+                } else if (typeof fieldValue === "string") {
+                  conditionMet = fieldValue === condition.value;
+                }
+
+                if (conditionMet) return true;
+              }
               return false;
             })
             .map((questionnaire) => ({ id: questionnaire.id })),
@@ -87,4 +96,10 @@ function isSignatureValidated(req: Request, webhookPayload: Tally): boolean {
     .digest("base64");
 
   return receivedSignature === calculatedSignature;
+}
+
+function isArrayofStrings(value: any): value is string[] {
+  return (
+    Array.isArray(value) && value.every((item) => typeof item === "string")
+  );
 }
