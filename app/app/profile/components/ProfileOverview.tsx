@@ -9,7 +9,7 @@ interface ProfileOverviewProps {
   user: User;
 }
 
-function ProfileOverview({ user }: ProfileOverviewProps) {
+export function ProfileOverview({ user }: ProfileOverviewProps) {
   return (
     <div className="flex justify-center">
       <div className="max-w-[850px] space-y-10">
@@ -87,20 +87,3 @@ function ProfileOverview({ user }: ProfileOverviewProps) {
     </div>
   );
 }
-
-function ContentList({ data }) {
-  return (
-    <div className="flex flex-col gap-3">
-      {Object.entries(data).map(([iKey, iVal]) => (
-        <div className="grid grid-cols-2" key={`${iKey}-${iVal}`}>
-          <p className="text-gray-400">{formatKey(iKey)}</p>
-          <p>
-            {iVal instanceof Date ? iVal.toLocaleDateString() : String(iVal)}
-          </p>
-        </div>
-      ))}
-    </div>
-  );
-}
-
-export default ProfileOverview;

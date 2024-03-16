@@ -16,16 +16,24 @@ export default async function StartReview({ params }: StartReviewProps) {
   const applicationToReview = await db.application.findFirst({
     where: {
       opportunityId: Number(params.opportunity_id),
-      questionnaire: { reviewers: { some: { id: session.user.id } } },
+      questionnaires: {
+        some: { reviewers: { some: { id: session.user.id } } },
+      },
       reviews: { none: { userId: session.user.id } },
     },
     include: {
       opportunity: true,
-      questionnaire: { include: { phase: true } },
+      questionnaires: {
+        include: { phase: true },
+        where: {
+          reviewers: { some: { id: session.user.id } },
+          // TODO only include where count(existing reviews) =< requiredReviews
+        },
+      },
     },
   });
 
-  if (!applicationToReview)
+  if (!applicationToReview?.questionnaires.length)
     return (
       <div className="flex h-[50vh] flex-col items-center justify-center">
         <div className="flex flex-col items-center text-muted-foreground">
@@ -44,7 +52,9 @@ export default async function StartReview({ params }: StartReviewProps) {
       content: {},
       user: { connect: { id: session.user.id } },
       application: { connect: { id: applicationToReview.id } },
-      questionnaire: { connect: { id: applicationToReview.questionnaire.id } },
+      questionnaire: {
+        connect: { id: applicationToReview.questionnaires.at(0)?.id },
+      },
       status: "CREATED",
     },
   } satisfies Prisma.ReviewCreateArgs);

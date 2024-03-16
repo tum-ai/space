@@ -50,6 +50,7 @@ export const opportunityRouter = createTRPCRouter({
                   name: form.name,
                   requiredReviews: form.requiredReviews,
                   questions: form.questions,
+                  conditions: [],
                   reviewers: {
                     connect: form.reviewers.map((reviewer) => ({
                       id: reviewer.id,

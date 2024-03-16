@@ -1,6 +1,5 @@
 import db from "server/db";
-import ProfileOverview from "../components/ProfileOverview";
-import { User } from "@prisma/client";
+import { ProfileOverview } from "../components/ProfileOverview";
 
 export default async function ProfilePage({
   params,

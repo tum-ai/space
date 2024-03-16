@@ -1,12 +1,8 @@
-"use client";
 import DetailedInfoCard from "./components/DetailedInfoCard";
-import { useState } from "react";
 import ClickableInfoCard from "./components/ClickableInfoCard";
 import { PersonIcon } from "@radix-ui/react-icons";
 import { Card } from "@components/ui/card";
 import { Button } from "@components/ui/button";
-import { fetchOpportunity } from "@services/opportunityService";
-import { useQuery } from "@tanstack/react-query";
 import { AreaChart, Title } from "@tremor/react";
 import React from "react";
 import {
@@ -17,8 +13,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@components/ui/select";
+import db from "server/db";
 
-const AreaGraph = (props: { id: string }) => {
+const AreaGraph = (props: { id: number }) => {
   const mockData = [
     {
       date: "Jan 22",
@@ -66,24 +63,26 @@ const AreaGraph = (props: { id: string }) => {
   );
 };
 
-export default function Dashboard({
+export default async function Dashboard({
   params,
 }: {
   params: { opportunity_id: string };
 }) {
-  const opportunityId = decodeURIComponent(params.opportunity_id);
+  const opportunity = await db.opportunity.findUnique({
+    where: { id: Number(params.opportunity_id) },
+  });
 
-  const { data: opportunity } = useQuery(["opportunity", opportunityId], () =>
-    fetchOpportunity(opportunityId),
-  );
+  if (!opportunity) {
+    return <div>Opportunity not found</div>;
+  }
 
-  const [selectedPhase] = useState("SCREENING");
+  const selectedPhase = "SCREENING";
   return (
     <section>
       <div className="flex flex-col gap-8">
         <div className="flex flex-col gap-4">
           <h1 className="text-6xl font-thin">{opportunity?.title}</h1>
-          <p>ID: {opportunityId}</p>
+          <p>ID: {opportunity.id}</p>
           <p className="mt-5 text-2xl">General Overview</p>
 
           <div className="grid grid-cols-3 gap-4">
@@ -110,7 +109,7 @@ export default function Dashboard({
             </DetailedInfoCard>
           </div>
 
-          <AreaGraph id={opportunityId} />
+          <AreaGraph id={opportunity.id} />
 
           <div className="flex flex-col gap-4">
             <p className="mt-5 text-2xl">Overview of phases</p>
