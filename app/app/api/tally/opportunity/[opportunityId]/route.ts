@@ -45,6 +45,9 @@ export async function POST(
         questionnaires: {
           connect: questionnaires
             .filter((questionnaire) => {
+              if ((questionnaire.conditions as any[]).length === 0) {
+                return true;
+              }
               for (const condition of questionnaire.conditions as Pick<
                 TallyField,
                 "key" | "value"
@@ -67,6 +70,7 @@ export async function POST(
     });
     return NextResponse.json(application);
   } catch (error) {
+    console.log(error);
     return NextResponse.json(
       { message: "An error occurred while processing the webhook." },
       { status: 500 },
