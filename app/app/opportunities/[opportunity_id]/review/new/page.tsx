@@ -18,37 +18,24 @@ export default async function StartReview({ params }: StartReviewProps) {
   const applications = await db.application.findMany({
     where: {
       opportunityId: Number(params.opportunity_id),
+      questionnaires: {
+        some: { reviewers: { some: { id: session.user.id } } },
+      },
+      reviews: { none: { userId: session.user.id } },
     },
     include: {
+      opportunity: true,
       questionnaires: {
-        include: {
-          reviews: true, // Include reviews to count and check user
-          reviewers: true, // Include reviewers to check if user is a reviewer
-        }
-      }
-    }
+        include: { phase: true },
+        where: {
+          reviewers: { some: { id: session.user.id } },
+          // TODO only include where count(existing reviews) =< requiredReviews
+        },
+      },
+    },
   });
 
-  let suitableApplication = null;
-  let suitableQuestionnaire = null;
-
-  // Iterate over applications to find the first suitable one
-  for (const application of applications) {
-    // Find a suitable questionnaire within this application
-    suitableQuestionnaire = application.questionnaires.find(questionnaire => 
-      questionnaire.reviewers.some(reviewer => reviewer.id === session.user.id) && // User is a reviewer
-      questionnaire.reviews.filter(review => review.userId === session.user.id).length === 0 && // User has not reviewed
-      questionnaire.reviews.length < questionnaire.requiredReviews // Less reviews than required
-    );
-
-    if (suitableQuestionnaire) {
-      suitableApplication = application;
-      break; // Exit loop once a suitable questionnaire (and thus application) is found
-    }
-  }
-
-  if (!suitableApplication || !suitableQuestionnaire) {
-    // No suitable application or questionnaire found
+  if (!applicationToReview?.questionnaires.length)
     return (
       <div className="flex h-[50vh] flex-col items-center justify-center">
         <Rabbit className="mb-8 h-16 w-16" />
@@ -64,9 +51,11 @@ export default async function StartReview({ params }: StartReviewProps) {
   const review = await db.review.create({
     data: {
       content: {},
-      userId: session.user.id,
-      applicationId: suitableApplication.id,
-      questionnaireId: suitableQuestionnaire.id,
+      user: { connect: { id: session.user.id } },
+      application: { connect: { id: applicationToReview.id } },
+      questionnaire: {
+        connect: { id: applicationToReview.questionnaires.at(0)?.id },
+      },
       status: "CREATED",
     },
   });
