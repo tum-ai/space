@@ -139,7 +139,7 @@ model Questionnaire {
   name            String
   conditions      Json?         @default("[]")
   questions       Json
-  review          Review[]
+  reviews         Review[]
   phase           Phase         @relation(fields: [phaseId], references: [id], onDelete: Cascade)
   phaseId         String
   reviewers       User[]
@@ -165,7 +165,7 @@ model Review {
   userId          String        @map("assigneeId")
   user            User          @relation(fields: [userId], references: [id])
   applicationId   Int           @map("reviewId")
-  application     Application   @relation(fields: [applicationId], references: [id])
+  application     Application   @relation(fields: [applicationId], references: [id], onDelete: Cascade)
   questionnaireId String
   questionnaire   Questionnaire @relation(fields: [questionnaireId], references: [id])
   status          ReviewStatus
