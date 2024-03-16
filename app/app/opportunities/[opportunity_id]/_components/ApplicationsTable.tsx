@@ -20,12 +20,10 @@ export const columns: ColumnDef<Application>[] = [
   {
     accessorKey: "id",
     header: () => "ID",
-    cell: (info) => info.getValue().toString(),
   },
   {
     accessorKey: "createdAt",
     header: () => "Created At",
-    cell: (info) => info.getValue().toLocaleString(),
   },
 ];
 
