@@ -6,8 +6,9 @@ export const QuestionnaireSchema = z.object({
   id: z.string().uuid(),
   name: z.string().min(1, "Questionnaire name is required"),
   requiredReviews: z.number().int().min(1, "At least one review is required"),
-  questions: z.array(QuestionSchema),
-  reviewers: z.array(PersonSchema),
+  conditions: z.object({ key: z.string(), value: z.string() }).array(),
+  questions: QuestionSchema.array(),
+  reviewers: PersonSchema.array(),
 });
 
 export const PhaseSchema = z.object({

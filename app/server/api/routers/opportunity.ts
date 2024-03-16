@@ -56,6 +56,7 @@ export const opportunityRouter = createTRPCRouter({
                       id: reviewer.id,
                     })),
                   },
+                  conditions: form.conditions,
                 })),
               },
             })),
