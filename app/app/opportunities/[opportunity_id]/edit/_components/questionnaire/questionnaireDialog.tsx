@@ -55,6 +55,7 @@ export const QuestionnaireDialog = ({
       name: "",
       questions: [],
       reviewers: [],
+      conditions: [],
       requiredReviews: 1,
     },
   });
