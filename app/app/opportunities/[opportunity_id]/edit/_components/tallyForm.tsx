@@ -24,6 +24,11 @@ import { ApplicationField } from "@components/application/applicationField";
 import { api } from "trpc/react";
 import { Tally } from "@lib/types/tally";
 import LoadingWheel from "@components/LoadingWheel";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@components/ui/popover";
 
 export const TallyForm = () => {
   const form = useFormContext<z.infer<typeof OpportunitySchema>>();
@@ -114,11 +119,26 @@ export const TallyForm = () => {
                 .filter((field) => !!field.value)
                 .map((field) => (
                   <div key={field.key} className="flex gap-6">
-                    <div>
-                      {/* TODO: assign to phase with condition */}
-                      <Button size="icon" type="button" variant="outline">
-                        <Plus />
-                      </Button>
+                    <div className="w-10">
+                      {(field.type === "CHECKBOXES" ||
+                        field.type === "DROPDOWN") && (
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <Button size="icon" type="button" variant="outline">
+                              <Plus />
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent>
+                            {/* TODO: Add form logic */}
+                            <ApplicationField
+                              field={{
+                                ...field,
+                                label: "Options",
+                              }}
+                            />
+                          </PopoverContent>
+                        </Popover>
+                      )}
                     </div>
 
                     <ApplicationField
