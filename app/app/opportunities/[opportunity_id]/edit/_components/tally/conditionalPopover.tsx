@@ -15,11 +15,18 @@ import {
 } from "@components/ui/popover";
 import { OpportunitySchema } from "@lib/schemas/opportunity";
 import { Tally } from "@lib/types/tally";
-import { Plus } from "lucide-react";
+import { Minus, Plus } from "lucide-react";
 import { Form, useForm, useFormContext } from "react-hook-form";
 import { z } from "zod";
 import { FormField, FormItem, FormLabel } from "@components/ui/form";
 import { useState } from "react";
+import { Questionnaire } from "@lib/types/questionnaire";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@components/ui/hover-card";
+import { QuestionView } from "../questionnaire/questionView";
 
 interface ConditionPopoverProps {
   field: Tally["data"]["fields"][number];
@@ -37,10 +44,54 @@ export const ConditionPopover = ({
   const [popoverOpen, setPopoverOpen] = useState(false);
   const opportunityForm = useFormContext<z.infer<typeof OpportunitySchema>>();
   const form = useForm<ConditionConfiguration>();
+
+  let initialQuestionnaire;
+
+  for (const phase of opportunityForm.getValues().phases) {
+    for (const questionnaire of phase.questionnaires) {
+      if (
+        questionnaire.conditions?.some(
+          (condition) => condition.key === tallyField.key,
+        )
+      ) {
+        initialQuestionnaire = questionnaire;
+        break;
+      }
+    }
+  }
+
+  const [assignedQuestionnaire, setAssignedQuestionnaire] = useState<
+    Questionnaire | undefined
+  >(initialQuestionnaire);
+
   return (
     <Form {...form}>
       <div className="w-10">
-        {tallyField.type === "DROPDOWN" && (
+        {assignedQuestionnaire && (
+          <HoverCard>
+            <HoverCardTrigger>
+              <Button
+                size="icon"
+                type="button"
+                variant="outline"
+                onClick={() => {
+                  throw Error("TODO: implement removal");
+                }}
+              >
+                <Minus />
+              </Button>
+            </HoverCardTrigger>
+            <HoverCardContent>
+              <h4 className="scroll-m-20 text-xl font-semibold tracking-tight">
+                {assignedQuestionnaire.name}
+              </h4>
+              {assignedQuestionnaire.questions?.map((question) => (
+                <QuestionView key={question.key} question={question} />
+              ))}
+            </HoverCardContent>
+          </HoverCard>
+        )}
+        {!assignedQuestionnaire && tallyField.type === "DROPDOWN" && (
           <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
             <PopoverTrigger asChild>
               <Button size="icon" type="button" variant="outline">
@@ -136,6 +187,8 @@ export const ConditionPopover = ({
                       { key: tallyField.key, value: data.value },
                     ],
                   );
+
+                  setAssignedQuestionnaire(questionnaire);
 
                   setPopoverOpen(false);
                 }, console.error)}
