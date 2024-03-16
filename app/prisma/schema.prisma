@@ -119,6 +119,7 @@ model Opportunity {
   admin        User              @relation(fields: [adminId], references: [id])
   createdAt    DateTime          @default(now())
   updatedAt    DateTime          @updatedAt
+  tallySchema  Json?
   applications Application[]
   status       OpportunityStatus
   phases       Phase[]
