@@ -137,7 +137,7 @@ model Questionnaire {
   id              String        @id @default(uuid())
   requiredReviews Int
   name            String
-  conditions      Json
+  conditions      Json?         @default("[]")
   questions       Json
   review          Review[]
   phase           Phase         @relation(fields: [phaseId], references: [id], onDelete: Cascade)
