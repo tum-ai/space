@@ -17,7 +17,7 @@ export const columns: ColumnDef<Application>[] = [
   },
   {
     id: "actions",
-    header: "edit",
+    header: "View",
     cell: ({ row }) => {
       const application = row.original;
 

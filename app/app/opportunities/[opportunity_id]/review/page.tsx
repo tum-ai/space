@@ -26,27 +26,25 @@ export default async function ReviewPage({ params }: ReviewPageProps) {
     },
   });
 
-  if (reviews.length) {
-    return (
-      <div className="space-y-8 p-8">
-        <div className="flex justify-between">
-          <div>
-            <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
-              Your reviews
-            </h1>
-            <p className="text-muted-foreground">See and edit your reviews</p>
-          </div>
-
-          <Button asChild>
-            <Link href="review/new">
-              <FileCheck className="mr-2" />
-              Start new review
-            </Link>
-          </Button>
+  return (
+    <div className="space-y-8 p-8">
+      <div className="flex justify-between">
+        <div>
+          <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
+            Your reviews
+          </h1>
+          <p className="text-muted-foreground">See and edit your reviews</p>
         </div>
 
-        <DataTable columns={columns} data={reviews} />
+        <Button asChild>
+          <Link href="review/new">
+            <FileCheck className="mr-2" />
+            Start new review
+          </Link>
+        </Button>
       </div>
-    );
-  }
+
+      <DataTable columns={columns} data={reviews} />
+    </div>
+  );
 }

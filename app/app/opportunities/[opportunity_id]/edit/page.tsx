@@ -52,6 +52,7 @@ export default async function EditOpportunity({
       name: questionnaire.name,
       requiredReviews: questionnaire.requiredReviews,
       questions: questionnaire.questions,
+      conditions: questionnaire.conditions,
       reviewers: questionnaire.reviewers.map((user) => ({
         id: user.id,
         name: user.name,
