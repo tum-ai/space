@@ -16,9 +16,11 @@ import { Textarea } from "@components/ui/textarea";
 import { Checkbox } from "@components/ui/checkbox";
 import { FileText, X } from "lucide-react";
 import { FormLabel } from "@components/ui/form";
+import { cn } from "@lib/utils";
 
 interface ApplicationFieldProps {
   field: Tally["data"]["fields"][number];
+  className?: string;
 }
 
 const ApplicationValue = ({ field }: ApplicationFieldProps) => {
@@ -126,8 +128,11 @@ const ApplicationValue = ({ field }: ApplicationFieldProps) => {
   }
 };
 
-export const ApplicationField = ({ field }: ApplicationFieldProps) => (
-  <div className="flex flex-col gap-2">
+export const ApplicationField = ({
+  field,
+  className,
+}: ApplicationFieldProps) => (
+  <div className={cn("flex flex-col gap-2", className)}>
     <FormLabel>{field.label}</FormLabel>
     <ApplicationValue field={field} />
   </div>

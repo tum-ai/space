@@ -27,7 +27,18 @@ export async function POST(
       },
     });
 
-    return await db.application.create({
+    // TODO: Check based on opportunity.status e.g. if missing_config then set this?
+    //       In this case the status needs to be updated based on if it's currently updated or not
+    //       Maybe just add an additional status: awaiting_tally or something
+    //       Based on the status this should also not be saved as an application
+    //
+    // TODO: Strip tallyApplication of actual values and personal data
+    await db.opportunity.update({
+      where: { id: parseInt(opportunityId) },
+      data: { tallySchema: { ...tallyApplication } },
+    });
+
+    const application = await db.application.create({
       data: {
         content: tallyApplication,
         opportunity: { connect: { id: parseInt(opportunityId) } },
@@ -54,6 +65,7 @@ export async function POST(
         },
       } satisfies Prisma.ApplicationCreateInput,
     });
+    return NextResponse.json(application);
   } catch (error) {
     return NextResponse.json(
       { message: "An error occurred while processing the webhook." },

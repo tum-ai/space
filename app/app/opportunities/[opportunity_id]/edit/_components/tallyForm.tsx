@@ -30,10 +30,9 @@ export const TallyForm = () => {
 
   const opportunityId = form.getValues().id;
 
-  const { data: application, isLoading } =
-    api.application.getFirstByOpportunityId.useQuery({
-      opportunityId: Number(opportunityId),
-    });
+  const { data, isLoading } = api.opportunity.getTallySchema.useQuery({
+    id: Number(opportunityId),
+  });
 
   if (isLoading)
     return (
@@ -42,7 +41,7 @@ export const TallyForm = () => {
       </div>
     );
 
-  const applicationFields = (application?.content as Tally)?.data?.fields ?? [];
+  const applicationFields = (data?.tallySchema as Tally)?.data?.fields ?? [];
 
   return (
     <div>
@@ -122,7 +121,11 @@ export const TallyForm = () => {
                       </Button>
                     </div>
 
-                    <ApplicationField key={field.key} field={field} />
+                    <ApplicationField
+                      key={field.key}
+                      field={field}
+                      className="w-full"
+                    />
                   </div>
                 ))}
             </div>
