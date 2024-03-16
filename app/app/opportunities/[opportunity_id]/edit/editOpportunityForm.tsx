@@ -8,7 +8,7 @@ import { z } from "zod";
 import { OpportunitySchema } from "@lib/schemas/opportunity";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Phases } from "./_components/phases";
-import { TallyForm } from "./_components/tallyForm";
+import { TallyForm } from "./_components/tally/tallyForm";
 import { ArrowRightIcon, Save } from "lucide-react";
 import { api } from "trpc/react";
 import { toast } from "sonner";

@@ -16,7 +16,7 @@ import {
 } from "@components/ui/form";
 import { Input } from "@components/ui/input";
 import { OpportunitySchema } from "@lib/schemas/opportunity";
-import { Copy, Plus } from "lucide-react";
+import { Copy } from "lucide-react";
 import { useFormContext } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -24,11 +24,7 @@ import { ApplicationField } from "@components/application/applicationField";
 import { api } from "trpc/react";
 import { Tally } from "@lib/types/tally";
 import LoadingWheel from "@components/LoadingWheel";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@components/ui/popover";
+import { ConditionPopover } from "./conditionalPopover";
 
 export const TallyForm = () => {
   const form = useFormContext<z.infer<typeof OpportunitySchema>>();
@@ -115,39 +111,16 @@ export const TallyForm = () => {
           </CardHeader>
           <CardContent>
             <div className="sticky grid gap-12">
-              {applicationFields
-                .filter((field) => !!field.value)
-                .map((field) => (
-                  <div key={field.key} className="flex gap-6">
-                    <div className="w-10">
-                      {(field.type === "CHECKBOXES" ||
-                        field.type === "DROPDOWN") && (
-                        <Popover>
-                          <PopoverTrigger asChild>
-                            <Button size="icon" type="button" variant="outline">
-                              <Plus />
-                            </Button>
-                          </PopoverTrigger>
-                          <PopoverContent>
-                            {/* TODO: Add form logic */}
-                            <ApplicationField
-                              field={{
-                                ...field,
-                                label: "Options",
-                              }}
-                            />
-                          </PopoverContent>
-                        </Popover>
-                      )}
-                    </div>
-
-                    <ApplicationField
-                      key={field.key}
-                      field={field}
-                      className="w-full"
-                    />
-                  </div>
-                ))}
+              {applicationFields.map((field) => (
+                <div key={field.key} className="flex gap-6">
+                  <ConditionPopover field={field} />
+                  <ApplicationField
+                    key={field.key}
+                    field={field}
+                    className="w-full"
+                  />
+                </div>
+              ))}
             </div>
           </CardContent>
         </Card>

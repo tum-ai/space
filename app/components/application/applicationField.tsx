@@ -1,6 +1,6 @@
 import { Button } from "@components/ui/button";
 import { Input } from "@components/ui/input";
-import { Tally } from "@lib/types/tally";
+import { TallyField } from "@lib/types/tally";
 import { format } from "date-fns";
 import Link from "next/link";
 import {
@@ -19,7 +19,7 @@ import { FormLabel } from "@components/ui/form";
 import { cn } from "@lib/utils";
 
 interface ApplicationFieldProps {
-  field: Tally["data"]["fields"][number];
+  field: TallyField;
   className?: string;
 }
 
