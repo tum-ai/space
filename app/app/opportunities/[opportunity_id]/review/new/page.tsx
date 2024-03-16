@@ -1,5 +1,4 @@
 import { Button } from "@components/ui/button";
-import { Prisma } from "@prisma/client";
 import { Rabbit } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
@@ -15,7 +14,7 @@ export default async function StartReview({ params }: StartReviewProps) {
   if (!session?.user?.id) redirect("/auth");
 
   // Attempt to find applications associated with the specific opportunity
-  const applications = await db.application.findMany({
+  const applicationToReview = await db.application.findFirst({
     where: {
       opportunityId: Number(params.opportunity_id),
       questionnaires: {
@@ -35,7 +34,7 @@ export default async function StartReview({ params }: StartReviewProps) {
     },
   });
 
-  if (!applicationToReview?.questionnaires.length)
+  if (!applicationToReview?.questionnaires.length) {
     return (
       <div className="flex h-[50vh] flex-col items-center justify-center">
         <Rabbit className="mb-8 h-16 w-16" />
