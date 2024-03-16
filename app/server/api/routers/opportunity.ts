@@ -4,6 +4,7 @@ import {
   GeneralInformationSchema,
 } from "@lib/schemas/opportunity";
 import { z } from "zod";
+import { Prisma } from "@prisma/client";
 
 export const opportunityRouter = createTRPCRouter({
   create: protectedProcedure
@@ -26,12 +27,41 @@ export const opportunityRouter = createTRPCRouter({
   update: protectedProcedure
     .input(OpportunitySchema)
     .mutation(async ({ input, ctx }) => {
+      // Update phases and questionnaires
       const deletePhases = ctx.db.phase.deleteMany({
         where: {
           opportunityId: input.id,
+          id: { not: { in: input.phases.map((phase) => phase.id!) } },
         },
       });
 
+      const upsertPhases = input.phases.map((phase) => {
+        return ctx.db.phase.upsert({
+          where: { id: phase.id } satisfies Prisma.PhaseWhereUniqueInput,
+
+          create: {
+            opportunity: { connect: { id: input.id } },
+            name: phase.name,
+            questionnaires: {
+              createMany: {
+                data: phase.questionnaires satisfies Prisma.QuestionnaireCreateManyPhaseInput[],
+              },
+            } satisfies Prisma.QuestionnaireCreateNestedManyWithoutPhaseInput,
+          } satisfies Prisma.PhaseCreateInput,
+
+          update: {
+            name: phase.name,
+            questionnaires: {
+              updateMany: {
+                where: { phaseId: phase.id },
+                data: phase.questionnaires,
+              } satisfies Prisma.QuestionnaireUpdateManyWithWhereWithoutPhaseInput,
+            },
+          } satisfies Prisma.PhaseUpdateInput,
+        } satisfies Prisma.PhaseUpsertArgs);
+      });
+
+      // Update opportunity
       const updateOpportunity = ctx.db.opportunity.update({
         where: {
           id: input.id,
@@ -42,28 +72,14 @@ export const opportunityRouter = createTRPCRouter({
           description: input.generalInformation.description,
           start: input.generalInformation.start,
           end: input.generalInformation.end,
-          phases: {
-            create: input.phases.map((phase) => ({
-              name: phase.name,
-              questionnaires: {
-                create: phase.questionnaires.map((form) => ({
-                  name: form.name,
-                  requiredReviews: form.requiredReviews,
-                  questions: form.questions,
-                  reviewers: {
-                    connect: form.reviewers.map((reviewer) => ({
-                      id: reviewer.id,
-                    })),
-                  },
-                  conditions: form.conditions,
-                })),
-              },
-            })),
-          },
         },
       });
 
-      return await ctx.db.$transaction([deletePhases, updateOpportunity]);
+      return await ctx.db.$transaction([
+        deletePhases,
+        ...upsertPhases,
+        updateOpportunity,
+      ]);
     }),
 
   getById: protectedProcedure

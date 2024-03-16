@@ -1,5 +1,4 @@
 import { Button } from "@components/ui/button";
-import { Prisma } from "@prisma/client";
 import { Rabbit } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
