@@ -1,7 +1,24 @@
+import db from "server/db";
 import ProfileOverview from "../components/ProfileOverview";
+import { User } from "@prisma/client";
 
-const Me = ({ params }: { params: { profile_id: string } }) => {
-  return <ProfileOverview profile_id={params.profile_id} />;
-};
+export default async function ProfilePage({
+  params,
+}: {
+  params: { profile_id: string };
+}) {
+  const user = await db.user.findUnique({
+    where: { id: params.profile_id },
+    include: { profile: true },
+  });
 
-export default Me;
+  if (!user) {
+    return <div>Profile not found</div>;
+  }
+
+  return (
+    <section>
+      <ProfileOverview user={user} />
+    </section>
+  );
+}

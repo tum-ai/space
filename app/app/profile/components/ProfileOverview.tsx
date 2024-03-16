@@ -1,54 +1,43 @@
 "use client";
 
 import Image from "next/image";
-import {
-  AcademicCapIcon,
-  PencilIcon,
-  UserIcon,
-} from "@heroicons/react/24/outline";
-import Tag from "@components/Tag";
-import { User } from "lucide-react";
-import { api } from "trpc/react";
+import { AcademicCapIcon, PencilIcon } from "@heroicons/react/24/outline";
+import { User as UserIcon } from "lucide-react";
+import { User } from "@prisma/client";
 
 interface ProfileOverviewProps {
-  profile_id: string;
+  user: User;
 }
 
-function ProfileOverview({ profile_id }: ProfileOverviewProps) {
-  const { data, isLoading } = api.user.getById.useQuery({
-    id: profile_id,
-    options: { withProfile: false },
-  });
-
-  if (isLoading) return <div>Loading...</div>;
-
-  if (!data) return <div>Profile not found</div>;
-
+function ProfileOverview({ user }: ProfileOverviewProps) {
   return (
     <div className="flex justify-center">
       <div className="max-w-[850px] space-y-10">
         <div className="grid grid-cols-2 items-center gap-4 lg:grid-cols-4">
           <div className="col-span-2 flex items-center gap-4">
-            {data.image ? (
+            {user.image ? (
               <Image
                 className="h-32 w-32 rounded-full object-cover"
-                src={data.image}
+                src={user.image}
                 width={150}
                 height={150}
                 alt="Your profile picture"
               />
             ) : (
               <div className="flex h-32 w-32 rounded-full bg-gray-300 text-center drop-shadow-lg dark:bg-gray-800">
-                <User name={"FaUser"} className="m-auto text-4xl text-white" />
+                <UserIcon
+                  name={"FaUser"}
+                  className="m-auto text-4xl text-white"
+                />
               </div>
             )}
             <div>
-              <h3 className="text-3xl font-medium">{data.name}</h3>
+              <h3 className="text-3xl font-medium">{user.name}</h3>
               <a
-                href={`mailto:${data.email}`}
+                href={`mailto:${user.email}`}
                 className="text-gray-500 hover:text-blue-500"
               >
-                {data.email}
+                {user.email}
               </a>
             </div>
           </div>

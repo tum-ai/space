@@ -1,18 +1,24 @@
 "use client";
 import DetailedInfoCard from "./components/DetailedInfoCard";
-import Select from "@components/Select";
 import { useState } from "react";
 import ClickableInfoCard from "./components/ClickableInfoCard";
 import { PersonIcon } from "@radix-ui/react-icons";
 import { Card } from "@components/ui/card";
 import { Button } from "@components/ui/button";
-import { Section } from "@components/Section";
 import { fetchOpportunity } from "@services/opportunityService";
 import { useQuery } from "@tanstack/react-query";
 import { AreaChart, Title } from "@tremor/react";
 import React from "react";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@components/ui/select";
 
-const AreaGraph = (props: any) => {
+const AreaGraph = (props: { id: string }) => {
   const mockData = [
     {
       date: "Jan 22",
@@ -60,16 +66,20 @@ const AreaGraph = (props: any) => {
   );
 };
 
-export default function Dashboard({ params }) {
+export default function Dashboard({
+  params,
+}: {
+  params: { opportunity_id: string };
+}) {
   const opportunityId = decodeURIComponent(params.opportunity_id);
 
   const { data: opportunity } = useQuery(["opportunity", opportunityId], () =>
     fetchOpportunity(opportunityId),
   );
 
-  const [selectedPhase, setSelectedPhase] = useState("SCREENING");
+  const [selectedPhase] = useState("SCREENING");
   return (
-    <Section>
+    <section>
       <div className="flex flex-col gap-8">
         <div className="flex flex-col gap-4">
           <h1 className="text-6xl font-thin">{opportunity?.title}</h1>
@@ -105,23 +115,16 @@ export default function Dashboard({ params }) {
           <div className="flex flex-col gap-4">
             <p className="mt-5 text-2xl">Overview of phases</p>
             <div className="grid grid-cols-6 gap-4">
-              <Select
-                placeholder="From Type"
-                options={[
-                  {
-                    key: "Screening",
-                    value: "SCREENING",
-                  },
-                  {
-                    key: "Interview",
-                    value: "INTERVIEW",
-                  },
-                ]}
-                value={selectedPhase}
-                setSelectedItem={(item: string) => {
-                  setSelectedPhase(item);
-                }}
-              />
+              <Select value={selectedPhase}>
+                <SelectTrigger className="w-full">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectItem value="SCREENING">Screening</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
               <Button className="col-start-6">Visit</Button>
             </div>
             <div className="grid grid-cols-6 gap-4">
@@ -140,6 +143,6 @@ export default function Dashboard({ params }) {
           </div>
         </div>
       </div>
-    </Section>
+    </section>
   );
 }

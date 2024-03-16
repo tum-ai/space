@@ -54,8 +54,7 @@ model User {
   profile               Profile[]
   session               Session[]
   opportunityAdmin      Opportunity[]
-  Questionnaire         Questionnaire?         @relation(fields: [questionnaireId], references: [id])
-  questionnaireId       String?
+  Questionnaires        Questionnaire[]
 }
 
 model Profile {
