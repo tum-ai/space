@@ -1,4 +1,5 @@
 import { Button } from "@components/ui/button";
+import { Prisma } from "@prisma/client";
 import { Rabbit } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
@@ -14,27 +15,45 @@ export default async function StartReview({ params }: StartReviewProps) {
   if (!session?.user?.id) redirect("/auth");
 
   // Attempt to find applications associated with the specific opportunity
-  const applicationToReview = await db.application.findFirst({
+  const applications = await db.application.findMany({
     where: {
       opportunityId: Number(params.opportunity_id),
-      questionnaires: {
-        some: { reviewers: { some: { id: session.user.id } } },
-      },
-      reviews: { none: { userId: session.user.id } },
     },
     include: {
-      opportunity: true,
       questionnaires: {
-        include: { phase: true },
-        where: {
-          reviewers: { some: { id: session.user.id } },
-          // TODO only include where count(existing reviews) =< requiredReviews
+        include: {
+          reviews: true, // Include reviews to count and check user
+          reviewers: true, // Include reviewers to check if user is a reviewer
         },
       },
     },
   });
 
-  if (!applicationToReview?.questionnaires.length) {
+  let suitableApplication = null;
+  let suitableQuestionnaire = null;
+
+  // Iterate over applications to find the first suitable one
+  for (const application of applications) {
+    // Find a suitable questionnaire within this application
+    suitableQuestionnaire = application.questionnaires.find(
+      (questionnaire) =>
+        questionnaire.reviewers.some(
+          (reviewer) => reviewer.id === session.user.id,
+        ) && // User is a reviewer
+        questionnaire.reviews.filter(
+          (review) => review.userId === session.user.id,
+        ).length === 0 && // User has not reviewed
+        questionnaire.reviews.length < questionnaire.requiredReviews, // Less reviews than required
+    );
+
+    if (suitableQuestionnaire) {
+      suitableApplication = application;
+      break; // Exit loop once a suitable questionnaire (and thus application) is found
+    }
+  }
+
+  if (!suitableApplication || !suitableQuestionnaire) {
+    // No suitable application or questionnaire found
     return (
       <div className="flex h-[50vh] flex-col items-center justify-center">
         <Rabbit className="mb-8 h-16 w-16" />
@@ -50,11 +69,9 @@ export default async function StartReview({ params }: StartReviewProps) {
   const review = await db.review.create({
     data: {
       content: {},
-      user: { connect: { id: session.user.id } },
-      application: { connect: { id: applicationToReview.id } },
-      questionnaire: {
-        connect: { id: applicationToReview.questionnaires.at(0)?.id },
-      },
+      userId: session.user.id,
+      applicationId: suitableApplication.id,
+      questionnaireId: suitableQuestionnaire.id,
       status: "CREATED",
     },
   });
