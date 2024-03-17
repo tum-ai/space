@@ -12,7 +12,7 @@ import { api } from "trpc/react";
 import { toast } from "sonner";
 import { Application, Review } from "@prisma/client";
 import { Tally } from "@lib/types/tally";
-
+import { useRouter } from "next/navigation";
 
 interface ReviewFormProps {
   application: Application;
@@ -27,7 +27,10 @@ export const ReviewForm = ({
   const applicationFields = (application.content as Tally).data.fields;
   const form = useForm<Question[]>({ defaultValues: questions });
 
+  const router = useRouter();
+
   const updateMutation = api.review.update.useMutation();
+
   const onSubmit: SubmitHandler<Question[]> = (data) => {
     const content = Object.entries(data).map(([key, obj]) => ({
       key,
@@ -35,10 +38,14 @@ export const ReviewForm = ({
     })) as (Required<Pick<Question, "value">> & Pick<Question, "key">)[];
 
     toast.promise(
-      updateMutation.mutateAsync({
-        id: review.id,
-        content,
-      }),
+      updateMutation
+        .mutateAsync({
+          id: review.id,
+          content,
+        })
+        .then(() => {
+          router.push(`/opportunities/${application.opportunityId}/review`);
+        }),
       {
         loading: "Saving review",
         success: "Review saved",
