@@ -4,6 +4,12 @@ import { TRPCError } from "@trpc/server";
 import { LogEntry } from "@lib/types/key";
 
 export const keyRouter = createTRPCRouter({
+  create: protectedProcedure.mutation(async ({ ctx }) => {
+    await ctx.db.key.create({
+      data: { userId: ctx.session.user.id, log: [] },
+    });
+  }),
+
   giveAway: protectedProcedure
     .input(z.object({ keyId: z.number(), recipientId: z.string() }))
     .mutation(async ({ input, ctx }) => {
