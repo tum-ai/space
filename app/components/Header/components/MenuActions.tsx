@@ -15,16 +15,22 @@ import { LogOut, MoonIcon, SunIcon, User as UserIcon } from "lucide-react";
 import Link from "next/link";
 import { useTheme } from "next-themes";
 import { signOut } from "next-auth/react";
+import { Session } from "next-auth";
 
-export const MenuActions = () => {
+interface MenuActionsProps {
+  user: Session["user"];
+}
+
+export const MenuActions = ({ user }: MenuActionsProps) => {
   const { setTheme } = useTheme();
+
   return (
     <DropdownMenuContent>
       <DropdownMenuLabel>My Account</DropdownMenuLabel>
       <DropdownMenuSeparator />
       <DropdownMenuGroup>
         <DropdownMenuItem asChild>
-          <Link href="/profile">
+          <Link href={`/profile/${user.id}`}>
             <UserIcon className="mr-2 h-4 w-4" />
             <span>Profile</span>
           </Link>
