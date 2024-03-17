@@ -13,7 +13,6 @@ export default async function StartReview({ params }: StartReviewProps) {
   const session = await getServerAuthSession();
   if (!session?.user?.id) redirect("/auth");
 
-  // Attempt to find applications associated with the specific opportunity
   const applications = await db.application.findMany({
     where: {
       opportunityId: Number(params.opportunity_id),
@@ -21,8 +20,8 @@ export default async function StartReview({ params }: StartReviewProps) {
     include: {
       questionnaires: {
         include: {
-          reviews: true, // Include reviews to count and check user
-          reviewers: true, // Include reviewers to check if user is a reviewer
+          reviews: true,
+          reviewers: true,
         },
       },
     },
@@ -40,9 +39,16 @@ export default async function StartReview({ params }: StartReviewProps) {
           (reviewer) => reviewer.id === session.user.id,
         ) && // User is a reviewer
         questionnaire.reviews.filter(
-          (review) => review.userId === session.user.id,
-        ).length === 0 && // User has not reviewed
-        questionnaire.reviews.length < questionnaire.requiredReviews, // Less reviews than required
+          (review) =>
+            review.userId === session.user.id &&
+            review.questionnaireId === questionnaire.id &&
+            review.applicationId === application.id,
+        ).length === 0 && // User has not reviewed questionnaire and application together
+        questionnaire.reviews.filter(
+          (review) =>
+            review.questionnaireId === questionnaire.id &&
+            review.applicationId === application.id,
+        ).length < questionnaire.requiredReviews, // Less reviews than required
     );
 
     if (suitableQuestionnaire) {
