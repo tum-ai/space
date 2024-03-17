@@ -1,5 +1,8 @@
 import db from "server/db";
 import { ProfileOverview } from "../components/ProfileOverview";
+import { Search } from "lucide-react";
+import Link from "next/link";
+import { Button } from "@components/ui/button";
 
 export default async function ProfilePage({
   params,
@@ -12,12 +15,19 @@ export default async function ProfilePage({
   });
 
   if (!user) {
-    return <div>Profile not found</div>;
+    return (
+      <div className="flex h-[50vh] flex-col items-center justify-center">
+        <div className="flex flex-col items-center text-muted-foreground">
+          <Search className="mb-8 h-16 w-16" />
+          <p>User not found</p>
+        </div>
+
+        <Button variant="link">
+          <Link href="/">Return Home</Link>
+        </Button>
+      </div>
+    );
   }
 
-  return (
-    <section>
-      <ProfileOverview user={user} />
-    </section>
-  );
+  return <ProfileOverview user={user} />;
 }
