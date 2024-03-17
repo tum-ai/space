@@ -17,6 +17,7 @@ export const env = createEnv({
     SLACK_CLIENT_ID: z.string(),
     SLACK_CLIENT_SECRET: z.string(),
     NEXTAUTH_SECRET: z.string(),
+    NEXTAUTH_URL: z.string(),
     DATABASE_URL: z.string(),
   },
 

@@ -113,7 +113,11 @@ export const TallyForm = () => {
             <div className="sticky grid gap-12">
               {applicationFields.map((field) => (
                 <div key={field.key} className="flex gap-6">
-                  <ConditionPopover field={field} />
+                  <div className="w-10">
+                    {field.type === "DROPDOWN" && (
+                      <ConditionPopover field={field} />
+                    )}
+                  </div>
                   <ApplicationField
                     key={field.key}
                     field={field}
