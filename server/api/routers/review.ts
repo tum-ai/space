@@ -1,3 +1,4 @@
+import { ReviewStatus } from "@prisma/client";
 import { createTRPCRouter, protectedProcedure } from "server/api/trpc";
 import { z } from "zod";
 
@@ -13,12 +14,14 @@ export const reviewRouter = createTRPCRouter({
             value: z.string().optional().or(z.array(z.string()).optional()),
           }),
         ),
+        status: z.nativeEnum(ReviewStatus),
       }),
     )
     .mutation(async ({ input, ctx }) => {
+      const { id, content, status } = input;
       await ctx.db.review.update({
-        data: { content: input },
-        where: { id: input.id },
+        data: { content, status },
+        where: { id },
       });
     }),
 });

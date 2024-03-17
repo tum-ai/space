@@ -42,6 +42,7 @@ export const ReviewForm = ({
         .mutateAsync({
           id: review.id,
           content,
+          status: "DONE",
         })
         .then(() => {
           router.push(`/opportunities/${application.opportunityId}/review`);
