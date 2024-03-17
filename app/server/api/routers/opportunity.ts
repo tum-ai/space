@@ -41,8 +41,8 @@ export const opportunityRouter = createTRPCRouter({
         },
       });
 
-      const phases = await ctx.db.$transaction([
-        ...input.phases.map((phase) => {
+      const phases = await ctx.db.$transaction(
+        input.phases.map((phase) => {
           return ctx.db.phase.upsert({
             where: {
               id: phase.id ?? "",
@@ -58,12 +58,13 @@ export const opportunityRouter = createTRPCRouter({
             } satisfies Prisma.PhaseUpdateInput,
           } satisfies Prisma.PhaseUpsertArgs);
         }),
-      ]);
+      );
 
       // Update questionnaires
-      await ctx.db.$transaction([
-        ...input.phases.flatMap((phase, index) => {
+      await ctx.db.$transaction(
+        input.phases.flatMap((phase, index) => {
           return phase.questionnaires.map((questionnaire) => {
+            console.log(questionnaire);
             return ctx.db.questionnaire.upsert({
               where: { id: questionnaire.id ?? "" },
               create: {
@@ -79,7 +80,7 @@ export const opportunityRouter = createTRPCRouter({
             });
           });
         }),
-      ]);
+      );
 
       // Update opportunity
       return await ctx.db.opportunity.update({
