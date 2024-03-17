@@ -42,7 +42,7 @@ export function GeneralInformation() {
           name="generalInformation.title"
           render={({ field }) => (
             <FormItem className="col-span-2">
-              <FormLabel>Title</FormLabel>
+              <FormLabel>Title*</FormLabel>
               <FormControl>
                 <Input placeholder="Venture campaign WS2023" {...field} />
               </FormControl>
@@ -56,7 +56,7 @@ export function GeneralInformation() {
           name="generalInformation.start"
           render={({ field }) => (
             <FormItem className="flex flex-col">
-              <FormLabel>Begin</FormLabel>
+              <FormLabel>Begin*</FormLabel>
               <Popover>
                 <PopoverTrigger asChild>
                   <FormControl>
