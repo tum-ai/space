@@ -28,41 +28,61 @@ export const opportunityRouter = createTRPCRouter({
     .input(OpportunitySchema)
     .mutation(async ({ input, ctx }) => {
       // Update phases and questionnaires
-      const deletePhases = ctx.db.phase.deleteMany({
+      const phasesToKeep = input.phases
+        .map((phase) => phase.id)
+        .filter((id) => !!id) as string[];
+
+      await ctx.db.phase.deleteMany({
         where: {
           opportunityId: input.id,
-          id: { not: { in: input.phases.map((phase) => phase.id!) } },
+          ...(phasesToKeep.length > 0
+            ? { id: { not: { in: phasesToKeep } } }
+            : {}),
         },
       });
 
-      const upsertPhases = input.phases.map((phase) => {
-        return ctx.db.phase.upsert({
-          where: { id: phase.id } satisfies Prisma.PhaseWhereUniqueInput,
+      const phases = await ctx.db.$transaction([
+        ...input.phases.map((phase) => {
+          return ctx.db.phase.upsert({
+            where: {
+              id: phase.id ?? "",
+            } satisfies Prisma.PhaseWhereUniqueInput,
 
-          create: {
-            opportunity: { connect: { id: input.id } },
-            name: phase.name,
-            questionnaires: {
-              createMany: {
-                data: phase.questionnaires satisfies Prisma.QuestionnaireCreateManyPhaseInput[],
+            create: {
+              opportunity: { connect: { id: input.id } },
+              name: phase.name,
+            } satisfies Prisma.PhaseCreateInput,
+
+            update: {
+              name: phase.name,
+            } satisfies Prisma.PhaseUpdateInput,
+          } satisfies Prisma.PhaseUpsertArgs);
+        }),
+      ]);
+
+      // Update questionnaires
+      await ctx.db.$transaction([
+        ...input.phases.flatMap((phase, index) => {
+          return phase.questionnaires.map((questionnaire) => {
+            return ctx.db.questionnaire.upsert({
+              where: { id: questionnaire.id ?? "" },
+              create: {
+                ...questionnaire,
+                phase: { connect: { id: phases[index]!.id } },
+                reviewers: { connect: questionnaire.reviewers },
+              } satisfies Prisma.QuestionnaireCreateInput,
+              update: {
+                ...questionnaire,
+                phase: { connect: { id: phases[index]!.id } },
+                reviewers: { connect: questionnaire.reviewers },
               },
-            } satisfies Prisma.QuestionnaireCreateNestedManyWithoutPhaseInput,
-          } satisfies Prisma.PhaseCreateInput,
-
-          update: {
-            name: phase.name,
-            questionnaires: {
-              updateMany: {
-                where: { phaseId: phase.id },
-                data: phase.questionnaires,
-              } satisfies Prisma.QuestionnaireUpdateManyWithWhereWithoutPhaseInput,
-            },
-          } satisfies Prisma.PhaseUpdateInput,
-        } satisfies Prisma.PhaseUpsertArgs);
-      });
+            });
+          });
+        }),
+      ]);
 
       // Update opportunity
-      const updateOpportunity = ctx.db.opportunity.update({
+      return await ctx.db.opportunity.update({
         where: {
           id: input.id,
           adminId: ctx.session.user.id,
@@ -74,12 +94,6 @@ export const opportunityRouter = createTRPCRouter({
           end: input.generalInformation.end,
         },
       });
-
-      return await ctx.db.$transaction([
-        deletePhases,
-        ...upsertPhases,
-        updateOpportunity,
-      ]);
     }),
 
   getById: protectedProcedure
