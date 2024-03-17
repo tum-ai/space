@@ -29,8 +29,10 @@ export const ReviewForm = ({
   const updateMutation = api.review.update.useMutation();
 
   const onSubmit: SubmitHandler<Question[]> = (data) => {
-    const content = Object.values(data) as (Required<Pick<Question, "value">> &
-      Pick<Question, "key">)[];
+    const content = Object.entries(data).map(([key, obj]) => ({
+        key,
+        value: obj.value
+    })) as (Required<Pick<Question, "value">> & Pick<Question, "key">)[];
 
     toast.promise(
       updateMutation.mutateAsync({
