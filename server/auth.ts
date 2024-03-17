@@ -27,14 +27,14 @@ declare module "next-auth" {
 
 export const authOptions: AuthOptions = {
   adapter: PrismaAdapter(db),
-  secret: process.env.NEXTAUTH_SECRET,
+  secret: env.NEXTAUTH_SECRET,
   pages: {
     signIn: "/auth",
   },
   providers: [
     SlackProvider({
-      clientId: env.NEXT_PUBLIC_SLACK_CLIENT_ID,
-      clientSecret: env.NEXT_PUBLIC_SLACK_CLIENT_SECRET,
+      clientId: env.SLACK_CLIENT_ID,
+      clientSecret: env.SLACK_CLIENT_SECRET,
     }),
   ],
   callbacks: {

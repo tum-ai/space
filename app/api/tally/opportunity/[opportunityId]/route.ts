@@ -89,7 +89,7 @@ export async function POST(
 
 function isSignatureValidated(req: Request, webhookPayload: Tally): boolean {
   const receivedSignature = req.headers.get("tally-signature");
-  const tallySigningSecret = env.NEXT_PUBLIC_TALLY_SIGNING_SECRET;
+  const tallySigningSecret = env.TALLY_SIGNING_SECRET;
 
   const calculatedSignature = createHmac("sha256", tallySigningSecret)
     .update(JSON.stringify(webhookPayload))
