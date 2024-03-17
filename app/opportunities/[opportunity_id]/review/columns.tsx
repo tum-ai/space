@@ -18,6 +18,10 @@ export type Review = PrismaReview & {
 
 export const columns: ColumnDef<Review>[] = [
   {
+    accessorKey: "application.id",
+    header: "Application",
+  },
+  {
     accessorKey: "questionnaire.phase.name",
     header: "Phase",
   },

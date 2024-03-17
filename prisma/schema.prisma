@@ -167,7 +167,7 @@ model Review {
   questionnaire   Questionnaire @relation(fields: [questionnaireId], references: [id])
   status          ReviewStatus
 
-  @@unique([applicationId, userId])
+  @@unique([applicationId, userId, questionnaireId])
 }
 
 enum SpaceRole {

@@ -13,6 +13,7 @@ import { toast } from "sonner";
 import { Application, Review } from "@prisma/client";
 import { Tally } from "@lib/types/tally";
 
+
 interface ReviewFormProps {
   application: Application;
   review: Review;
@@ -27,11 +28,10 @@ export const ReviewForm = ({
   const form = useForm<Question[]>({ defaultValues: questions });
 
   const updateMutation = api.review.update.useMutation();
-
   const onSubmit: SubmitHandler<Question[]> = (data) => {
     const content = Object.entries(data).map(([key, obj]) => ({
-        key,
-        value: obj.value
+      key,
+      value: obj.value,
     })) as (Required<Pick<Question, "value">> & Pick<Question, "key">)[];
 
     toast.promise(
