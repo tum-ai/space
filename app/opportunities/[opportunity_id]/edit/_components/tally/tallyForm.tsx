@@ -73,7 +73,7 @@ export const TallyForm = () => {
                     onClick={() => {
                       toast.promise(
                         navigator.clipboard.writeText(
-                          `${window.location.origin}/api/tally/${field.value}`,
+                          `${window.location.origin}/api/tally/opportunity/${field.value}`,
                         ),
                         {
                           loading: "Copying to clipboard",
