@@ -4,7 +4,6 @@ import { CalendarIcon } from "@radix-ui/react-icons";
 import Link from "next/link";
 import { Opportunity } from "@prisma/client";
 import { format } from "date-fns";
-import { Badge } from "@components/ui/badge";
 
 interface OpportunityCardProps {
   opportunity: Opportunity;
@@ -23,11 +22,6 @@ export default function OpportunityCard({
             <h2 className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0">
               {opportunity.title}
             </h2>
-            {opportunity.status === "MISSING_CONFIG" && (
-              <div>
-                <Badge variant="destructive">Incomplete</Badge>
-              </div>
-            )}
           </div>
         </CardHeader>
         <CardContent className="flex flex-col gap-4">
