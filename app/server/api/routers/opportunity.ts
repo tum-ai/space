@@ -16,7 +16,6 @@ export const opportunityRouter = createTRPCRouter({
           description: input.description,
           start: input.start,
           end: input.end,
-          status: "MISSING_CONFIG",
           admin: { connect: { id: ctx.session.user.id } },
         },
       });
