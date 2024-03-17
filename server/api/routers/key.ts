@@ -10,6 +10,19 @@ export const keyRouter = createTRPCRouter({
     });
   }),
 
+  deleteById: protectedProcedure
+    .input(z.object({ keyId: z.number() }))
+    .mutation(async ({ input, ctx }) => {
+      if (!ctx.session.user.roles.includes("ADMIN")) {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "You need to be an admin to delete this key",
+        });
+      }
+
+      return await ctx.db.key.delete({ where: { id: input.keyId } });
+    }),
+
   giveAway: protectedProcedure
     .input(z.object({ keyId: z.number(), recipientId: z.string() }))
     .mutation(async ({ input, ctx }) => {
