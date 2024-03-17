@@ -1,4 +1,12 @@
 import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@components/ui/hover-card";
+import { QuestionView } from "../questionnaire/questionView";
+import { Badge } from "@components/ui/badge";
+import { ArrowRight, Minus } from "lucide-react";
+import {
   Select,
   SelectContent,
   SelectGroup,
@@ -21,7 +29,6 @@ import { z } from "zod";
 import { FormField, FormItem, FormLabel } from "@components/ui/form";
 import { useEffect, useState } from "react";
 import { Questionnaire } from "@lib/types/questionnaire";
-import { AssignedQuestionnaireBadge } from "./assignedQuestionnaireBadge";
 
 interface ConditionPopoverProps {
   field: Extract<TallyField, { type: "DROPDOWN" }>;
@@ -45,6 +52,7 @@ export const ConditionPopover = ({
   >([]);
 
   useEffect(() => {
+    const newQuestionnaires = new Set<Questionnaire>();
     for (const phase of opportunityForm.getValues().phases) {
       for (const questionnaire of phase.questionnaires) {
         if (
@@ -52,25 +60,78 @@ export const ConditionPopover = ({
             (condition) => condition.key === tallyField.key,
           )
         ) {
-          setAssignedQuestionnaire((prev) => [
-            ...new Set([...prev, questionnaire]),
-          ]);
+          newQuestionnaires.add(questionnaire);
         }
       }
     }
+
+    setAssignedQuestionnaire([...newQuestionnaires]);
   }, [opportunityForm, tallyField.key]);
 
   return (
     <Form {...form}>
       <div className="relative">
         <div className="absolute right-0 mr-20 flex gap-2">
-          {assignedQuestionnaire.map((questionnaire) => (
-            <AssignedQuestionnaireBadge
-              key={questionnaire.id}
-              field={tallyField}
-              questionnaire={questionnaire}
-            />
-          ))}
+          {assignedQuestionnaire.map((questionnaire) => {
+            const condition = tallyField.options.find(
+              (option) =>
+                option.id ===
+                questionnaire.conditions.find(
+                  (condition) => condition.key === tallyField.key,
+                )?.value,
+            );
+
+            return (
+              <HoverCard key={questionnaire.id}>
+                <HoverCardTrigger>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const findIndexes = (): [number, number] => {
+                        const phases = opportunityForm.getValues().phases;
+                        for (let i = 0; i < phases.length; i++) {
+                          const questionnaires = phases[i]!.questionnaires;
+
+                          for (let j = 0; j < questionnaires.length; j++) {
+                            if (questionnaires[j]!.id === questionnaire.id) {
+                              return [i, j];
+                            }
+                          }
+                        }
+                        // Cannot happen
+                        return [0, 0];
+                      };
+
+                      const [i, j] = findIndexes();
+
+                      opportunityForm.setValue(
+                        `phases.${i}.questionnaires.${j}.conditions`,
+
+                        questionnaire.conditions.filter(
+                          (c) => c.key !== tallyField.key,
+                        ),
+                      );
+                    }}
+                  >
+                    <Badge>
+                      <Minus />
+                      {questionnaire.name}
+                    </Badge>
+                  </button>
+                </HoverCardTrigger>
+                <HoverCardContent>
+                  <p className="flex items-center gap-2 font-semibold tracking-tight">
+                    <p>{condition?.text}</p>
+                    <ArrowRight className="text-2xl" />
+                    <p>{questionnaire.name}</p>
+                  </p>
+                  {questionnaire.questions?.map((question) => (
+                    <QuestionView key={question.key} question={question} />
+                  ))}
+                </HoverCardContent>
+              </HoverCard>
+            );
+          })}
         </div>
 
         <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
