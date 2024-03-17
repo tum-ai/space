@@ -64,10 +64,6 @@ For Linux, MacOS, Windows:
 1. Create .env within /api
 2. Paste [this](https://tum-ai-internal.slack.com/archives/C02787QJ95W/p1698584387138569) into /api/.env
 3. Create .env within /app and paste in the following:
-```
-NEXT_PUBLIC_ENVIRONMENT=development
-NEXT_PUBLIC_API_URL=http://localhost:8000/
-```
 4. Create /api/.secrets and then /api/.secrets/tumai-space-firebase-adminsdk.json
 5. Paste [this](https://tum-ai-internal.slack.com/archives/C02787QJ95W/p1698583880296439) into /api/.secrets/tumai-space-firebase-adminsdk.json - Add Firebase Admin SDK Certificate (for staging env): the development environment will use authentication of the Staging Firebase project 
 
