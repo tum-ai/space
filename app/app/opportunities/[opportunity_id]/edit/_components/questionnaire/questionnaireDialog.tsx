@@ -20,6 +20,7 @@ import { Button } from "@components/ui/button";
 import { QuestionDialog } from "./questionDialog";
 import {
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -32,6 +33,7 @@ import { FileMinus, FilePlus2, Save, UserMinus } from "lucide-react";
 import { AddReviewerPopup } from "../phases/addReviewerPopup";
 import { Avatar, AvatarFallback, AvatarImage } from "@components/ui/avatar";
 import { QuestionView } from "./questionView";
+import { Slider } from "@components/ui/slider";
 
 interface QuestionnaireProps {
   onSave: (data: z.infer<typeof QuestionnaireSchema>) => void;
@@ -105,24 +107,44 @@ export const QuestionnaireDialog = ({
           </DialogDescription>
         </DialogHeader>
 
-        <FormField
-          control={form.control}
-          name={`name`}
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Name*</FormLabel>
-              <FormControl>
-                <Input placeholder="General" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <div className="space-y-2">
+          <h4 className="scroll-m-20 text-xl font-semibold tracking-tight">
+            Information
+          </h4>
+          <FormField
+            control={form.control}
+            name={`name`}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Name*</FormLabel>
+                <FormControl>
+                  <Input placeholder="General" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormItem>
+            <FormLabel>Required reviews*</FormLabel>
+            <FormControl>
+              <Input
+                type="number"
+                placeholder="General"
+                {...form.register("requiredReviews", { valueAsNumber: true })}
+              />
+            </FormControl>
+            <FormDescription>
+              Required amount of unique reviews for this questionnaire
+            </FormDescription>
+            <FormMessage />
+          </FormItem>
+        </div>
 
         <div className="mt-8">
-          <h3 className="mb-4 scroll-m-20 text-2xl font-semibold tracking-tight">
+          <h4 className="scroll-m-20 text-xl font-semibold tracking-tight">
             Questions
-          </h3>
+          </h4>
           <div className="space-y-4">
             {questions.map((question, index) => (
               <QuestionDialog
@@ -159,9 +181,9 @@ export const QuestionnaireDialog = ({
         </div>
 
         <div className="mt-8">
-          <h3 className="mb-4 scroll-m-20 text-2xl font-semibold tracking-tight">
+          <h4 className="scroll-m-20 text-xl font-semibold tracking-tight">
             Reviewer
-          </h3>
+          </h4>
           <div className="space-y-4">
             {reviewers.map((reviewer, index) => (
               <div
