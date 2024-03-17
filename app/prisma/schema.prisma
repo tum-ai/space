@@ -109,18 +109,17 @@ model DepartmentMembership {
 }
 
 model Opportunity {
-  id           Int               @id @default(autoincrement())
+  id           Int           @id @default(autoincrement())
   title        String
   description  String?
   start        DateTime
   end          DateTime?
   adminId      String
-  admin        User              @relation(fields: [adminId], references: [id])
-  createdAt    DateTime          @default(now())
-  updatedAt    DateTime          @updatedAt
+  admin        User          @relation(fields: [adminId], references: [id])
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
   tallySchema  Json?
   applications Application[]
-  status       OpportunityStatus
   phases       Phase[]
 }
 
@@ -195,12 +194,6 @@ enum DepartmentRole {
   PROJECT_LEAD
   ACTIVE_MEMBER
   ALUMNI
-}
-
-enum OpportunityStatus {
-  MISSING_CONFIG
-  IN_PROGRESS
-  DONE
 }
 
 enum ReviewStatus {
