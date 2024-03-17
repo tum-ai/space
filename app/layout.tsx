@@ -1,4 +1,4 @@
-import Header from "@components/Header";
+import Header from "@components/header";
 import "@styles/globals.css";
 import { ThemeProvider } from "@components/theme-provider";
 import { Toaster } from "@components/ui/sonner";

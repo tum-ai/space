@@ -8,7 +8,7 @@ import {
   navigationMenuTriggerStyle,
 } from "@components/ui/navigation-menu";
 import Link from "next/link";
-import { Logo } from "./Logo";
+import { Logo } from "./logo";
 import { Button } from "@components/ui/button";
 
 export const Navigation = () => {

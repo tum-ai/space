@@ -2,7 +2,7 @@ import {
   DropdownMenu,
   DropdownMenuTrigger,
 } from "@components/ui/dropdown-menu";
-import { MenuActions } from "./MenuActions";
+import { MenuActions } from "./menuActions";
 import { Avatar, AvatarFallback, AvatarImage } from "@components/ui/avatar";
 import { Session } from "next-auth";
 
