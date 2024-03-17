@@ -63,7 +63,6 @@ export const opportunityRouter = createTRPCRouter({
       await ctx.db.$transaction(
         input.phases.flatMap((phase, index) => {
           return phase.questionnaires.map((questionnaire) => {
-            console.log(questionnaire);
             return ctx.db.questionnaire.upsert({
               where: { id: questionnaire.id ?? "" },
               create: {

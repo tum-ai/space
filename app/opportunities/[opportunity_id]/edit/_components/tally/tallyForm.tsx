@@ -25,6 +25,7 @@ import { api } from "trpc/react";
 import { Tally } from "@lib/types/tally";
 import LoadingWheel from "@components/LoadingWheel";
 import { ConditionPopover } from "./conditionalPopover";
+import { TallyFieldForm } from "./tallyFieldForm";
 
 export const TallyForm = () => {
   const form = useFormContext<z.infer<typeof OpportunitySchema>>();
@@ -112,18 +113,7 @@ export const TallyForm = () => {
           <CardContent>
             <div className="sticky grid gap-12">
               {applicationFields.map((field) => (
-                <div key={field.key} className="flex gap-6">
-                  <div className="w-10">
-                    {field.type === "DROPDOWN" && (
-                      <ConditionPopover field={field} />
-                    )}
-                  </div>
-                  <ApplicationField
-                    key={field.key}
-                    field={field}
-                    className="w-full"
-                  />
-                </div>
+                <TallyFieldForm key={field.key} field={field} />
               ))}
             </div>
           </CardContent>

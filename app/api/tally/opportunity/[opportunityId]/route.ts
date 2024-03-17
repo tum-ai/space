@@ -79,7 +79,7 @@ export async function POST(
     });
     return NextResponse.json(application);
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return NextResponse.json(
       { message: "An error occurred while processing the webhook." },
       { status: 500 },

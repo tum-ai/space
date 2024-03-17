@@ -17,17 +17,19 @@ interface RowProps {
 }
 
 interface OverviewRowsProps {
-  data: Record<string, {
+  data: Record<
+    string,
+    {
       firstName: string;
       lastName: string;
       phase: string;
       score: number;
       reviewer: Reviewer[];
-    }>;
+    }
+  >;
 }
 
 function OverviewRows({ data }: OverviewRowsProps) {
-  console.log(data);
   return (
     <div className="flex flex-col space-y-4">
       {Object.entries(data).map(([id, vals]) => (
