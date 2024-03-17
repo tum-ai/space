@@ -56,7 +56,11 @@ export const QuestionDialog = ({
 
   const onSubmit: SubmitHandler<z.infer<typeof QuestionSchema>> = (data) => {
     onSave(data);
+
+    // reset form for new questionnaire
     form.reset();
+    form.setValue("key", uuidv4());
+
     setDialogOpen(false);
   };
 
