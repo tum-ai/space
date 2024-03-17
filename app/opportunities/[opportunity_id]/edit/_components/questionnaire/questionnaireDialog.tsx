@@ -33,7 +33,6 @@ import { FileMinus, FilePlus2, Save, UserMinus } from "lucide-react";
 import { AddReviewerPopup } from "../phases/addReviewerPopup";
 import { Avatar, AvatarFallback, AvatarImage } from "@components/ui/avatar";
 import { QuestionView } from "./questionView";
-import { Slider } from "@components/ui/slider";
 
 interface QuestionnaireProps {
   onSave: (data: z.infer<typeof QuestionnaireSchema>) => void;
