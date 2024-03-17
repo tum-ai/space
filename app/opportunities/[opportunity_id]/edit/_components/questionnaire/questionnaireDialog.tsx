@@ -135,7 +135,8 @@ export const QuestionnaireDialog = ({
               />
             </FormControl>
             <FormDescription>
-              Required amount of unique reviews for this questionnaire
+              Required amount of unique reviews for this questionnaire per
+              application.
             </FormDescription>
             <FormMessage />
           </FormItem>
