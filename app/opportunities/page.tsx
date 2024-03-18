@@ -14,7 +14,20 @@ export default async function OpportunitiesPage() {
   if (!userId) redirect("/auth");
 
   const opportunities = await db.opportunity.findMany({
-    where: { adminId: userId },
+    where: {
+      OR: [
+        // user is admin of opportunity
+        { adminId: userId },
+        // or user is a reviewer of a questionnaire in the opportunity
+        {
+          phases: {
+            some: {
+              questionnaires: { some: { reviewers: { some: { id: userId } } } },
+            },
+          },
+        },
+      ],
+    },
   });
 
   return (

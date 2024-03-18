@@ -35,15 +35,15 @@ export default function OpportunityCard({
           {opportunity.description}
         </CardContent>
       </div>
-      <CardFooter className="mt-auto grid grid-cols-3 divide-x divide-solid border-t p-0">
-        <Button className="rounded-none" asChild variant="ghost">
+      <CardFooter className="mt-auto flex divide-x divide-solid border-t p-0">
+        <Button className="flex-1 rounded-none" asChild variant="ghost">
           <Link href={"opportunities/" + +opportunity.id + "/review"}>
             Review
           </Link>
         </Button>
 
         {isAdmin && (
-          <Button className="rounded-none" asChild variant="ghost">
+          <Button className="flex-1 rounded-none" asChild variant="ghost">
             <Link href={"opportunities/" + +opportunity.id + "/applications"}>
               Applications
             </Link>
@@ -51,7 +51,7 @@ export default function OpportunityCard({
         )}
 
         {isAdmin && (
-          <Button className="rounded-none" asChild variant="ghost">
+          <Button className="flex-1 rounded-none" asChild variant="ghost">
             <Link href={"opportunities/" + +opportunity.id + "/edit"}>
               Edit
             </Link>
