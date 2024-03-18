@@ -26,14 +26,13 @@ export const ReviewForm = ({
 }: ReviewFormProps) => {
   const applicationFields = (application.content as Tally).data.fields;
 
+  const form = useForm<Question["value"][]>();
   const defaultValues = (review.content as Question[]).map((question) => {
     return question.value;
   });
-
-  console.log(defaultValues);
-
-  const form = useForm<Question["value"][]>({
-    defaultValues,
+  // Workaround to set default values
+  defaultValues.forEach((value, index) => {
+    form.setValue(`${index}`, value);
   });
 
   const router = useRouter();
