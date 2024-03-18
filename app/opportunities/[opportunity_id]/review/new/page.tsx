@@ -73,7 +73,7 @@ export default async function StartReview({ params }: StartReviewProps) {
   // Proceed to create a review for the found questionnaire and application
   const review = await db.review.create({
     data: {
-      content: {},
+      content: [],
       userId: session.user.id,
       applicationId: suitableApplication.id,
       questionnaireId: suitableQuestionnaire.id,

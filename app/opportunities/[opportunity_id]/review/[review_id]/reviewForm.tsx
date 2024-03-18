@@ -5,7 +5,7 @@ import { Save } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@components/ui/card";
 import { ApplicationField } from "@components/application/applicationField";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { Question } from "@lib/schemas/question";
+import { Question, QuestionSchema } from "@lib/schemas/question";
 import { QuestionField } from "./_components/questionField";
 import { Form } from "@components/ui/form";
 import { api } from "trpc/react";
@@ -25,17 +25,28 @@ export const ReviewForm = ({
   review,
 }: ReviewFormProps) => {
   const applicationFields = (application.content as Tally).data.fields;
-  const form = useForm<Question[]>({ defaultValues: questions });
+
+  const defaultValues = (review.content as Question[]).map((question) => {
+    return question.value;
+  });
+
+  console.log(defaultValues);
+
+  const form = useForm<Question["value"][]>({
+    defaultValues,
+  });
 
   const router = useRouter();
 
   const updateMutation = api.review.update.useMutation();
 
-  const onSubmit: SubmitHandler<Question[]> = (data) => {
-    const content = Object.entries(data).map(([key, obj]) => ({
-      key,
-      value: obj.value,
-    })) as (Required<Pick<Question, "value">> & Pick<Question, "key">)[];
+  const onSubmit: SubmitHandler<Question["value"][]> = (data) => {
+    const content = QuestionSchema.array().parse(
+      questions.map((question, index) => ({
+        ...question,
+        value: data[index],
+      })),
+    );
 
     toast.promise(
       updateMutation

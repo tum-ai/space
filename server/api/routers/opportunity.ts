@@ -27,19 +27,6 @@ export const opportunityRouter = createTRPCRouter({
     .input(OpportunitySchema)
     .mutation(async ({ input, ctx }) => {
       // Update phases and questionnaires
-      const phasesToKeep = input.phases
-        .map((phase) => phase.id)
-        .filter((id) => !!id) as string[];
-
-      await ctx.db.phase.deleteMany({
-        where: {
-          opportunityId: input.id,
-          ...(phasesToKeep.length > 0
-            ? { id: { not: { in: phasesToKeep } } }
-            : {}),
-        },
-      });
-
       const phases = await ctx.db.$transaction(
         input.phases.map((phase) => {
           return ctx.db.phase.upsert({
@@ -59,8 +46,17 @@ export const opportunityRouter = createTRPCRouter({
         }),
       );
 
+      await ctx.db.phase.deleteMany({
+        where: {
+          opportunityId: input.id,
+          ...(phases.length > 0
+            ? { id: { not: { in: phases.map((phase) => phase.id) } } }
+            : {}),
+        },
+      });
+
       // Update questionnaires
-      await ctx.db.$transaction(
+      const questionnaires = await ctx.db.$transaction(
         input.phases.flatMap((phase, index) => {
           return phase.questionnaires.map((questionnaire) => {
             return ctx.db.questionnaire.upsert({
@@ -79,6 +75,15 @@ export const opportunityRouter = createTRPCRouter({
           });
         }),
       );
+
+      await ctx.db.questionnaire.deleteMany({
+        where: {
+          phaseId: { in: phases.map((phase) => phase.id) },
+          ...(questionnaires.length > 0
+            ? { id: { not: { in: questionnaires.map((q) => q.id) } } }
+            : {}),
+        },
+      });
 
       // Update opportunity
       return await ctx.db.opportunity.update({

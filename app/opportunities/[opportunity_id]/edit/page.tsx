@@ -46,6 +46,7 @@ export default async function EditOpportunity({
   if (!opportunity) redirect("/opportunities");
 
   const phases = opportunity.phases.map((phase) => ({
+    id: phase.id,
     name: phase.name,
     questionnaires: phase.questionnaires.map((questionnaire) => ({
       id: questionnaire.id,

@@ -8,7 +8,7 @@ export const CheckboxesSchema = z.object({
       text: z.string(),
     }),
   ),
-  value: z.array(z.string()).optional(),
+  value: z.string().array().optional(),
 });
 
 export const InputTextSchema = z.object({

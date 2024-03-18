@@ -1,5 +1,3 @@
-"use client";
-
 import { Question } from "@lib/types/question";
 import { Input } from "@components/ui/input";
 import {
@@ -25,8 +23,7 @@ interface QuestionFieldProps {
 }
 
 export const QuestionField = ({ index, question }: QuestionFieldProps) => {
-  const form = useFormContext<Question[]>();
-  form.register(`${index}.key`);
+  const form = useFormContext<Question["value"][]>();
 
   switch (question.type) {
     case "INPUT_TEXT": {
@@ -34,7 +31,7 @@ export const QuestionField = ({ index, question }: QuestionFieldProps) => {
         <FormField
           key={question.key}
           control={form.control}
-          name={`${index}.value`}
+          name={`${index}`}
           render={({ field }) => (
             <FormItem>
               <FormLabel>{question.label}</FormLabel>
@@ -53,7 +50,7 @@ export const QuestionField = ({ index, question }: QuestionFieldProps) => {
         <FormField
           key={question.key}
           control={form.control}
-          name={`${index}.value`}
+          name={`${index}`}
           render={({ field }) => (
             <FormItem>
               <FormLabel>{question.label}</FormLabel>
@@ -91,7 +88,7 @@ export const QuestionField = ({ index, question }: QuestionFieldProps) => {
             <FormField
               key={item.id}
               control={form.control}
-              name={`${index}.value`}
+              name={`${index}`}
               render={({ field }) => {
                 return (
                   <FormItem
