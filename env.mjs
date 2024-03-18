@@ -19,6 +19,7 @@ export const env = createEnv({
     NEXTAUTH_SECRET: z.string(),
     NEXTAUTH_URL: z.string(),
     DATABASE_URL: z.string(),
+    RESEND_API_KEY: z.string(),
   },
 
   /*
