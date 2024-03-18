@@ -14,7 +14,7 @@ export const CreateKeyButton = () => {
     <Button
       // eslint-disable-next-line @typescript-eslint/no-misused-promises
       onClick={async () => {
-        const toastId = toast.loading("Creating key...)");
+        const toastId = toast.loading("Creating key...");
         try {
           await mutation.mutateAsync(),
             toast.success("Created new key", { id: toastId });
