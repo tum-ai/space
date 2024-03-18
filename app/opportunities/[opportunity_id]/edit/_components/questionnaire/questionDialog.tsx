@@ -58,7 +58,7 @@ export const QuestionDialog = ({
     onSave(data);
 
     if (!defaultValues) {
-      // reset form for new questionnaire
+      // reset form for new question
       form.reset();
       form.setValue("key", uuidv4());
     }
