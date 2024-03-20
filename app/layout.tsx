@@ -1,6 +1,6 @@
 import Header from "@components/header";
 import "@styles/globals.css";
-import { ThemeProvider } from "@components/theme-provider";
+import { ThemeProvider } from "@providers/theme-provider";
 import { Toaster } from "@components/ui/sonner";
 import { TRPCReactProvider } from "trpc/react";
 
