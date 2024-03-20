@@ -5,8 +5,13 @@ import { LogEntry } from "@lib/types/key";
 
 export const keyRouter = createTRPCRouter({
   create: protectedProcedure.mutation(async ({ ctx }) => {
+    const user = ctx.session.user;
+
     await ctx.db.key.create({
-      data: { userId: ctx.session.user.id, log: [] },
+      data: {
+        userId: ctx.session.user.id,
+        log: [{ user, date: new Date() }],
+      },
     });
   }),
 
