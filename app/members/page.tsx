@@ -1,5 +1,7 @@
 import { Metadata } from "next";
 
+import { DataTable } from "./components/DataTable";
+
 export const metadata: Metadata = {
   title: "Members",
   description: "A task and issue tracker build using Tanstack Table.",
@@ -14,6 +16,7 @@ export default function MembersPage() {
         </h1>
         <p className="text-muted-foreground">Manage and list members</p>
       </div>
+      <DataTable></DataTable>
     </div>
   );
 }
