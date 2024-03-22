@@ -27,6 +27,20 @@ export const DropdownSchema = z.object({
   value: z.string().optional(),
 });
 
+export const NumericSchema = z.object({
+  type: z.literal("NUMERIC"),
+  options: z
+    .object({
+      min: z.number(),
+      max: z.number(),
+    })
+    .refine((options) => options.min < options.max, {
+      message: "Max must be larger than min :)",
+      path: ["max"],
+    }),
+  value: z.number().optional(),
+});
+
 export const QuestionSchema = z
   .object({
     label: z.string(),
@@ -37,6 +51,7 @@ export const QuestionSchema = z
       InputTextSchema,
       DropdownSchema,
       CheckboxesSchema,
+      NumericSchema,
     ]),
   );
 

@@ -1,6 +1,6 @@
 import { QuestionSchema } from "@lib/schemas/question";
 import { QuestionField } from "app/opportunities/[opportunity_id]/review/[review_id]/_components/questionField";
-import { ChevronDownSquare, ListTodo, Type } from "lucide-react";
+import { ChevronDownSquare, Dices, ListTodo, Type } from "lucide-react";
 import { z } from "zod";
 
 interface QuestionViewProps {
@@ -34,6 +34,15 @@ export const QuestionView = ({ question }: QuestionViewProps) => {
             <div className="w-full">
               <QuestionField index={0} question={question} />
             </div>
+          </div>
+        </div>
+      );
+    case "NUMERIC":
+      return (
+        <div className="flex w-full gap-4">
+          <Dices />
+          <div className="w-full">
+            <QuestionField index={0} question={question} />
           </div>
         </div>
       );
