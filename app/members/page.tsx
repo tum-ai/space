@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 
 import { DataTable } from "./components/DataTable";
-import { RowUser } from "./components/DataUser";
+import { RowUser } from "./components/DataTableTypes";
 import db from "server/db";
 import { DepartmentRole, SpaceRole } from "@prisma/client";
 

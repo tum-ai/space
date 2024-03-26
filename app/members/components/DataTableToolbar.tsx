@@ -8,7 +8,7 @@ import { DataTableViewOptions } from "./DataTableViewOptions";
 import { DataTableFacetedFilter } from "./DataTableFacetedFilter";
 import React, { useState, useEffect } from "react";
 import db from "server/db";
-import { ColumnData, Option } from "./DataUser";
+import { ColumnData, Option } from "./DataTableTypes";
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>;

@@ -14,7 +14,7 @@ import {
 import { DataTableColumnHeader } from "./DataTabelHeader";
 import { SpaceRole, User } from "@prisma/client";
 import { Avatar, AvatarFallback, AvatarImage } from "@components/ui/avatar";
-import { RowUser } from "./DataUser";
+import { RowUser } from "./DataTableTypes";
 
 type ExtendedColumnDef<T extends object> = ColumnDef<T> & {
   label: string;

@@ -27,7 +27,7 @@ import {
 
 import { columns } from "./Columns";
 import LoadingWheel from "@components/LoadingWheel";
-import { RowUser, ColumnData } from "./DataUser";
+import { RowUser, ColumnData } from "./DataTableTypes";
 
 interface DataTableProps {
   rowData: RowUser[];
