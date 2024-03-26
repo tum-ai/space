@@ -4,6 +4,8 @@ import { DataTable } from "./components/DataTable";
 import { RowUser } from "./components/DataTableTypes";
 import db from "server/db";
 import { DepartmentRole, SpaceRole } from "@prisma/client";
+import { getServerAuthSession } from "server/auth";
+import { redirect } from "next/navigation";
 
 export const metadata: Metadata = {
   title: "Members",
@@ -11,6 +13,10 @@ export const metadata: Metadata = {
 };
 
 export default async function MembersPage() {
+  const session = await getServerAuthSession();
+  const userId = session?.user.id;
+  if (!userId) redirect("/auth");
+
   const users = await db.user.findMany({
     include: {
       departmentMemberships: {
