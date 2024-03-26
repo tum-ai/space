@@ -7,11 +7,6 @@ import { DepartmentRole, SpaceRole } from "@prisma/client";
 import { getServerAuthSession } from "server/auth";
 import { redirect } from "next/navigation";
 
-export const metadata: Metadata = {
-  title: "Members",
-  description: "A task and issue tracker build using Tanstack Table.",
-};
-
 export default async function MembersPage() {
   const session = await getServerAuthSession();
   const userId = session?.user.id;
