@@ -26,7 +26,6 @@ import {
 } from "@components/ui/table";
 
 import { columns } from "./Columns";
-import LoadingWheel from "@components/LoadingWheel";
 import { RowUser, ColumnData } from "./DataTableTypes";
 
 interface DataTableProps {

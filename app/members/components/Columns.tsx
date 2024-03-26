@@ -16,11 +16,11 @@ import { SpaceRole, User } from "@prisma/client";
 import { Avatar, AvatarFallback, AvatarImage } from "@components/ui/avatar";
 import { RowUser } from "./DataTableTypes";
 
-type ExtendedColumnDef<T extends object> = ColumnDef<T> & {
+export type ExtendedColumnDef<TData, TUnknown> = ColumnDef<TData, TUnknown> & {
   label: string;
 };
 
-export const columns: ExtendedColumnDef<RowUser>[] = [
+export const columns: ExtendedColumnDef<RowUser, unknown>[] = [
   {
     id: "select",
     label: "Select",
@@ -50,7 +50,9 @@ export const columns: ExtendedColumnDef<RowUser>[] = [
     accessorKey: "image",
     label: "Image",
     header: ({ column }) => (
-      <div className="ml-2 mr-2">{column.columnDef.label}</div>
+      <div className="ml-2 mr-2">
+        {(column.columnDef as ExtendedColumnDef<RowUser, unknown>).label}
+      </div>
     ),
     cell: ({ row }) => {
       const value: string = row.getValue("image");
@@ -79,7 +81,10 @@ export const columns: ExtendedColumnDef<RowUser>[] = [
     accessorKey: "id",
     label: "Id",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title={column.columnDef.label} />
+      <DataTableColumnHeader
+        column={column}
+        title={(column.columnDef as ExtendedColumnDef<RowUser, unknown>).label}
+      />
     ),
     cell: ({ row }) => {
       const value: string = row.getValue("id");
@@ -92,7 +97,10 @@ export const columns: ExtendedColumnDef<RowUser>[] = [
     accessorKey: "email",
     label: "Email",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title={column.columnDef.label} />
+      <DataTableColumnHeader
+        column={column}
+        title={(column.columnDef as ExtendedColumnDef<RowUser, unknown>).label}
+      />
     ),
     cell: ({ row }) => {
       const value: string = row.getValue("email");
@@ -105,7 +113,10 @@ export const columns: ExtendedColumnDef<RowUser>[] = [
     accessorKey: "name",
     label: "Name",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title={column.columnDef.label} />
+      <DataTableColumnHeader
+        column={column}
+        title={(column.columnDef as ExtendedColumnDef<RowUser, unknown>).label}
+      />
     ),
     cell: ({ row }) => {
       const value: string = row.getValue("name");
@@ -118,7 +129,10 @@ export const columns: ExtendedColumnDef<RowUser>[] = [
     accessorKey: "roles",
     label: "Roles",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title={column.columnDef.label} />
+      <DataTableColumnHeader
+        column={column}
+        title={(column.columnDef as ExtendedColumnDef<RowUser, unknown>).label}
+      />
     ),
     filterFn: (row, id, filterValues) => {
       const aRoles: SpaceRole[] = row.getValue("roles");
@@ -145,7 +159,10 @@ export const columns: ExtendedColumnDef<RowUser>[] = [
     accessorKey: "currentDepartment",
     label: "Department",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title={column.columnDef.label} />
+      <DataTableColumnHeader
+        column={column}
+        title={(column.columnDef as ExtendedColumnDef<RowUser, unknown>).label}
+      />
     ),
     filterFn: (row, id, filterValues) => {
       for (let i = 0; i < filterValues.length; i++) {
@@ -174,7 +191,10 @@ export const columns: ExtendedColumnDef<RowUser>[] = [
     accessorKey: "currentDepartmentPosition",
     label: "Position",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title={column.columnDef.label} />
+      <DataTableColumnHeader
+        column={column}
+        title={(column.columnDef as ExtendedColumnDef<RowUser, unknown>).label}
+      />
     ),
     filterFn: (row, id, filterValues) => {
       for (let i = 0; i < filterValues.length; i++) {

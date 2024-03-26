@@ -7,8 +7,8 @@ import { DataTableViewOptions } from "./DataTableViewOptions";
 
 import { DataTableFacetedFilter } from "./DataTableFacetedFilter";
 import React, { useState, useEffect } from "react";
-import db from "server/db";
-import { ColumnData, Option } from "./DataTableTypes";
+import { ColumnData, Option, RowUser } from "./DataTableTypes";
+import { ExtendedColumnDef } from "./Columns";
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>;
@@ -31,12 +31,12 @@ export function DataTableToolbar<TData>({
   }, []);
 
   const getSelectedRows = () => {
-    const tmp = [];
+    const tmp: TData[] = [];
     table
       .getRowModel()
       .rows.filter((row) => row.getIsSelected())
       .map((row) => {
-        tmp.push(row._valuesCache);
+        tmp.push(row._valuesCache as TData);
       });
     return tmp;
   };
@@ -48,7 +48,7 @@ export function DataTableToolbar<TData>({
         style={{ maxWidth: "100%" }}
       >
         <Input
-          placeholder={`Filter ${table.getColumn("email")?.columnDef.label}...`}
+          placeholder={`Filter ${(table.getColumn("email")?.columnDef as ExtendedColumnDef<RowUser, unknown>).label}...`}
           value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
             table.getColumn("email")?.setFilterValue(event.target.value)
@@ -56,7 +56,7 @@ export function DataTableToolbar<TData>({
           className="h-8 w-full sm:w-[150px] lg:w-[250px]"
         />
         <Input
-          placeholder={`Filter ${table.getColumn("name")?.columnDef.label}...`}
+          placeholder={`Filter ${(table.getColumn("name")?.columnDef as ExtendedColumnDef<RowUser, unknown>).label}...`}
           value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
             table.getColumn("name")?.setFilterValue(event.target.value)
@@ -66,24 +66,48 @@ export function DataTableToolbar<TData>({
         {table.getColumn("roles") && (
           <DataTableFacetedFilter
             column={table.getColumn("roles")}
-            title={table.getColumn("roles")?.columnDef.label}
-            options={roles}
+            title={
+              (
+                table.getColumn("roles")?.columnDef as ExtendedColumnDef<
+                  RowUser,
+                  unknown
+                >
+              ).label
+            }
+            options={roles.map((role) => ({
+              label: String(role),
+              value: String(role),
+            }))}
           />
         )}
         {table.getColumn("currentDepartment") && (
           <DataTableFacetedFilter
             column={table.getColumn("currentDepartment")}
-            title={table.getColumn("currentDepartment")?.columnDef.label}
-            options={departments}
+            title={
+              (
+                table.getColumn("currentDepartment")
+                  ?.columnDef as ExtendedColumnDef<RowUser, unknown>
+              ).label
+            }
+            options={departments.map((department) => ({
+              label: String(department),
+              value: String(department),
+            }))}
           />
         )}
         {table.getColumn("currentDepartmentPosition") && (
           <DataTableFacetedFilter
             column={table.getColumn("currentDepartmentPosition")}
             title={
-              table.getColumn("currentDepartmentPosition")?.columnDef.label
+              (
+                table.getColumn("currentDepartmentPosition")
+                  ?.columnDef as ExtendedColumnDef<RowUser, unknown>
+              ).label
             }
-            options={positions}
+            options={positions.map((position) => ({
+              label: String(position),
+              value: String(position),
+            }))}
           />
         )}
         {isFiltered && (
