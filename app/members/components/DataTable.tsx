@@ -1,6 +1,9 @@
+"use client";
+
 import * as React from "react";
 import {
   ColumnFiltersState,
+  Row,
   SortingState,
   VisibilityState,
   flexRender,
@@ -21,13 +24,17 @@ import {
   TableHeader,
   TableRow,
 } from "@components/ui/table";
-import { columns } from "./Columns";
-import LoadingWheel from "@components/LoadingWheel";
-import db from "server/db";
-import { RowUser } from "./DataUser";
 
-export function DataTable() {
-  const [data, setData] = React.useState<RowUser[]>([]);
+import { columns } from "./Columns";
+import { RowUser, ColumnData } from "./DataTableTypes";
+
+interface DataTableProps {
+  rowData: RowUser[];
+  columnData: ColumnData;
+}
+
+export function DataTable({ rowData, columnData }: DataTableProps) {
+  const [data, setData] = React.useState(rowData);
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     [],
@@ -36,47 +43,6 @@ export function DataTable() {
     React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
   const [error, setError] = React.useState("");
-  const [loading, setLoading] = React.useState(true);
-
-  React.useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const users = await db.user.findMany({
-          include: {
-            departmentMemberships: {
-              include: {
-                department: true,
-              },
-            },
-          },
-        });
-
-        const profiles: RowUser[] = users.map((user) => {
-          return {
-            id: user.id,
-            name: user.name || "",
-            email: user.email,
-            role: user.roles,
-            currentDepartment:
-              user.departmentMemberships[0]?.department?.name || "",
-            currentDepartmentPosition:
-              user.departmentMemberships[0]?.role || "",
-          };
-        });
-
-        setData(profiles);
-      } catch (error: any) {
-        if (error.response && error.response.status === 403) {
-          setError("Not allowed");
-        } else {
-          setError("Something went wrong");
-        }
-      }
-    };
-
-    fetchData();
-    setLoading(false);
-  }, []);
 
   const table = useReactTable({
     data,
@@ -99,7 +65,7 @@ export function DataTable() {
 
   return (
     <div className="space-y-4">
-      <DataTableToolbar table={table} tableData={data} />
+      <DataTableToolbar table={table} columnData={columnData} />
       <div className="rounded-md border">
         <Table>
           <TableHeader>
@@ -143,11 +109,7 @@ export function DataTable() {
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  {loading ? (
-                    <div className="flex items-center justify-center space-x-2">
-                      <LoadingWheel />
-                    </div>
-                  ) : !error ? (
+                  {!error ? (
                     <div className="flex items-center justify-center space-x-2">
                       <p className="text-sm text-slate-400">No data found.</p>
                     </div>
