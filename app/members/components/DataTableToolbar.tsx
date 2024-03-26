@@ -28,18 +28,19 @@ export function DataTableToolbar<TData>({
     setDepartments(columnData.departments);
     setRoles(columnData.roles);
     setPositions(columnData.positions);
-  }, []);
+  }, [columnData.departments, columnData.positions, columnData.roles]);
 
-  const getSelectedRows = () => {
-    const tmp: TData[] = [];
-    table
-      .getRowModel()
-      .rows.filter((row) => row.getIsSelected())
-      .map((row) => {
-        tmp.push(row._valuesCache as TData);
-      });
-    return tmp;
-  };
+  // Remove the unused getSelectedRows function
+  // const getSelectedRows = () => {
+  //   const tmp: TData[] = [];
+  //   table
+  //     .getRowModel()
+  //     .rows.filter((row) => row.getIsSelected())
+  //     .map((row) => {
+  //       tmp.push(row._valuesCache as TData);
+  //     });
+  //   return tmp;
+  // };
 
   return (
     <div className="flex flex-col items-center justify-between gap-2 sm:flex-row">
@@ -75,8 +76,8 @@ export function DataTableToolbar<TData>({
               ).label
             }
             options={roles.map((role) => ({
-              label: String(role),
-              value: String(role),
+              label: String(role.label),
+              value: String(role.value),
             }))}
           />
         )}
@@ -90,8 +91,8 @@ export function DataTableToolbar<TData>({
               ).label
             }
             options={departments.map((department) => ({
-              label: String(department),
-              value: String(department),
+              label: String(department.label),
+              value: String(department.value),
             }))}
           />
         )}
@@ -105,8 +106,8 @@ export function DataTableToolbar<TData>({
               ).label
             }
             options={positions.map((position) => ({
-              label: String(position),
-              value: String(position),
+              label: String(position.label),
+              value: String(position.value),
             }))}
           />
         )}

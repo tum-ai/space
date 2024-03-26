@@ -12,7 +12,7 @@ import {
   DropdownMenuTrigger,
 } from "@components/ui/dropdown-menu";
 import { DataTableColumnHeader } from "./DataTabelHeader";
-import { SpaceRole, User } from "@prisma/client";
+import { SpaceRole } from "@prisma/client";
 import { Avatar, AvatarFallback, AvatarImage } from "@components/ui/avatar";
 import { RowUser } from "./DataTableTypes";
 
@@ -57,8 +57,6 @@ export const columns: ExtendedColumnDef<RowUser, unknown>[] = [
     cell: ({ row }) => {
       const value: string = row.getValue("image");
       const nameValue: string = row.getValue("name");
-
-      console.log(value);
 
       if (!nameValue) {
         return;
@@ -134,16 +132,15 @@ export const columns: ExtendedColumnDef<RowUser, unknown>[] = [
         title={(column.columnDef as ExtendedColumnDef<RowUser, unknown>).label}
       />
     ),
-    filterFn: (row, id, filterValues) => {
+    filterFn: (row, id, filterValues: string[]) => {
       const aRoles: SpaceRole[] = row.getValue("roles");
-      for (let i = 0; i < filterValues.length; i++) {
-        const filterValue = filterValues[i].toLowerCase();
+      for (const filterValue of filterValues) {
+        const lowercaseFilterValue: string = filterValue.toLowerCase();
         if (!aRoles) {
           return false;
         }
-        for (let j = 0; j < aRoles.length; j++) {
-          const role = aRoles[j];
-          if (String(role).toLowerCase().includes(filterValue)) {
+        for (const role of aRoles) {
+          if (String(role).toLowerCase().includes(lowercaseFilterValue)) {
             return true;
           }
         }
@@ -165,14 +162,12 @@ export const columns: ExtendedColumnDef<RowUser, unknown>[] = [
       />
     ),
     filterFn: (row, id, filterValues) => {
-      for (let i = 0; i < filterValues.length; i++) {
+      for (const filterValue of filterValues) {
         const rowValue = row.getValue("currentDepartment");
 
         if (!rowValue) {
           return false;
         }
-
-        const filterValue = filterValues[i];
 
         if (rowValue === filterValue) {
           return true;
@@ -196,13 +191,12 @@ export const columns: ExtendedColumnDef<RowUser, unknown>[] = [
         title={(column.columnDef as ExtendedColumnDef<RowUser, unknown>).label}
       />
     ),
-    filterFn: (row, id, filterValues) => {
-      for (let i = 0; i < filterValues.length; i++) {
-        const filterValue = filterValues[i].toLowerCase();
+    filterFn: (row, id, filterValues: string[]) => {
+      for (const filterValue of filterValues) {
         if (
           String(row.getValue("currentDepartmentPosition"))
             .toLowerCase()
-            .includes(filterValue)
+            .includes(filterValue.toLowerCase())
         ) {
           return true;
         }
@@ -242,7 +236,9 @@ export const columns: ExtendedColumnDef<RowUser, unknown>[] = [
                   if (!profil.email) {
                     return;
                   }
-                  navigator.clipboard.writeText(profil.email);
+                  navigator.clipboard.writeText(profil.email).catch((error) => {
+                    console.error("Error copying email:", error);
+                  });
                 }}
               >
                 Copy Email

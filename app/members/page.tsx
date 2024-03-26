@@ -1,16 +1,15 @@
-import { Metadata } from "next";
-
 import { DataTable } from "./components/DataTable";
 import { RowUser } from "./components/DataTableTypes";
 import db from "server/db";
 import { DepartmentRole, SpaceRole } from "@prisma/client";
-
-export const metadata: Metadata = {
-  title: "Members",
-  description: "A task and issue tracker build using Tanstack Table.",
-};
+import { getServerAuthSession } from "server/auth";
+import { redirect } from "next/navigation";
 
 export default async function MembersPage() {
+  const session = await getServerAuthSession();
+  const userId = session?.user.id;
+  if (!userId) redirect("/auth");
+
   const users = await db.user.findMany({
     include: {
       departmentMemberships: {
@@ -24,12 +23,12 @@ export default async function MembersPage() {
   const profiles: RowUser[] = users.map((user) => {
     return {
       id: user.id,
-      name: user.name || "",
+      name: user.name ?? "",
       email: user.email,
       roles: user.roles,
-      image: user.image || undefined,
-      currentDepartment: user.departmentMemberships[0]?.department?.name || "",
-      currentDepartmentPosition: user.departmentMemberships[0]?.role || "",
+      image: user.image ?? undefined,
+      currentDepartment: user.departmentMemberships[0]?.department?.name ?? "",
+      currentDepartmentPosition: user.departmentMemberships[0]?.role ?? "",
     };
   });
 

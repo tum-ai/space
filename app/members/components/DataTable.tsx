@@ -3,7 +3,6 @@
 import * as React from "react";
 import {
   ColumnFiltersState,
-  Row,
   SortingState,
   VisibilityState,
   flexRender,
@@ -34,7 +33,7 @@ interface DataTableProps {
 }
 
 export function DataTable({ rowData, columnData }: DataTableProps) {
-  const [data, setData] = React.useState(rowData);
+  const [data] = React.useState(rowData);
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     [],
@@ -42,7 +41,7 @@ export function DataTable({ rowData, columnData }: DataTableProps) {
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
-  const [error, setError] = React.useState("");
+  const [error] = React.useState("");
 
   const table = useReactTable({
     data,

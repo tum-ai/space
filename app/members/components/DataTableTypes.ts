@@ -1,11 +1,11 @@
 import { SpaceRole } from "@prisma/client";
 
-export type Option = {
+export interface Option {
   label: string | number;
   value: string | number;
-};
+}
 
-export type RowUser = {
+export interface RowUser {
   id: string;
   name: string;
   email: string;
@@ -13,10 +13,10 @@ export type RowUser = {
   roles: SpaceRole[];
   currentDepartment: string;
   currentDepartmentPosition: string;
-};
+}
 
-export type ColumnData = {
+export interface ColumnData {
   departments: Option[];
   roles: Option[];
   positions: Option[];
-};
+}
