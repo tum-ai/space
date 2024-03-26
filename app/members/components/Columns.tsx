@@ -55,9 +55,8 @@ export const columns: ExtendedColumnDef<RowUser>[] = [
     cell: ({ row }) => {
       const value: string = row.getValue("image");
       const nameValue: string = row.getValue("name");
-      if (value === undefined) {
-        console.error("No image found in user");
-      }
+
+      console.log(value);
 
       if (!nameValue) {
         return;
@@ -97,9 +96,6 @@ export const columns: ExtendedColumnDef<RowUser>[] = [
     ),
     cell: ({ row }) => {
       const value: string = row.getValue("email");
-      if (value === undefined) {
-        console.error("No email found in user");
-      }
       return (
         <div className="lowercase">{value ? value.replace(/_/g, " ") : ""}</div>
       );
@@ -113,9 +109,6 @@ export const columns: ExtendedColumnDef<RowUser>[] = [
     ),
     cell: ({ row }) => {
       const value: string = row.getValue("name");
-      if (value === undefined) {
-        console.error("No name found in user");
-      }
       return (
         <div className="lowercase">{value ? value.replace(/_/g, " ") : ""}</div>
       );
@@ -145,9 +138,6 @@ export const columns: ExtendedColumnDef<RowUser>[] = [
     },
     cell: ({ row }) => {
       const value: string[] = row.getValue("roles");
-      if (value === undefined) {
-        console.error("No roles found in user");
-      }
       return <div className="lowercase">{value ? value.join(", ") : ""}</div>;
     },
   },
@@ -175,9 +165,6 @@ export const columns: ExtendedColumnDef<RowUser>[] = [
     },
     cell: ({ row }) => {
       const value: string = row.getValue("currentDepartment");
-      if (value === undefined) {
-        console.error("No department found in user");
-      }
       return (
         <div className="lowercase">{value ? value.replace(/_/g, " ") : ""}</div>
       );

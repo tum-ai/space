@@ -8,20 +8,16 @@ import { DataTableViewOptions } from "./DataTableViewOptions";
 import { DataTableFacetedFilter } from "./DataTableFacetedFilter";
 import React, { useState, useEffect } from "react";
 import db from "server/db";
-import { DepartmentRole, SpaceRole } from ".prisma/client";
+import { ColumnData, Option } from "./DataUser";
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>;
-  tableData: object;
+  columnData: ColumnData;
 }
-
-type Option = {
-  label: string;
-  value: string;
-};
 
 export function DataTableToolbar<TData>({
   table,
+  columnData,
 }: DataTableToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0;
   const [departments, setDepartments] = useState<Option[]>([]);
@@ -29,29 +25,9 @@ export function DataTableToolbar<TData>({
   const [positions, setPositions] = useState<Option[]>([]);
 
   useEffect(() => {
-    const fetchData = async () => {
-      const departments = await db.department.findMany();
-      const roles = SpaceRole;
-      const positions = DepartmentRole;
-
-      const toLabelValue = (name: string) => ({
-        label:
-          name.charAt(0).toUpperCase() +
-          name.slice(1).toLowerCase().replace("_", " "),
-        value: name,
-      });
-
-      setDepartments(
-        departments.map((department) => toLabelValue(department.name)),
-      );
-      setRoles(
-        Object.entries(roles).map(([key, value]) => toLabelValue(value)),
-      );
-      setPositions(
-        Object.entries(positions).map(([key, value]) => toLabelValue(value)),
-      );
-    };
-    fetchData();
+    setDepartments(columnData.departments);
+    setRoles(columnData.roles);
+    setPositions(columnData.positions);
   }, []);
 
   const getSelectedRows = () => {
