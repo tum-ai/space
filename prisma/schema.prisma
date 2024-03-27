@@ -54,8 +54,8 @@ model User {
   profile               Profile[]
   session               Session[]
   opportunityAdmin      Opportunity[]
-  Questionnaires        Questionnaire[]
-  Key                   Key[]
+  questionnaires        Questionnaire[]
+  key                   Key[]
 }
 
 model Profile {
