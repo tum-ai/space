@@ -66,7 +66,6 @@ CREATE TABLE "Profile" (
     "degreeSemester" INTEGER,
     "degreeLastUpdate" TIMESTAMP(3),
     "university" TEXT,
-    "profilePicture" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "userId" TEXT NOT NULL,
@@ -173,6 +172,17 @@ CREATE TABLE "Review" (
 );
 
 -- CreateTable
+CREATE TABLE "Key" (
+    "id" SERIAL NOT NULL,
+    "log" JSONB NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "userId" TEXT NOT NULL,
+
+    CONSTRAINT "Key_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "_QuestionnaireToUser" (
     "A" TEXT NOT NULL,
     "B" TEXT NOT NULL
@@ -197,7 +207,7 @@ CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 CREATE UNIQUE INDEX "Contact_username_key" ON "Contact"("username");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Review_reviewId_assigneeId_key" ON "Review"("reviewId", "assigneeId");
+CREATE UNIQUE INDEX "Review_reviewId_assigneeId_questionnaireId_key" ON "Review"("reviewId", "assigneeId", "questionnaireId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "_QuestionnaireToUser_AB_unique" ON "_QuestionnaireToUser"("A", "B");
@@ -251,6 +261,9 @@ ALTER TABLE "Review" ADD CONSTRAINT "Review_reviewId_fkey" FOREIGN KEY ("reviewI
 ALTER TABLE "Review" ADD CONSTRAINT "Review_questionnaireId_fkey" FOREIGN KEY ("questionnaireId") REFERENCES "Questionnaire"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "Key" ADD CONSTRAINT "Key_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "_QuestionnaireToUser" ADD CONSTRAINT "_QuestionnaireToUser_A_fkey" FOREIGN KEY ("A") REFERENCES "Questionnaire"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
@@ -261,3 +274,4 @@ ALTER TABLE "_ApplicationToQuestionnaire" ADD CONSTRAINT "_ApplicationToQuestion
 
 -- AddForeignKey
 ALTER TABLE "_ApplicationToQuestionnaire" ADD CONSTRAINT "_ApplicationToQuestionnaire_B_fkey" FOREIGN KEY ("B") REFERENCES "Questionnaire"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
