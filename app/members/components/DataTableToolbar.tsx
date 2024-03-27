@@ -75,8 +75,8 @@ export function DataTableToolbar<TData>({
               ).label
             }
             options={roles.map((role) => ({
-              label: String(role),
-              value: String(role),
+              label: String(role.label),
+              value: String(role.value),
             }))}
           />
         )}
@@ -90,8 +90,8 @@ export function DataTableToolbar<TData>({
               ).label
             }
             options={departments.map((department) => ({
-              label: String(department),
-              value: String(department),
+              label: String(department.label),
+              value: String(department.value),
             }))}
           />
         )}
@@ -105,8 +105,8 @@ export function DataTableToolbar<TData>({
               ).label
             }
             options={positions.map((position) => ({
-              label: String(position),
-              value: String(position),
+              label: String(position.label),
+              value: String(position.value),
             }))}
           />
         )}
