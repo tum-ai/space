@@ -4,6 +4,7 @@ import { env } from "env.mjs";
 import { createHmac } from "crypto";
 import { NextResponse } from "next/server";
 import { Tally, TallyField } from "@lib/types/tally";
+import { Questionnaire } from "@lib/types/questionnaire";
 
 export async function POST(
   req: Request,
@@ -47,10 +48,12 @@ export async function POST(
             .filter((questionnaire) => {
               if (
                 !questionnaire.conditions ||
-                (questionnaire.conditions as any[]).length === 0
+                (questionnaire.conditions as Questionnaire["conditions"][])
+                  .length === 0
               ) {
                 return true;
               }
+
               for (const condition of questionnaire.conditions as Pick<
                 TallyField,
                 "key" | "value"
@@ -98,6 +101,7 @@ function isSignatureValidated(req: Request, webhookPayload: Tally): boolean {
   return receivedSignature === calculatedSignature;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function isArrayofStrings(value: any): value is string[] {
   return (
     Array.isArray(value) && value.every((item) => typeof item === "string")

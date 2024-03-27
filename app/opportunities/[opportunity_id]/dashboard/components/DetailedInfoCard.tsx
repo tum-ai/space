@@ -1,5 +1,12 @@
 import { Card, CardFooter, CardHeader, CardContent } from "@components/ui/card";
-export default function DetailedInfoCard(props: any) {
+interface Props {
+  title: string;
+  data: string;
+  growthInPercent: number;
+  children: React.ReactNode;
+}
+
+export default function DetailedInfoCard(props: Props) {
   return (
     <Card className="flex flex-col">
       <CardHeader>
