@@ -9,6 +9,7 @@ import {
 } from "@components/ui/select";
 import {
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -117,6 +118,35 @@ export const QuestionField = ({ index, question }: QuestionFieldProps) => {
           ))}
           <FormMessage />
         </FormItem>
+      );
+    }
+    case "NUMERIC": {
+      return (
+        <FormField
+          key={question.key}
+          control={form.control}
+          name={`${index}`}
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>{question.label}</FormLabel>
+              <FormControl>
+                <Input
+                  {...field}
+                  type="number"
+                  onChange={(e) => {
+                    const value =
+                      e.target.value === "" ? null : Number(e.target.value);
+                    field.onChange(value);
+                  }}
+                />
+              </FormControl>
+              <FormDescription>
+                {" "}
+                Min: {question.options.min} Max: {question.options.max}
+              </FormDescription>
+            </FormItem>
+          )}
+        />
       );
     }
   }
