@@ -20,11 +20,9 @@ import { Copy } from "lucide-react";
 import { useFormContext } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
-import { ApplicationField } from "@components/application/applicationField";
 import { api } from "trpc/react";
 import { Tally } from "@lib/types/tally";
 import LoadingWheel from "@components/LoadingWheel";
-import { ConditionPopover } from "./conditionalPopover";
 import { TallyFieldForm } from "./tallyFieldForm";
 
 export const TallyForm = () => {
