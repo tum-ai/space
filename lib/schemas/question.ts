@@ -1,13 +1,15 @@
 import { z } from "zod";
 
+export const ArrayOptionsSchema = z.array(
+  z.object({
+    id: z.string().uuid(),
+    text: z.string(),
+  }),
+);
+
 export const CheckboxesSchema = z.object({
   type: z.literal("CHECKBOXES"),
-  options: z.array(
-    z.object({
-      id: z.string().uuid(),
-      text: z.string(),
-    }),
-  ),
+  options: ArrayOptionsSchema,
   value: z.string().array().optional(),
 });
 
@@ -18,12 +20,7 @@ export const InputTextSchema = z.object({
 
 export const DropdownSchema = z.object({
   type: z.literal("DROPDOWN"),
-  options: z.array(
-    z.object({
-      id: z.string().uuid(),
-      text: z.string(),
-    }),
-  ),
+  options: ArrayOptionsSchema,
   value: z.string().optional(),
 });
 
@@ -54,5 +51,12 @@ export const QuestionSchema = z
       NumericSchema,
     ]),
   );
+
+export function isArrayOptions(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  options: any,
+): options is z.infer<typeof ArrayOptionsSchema> {
+  return ArrayOptionsSchema.safeParse(options).success;
+}
 
 export type Question = z.infer<typeof QuestionSchema>;

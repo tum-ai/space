@@ -30,7 +30,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@components/ui/select";
-import { QuestionSchema } from "@lib/schemas/question";
+import {
+  ArrayOptionsSchema,
+  QuestionSchema,
+  isArrayOptions,
+} from "@lib/schemas/question";
 import { useState } from "react";
 import { Minus, Plus, Save, X } from "lucide-react";
 import { toast } from "sonner";
@@ -145,7 +149,13 @@ export const QuestionDialog = ({
 };
 
 const ChoiceOptions = () => {
-  const questionForm = useFormContext<z.infer<typeof QuestionSchema>>();
+  // Helper type to assert typescript, that the question has array options
+  type QuestionWithArrayOptions = z.infer<typeof QuestionSchema> & {
+    options: z.infer<typeof ArrayOptionsSchema>;
+  };
+
+  const questionForm = useFormContext<QuestionWithArrayOptions>();
+
   const {
     fields: options,
     append,
@@ -156,6 +166,11 @@ const ChoiceOptions = () => {
   });
 
   const [optionName, setOptionName] = useState("");
+
+  if (!isArrayOptions(options)) {
+    console.error("Question doesn't contain array options");
+    return null;
+  }
 
   return (
     <div className="space-y-2">

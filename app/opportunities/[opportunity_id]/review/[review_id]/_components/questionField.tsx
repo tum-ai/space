@@ -91,6 +91,8 @@ export const QuestionField = ({ index, question }: QuestionFieldProps) => {
               control={form.control}
               name={`${index}`}
               render={({ field }) => {
+                // Since we are in the checkbox context, we can assert that the value is a string array
+                const fieldValue = field.value as string[];
                 return (
                   <FormItem
                     key={item.id}
@@ -98,10 +100,10 @@ export const QuestionField = ({ index, question }: QuestionFieldProps) => {
                   >
                     <FormControl>
                       <Checkbox
-                        checked={field.value?.includes(item.id)}
+                        checked={fieldValue?.includes(item.id)}
                         onCheckedChange={(checked) => {
                           return checked
-                            ? field.onChange([...(field.value ?? []), item.id])
+                            ? field.onChange([...(fieldValue ?? []), item.id])
                             : field.onChange(
                                 (field.value as string[])?.filter(
                                   (value) => value !== item.id,
