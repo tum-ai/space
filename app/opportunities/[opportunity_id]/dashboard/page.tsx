@@ -88,21 +88,21 @@ export default async function Dashboard({
           <div className="grid grid-cols-3 gap-4">
             <DetailedInfoCard
               title="Total Applicants"
-              data={420}
+              data="420"
               growthInPercent={10}
             >
               <PersonIcon className="h-10 w-10" />
             </DetailedInfoCard>
             <DetailedInfoCard
               title="Total Applicants"
-              data={420}
+              data="420"
               growthInPercent={10}
             >
               <PersonIcon className="h-10 w-10" />
             </DetailedInfoCard>
             <DetailedInfoCard
               title="Total Applicants"
-              data={420}
+              data="420"
               growthInPercent={10}
             >
               <PersonIcon className="h-10 w-10" />
@@ -128,12 +128,8 @@ export default async function Dashboard({
             </div>
             <div className="grid grid-cols-6 gap-4">
               <div className="col-span-1 flex flex-col gap-4">
-                <ClickableInfoCard
-                  data={30}
-                  description={"Screeners"}
-                  dark={true}
-                />
-                <ClickableInfoCard data={30} description={"Screeners"} />
+                <ClickableInfoCard data="30" description={"Screeners"} />
+                <ClickableInfoCard data="30" description={"Screeners"} />
               </div>
               <div className="col-span-5">
                 <Card className="h-full" />
