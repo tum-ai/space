@@ -6,6 +6,9 @@ import { Form } from "@components/ui/form";
 import { useForm } from "react-hook-form";
 import { Tally } from "@lib/types/tally";
 import { Card, CardContent, CardHeader, CardTitle } from "@components/ui/card";
+import { Button } from "@components/ui/button";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import Link from "next/link";
 
 interface ApplicationFormProps {
   application: Application;
@@ -19,10 +22,25 @@ const ApplicationForm = ({ application }: ApplicationFormProps) => {
     <Form {...form}>
       <Card>
         <CardHeader>
-          <CardTitle>
+          <CardTitle className="flex justify-between">
             <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
               Application Content
             </h3>
+            <div className="flex gap-2">
+              <Button asChild variant="secondary">
+                <Link href={`${application.id - 1}`}>
+                  <ChevronLeft />
+                  Prev
+                </Link>
+              </Button>
+
+              <Button asChild variant="secondary">
+                <Link href={`${application.id + 1}`}>
+                  Next
+                  <ChevronRight />
+                </Link>
+              </Button>
+            </div>
           </CardTitle>
         </CardHeader>
         <CardContent className="h-[80vh] overflow-y-auto">
