@@ -6,6 +6,7 @@ import { columns } from "./columns";
 import { Rabbit } from "lucide-react";
 import { Button } from "@components/ui/button";
 import Link from "next/link";
+import { ExportButton } from "@components/application/exportButton";
 
 interface ApplicationsOverviewPageProps {
   params: {
@@ -47,10 +48,17 @@ export default async function OpportunityOverviewPage({
     return (
       <div className="space-y-8 p-8">
         <div className="flex justify-between">
-          <div>
+          <div className="flex w-full flex-row items-center justify-between">
             <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
               Applications for {opportunity?.title}
             </h1>
+            <ExportButton
+              opportunityId={Number(params.opportunity_id)}
+              opportunityTitle={
+                opportunity?.title ??
+                `TUM.ai Opportunity ${params.opportunity_id}`
+              }
+            ></ExportButton>
           </div>
         </div>
 
