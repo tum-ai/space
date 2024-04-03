@@ -9,6 +9,7 @@ import {
 } from "@components/ui/select";
 import {
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -90,6 +91,8 @@ export const QuestionField = ({ index, question }: QuestionFieldProps) => {
               control={form.control}
               name={`${index}`}
               render={({ field }) => {
+                // Since we are in the checkbox context, we can assert that the value is a string array
+                const fieldValue = field.value as string[];
                 return (
                   <FormItem
                     key={item.id}
@@ -97,10 +100,10 @@ export const QuestionField = ({ index, question }: QuestionFieldProps) => {
                   >
                     <FormControl>
                       <Checkbox
-                        checked={field.value?.includes(item.id)}
+                        checked={fieldValue?.includes(item.id)}
                         onCheckedChange={(checked) => {
                           return checked
-                            ? field.onChange([...(field.value ?? []), item.id])
+                            ? field.onChange([...(fieldValue ?? []), item.id])
                             : field.onChange(
                                 (field.value as string[])?.filter(
                                   (value) => value !== item.id,
@@ -117,6 +120,35 @@ export const QuestionField = ({ index, question }: QuestionFieldProps) => {
           ))}
           <FormMessage />
         </FormItem>
+      );
+    }
+    case "NUMERIC": {
+      return (
+        <FormField
+          key={question.key}
+          control={form.control}
+          name={`${index}`}
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>{question.label}</FormLabel>
+              <FormControl>
+                <Input
+                  {...field}
+                  type="number"
+                  onChange={(e) => {
+                    const value =
+                      e.target.value === "" ? null : Number(e.target.value);
+                    field.onChange(value);
+                  }}
+                />
+              </FormControl>
+              <FormDescription>
+                {" "}
+                Min: {question.options.min} Max: {question.options.max}
+              </FormDescription>
+            </FormItem>
+          )}
+        />
       );
     }
   }

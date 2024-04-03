@@ -30,7 +30,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@components/ui/select";
-import { QuestionSchema } from "@lib/schemas/question";
+import {
+  ArrayOptionsSchema,
+  QuestionSchema,
+  isArrayOptions,
+} from "@lib/schemas/question";
 import { useState } from "react";
 import { Minus, Plus, Save, X } from "lucide-react";
 import { toast } from "sonner";
@@ -95,6 +99,7 @@ export const QuestionDialog = ({
                       <SelectItem value="INPUT_TEXT">Input text</SelectItem>
                       <SelectItem value="DROPDOWN">Dropdown</SelectItem>
                       <SelectItem value="CHECKBOXES">Checkboxes</SelectItem>
+                      <SelectItem value="NUMERIC">Numeric</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />
@@ -118,6 +123,7 @@ export const QuestionDialog = ({
 
             {type === "DROPDOWN" && <ChoiceOptions />}
             {type === "CHECKBOXES" && <ChoiceOptions />}
+            {type === "NUMERIC" && <MinMaxOption />}
           </div>
 
           <DialogFooter>
@@ -143,7 +149,13 @@ export const QuestionDialog = ({
 };
 
 const ChoiceOptions = () => {
-  const questionForm = useFormContext<z.infer<typeof QuestionSchema>>();
+  // Helper type to assert typescript, that the question has array options
+  type QuestionWithArrayOptions = z.infer<typeof QuestionSchema> & {
+    options: z.infer<typeof ArrayOptionsSchema>;
+  };
+
+  const questionForm = useFormContext<QuestionWithArrayOptions>();
+
   const {
     fields: options,
     append,
@@ -154,6 +166,11 @@ const ChoiceOptions = () => {
   });
 
   const [optionName, setOptionName] = useState("");
+
+  if (!isArrayOptions(options)) {
+    console.error("Question doesn't contain array options");
+    return null;
+  }
 
   return (
     <div className="space-y-2">
@@ -199,6 +216,64 @@ const ChoiceOptions = () => {
           <Plus />
         </Button>
       </div>
+    </div>
+  );
+};
+
+const MinMaxOption = () => {
+  const questionForm = useFormContext<z.infer<typeof QuestionSchema>>();
+
+  return (
+    <div className="space-y-2">
+      <FormField
+        control={questionForm.control}
+        name="options.min"
+        render={({ field, fieldState }) => (
+          <FormItem>
+            <FormLabel>Min</FormLabel>
+            <FormControl>
+              <Input
+                {...field}
+                type="number"
+                value={field.value}
+                onChange={(e) =>
+                  field.onChange(
+                    e.target.value === "" ? null : Number(e.target.value),
+                  )
+                }
+              />
+            </FormControl>
+            {fieldState.error && (
+              <FormMessage>{fieldState.error.message}</FormMessage>
+            )}
+          </FormItem>
+        )}
+      />
+
+      <FormField
+        control={questionForm.control}
+        name="options.max"
+        render={({ field, fieldState }) => (
+          <FormItem>
+            <FormLabel>Max</FormLabel>
+            <FormControl>
+              <Input
+                {...field}
+                type="number"
+                value={field.value}
+                onChange={(e) =>
+                  field.onChange(
+                    e.target.value === "" ? null : Number(e.target.value),
+                  )
+                }
+              />
+            </FormControl>
+            {fieldState.error && (
+              <FormMessage>{fieldState.error.message}</FormMessage>
+            )}
+          </FormItem>
+        )}
+      />
     </div>
   );
 };
