@@ -61,7 +61,7 @@ export default async function OpportunitiesPage() {
           </div>
         )}
         {!!opportunities.length && (
-          <div className="grid gap-8 md:grid-cols-2 xl:grid-cols-3">
+          <div className="grid gap-8 sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
             {opportunities?.map((item, index) => {
               return (
                 <OpportunityCard

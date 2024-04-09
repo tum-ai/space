@@ -32,7 +32,7 @@ export default function Phase({ index, phase, remove: removePhase }: Props) {
   });
 
   return (
-    <div className="grid min-h-[250px] grid-rows-[3rem,_1fr]">
+    <div className="grid min-h-[250px] grid-rows-[3rem,_1fr] xl:grid-rows-[4rem,_1fr]">
       <div className="flex w-5/6 items-center justify-between">
         <div className="flex items-center space-x-1.5 text-sm font-medium">
           <Badge variant="secondary">{index + 1}</Badge>

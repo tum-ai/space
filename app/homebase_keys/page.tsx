@@ -26,7 +26,7 @@ export default async function HomebaseKeys() {
         </div>
       </div>
 
-      <div className="grid gap-8 xl:grid-cols-2">
+      <div className="grid gap-8 grid-cols-1 xl:grid-cols-2">
         {keys.map((key) => (
           <KeyCard
             key={`key-${key.id}`}

@@ -30,7 +30,7 @@ export function Phases() {
             />
           ))}
 
-          <div className="grid min-h-[250px] grid-rows-[3rem,_1fr]">
+          <div className="grid min-h-[250px] grid-rows-[3rem,_1fr] lg:grid-rows-[4rem,_1fr] xl:grid-rows-[5rem,_1fr]">
             <AddPhasePopover append={append} />
 
             <div>

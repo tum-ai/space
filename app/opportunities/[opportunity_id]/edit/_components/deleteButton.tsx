@@ -76,7 +76,7 @@ export const DeleteButton = ({ title, id }: DeleteButtonProps) => {
               </FormItem>
             )}
           />
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-2 gap-2 xl:grid-col-3">
             <Button asChild variant="outline">
               <DialogClose>Cancel</DialogClose>
             </Button>

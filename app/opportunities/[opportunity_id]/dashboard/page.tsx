@@ -85,7 +85,7 @@ export default async function Dashboard({
           <p>ID: {opportunity.id}</p>
           <p className="mt-5 text-2xl">General Overview</p>
 
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-3 gap-4 sm:grid-cols-2">
             <DetailedInfoCard
               title="Total Applicants"
               data="420"
@@ -113,7 +113,7 @@ export default async function Dashboard({
 
           <div className="flex flex-col gap-4">
             <p className="mt-5 text-2xl">Overview of phases</p>
-            <div className="grid grid-cols-6 gap-4">
+            <div className="grid grid-cols-6 gap-4 sm:grid-cols-5">
               <Select value={selectedPhase}>
                 <SelectTrigger className="w-full">
                   <SelectValue />
@@ -126,7 +126,7 @@ export default async function Dashboard({
               </Select>
               <Button className="col-start-6">Visit</Button>
             </div>
-            <div className="grid grid-cols-6 gap-4">
+            <div className="grid grid-cols-6 gap-4 sm:grid-cols-5">
               <div className="col-span-1 flex flex-col gap-4">
                 <ClickableInfoCard data="30" description={"Screeners"} />
                 <ClickableInfoCard data="30" description={"Screeners"} />

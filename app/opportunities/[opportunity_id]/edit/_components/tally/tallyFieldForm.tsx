@@ -43,7 +43,7 @@ export const TallyFieldForm = ({ field }: Props) => {
   }, [opportunityForm, field.key]);
 
   return (
-    <div key={field.key} className="grid w-full grid-cols-[2.5rem,_1fr] gap-6">
+    <div key={field.key} className="grid w-full grid-cols-[2.5rem,_1fr] gap-6 xl: grid-col-3">
       <div>
         {field.type === "DROPDOWN" && <ConditionPopover field={field} />}
       </div>
