@@ -18,6 +18,7 @@
     "@phosphor-icons/react": "^2.0.15",
     "@prisma/client": "^5.6.0",
     "@radix-ui/colors": "^2.1.0",
+    "@radix-ui/react-alert-dialog": "^1.0.5",
     "@radix-ui/react-avatar": "^1.0.4",
     "@radix-ui/react-checkbox": "^1.0.4",
     "@radix-ui/react-dialog": "^1.0.5",

@@ -13,6 +13,7 @@ import { toast } from "sonner";
 import { Application, Review } from "@prisma/client";
 import { Tally } from "@lib/types/tally";
 import { useRouter } from "next/navigation";
+import { DeleteAlertDialog } from "../components/review-altert-dialog";
 
 interface ReviewFormProps {
   application: Application;
@@ -78,10 +79,20 @@ export const ReviewForm = ({
               <p className="text-muted-foreground">Review a candidate</p>
             </div>
 
-            <Button variant="default" type="submit">
-              <Save className="mr-2" />
-              Save
-            </Button>
+            <div className="flex items-center space-x-4">
+              <Button variant="default" type="submit">
+                <Save className="mr-2" />
+                Save
+              </Button>
+              <Button size="icon" asChild>
+                <div>
+                  <DeleteAlertDialog
+                    inputReviewId={review.id}
+                    inputOpportunityId={application.opportunityId}
+                  />
+                </div>
+              </Button>
+            </div>
           </div>
 
           <div className="grid gap-4 lg:grid-cols-2">
