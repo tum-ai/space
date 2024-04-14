@@ -19,4 +19,13 @@ export const reviewRouter = createTRPCRouter({
         where: { id },
       });
     }),
+  deleteById: protectedProcedure
+    .input(z.object({ id: z.number() }))
+    .mutation(async ({ input, ctx }) => {
+      return await ctx.db.review.delete({
+        where: {
+          id: input.id,
+        },
+      });
+    }),
 });
