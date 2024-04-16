@@ -9,7 +9,7 @@ import { Button } from "@components/ui/button";
 import { Separator } from "@components/ui/separator";
 import { z } from "zod";
 import { OpportunitySchema, PhaseSchema } from "@lib/schemas/opportunity";
-import { Plus, X } from "lucide-react";
+import { GripVertical, Plus, X } from "lucide-react";
 import { QuestionnaireDialog } from "../questionnaire/questionnaireDialog";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
@@ -44,13 +44,7 @@ export default function Phase({ index, phase, remove: removePhase }: Props) {
   };
 
   return (
-    <div
-      className="grid min-h-[250px] grid-rows-[3rem,_1fr]"
-      ref={setNodeRef}
-      style={style}
-      {...attributes}
-      {...listeners}
-    >
+    <div className="grid min-h-[250px] grid-rows-[3rem,_1fr]" style={style}>
       <div className="flex w-5/6 items-center justify-between">
         <div className="flex items-center space-x-1.5 text-sm font-medium">
           <Badge variant="secondary">{index + 1}</Badge>
@@ -58,9 +52,23 @@ export default function Phase({ index, phase, remove: removePhase }: Props) {
             {phase.name}
           </h4>
         </div>
-        <Button onClick={() => removePhase(index)} size="icon" variant="ghost">
-          <X />
-        </Button>
+        <div className="flex items-center">
+          <Button
+            onClick={() => removePhase(index)}
+            size="icon"
+            variant="ghost"
+          >
+            <X color="gray" />
+          </Button>
+          {/* Div required for typescript */}
+          <div ref={setNodeRef}>
+            <GripVertical
+              {...attributes}
+              {...listeners}
+              color="gray"
+            ></GripVertical>
+          </div>
+        </div>
       </div>
       <div>
         <Separator />
