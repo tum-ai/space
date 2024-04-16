@@ -14,7 +14,6 @@ import {
 } from "@dnd-kit/core";
 import {
   SortableContext,
-  verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 
 export function Phases() {
@@ -33,7 +32,12 @@ export function Phases() {
       return;
     }
 
-    return move(active.id as number, over.id as number);
+    const positionActivePhase = fields.findIndex(
+      (phase) => phase.id === active.id,
+    );
+    const positionOverPhase = fields.findIndex((phase) => phase.id === over.id);
+
+    return move(positionActivePhase, positionOverPhase);
   }
 
   return (
@@ -49,10 +53,7 @@ export function Phases() {
           onDragEnd={handleDragEnd}
         >
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 sm:gap-x-0 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-            <SortableContext
-              items={fields.map((_, index) => index)}
-              strategy={verticalListSortingStrategy}
-            >
+            <SortableContext items={fields.map((phase) => phase.id)}>
               {fields.map((phase, index) => (
                 <Phase
                   key={phase.name}

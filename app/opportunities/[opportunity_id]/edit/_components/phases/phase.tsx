@@ -35,7 +35,13 @@ export default function Phase({ index, phase, remove: removePhase }: Props) {
 
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({
-      id: index,
+      id:
+        phase.id ??
+        (() => {
+          // phase id can theoretically be optional
+          console.warn("No phase id found");
+          return "placeholder_id";
+        })(),
     });
 
   const style = {
@@ -45,7 +51,7 @@ export default function Phase({ index, phase, remove: removePhase }: Props) {
 
   return (
     <div className="grid min-h-[250px] grid-rows-[3rem,_1fr]" style={style}>
-      <div className="flex w-5/6 items-center justify-between">
+      <div className="flex w-4/5 items-center justify-between">
         <div className="flex items-center space-x-1.5 text-sm font-medium">
           <Badge variant="secondary">{index + 1}</Badge>
           <h4 className="scroll-m-20 text-xl font-semibold tracking-tight">
