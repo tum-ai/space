@@ -11,6 +11,8 @@ import { z } from "zod";
 import { OpportunitySchema, PhaseSchema } from "@lib/schemas/opportunity";
 import { Plus, X } from "lucide-react";
 import { QuestionnaireDialog } from "../questionnaire/questionnaireDialog";
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 
 interface Props {
   index: number;
@@ -31,8 +33,24 @@ export default function Phase({ index, phase, remove: removePhase }: Props) {
     name: `phases.${index}.questionnaires`,
   });
 
+  const { attributes, listeners, setNodeRef, transform, transition } =
+    useSortable({
+      id: index,
+    });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition: transition,
+  };
+
   return (
-    <div className="grid min-h-[250px] grid-rows-[3rem,_1fr]">
+    <div
+      className="grid min-h-[250px] grid-rows-[3rem,_1fr]"
+      ref={setNodeRef}
+      style={style}
+      {...attributes}
+      {...listeners}
+    >
       <div className="flex w-5/6 items-center justify-between">
         <div className="flex items-center space-x-1.5 text-sm font-medium">
           <Badge variant="secondary">{index + 1}</Badge>
