@@ -6,7 +6,8 @@ import { columns } from "./columns";
 import { Rabbit } from "lucide-react";
 import { Button } from "@components/ui/button";
 import Link from "next/link";
-import { ExportButton } from "@components/application/exportButton";
+import { ExportButton } from "./_components/exportButton";
+import { AssignQuestionnaireButton } from "./_components/assignQuestionnaireButton";
 
 interface ApplicationsOverviewPageProps {
   params: {
@@ -52,13 +53,18 @@ export default async function OpportunityOverviewPage({
             <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
               Applications for {opportunity?.title}
             </h1>
-            <ExportButton
-              opportunityId={Number(params.opportunity_id)}
-              opportunityTitle={
-                opportunity?.title ??
-                `TUM.ai Opportunity ${params.opportunity_id}`
-              }
-            ></ExportButton>
+            <div className="flex gap-2">
+              <ExportButton
+                opportunityId={Number(params.opportunity_id)}
+                opportunityTitle={
+                  opportunity?.title ??
+                  `TUM.ai Opportunity ${params.opportunity_id}`
+                }
+              />
+              <AssignQuestionnaireButton
+                opportunityId={Number(params.opportunity_id)}
+              />
+            </div>
           </div>
         </div>
 
