@@ -1,20 +1,38 @@
 import { z } from "zod";
+import { TRPCError } from "@trpc/server";
 
 import { createTRPCRouter, protectedProcedure } from "server/api/trpc";
+import { connectQuestionnaires } from "server/shared/application";
 
 export const applicationRouter = createTRPCRouter({
-  getAllByOpportunityId: protectedProcedure
-    .input(
-      z.object({
-        opportunityId: z.number(),
-      }),
-    )
-    .query(async ({ input, ctx }) => {
-      return await ctx.db.application.findMany({
-        where: {
-          opportunityId: input.opportunityId,
-        },
+  reassignAllApplicationsToQuestionnaires: protectedProcedure
+    .input(z.object({ opportunityId: z.number() }))
+    .mutation(async ({ input, ctx }) => {
+      const opportunity = await ctx.db.opportunity.findUnique({
+        where: { id: input.opportunityId },
       });
+
+      if (opportunity?.adminId != ctx.session.user.id) {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "You need to be the owner of this opportunity",
+        });
+      }
+
+      const [applications, questionnaires] = await ctx.db.$transaction([
+        ctx.db.application.findMany({
+          where: { opportunityId: input.opportunityId },
+        }),
+        ctx.db.questionnaire.findMany({
+          where: { phase: { opportunityId: input.opportunityId } },
+        }),
+      ]);
+
+      return await ctx.db.$transaction(
+        applications.map((application) => {
+          return connectQuestionnaires(application, questionnaires);
+        }),
+      );
     }),
 
   getReviewsWithApplications: protectedProcedure
@@ -31,20 +49,6 @@ export const applicationRouter = createTRPCRouter({
               content: true,
             },
           },
-        },
-      });
-    }),
-
-  getFirstByOpportunityId: protectedProcedure
-    .input(
-      z.object({
-        opportunityId: z.number(),
-      }),
-    )
-    .query(async ({ input, ctx }) => {
-      return await ctx.db.application.findFirst({
-        where: {
-          opportunityId: input.opportunityId,
         },
       });
     }),
