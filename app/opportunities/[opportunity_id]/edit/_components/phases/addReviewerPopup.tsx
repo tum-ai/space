@@ -1,69 +1,76 @@
 import { Button } from "@components/ui/button";
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@components/ui/dialog";
-import { UserPlus } from "lucide-react";
+import { ChevronsUpDown, UserPlus } from "lucide-react";
 import { api } from "trpc/react";
 import { z } from "zod";
 import { Avatar, AvatarFallback, AvatarImage } from "@components/ui/avatar";
 import { UseFieldArrayAppend } from "react-hook-form";
 import { QuestionnaireSchema } from "@lib/schemas/opportunity";
+import { useState } from "react";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@components/ui/popover";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+} from "@components/ui/command";
 
 interface AddReviewerPopupProps {
   append: UseFieldArrayAppend<z.infer<typeof QuestionnaireSchema>, "reviewers">;
 }
 export const AddReviewerPopup = ({ append }: AddReviewerPopupProps) => {
-  const { data, isLoading } = api.user.getAll.useQuery();
+  const { data } = api.user.getAll.useQuery();
+  const [open, setOpen] = useState(false);
 
   return (
-    <Dialog>
-      <Button className="w-full" variant="secondary" type="button" asChild>
-        <DialogTrigger>
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <Button
+          type="button"
+          variant="secondary"
+          role="combobox"
+          aria-expanded={open}
+          className="w-full"
+        >
           <UserPlus className="mr-2" />
           Add reviewer
-        </DialogTrigger>
-      </Button>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Add reviewer</DialogTitle>
-        </DialogHeader>
-
-        <div className="space-y-4">
-          {isLoading && <p>Loading...</p>}
-          {data?.map((user) => {
-            const member = {
-              ...user,
-              name: user.name ?? undefined,
-              image: user.image ?? undefined,
-            };
-
-            return (
-              <DialogClose asChild key={member.id}>
-                <Button
-                  className="w-full py-8"
-                  variant="outline"
-                  onClick={() => {
-                    append(member);
-                  }}
-                >
-                  <div className="flex w-full items-center gap-6">
-                    <Avatar>
-                      <AvatarImage src={member.image} />
-                      <AvatarFallback>{member.name}</AvatarFallback>
-                    </Avatar>
-                    <h3>{member.name}</h3>
-                  </div>
-                </Button>
-              </DialogClose>
-            );
-          })}
-        </div>
-      </DialogContent>
-    </Dialog>
+          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent className="w-96 p-0">
+        <Command>
+          <CommandEmpty>No users found</CommandEmpty>
+          <CommandGroup className="max-h-64 overflow-y-auto">
+            {data?.map((member) => (
+              <CommandItem
+                key={member.id}
+                value={member.name ?? ""}
+                onSelect={() => {
+                  append({
+                    ...member,
+                    name: member.name ?? undefined,
+                    image: member.image ?? undefined,
+                  });
+                  setOpen(false);
+                }}
+              >
+                <div className="flex w-full items-center gap-6">
+                  <Avatar>
+                    <AvatarImage src={member.image ?? undefined} />
+                    <AvatarFallback>{member.name}</AvatarFallback>
+                  </Avatar>
+                  <h3>{member.name}</h3>
+                </div>
+              </CommandItem>
+            ))}
+          </CommandGroup>
+          <CommandInput placeholder="Search member" />
+        </Command>
+      </PopoverContent>
+    </Popover>
   );
 };
