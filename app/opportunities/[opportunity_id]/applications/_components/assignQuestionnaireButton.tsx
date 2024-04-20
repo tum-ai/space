@@ -15,6 +15,7 @@ export const AssignQuestionnaireButton = ({ opportunityId }: Props) => {
 
   return (
     <Button
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
       onClick={async () => {
         const toastId = toast.loading("Reassign questionnaires...");
         try {

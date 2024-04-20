@@ -46,6 +46,7 @@ export const ExportButton = ({
 
   return (
     <Button
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
       onClick={async () => {
         const toastId = toast.loading("Exporting applications...");
         try {
