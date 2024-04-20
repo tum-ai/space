@@ -3,8 +3,8 @@ import { Prisma } from "@prisma/client";
 import { env } from "env.mjs";
 import { createHmac } from "crypto";
 import { NextResponse } from "next/server";
-import { Tally, TallyField } from "@lib/types/tally";
-import { Questionnaire } from "@lib/types/questionnaire";
+import { Tally } from "@lib/types/tally";
+import { connectQuestionnaires } from "server/shared/application";
 
 export async function POST(
   req: Request,
@@ -28,11 +28,6 @@ export async function POST(
       },
     });
 
-    // TODO: Check based on opportunity.status e.g. if missing_config then set this?
-    //       In this case the status needs to be updated based on if it's currently updated or not
-    //       Maybe just add an additional status: awaiting_tally or something
-    //       Based on the status this should also not be saved as an application
-    //
     // TODO: Strip tallyApplication of actual values and personal data
     await db.opportunity.update({
       where: { id: parseInt(opportunityId) },
@@ -43,43 +38,11 @@ export async function POST(
       data: {
         content: tallyApplication,
         opportunity: { connect: { id: parseInt(opportunityId) } },
-        questionnaires: {
-          connect: questionnaires
-            .filter((questionnaire) => {
-              if (
-                !questionnaire.conditions ||
-                (questionnaire.conditions as Questionnaire["conditions"][])
-                  .length === 0
-              ) {
-                return true;
-              }
-
-              for (const condition of questionnaire.conditions as Pick<
-                TallyField,
-                "key" | "value"
-              >[]) {
-                const field = tallyApplication.data.fields.find(
-                  (f) => f.key === condition.key,
-                );
-                if (!field) continue;
-
-                const fieldValue = field.value;
-                let conditionMet = false;
-
-                if (isArrayofStrings(fieldValue)) {
-                  conditionMet = fieldValue.includes(condition.value as string);
-                } else if (typeof fieldValue === "string") {
-                  conditionMet = fieldValue === condition.value;
-                }
-
-                if (conditionMet) return true;
-              }
-              return false;
-            })
-            .map((questionnaire) => ({ id: questionnaire.id })),
-        },
       } satisfies Prisma.ApplicationCreateInput,
     });
+
+    await connectQuestionnaires(application, questionnaires);
+
     return NextResponse.json(application);
   } catch (error) {
     console.error(error);
@@ -99,11 +62,4 @@ function isSignatureValidated(req: Request, webhookPayload: Tally): boolean {
     .digest("base64");
 
   return receivedSignature === calculatedSignature;
-}
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function isArrayofStrings(value: any): value is string[] {
-  return (
-    Array.isArray(value) && value.every((item) => typeof item === "string")
-  );
 }
