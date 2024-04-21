@@ -50,10 +50,7 @@ export default async function OpportunitiesPage() {
           <div className="flex h-[50vh] flex-col items-center justify-center">
             <div className="flex flex-col items-center text-muted-foreground">
               <Rabbit className="mb-8 h-16 w-16" />
-              <p>
-                {/* TODO: Not correct for non-admin users */}
-                No opportunities found. Create a new opportunity to get started.
-              </p>
+              <p>No opportunities found.</p>
             </div>
 
             <Button variant="link">

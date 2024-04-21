@@ -32,7 +32,6 @@ export function GeneralInformation() {
     z.infer<typeof OpportunitySchema> | z.infer<typeof GeneralInformationSchema>
   >();
 
-  // TODO: Fix - this only works for either opportunity or generalInformation schema
   const {
     fields: admins,
     append: appendAdmin,
