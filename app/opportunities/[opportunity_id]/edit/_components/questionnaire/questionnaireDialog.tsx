@@ -30,7 +30,7 @@ import { Input } from "@components/ui/input";
 import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FileMinus, FilePlus2, Save, UserMinus } from "lucide-react";
-import { AddReviewerPopup } from "../phases/addReviewerPopup";
+import { AddUserPopup } from "@components/user/addUserPopup";
 import { Avatar, AvatarFallback, AvatarImage } from "@components/ui/avatar";
 import { QuestionView } from "./questionView";
 
@@ -214,7 +214,7 @@ export const QuestionnaireDialog = ({
               </div>
             ))}
 
-            <AddReviewerPopup append={appendReviewer} />
+            <AddUserPopup append={appendReviewer} />
           </div>
         </div>
 

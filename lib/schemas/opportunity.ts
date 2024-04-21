@@ -19,6 +19,7 @@ export const PhaseSchema = z.object({
 
 export const GeneralInformationSchema = z
   .object({
+    admins: PersonSchema.array().min(1, "At least one admin is required"),
     title: z.string().min(1, "Opportunity name is required"),
     start: z
       .date()
@@ -47,7 +48,6 @@ export const GeneralInformationSchema = z
 
 export const OpportunitySchema = z.object({
   id: z.number().optional(),
-  adminId: z.string().optional(),
   generalInformation: GeneralInformationSchema,
   phases: z.array(PhaseSchema),
 });

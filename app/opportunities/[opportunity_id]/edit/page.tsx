@@ -5,7 +5,6 @@ import {
 } from "./editOpportunityForm";
 import { getServerAuthSession } from "server/auth";
 import db from "server/db";
-import { Prisma } from "@prisma/client";
 import { z } from "zod";
 import { PhaseSchema } from "@lib/schemas/opportunity";
 
@@ -20,29 +19,23 @@ export default async function EditOpportunity({
   const userId = session?.user.id;
   if (!userId) redirect("/auth");
 
-  const opportunityQuery = Prisma.validator<Prisma.OpportunityFindUniqueArgs>()(
-    {
-      where: {
-        id: Number(params.opportunity_id),
-        admin: { id: userId },
-      },
-      include: {
-        admin: true,
-        phases: {
-          include: {
-            questionnaires: {
-              include: { reviewers: true },
-            },
+  const opportunity = await db.opportunity.findUnique({
+    where: {
+      id: Number(params.opportunity_id),
+      admins: { some: { id: userId } },
+    },
+    include: {
+      admins: true,
+      phases: {
+        include: {
+          questionnaires: {
+            include: { reviewers: true },
           },
         },
       },
     },
-  );
+  });
 
-  type DbOpportunity = Prisma.OpportunityGetPayload<typeof opportunityQuery>;
-
-  const opportunity: DbOpportunity | null =
-    await db.opportunity.findUnique(opportunityQuery);
   if (!opportunity) redirect("/opportunities");
 
   const phases = opportunity.phases.map((phase) => ({
@@ -64,8 +57,12 @@ export default async function EditOpportunity({
 
   const initialValues: EditOpportunityFormProps["initialValues"] = {
     id: opportunity?.id,
-    adminId: opportunity.admin.id,
     generalInformation: {
+      admins: opportunity.admins.map((admin) => ({
+        id: admin.id,
+        name: admin.name ?? undefined,
+        image: admin.image ?? undefined,
+      })),
       title: opportunity?.title,
       description: opportunity?.description ?? "",
       start: opportunity?.start,

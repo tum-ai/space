@@ -114,8 +114,7 @@ model Opportunity {
   description  String?
   start        DateTime
   end          DateTime?
-  adminId      String
-  admin        User          @relation(fields: [adminId], references: [id])
+  admins       User[]
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
   tallySchema  Json?

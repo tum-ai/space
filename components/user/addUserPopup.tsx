@@ -1,10 +1,7 @@
 import { Button } from "@components/ui/button";
 import { ChevronsUpDown, UserPlus } from "lucide-react";
 import { api } from "trpc/react";
-import { z } from "zod";
 import { Avatar, AvatarFallback, AvatarImage } from "@components/ui/avatar";
-import { UseFieldArrayAppend } from "react-hook-form";
-import { QuestionnaireSchema } from "@lib/schemas/opportunity";
 import { useState } from "react";
 import {
   Popover,
@@ -18,11 +15,13 @@ import {
   CommandInput,
   CommandItem,
 } from "@components/ui/command";
+import { Person } from "@lib/types/person";
 
-interface AddReviewerPopupProps {
-  append: UseFieldArrayAppend<z.infer<typeof QuestionnaireSchema>, "reviewers">;
+interface Props {
+  append: (person: Person) => void;
 }
-export const AddReviewerPopup = ({ append }: AddReviewerPopupProps) => {
+
+export const AddUserPopup = ({ append }: Props) => {
   const { data } = api.user.getAll.useQuery();
   const [open, setOpen] = useState(false);
 
@@ -37,7 +36,7 @@ export const AddReviewerPopup = ({ append }: AddReviewerPopupProps) => {
           className="w-full"
         >
           <UserPlus className="mr-2" />
-          Add reviewer
+          Add user
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>

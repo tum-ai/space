@@ -16,7 +16,11 @@ export const opportunityRouter = createTRPCRouter({
           description: input.description,
           start: input.start,
           end: input.end,
-          admin: { connect: { id: ctx.session.user.id } },
+          admins: {
+            connect: input.admins.map((admin) => ({
+              id: admin.id,
+            })),
+          },
         },
       });
 
@@ -89,7 +93,7 @@ export const opportunityRouter = createTRPCRouter({
       return await ctx.db.opportunity.update({
         where: {
           id: input.id,
-          adminId: ctx.session.user.id,
+          admins: { some: { id: ctx.session.user.id } },
         },
         data: {
           title: input.generalInformation.title,
