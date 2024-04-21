@@ -18,6 +18,7 @@ interface Props {
 }
 const CreateOpportunityForm = ({ session }: Props) => {
   const user = session.user;
+
   const router = useRouter();
   const form = useForm<z.infer<typeof OpportunitySchema>>({
     resolver: zodResolver(OpportunitySchema),

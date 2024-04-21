@@ -216,9 +216,7 @@ export const QuestionnaireDialog = ({
               </div>
             ))}
 
-            <AddUserPopup
-              append={appendReviewer as unknown as UseFieldArrayAppend<Person>}
-            />
+            <AddUserPopup append={appendReviewer} />
           </div>
         </div>
 

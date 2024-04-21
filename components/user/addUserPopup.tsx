@@ -2,7 +2,6 @@ import { Button } from "@components/ui/button";
 import { ChevronsUpDown, UserPlus } from "lucide-react";
 import { api } from "trpc/react";
 import { Avatar, AvatarFallback, AvatarImage } from "@components/ui/avatar";
-import { UseFieldArrayAppend } from "react-hook-form";
 import { useState } from "react";
 import {
   Popover,
@@ -19,7 +18,7 @@ import {
 import { Person } from "@lib/types/person";
 
 interface Props {
-  append: UseFieldArrayAppend<Person>;
+  append: (person: Person) => void;
 }
 
 export const AddUserPopup = ({ append }: Props) => {
@@ -37,7 +36,7 @@ export const AddUserPopup = ({ append }: Props) => {
           className="w-full"
         >
           <UserPlus className="mr-2" />
-          Add reviewer
+          Add user
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
