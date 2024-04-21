@@ -1,10 +1,8 @@
 import { Button } from "@components/ui/button";
 import { ChevronsUpDown, UserPlus } from "lucide-react";
 import { api } from "trpc/react";
-import { z } from "zod";
 import { Avatar, AvatarFallback, AvatarImage } from "@components/ui/avatar";
 import { UseFieldArrayAppend } from "react-hook-form";
-import { QuestionnaireSchema } from "@lib/schemas/opportunity";
 import { useState } from "react";
 import {
   Popover,
@@ -18,11 +16,13 @@ import {
   CommandInput,
   CommandItem,
 } from "@components/ui/command";
+import { Person } from "@lib/types/person";
 
-interface AddReviewerPopupProps {
-  append: UseFieldArrayAppend<z.infer<typeof QuestionnaireSchema>, "reviewers">;
+interface Props {
+  append: UseFieldArrayAppend<Person>;
 }
-export const AddReviewerPopup = ({ append }: AddReviewerPopupProps) => {
+
+export const AddUserPopup = ({ append }: Props) => {
   const { data } = api.user.getAll.useQuery();
   const [open, setOpen] = useState(false);
 

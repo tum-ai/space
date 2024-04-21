@@ -1,5 +1,6 @@
 import {
   SubmitHandler,
+  UseFieldArrayAppend,
   UseFormProps,
   useFieldArray,
   useForm,
@@ -30,9 +31,10 @@ import { Input } from "@components/ui/input";
 import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FileMinus, FilePlus2, Save, UserMinus } from "lucide-react";
-import { AddReviewerPopup } from "../phases/addReviewerPopup";
+import { AddUserPopup } from "@components/user/addUserPopup";
 import { Avatar, AvatarFallback, AvatarImage } from "@components/ui/avatar";
 import { QuestionView } from "./questionView";
+import { Person } from "@lib/types/person";
 
 interface QuestionnaireProps {
   onSave: (data: z.infer<typeof QuestionnaireSchema>) => void;
@@ -214,7 +216,9 @@ export const QuestionnaireDialog = ({
               </div>
             ))}
 
-            <AddReviewerPopup append={appendReviewer} />
+            <AddUserPopup
+              append={appendReviewer as unknown as UseFieldArrayAppend<Person>}
+            />
           </div>
         </div>
 

@@ -9,7 +9,11 @@ import {
   FormMessage,
 } from "@components/ui/form";
 import { Textarea } from "@components/ui/textarea";
-import { useFormContext } from "react-hook-form";
+import {
+  UseFieldArrayAppend,
+  useFieldArray,
+  useFormContext,
+} from "react-hook-form";
 import {
   Popover,
   PopoverContent,
@@ -18,17 +22,29 @@ import {
 import { cn } from "@lib/utils";
 import { format } from "date-fns";
 import { Calendar } from "@components/ui/calendar";
-import { CalendarIcon } from "lucide-react";
+import { CalendarIcon, UserMinus } from "lucide-react";
 import {
   OpportunitySchema,
   GeneralInformationSchema,
 } from "@lib/schemas/opportunity";
 import { z } from "zod";
+import { AddUserPopup } from "@components/user/addUserPopup";
+import { Avatar, AvatarFallback, AvatarImage } from "@components/ui/avatar";
+import { Person } from "@lib/types/person";
 
 export function GeneralInformation() {
   const form = useFormContext<
     z.infer<typeof OpportunitySchema> | z.infer<typeof GeneralInformationSchema>
   >();
+
+  const {
+    fields: admins,
+    append: appendAdmin,
+    remove: removeAdmin,
+  } = useFieldArray({
+    control: form.control,
+    name: `admins`,
+  });
 
   return (
     <div>
@@ -148,6 +164,52 @@ export function GeneralInformation() {
             )}
           />
         </div>
+
+        <FormField
+          control={form.control}
+          name="generalInformation.admins"
+          render={() => (
+            <FormItem className="col-span-2">
+              <FormLabel>Admins</FormLabel>
+              <FormControl>
+                <div className="space-y-4">
+                  {admins.map((reviewer, index) => (
+                    <div
+                      className="flex w-full justify-between rounded-md border border-input p-4"
+                      key={reviewer.id}
+                    >
+                      <div className="flex w-full items-center gap-6">
+                        <Avatar>
+                          <AvatarImage src={reviewer.image} />
+                          <AvatarFallback>{reviewer.name}</AvatarFallback>
+                        </Avatar>
+
+                        <h3>{reviewer.name}</h3>
+                      </div>
+
+                      <Button
+                        size="icon"
+                        variant="ghost"
+                        onClick={() => {
+                          removeAdmin(index);
+                        }}
+                      >
+                        <UserMinus className="mx-2" />
+                      </Button>
+                    </div>
+                  ))}
+
+                  <AddUserPopup
+                    append={
+                      appendAdmin as unknown as UseFieldArrayAppend<Person>
+                    }
+                  />
+                </div>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
       </div>
     </div>
   );
