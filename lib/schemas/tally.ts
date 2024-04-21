@@ -8,7 +8,7 @@ const TallyCheckboxes = z.object({
 
 const TallyMultipleChoice = z.object({
   type: z.literal("MULTIPLE_CHOICE"),
-  value: z.union([z.boolean(), z.string().uuid()]),
+  value: z.array(z.string().uuid()).nullable(),
   options: z.array(z.object({ id: z.string(), text: z.string() })).optional(),
 });
 

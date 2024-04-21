@@ -67,7 +67,7 @@ const ApplicationValue = ({ field }: ApplicationFieldProps) => {
         </div>
       );
 
-    case "DROPDOWN" || "MULTIPLE_CHOICE":
+    case "DROPDOWN":
       const value = field.options?.find((opt) => opt.id === field.value?.at(0));
       if (value) {
         return (
@@ -88,6 +88,16 @@ const ApplicationValue = ({ field }: ApplicationFieldProps) => {
           </Select>
         );
       }
+
+    case "MULTIPLE_CHOICE":
+      const selected_value = field.options?.find(
+        (opt) => opt.id === field.value?.at(0),
+      );
+      if (selected_value) {
+        return <p>{selected_value.text}</p>;
+      }
+
+      return <p>No value</p>;
 
     case "TEXTAREA":
       return <Textarea value={field.value} />;
