@@ -10,12 +10,15 @@ export const applicationRouter = createTRPCRouter({
     .mutation(async ({ input, ctx }) => {
       const opportunity = await ctx.db.opportunity.findUnique({
         where: { id: input.opportunityId },
+        include: { admins: true },
       });
 
-      if (opportunity?.adminId != ctx.session.user.id) {
+      if (
+        !opportunity?.admins.some((admin) => admin.id !== ctx.session.user.id)
+      ) {
         throw new TRPCError({
           code: "UNAUTHORIZED",
-          message: "You need to be the owner of this opportunity",
+          message: "You need to be an admin of this opportunity",
         });
       }
 

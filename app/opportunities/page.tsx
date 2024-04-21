@@ -17,7 +17,7 @@ export default async function OpportunitiesPage() {
     where: {
       OR: [
         // user is admin of opportunity
-        { adminId: userId },
+        { admins: { some: { id: userId } } },
         // or user is a reviewer of a questionnaire in the opportunity
         {
           phases: {
@@ -28,6 +28,7 @@ export default async function OpportunitiesPage() {
         },
       ],
     },
+    include: { admins: true },
   });
 
   return (
@@ -65,7 +66,7 @@ export default async function OpportunitiesPage() {
             {opportunities?.map((item, index) => {
               return (
                 <OpportunityCard
-                  isAdmin={item.adminId === userId}
+                  isAdmin={item.admins.some((admin) => admin.id === userId)}
                   opportunity={item}
                   key={index}
                 />
