@@ -41,6 +41,7 @@ export const TallyField = z
         type: z
           .literal("TEXTAREA")
           .or(z.literal("INPUT_TEXT"))
+          .or(z.literal("INPUT_NUMBER"))
           .or(z.literal("INPUT_DATE"))
           .or(z.literal("INPUT_EMAIL"))
           .or(z.literal("TEXTAREA"))

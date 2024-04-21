@@ -95,6 +95,9 @@ const ApplicationValue = ({ field }: ApplicationFieldProps) => {
     case "INPUT_TEXT":
       return <Input readOnly value={field.value} />;
 
+    case "INPUT_NUMBER":
+      return <Input readOnly value={field.value} />;
+
     case "INPUT_DATE":
       return <Input readOnly value={format(new Date(field.value), "PPP")} />;
 
