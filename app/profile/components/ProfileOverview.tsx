@@ -10,12 +10,16 @@ import { Prisma } from "@prisma/client";
 import { Badge } from "@components/ui/badge";
 import { Button } from "@components/ui/button";
 import { Avatar, AvatarImage, AvatarFallback } from "@components/ui/avatar";
+import { BirthDatePicker } from "./datePicker";
+import { Textarea } from "@components/ui/textarea";
+import { Input } from "@components/ui/input";
 
 interface ProfileOverviewProps {
   user: Prisma.UserGetPayload<{ include: { profile: true } }>;
 }
 
 export function ProfileOverview({ user }: ProfileOverviewProps) {
+  // consider always create a profile if it doesn't exist
   const profile = user.profile.at(0);
 
   return (
@@ -55,19 +59,32 @@ export function ProfileOverview({ user }: ProfileOverviewProps) {
             {profile?.activityStatus && <Badge>{profile.activityStatus}</Badge>}
           </div>
 
-          <div className="grid grid-cols-1 gap-8 sm:grid-cols-2">
-            <div className="sm:col-span-2">
+          <div className="flex-row-wrap">
+            <div>
               <div className="mb-2 flex flex-row items-center">
                 <PencilIcon className={"mr-2 h-5 w-5"} />
                 <h3 className="text-2xl font-medium">Description</h3>
               </div>
+              <Textarea placeholder="Discription" />
 
               <p className="text-gray-400">{profile?.description}</p>
             </div>
             <div>
-              <div className="mb-2 flex flex-row items-center">
+              <div className="mb-2 flex flex-row items-center w-auto">
                 <UserIcon className={"mr-2 h-5 w-5"} />
                 <h3 className="text-2xl font-medium">Personal</h3>
+              </div>
+              <div className="mb-2 flex flex-row items-center w-auto">
+                <div className="w-auto">
+                  <h5 className="font-medium">Birth Date</h5>
+                  <BirthDatePicker className="w-auto" />
+                </div>
+              </div>
+              <div className="mb-2 flex flex-row items-center">
+                <div>
+                  <h5 className="font-medium">Nationality</h5>
+                  <Input placeholder="German" />
+                </div>
               </div>
               {/* <ContentList data={data.personal} /> */}
             </div>
@@ -78,6 +95,7 @@ export function ProfileOverview({ user }: ProfileOverviewProps) {
               </div>
               {/* <ContentList data={data.academia} /> */}
             </div>
+            <div></div>
           </div>
         </div>
       )}

@@ -48,3 +48,8 @@
     --ring: 240 4.9% 83.9%;
   }
 }
+
+/* for the date Picker in order to work */
+.rdp-vhidden {
+  @apply hidden;
+}
