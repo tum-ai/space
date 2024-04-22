@@ -100,7 +100,7 @@ const ApplicationValue = ({ field }: ApplicationFieldProps) => {
       return <p>No value</p>;
 
     case "TEXTAREA":
-      return <Textarea value={field.value} />;
+      return <Textarea defaultValue={field.value} />;
 
     case "INPUT_TEXT":
       return <Input readOnly value={field.value} />;

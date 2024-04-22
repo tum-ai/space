@@ -98,10 +98,8 @@ export const ReviewForm = ({
           <div className="grid gap-4 lg:grid-cols-2">
             <Card>
               <CardHeader>
-                <CardTitle>
-                  <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
-                    Application
-                  </h3>
+                <CardTitle className="scroll-m-20 text-2xl font-semibold tracking-tight">
+                  Application
                 </CardTitle>
               </CardHeader>
               <CardContent className="h-[80vh] overflow-y-auto">
@@ -117,9 +115,9 @@ export const ReviewForm = ({
 
             <Card>
               <CardHeader>
-                <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
+                <CardTitle className="scroll-m-20 text-2xl font-semibold tracking-tight">
                   Review
-                </h3>
+                </CardTitle>
               </CardHeader>
               <CardContent className="h-[80vh] overflow-y-auto">
                 <div className="flex flex-col gap-12">
