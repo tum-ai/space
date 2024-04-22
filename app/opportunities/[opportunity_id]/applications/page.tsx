@@ -26,6 +26,7 @@ export default async function OpportunityOverviewPage({
     where: {
       opportunityId: Number(params.opportunity_id),
     },
+    include: { _count: { select: { reviews: true } } },
   });
 
   const session = await getServerAuthSession();
