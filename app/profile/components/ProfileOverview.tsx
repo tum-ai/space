@@ -1,10 +1,6 @@
 "use client";
 
-import {
-  AcademicCapIcon,
-  PencilIcon,
-  PencilSquareIcon,
-} from "@heroicons/react/24/outline";
+import { AcademicCapIcon, PencilIcon } from "@heroicons/react/24/outline";
 import { User as UserIcon } from "lucide-react";
 import { Prisma } from "@prisma/client";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -123,9 +119,10 @@ export function ProfileOverview({ user }: ProfileOverviewProps) {
           </div>
           {profile && (
             <div className="flex flex-col gap-12">
-              <Form {...userForm}>
+              <Form {...profileForm}>
                 <form
-                  onSubmit={userForm.handleSubmit(onSubmitProfile)}
+                  // eslint-disable-next-line @typescript-eslint/no-misused-promises
+                  onSubmit={profileForm.handleSubmit(onSubmitProfile)}
                   className="space-y-8"
                 >
                   <div className="flex flex-col gap-6">
@@ -174,7 +171,14 @@ export function ProfileOverview({ user }: ProfileOverviewProps) {
                             <FormItem>
                               <FormLabel>Birthday</FormLabel>
                               <FormControl>
-                                <BirthDatePicker {...field} />
+                                <BirthDatePicker
+                                  {...field}
+                                  value={
+                                    field.value instanceof Date
+                                      ? field.value
+                                      : field.value ? new Date(field.value) : undefined
+                                  }
+                                />
                               </FormControl>
                               <FormMessage />
                             </FormItem>
@@ -256,6 +260,30 @@ export function ProfileOverview({ user }: ProfileOverviewProps) {
                         />
                       </div>
                     </div>
+                    <div className="flex flex-col gap-2">
+                      <div className="felx flex-col items-start gap-0">
+                        <div className="flex items-center justify-between">
+                          <h2 className="text-lg font-bold ">Contacts</h2>
+                          <AcademicCapIcon className="w-5" />
+                        </div>
+                        <Divider className="m-1" />
+                      </div>
+                      <div className="flex flex-col gap-2">
+                        <FormField
+                          control={profileForm.control}
+                          name="university"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>University</FormLabel>
+                              <FormControl>
+                                <Input placeholder="e.g. tum" {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                    </div>
                     <div className="flex flex-row justify-end">
                       <Button className="w-[160px]" type="submit">
                         Change Profile
@@ -266,6 +294,7 @@ export function ProfileOverview({ user }: ProfileOverviewProps) {
               </Form>
               <Form {...userForm}>
                 <form
+                  // eslint-disable-next-line @typescript-eslint/no-misused-promises
                   onSubmit={userForm.handleSubmit(onSumbmitUser)}
                   className="space-y-8"
                 >
@@ -347,6 +376,7 @@ export function ProfileOverview({ user }: ProfileOverviewProps) {
                           <AlertDialogFooter>
                             <AlertDialogCancel>Cancel</AlertDialogCancel>
                             <AlertDialogAction
+                              // eslint-disable-next-line @typescript-eslint/no-misused-promises
                               onClick={userForm.handleSubmit(onSumbmitUser)}
                             >
                               Change Account

@@ -1,5 +1,3 @@
-"use client";
-
 import * as React from "react";
 import { format } from "date-fns";
 import { Calendar as CalendarIcon } from "lucide-react";
@@ -9,19 +7,20 @@ import { Button } from "components/ui/button";
 import { Calendar } from "components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "components/ui/popover";
 
-interface BirthDatePickerProps {
-  value?: Date;
-  defaultValue?: Date;
-  onChange: (date: Date) => void;
+export interface BirthDatePickerProps {
+  value?: Date | undefined;
+  defaultValue?: Date | undefined;
+  onChange: (date: Date | undefined) => void;
 }
 
 export function BirthDatePicker({
   value,
   defaultValue,
   onChange,
-  ...props
-}: BirthDatePickerProps & React.ComponentProps<typeof Button>) {
-  const [date, setDate] = React.useState<Date>();
+}: BirthDatePickerProps) {
+  const [date, setDate] = React.useState<Date | undefined>(
+    value ?? defaultValue,
+  );
 
   React.useEffect(() => {
     if (value) {
@@ -40,7 +39,6 @@ export function BirthDatePicker({
             "w-full justify-start text-left font-normal",
             !date && "text-muted-foreground",
           )}
-          {...props}
         >
           <CalendarIcon className="mr-2 h-4 w-4" />
           {date ? format(date, "PPP") : <span>Pick a date</span>}
@@ -49,16 +47,16 @@ export function BirthDatePicker({
       <PopoverContent className="w-auto p-0">
         <Calendar
           mode="single"
-          selected={date}
-          onSelect={(newDate) => {
-            setDate(newDate);
+          selected={date ?? undefined}
+          onSelect={(newDate: Date | undefined) => {
             if (newDate) {
+              setDate(newDate);
               onChange(newDate);
             }
           }}
           captionLayout="dropdown-buttons"
           defaultMonth={date ?? new Date(new Date().getFullYear() - 18, 0)}
-          fromYear={new Date().getFullYear() - 80}
+          fromYear={new Date().getFullYear() - 85}
           toYear={new Date().getFullYear() - 16}
           initialFocus
         />
