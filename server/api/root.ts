@@ -4,6 +4,7 @@ import { opportunityRouter } from "./routers/opportunity";
 import { applicationRouter } from "./routers/application";
 import { reviewRouter } from "./routers/review";
 import { keyRouter } from "./routers/key";
+import { profileRouter } from "./routers/profile";
 
 /**
  * This is the primary router for your server.
@@ -12,6 +13,7 @@ import { keyRouter } from "./routers/key";
  */
 export const appRouter = createTRPCRouter({
   user: userRouter,
+  profile: profileRouter,
   opportunity: opportunityRouter,
   application: applicationRouter,
   review: reviewRouter,

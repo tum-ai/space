@@ -9,8 +9,27 @@ import { Button } from "components/ui/button";
 import { Calendar } from "components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "components/ui/popover";
 
-export function BirthDatePicker({ ...props }) {
+interface BirthDatePickerProps {
+  value?: Date;
+  defaultValue?: Date;
+  onChange: (date: Date) => void;
+}
+
+export function BirthDatePicker({
+  value,
+  defaultValue,
+  onChange,
+  ...props
+}: BirthDatePickerProps & React.ComponentProps<typeof Button>) {
   const [date, setDate] = React.useState<Date>();
+
+  React.useEffect(() => {
+    if (value) {
+      setDate(value);
+    } else if (defaultValue) {
+      setDate(defaultValue);
+    }
+  }, [value, defaultValue]);
 
   return (
     <Popover>
@@ -18,7 +37,7 @@ export function BirthDatePicker({ ...props }) {
         <Button
           variant={"outline"}
           className={cn(
-            "w-[260px] justify-start text-left font-normal",
+            "w-full justify-start text-left font-normal",
             !date && "text-muted-foreground",
           )}
           {...props}
@@ -31,9 +50,14 @@ export function BirthDatePicker({ ...props }) {
         <Calendar
           mode="single"
           selected={date}
-          onSelect={setDate}
+          onSelect={(newDate) => {
+            setDate(newDate);
+            if (newDate) {
+              onChange(newDate);
+            }
+          }}
           captionLayout="dropdown-buttons"
-          defaultMonth={new Date(new Date().getFullYear() - 18, 0)}
+          defaultMonth={date ?? new Date(new Date().getFullYear() - 18, 0)}
           fromYear={new Date().getFullYear() - 80}
           toYear={new Date().getFullYear() - 16}
           initialFocus
