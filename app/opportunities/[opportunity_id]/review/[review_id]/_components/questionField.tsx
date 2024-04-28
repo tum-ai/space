@@ -135,15 +135,25 @@ export const QuestionField = ({ index, question }: QuestionFieldProps) => {
                 <Input
                   {...field}
                   type="number"
+                  min={question.options.min}
+                  max={question.options.max}
                   onChange={(e) => {
-                    const value =
-                      e.target.value === "" ? null : Number(e.target.value);
-                    field.onChange(value);
+                    const inputValue =
+                      e.target.value === ""
+                        ? question.options.min
+                        : Number(e.target.value);
+                    const clampedValue = Math.max(
+                      question.options.min,
+                      Math.min(inputValue, question.options.max),
+                    );
+                    field.onChange(clampedValue);
+                  }}
+                  onWheel={(e) => {
+                    (e.target as HTMLInputElement).blur();
                   }}
                 />
               </FormControl>
               <FormDescription>
-                {" "}
                 Min: {question.options.min} Max: {question.options.max}
               </FormDescription>
             </FormItem>
