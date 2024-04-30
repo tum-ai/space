@@ -8,25 +8,22 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// Necessary for Next auth
 model Account {
   id                String  @id @default(cuid())
   userId            String
   type              String
   provider          String
   providerAccountId String
-  refresh_token     String? // @db.Text
-  access_token      String? // @db.Text
+  refresh_token     String?
+  access_token      String?
   expires_at        Int?
   token_type        String?
   scope             String?
-  id_token          String? // @db.Text
+  id_token          String?
   session_state     String?
+  ok                Boolean
+  state             String
   user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  // Required for slack
-  ok    Boolean
-  state String
 
   @@unique([provider, providerAccountId])
 }
@@ -47,15 +44,15 @@ model User {
   image                 String?
   createdAt             DateTime               @default(now())
   updatedAt             DateTime               @updatedAt
+  roles                 SpaceRole[]            @default([USER])
   accounts              Account[]
   departmentMemberships DepartmentMembership[]
-  reviews               Review[]
-  roles                 SpaceRole[]            @default([USER])
-  profile               Profile[]
-  session               Session[]
-  opportunityAdmin      Opportunity[]
-  questionnaires        Questionnaire[]
   key                   Key[]
+  Opportunity           Opportunity[]
+  profile               Profile[]
+  reviews               Review[]
+  session               Session[]
+  questionnaires        Questionnaire[]        @relation("QuestionnaireToUser")
 }
 
 model Profile {
@@ -71,9 +68,9 @@ model Profile {
   university       String?
   createdAt        DateTime  @default(now())
   updatedAt        DateTime  @updatedAt
-  contacts         Contact[]
   userId           String
-  user             User?     @relation(fields: [userId], references: [id])
+  contacts         Contact[]
+  user             User      @relation(fields: [userId], references: [id])
 }
 
 model Contact {
@@ -114,20 +111,21 @@ model Opportunity {
   description  String?
   start        DateTime
   end          DateTime?
-  admins       User[]
+  adminId      String
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
   tallySchema  Json?
   applications Application[]
+  User         User          @relation(fields: [adminId], references: [id])
   phases       Phase[]
 }
 
 model Phase {
   id             String          @id @default(uuid())
   name           String
-  questionnaires Questionnaire[]
   opportunityId  Int
   opportunity    Opportunity     @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
+  questionnaires Questionnaire[]
 }
 
 model Questionnaire {
@@ -136,11 +134,11 @@ model Questionnaire {
   name            String
   conditions      Json?         @default("[]")
   questions       Json
-  reviews         Review[]
-  phase           Phase         @relation(fields: [phaseId], references: [id], onDelete: Cascade)
   phaseId         String
-  reviewers       User[]
-  applications    Application[]
+  phase           Phase         @relation(fields: [phaseId], references: [id], onDelete: Cascade)
+  reviews         Review[]
+  applications    Application[] @relation("ApplicationToQuestionnaire")
+  reviewers       User[]        @relation("QuestionnaireToUser")
 }
 
 model Application {
@@ -148,10 +146,10 @@ model Application {
   content        Json
   createdAt      DateTime        @default(now())
   updatedAt      DateTime        @updatedAt
-  reviews        Review[]
   opportunityId  Int
   opportunity    Opportunity     @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
-  questionnaires Questionnaire[]
+  reviews        Review[]
+  questionnaires Questionnaire[] @relation("ApplicationToQuestionnaire")
 }
 
 model Review {
@@ -160,12 +158,12 @@ model Review {
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt
   userId          String        @map("assigneeId")
-  user            User          @relation(fields: [userId], references: [id])
   applicationId   Int           @map("reviewId")
-  application     Application   @relation(fields: [applicationId], references: [id], onDelete: Cascade)
   questionnaireId String
-  questionnaire   Questionnaire @relation(fields: [questionnaireId], references: [id])
   status          ReviewStatus
+  user            User          @relation(fields: [userId], references: [id])
+  questionnaire   Questionnaire @relation(fields: [questionnaireId], references: [id])
+  application     Application   @relation(fields: [applicationId], references: [id], onDelete: Cascade)
 
   @@unique([applicationId, userId, questionnaireId])
 }
