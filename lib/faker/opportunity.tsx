@@ -22,8 +22,9 @@ async function generateOpportunities(number: number) {
 }
 
 function generateOpportunityGeneralInformation() {
+  const lenght = faker.number.int({ min: 1, max: 4 })
   return {
-    admins: faker.helpers.arrayElements(), // TODO: also add admins to the db
+    admins: Array.from({ length }, () => faker.string.uuid()), // TODO: profiles do not exist
     title: faker.lorem.word(),
     description: faker.lorem.paragraph(),
     start: now.setDate(1),
@@ -33,7 +34,7 @@ function generateOpportunityGeneralInformation() {
 
 function generateOpportunityPhase() {
   return {
-    name: faker.animal.bird(), // Find better
+    name: faker.word.words(2),
     questionnaires: Array.from(
       { length: faker.number.int({ min: 2, max: 5 }) },
       generateQuestionnaire,
@@ -47,7 +48,7 @@ function generateQuestionnaire() {
     requiredReviews: faker.number.int({ min: 1, max: 3 }),
 	questions: Array.from({ length: faker.number.int({min: 1, max: 5}) }, generateQuestion),
 	conditions: "", // TODO
-	reviewers: Array.from(),
+	// reviewers: Array.from(),
   };
 }
 
@@ -61,10 +62,10 @@ function generateQuestion() {
     type: questionType
   };
 
-  return createQuestionDetails(baseQuestion);
+  return generateQuestionDetails(baseQuestion);
 }
 
-function createQuestionDetails(baseQuestion: {label: string, key: string, type: string}) {
+function generateQuestionDetails(baseQuestion: {label: string, key: string, type: string}) {
   switch (baseQuestion.type) {
     case "INPUT_TEXT":
       return baseQuestion;
