@@ -6,15 +6,15 @@ const now = new Date();
 const keyUniqueEnforcer = new UniqueEnforcer();
 const uuidUniqueEnforcer = new UniqueEnforcer();
 
-const createMutation = api.opportunity.create.useMutation();
-const updateMutation = api.opportunity.update.useMutation();
+const createOpportunityMutation = api.opportunity.create.useMutation();
+const updateOpportunityMutation = api.opportunity.update.useMutation();
 
 async function generateOpportunities(number: number) {
 	for (let i = 0; i < number; i++) {
 		const 
 		try {
-			await createMutation.mutateAsync(generateOpportunityGeneralInformation());
-			await updateMutation.mutateAsync();
+			await createOpportunityMutation.mutateAsync(generateOpportunityGeneralInformation());
+			await updateOpportunityMutation.mutateAsync();
 		} catch (error) {
 			throw Error("Error while generating mock data")
 		}
