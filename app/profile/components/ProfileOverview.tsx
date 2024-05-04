@@ -1,11 +1,12 @@
 "use client";
 
 import { AcademicCapIcon, PencilIcon } from "@heroicons/react/24/outline";
-import { User as UserIcon } from "lucide-react";
+import { User as UserIcon, Contact as ContactIcon } from "lucide-react";
 import { Prisma } from "@prisma/client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { ContactType } from "@prisma/client";
 import {
   Form,
   FormControl,
@@ -33,29 +34,62 @@ import { Textarea } from "@components/ui/textarea";
 import { Input } from "@components/ui/input";
 import { ProfileSchema } from "@lib/schemas/profile";
 import { UserSchema } from "@lib/schemas/user";
+import {
+  ContactSchema,
+  ContactSchemaWithProfileId,
+} from "@lib/schemas/contact";
 import { api } from "trpc/react";
 import { toast } from "sonner";
 
 interface ProfileOverviewProps {
   user: Prisma.UserGetPayload<{ include: { profile: true } }>;
+  contacts: Prisma.ContactGetPayload<object>[];
 }
 
-export function ProfileOverview({ user }: ProfileOverviewProps) {
+const ContactInputSchema = z.object({
+  linkedIn: z.string().url().or(z.literal("")),
+  gitHub: z.string().url().or(z.literal("")),
+  phone: z
+    .string()
+    .regex(/^\+?[0-9]+$/)
+    .or(z.literal("")),
+});
+
+export function ProfileOverview({ user, contacts }: ProfileOverviewProps) {
   const profile = user.profile.at(0);
+
+  const linkedInContact = contacts.find(
+    (contact) => contact.type === ContactType.LINKEDIN,
+  );
+  const gitHubContact = contacts.find(
+    (contact) => contact.type === ContactType.GITHUB,
+  );
+  const phoneContact = contacts.find(
+    (contact) => contact.type === ContactType.PHONE,
+  );
 
   const userForm = useForm<z.infer<typeof UserSchema>>({
     resolver: zodResolver(UserSchema),
     values: {
-      id: user.id ?? "",
+      id: user.id,
       name: user.name ?? "",
-      email: user.email ?? "",
+      email: user.email,
       image: user.image ?? "",
+    },
+  });
+
+  const contactFrom = useForm<z.infer<typeof ContactInputSchema>>({
+    resolver: zodResolver(ContactInputSchema),
+    defaultValues: {
+      linkedIn: contacts.find((c) => c.type === ContactType.LINKEDIN)?.username,
+      gitHub: contacts.find((c) => c.type === ContactType.GITHUB)?.username,
+      phone: contacts.find((c) => c.type === ContactType.PHONE)?.username,
     },
   });
 
   const profileForm = useForm<z.infer<typeof ProfileSchema>>({
     resolver: zodResolver(ProfileSchema),
-    values: {
+    defaultValues: {
       userId: user.id ?? "",
       description: profile?.description ?? undefined,
       birthday: profile?.birthday ?? undefined,
@@ -68,6 +102,8 @@ export function ProfileOverview({ user }: ProfileOverviewProps) {
   });
 
   const updateProfileMutation = api.profile.update.useMutation();
+  const createContactMutation = api.contact.create.useMutation();
+  const updateContactMutation = api.contact.update.useMutation();
   const updateUserMutation = api.user.update.useMutation();
 
   async function onSubmitProfile(values: z.infer<typeof ProfileSchema>) {
@@ -78,6 +114,52 @@ export function ProfileOverview({ user }: ProfileOverviewProps) {
       window.location.reload();
     } catch (err) {
       toast.error("Failed to update profile", { id });
+    }
+  }
+
+  async function onSubmitUpdateContact(
+    values: z.infer<typeof ContactInputSchema>,
+  ) {
+    const id = toast.loading("updateing contact");
+    try {
+      async function createOrUpdateContact(
+        existingContact: z.infer<typeof ContactSchema> | undefined,
+        newContact: z.infer<typeof ContactSchemaWithProfileId>,
+      ) {
+        if (!existingContact) {
+          await createContactMutation.mutateAsync(newContact);
+        } else {
+          await updateContactMutation.mutateAsync({
+            id: existingContact.id,
+            ...newContact,
+          });
+        }
+      }
+
+      const newLinkedInContact: z.infer<typeof ContactSchemaWithProfileId> = {
+        profileId: profile?.id ?? 0,
+        username: values.linkedIn ?? "",
+        type: ContactType.LINKEDIN as ContactType,
+      };
+      const newGitHubContact: z.infer<typeof ContactSchemaWithProfileId> = {
+        profileId: profile?.id ?? 0,
+        username: values.gitHub ?? "",
+        type: ContactType.GITHUB,
+      };
+      const newPhoneContact: z.infer<typeof ContactSchemaWithProfileId> = {
+        profileId: profile?.id ?? 0,
+        username: values.phone ?? "",
+        type: ContactType.PHONE,
+      };
+
+      await createOrUpdateContact(linkedInContact, newLinkedInContact);
+      await createOrUpdateContact(gitHubContact, newGitHubContact);
+      await createOrUpdateContact(phoneContact, newPhoneContact);
+
+      toast.success("Successfully updated contact", { id });
+      window.location.reload();
+    } catch (err) {
+      toast.error("Failed to update contact", { id });
     }
   }
 
@@ -176,7 +258,9 @@ export function ProfileOverview({ user }: ProfileOverviewProps) {
                                   value={
                                     field.value instanceof Date
                                       ? field.value
-                                      : field.value ? new Date(field.value) : undefined
+                                      : field.value
+                                        ? new Date(field.value)
+                                        : undefined
                                   }
                                 />
                               </FormControl>
@@ -215,7 +299,10 @@ export function ProfileOverview({ user }: ProfileOverviewProps) {
                             <FormItem>
                               <FormLabel>Degree Name</FormLabel>
                               <FormControl>
-                                <Input placeholder="e.g. master" {...field} />
+                                <Input
+                                  placeholder="e.g. Tum BWL (cringe)"
+                                  {...field}
+                                />
                               </FormControl>
                               <FormMessage />
                             </FormItem>
@@ -228,7 +315,7 @@ export function ProfileOverview({ user }: ProfileOverviewProps) {
                             <FormItem>
                               <FormLabel>Degree Level</FormLabel>
                               <FormControl>
-                                <Input placeholder="?" {...field} />
+                                <Input placeholder="e.g. master" {...field} />
                               </FormControl>
                               <FormMessage />
                             </FormItem>
@@ -260,29 +347,69 @@ export function ProfileOverview({ user }: ProfileOverviewProps) {
                         />
                       </div>
                     </div>
+                    <div className="flex flex-row justify-end">
+                      <Button className="w-[160px]" type="submit">
+                        Change Profile
+                      </Button>
+                    </div>
+                  </div>
+                </form>
+              </Form>
+
+              <Form {...contactFrom}>
+                <form
+                  // eslint-disable-next-line @typescript-eslint/no-misused-promises
+                  onSubmit={contactFrom.handleSubmit(onSubmitUpdateContact)}
+                  className="space-y-8"
+                >
+                  <div className="flex flex-col gap-2">
+                    <div className="felx flex-col items-start gap-0">
+                      <div className="flex items-center justify-between">
+                        <h2 className="text-lg font-bold ">Contacts</h2>
+                        <ContactIcon className="w-5" />
+                      </div>
+                      <Divider className="m-1" />
+                    </div>
                     <div className="flex flex-col gap-2">
-                      <div className="felx flex-col items-start gap-0">
-                        <div className="flex items-center justify-between">
-                          <h2 className="text-lg font-bold ">Contacts</h2>
-                          <AcademicCapIcon className="w-5" />
-                        </div>
-                        <Divider className="m-1" />
-                      </div>
-                      <div className="flex flex-col gap-2">
-                        <FormField
-                          control={profileForm.control}
-                          name="university"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>University</FormLabel>
-                              <FormControl>
-                                <Input placeholder="e.g. tum" {...field} />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                      </div>
+                      <FormField
+                        control={contactFrom.control}
+                        name="linkedIn"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>LinkedIn</FormLabel>
+                            <FormControl>
+                              <Input placeholder="e.g. tum" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={contactFrom.control}
+                        name="gitHub"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>GitHub</FormLabel>
+                            <FormControl>
+                              <Input placeholder="e.g. tum" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={contactFrom.control}
+                        name="phone"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Tele</FormLabel>
+                            <FormControl>
+                              <Input placeholder="e.g. tum" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
                     </div>
                     <div className="flex flex-row justify-end">
                       <Button className="w-[160px]" type="submit">
@@ -292,6 +419,7 @@ export function ProfileOverview({ user }: ProfileOverviewProps) {
                   </div>
                 </form>
               </Form>
+
               <Form {...userForm}>
                 <form
                   // eslint-disable-next-line @typescript-eslint/no-misused-promises

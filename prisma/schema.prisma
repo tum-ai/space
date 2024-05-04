@@ -80,7 +80,7 @@ model Contact {
   id        Int         @id @default(autoincrement())
   profileId Int
   type      ContactType
-  username  String      @unique
+  username  String      
   createdAt DateTime    @default(now())
   updatedAt DateTime    @updatedAt
   profile   Profile     @relation(fields: [profileId], references: [id])
@@ -191,6 +191,7 @@ enum ContactType {
   FACEBOOK
   INSTAGRAM
   PHONE
+  LINKEDIN
 }
 
 enum DepartmentRole {

@@ -18,5 +18,5 @@ export const ProfileSchema = z.object({
     .optional(),
   degreeName: z.string().optional(),
   degreeLevel: z.string().optional(),
-  degreeSemester: z.number().optional(),
+  degreeSemester: z.number().positive().optional(),
 });
