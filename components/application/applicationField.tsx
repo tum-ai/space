@@ -40,6 +40,7 @@ const ApplicationValue = ({ field }: ApplicationFieldProps) => {
             {field.options!.map((option) => (
               <div key={option.id} className="flex items-center space-x-2">
                 <Checkbox
+                  disabled
                   checked={
                     !!(field.value as string[]).find(
                       (value) => value === option.id,
@@ -60,7 +61,7 @@ const ApplicationValue = ({ field }: ApplicationFieldProps) => {
 
       return (
         <div className="mt-3 flex items-center space-x-2">
-          <Checkbox checked={field.value} />
+          <Checkbox disabled checked={field.value} />
           <label htmlFor="terms" className="text-sm font-medium leading-none">
             Accept
           </label>
@@ -71,7 +72,7 @@ const ApplicationValue = ({ field }: ApplicationFieldProps) => {
       const value = field.options?.find((opt) => opt.id === field.value?.at(0));
       if (value) {
         return (
-          <Select value={value.id}>
+          <Select disabled value={value.id}>
             <SelectTrigger className="w-full">
               <SelectValue />
             </SelectTrigger>
@@ -100,7 +101,7 @@ const ApplicationValue = ({ field }: ApplicationFieldProps) => {
       return <p>No value</p>;
 
     case "TEXTAREA":
-      return <Textarea defaultValue={field.value} />;
+      return <Textarea readOnly defaultValue={field.value} />;
 
     case "INPUT_TEXT":
       return <Input readOnly value={field.value} />;
