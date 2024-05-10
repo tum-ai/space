@@ -32,4 +32,15 @@ export const profileRouter = createTRPCRouter({
         },
       });
     }),
+  create: protectedProcedure
+    .input(ProfileSchema)
+    .mutation(async ({ input, ctx }) => {
+      return await ctx.db.profile.create({
+        data: {
+          userId: input.userId,
+          // TODO: Add logic to change activityStatus to inactive if user is not active
+          activityStatus: "active",
+        },
+      });
+    }),
 });

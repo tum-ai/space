@@ -30,6 +30,7 @@ import { Divider } from "@tremor/react";
 import { Button } from "@components/ui/button";
 import { Avatar, AvatarImage, AvatarFallback } from "@components/ui/avatar";
 import { BirthDatePicker } from "./datePicker";
+import { ComboBox } from "./comboBox";
 import { Textarea } from "@components/ui/textarea";
 import { Input } from "@components/ui/input";
 import { ProfileSchema } from "@lib/schemas/profile";
@@ -47,11 +48,13 @@ interface ProfileOverviewProps {
 }
 
 const ContactInputSchema = z.object({
-  linkedIn: z.string().url().or(z.literal("")),
-  gitHub: z.string().url().or(z.literal("")),
+  linkedIn: z.string().url().optional().or(z.literal("")),
+  gitHub: z.string().url().optional().or(z.literal("")),
+  instagram: z.string().optional().or(z.literal("")),
   phone: z
     .string()
     .regex(/^\+?[0-9]+$/)
+    .optional()
     .or(z.literal("")),
 });
 
@@ -63,6 +66,9 @@ export function ProfileOverview({ user, contacts }: ProfileOverviewProps) {
   );
   const gitHubContact = contacts.find(
     (contact) => contact.type === ContactType.GITHUB,
+  );
+  const instagramContact = contacts.find(
+    (contact) => contact.type === ContactType.INSTAGRAM,
   );
   const phoneContact = contacts.find(
     (contact) => contact.type === ContactType.PHONE,
@@ -83,6 +89,8 @@ export function ProfileOverview({ user, contacts }: ProfileOverviewProps) {
     defaultValues: {
       linkedIn: contacts.find((c) => c.type === ContactType.LINKEDIN)?.username,
       gitHub: contacts.find((c) => c.type === ContactType.GITHUB)?.username,
+      instagram: contacts.find((c) => c.type === ContactType.INSTAGRAM)
+        ?.username,
       phone: contacts.find((c) => c.type === ContactType.PHONE)?.username,
     },
   });
@@ -105,6 +113,7 @@ export function ProfileOverview({ user, contacts }: ProfileOverviewProps) {
   const createContactMutation = api.contact.create.useMutation();
   const updateContactMutation = api.contact.update.useMutation();
   const updateUserMutation = api.user.update.useMutation();
+  const createProfileMutation = api.profile.create.useMutation();
 
   async function onSubmitProfile(values: z.infer<typeof ProfileSchema>) {
     const id = toast.loading("updating profile");
@@ -117,10 +126,21 @@ export function ProfileOverview({ user, contacts }: ProfileOverviewProps) {
     }
   }
 
+  async function createNewProfile(userId: string) {
+    const id = toast.loading("creating profile");
+    try {
+      await createProfileMutation.mutateAsync({ userId });
+      toast.success("Successfully created profile", { id });
+      window.location.reload();
+    } catch (err) {
+      toast.error("Failed to create profile", { id });
+    }
+  }
+
   async function onSubmitUpdateContact(
     values: z.infer<typeof ContactInputSchema>,
   ) {
-    const id = toast.loading("updateing contact");
+    const id = toast.loading("updating contact");
     try {
       async function createOrUpdateContact(
         existingContact: z.infer<typeof ContactSchema> | undefined,
@@ -146,6 +166,11 @@ export function ProfileOverview({ user, contacts }: ProfileOverviewProps) {
         username: values.gitHub ?? "",
         type: ContactType.GITHUB,
       };
+      const newInstagramContact: z.infer<typeof ContactSchemaWithProfileId> = {
+        profileId: profile?.id ?? 0,
+        username: values.instagram ?? "",
+        type: ContactType.INSTAGRAM,
+      };
       const newPhoneContact: z.infer<typeof ContactSchemaWithProfileId> = {
         profileId: profile?.id ?? 0,
         username: values.phone ?? "",
@@ -154,6 +179,7 @@ export function ProfileOverview({ user, contacts }: ProfileOverviewProps) {
 
       await createOrUpdateContact(linkedInContact, newLinkedInContact);
       await createOrUpdateContact(gitHubContact, newGitHubContact);
+      await createOrUpdateContact(instagramContact, newInstagramContact);
       await createOrUpdateContact(phoneContact, newPhoneContact);
 
       toast.success("Successfully updated contact", { id });
@@ -199,7 +225,7 @@ export function ProfileOverview({ user, contacts }: ProfileOverviewProps) {
               </div>
             </div>
           </div>
-          {profile && (
+          {profile ? (
             <div className="flex flex-col gap-12">
               <Form {...profileForm}>
                 <form
@@ -286,7 +312,26 @@ export function ProfileOverview({ user, contacts }: ProfileOverviewProps) {
                             <FormItem>
                               <FormLabel>University</FormLabel>
                               <FormControl>
-                                <Input placeholder="e.g. tum" {...field} />
+                                <ComboBox
+                                  className="w-full"
+                                  placeholder="e.g. Technical University of Munich"
+                                  options={[
+                                    {
+                                      label: "Technical University of Munich",
+                                      value: "tum",
+                                    },
+                                    {
+                                      label: "Ludwig Maximilian University",
+                                      value: "lmu",
+                                    },
+                                    {
+                                      label: "Friedrich-Alexander University",
+                                      value: "fau",
+                                    },
+                                    { label: "Other", value: "other" },
+                                  ]}
+                                  {...field}
+                                />
                               </FormControl>
                               <FormMessage />
                             </FormItem>
@@ -300,7 +345,7 @@ export function ProfileOverview({ user, contacts }: ProfileOverviewProps) {
                               <FormLabel>Degree Name</FormLabel>
                               <FormControl>
                                 <Input
-                                  placeholder="e.g. Tum BWL (cringe)"
+                                  placeholder="e.g. computer science"
                                   {...field}
                                 />
                               </FormControl>
@@ -315,7 +360,17 @@ export function ProfileOverview({ user, contacts }: ProfileOverviewProps) {
                             <FormItem>
                               <FormLabel>Degree Level</FormLabel>
                               <FormControl>
-                                <Input placeholder="e.g. master" {...field} />
+                                <ComboBox
+                                  className="w-full"
+                                  placeholder="Select degree level"
+                                  options={[
+                                    { label: "Bachelor", value: "bachelor" },
+                                    { label: "Master", value: "master" },
+                                    { label: "PhD", value: "phd" },
+                                    { label: "Other", value: "other" },
+                                  ]}
+                                  {...field}
+                                />
                               </FormControl>
                               <FormMessage />
                             </FormItem>
@@ -378,7 +433,10 @@ export function ProfileOverview({ user, contacts }: ProfileOverviewProps) {
                           <FormItem>
                             <FormLabel>LinkedIn</FormLabel>
                             <FormControl>
-                              <Input placeholder="e.g. tum" {...field} />
+                              <Input
+                                placeholder="https://www.linkedin.com/in/yourname"
+                                {...field}
+                              />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -391,7 +449,26 @@ export function ProfileOverview({ user, contacts }: ProfileOverviewProps) {
                           <FormItem>
                             <FormLabel>GitHub</FormLabel>
                             <FormControl>
-                              <Input placeholder="e.g. tum" {...field} />
+                              <Input
+                                placeholder="https://github.com/yourname"
+                                {...field}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={contactFrom.control}
+                        name="instagram"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Instagram</FormLabel>
+                            <FormControl>
+                              <Input
+                                placeholder="https://www.instagram.com/yourname"
+                                {...field}
+                              />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -402,9 +479,12 @@ export function ProfileOverview({ user, contacts }: ProfileOverviewProps) {
                         name="phone"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Tele</FormLabel>
+                            <FormLabel>Phone Number</FormLabel>
                             <FormControl>
-                              <Input placeholder="e.g. tum" {...field} />
+                              <Input
+                                placeholder="e.g. +49 199 8877665"
+                                {...field}
+                              />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -516,6 +596,16 @@ export function ProfileOverview({ user, contacts }: ProfileOverviewProps) {
                   </div>
                 </form>
               </Form>
+            </div>
+          ) : (
+            <div className="flex flex-col items-center justify-stretch gap-4">
+              <p>No profile found. Do you want to create a new Profile?</p>
+              <Button
+                // eslint-disable-next-line @typescript-eslint/no-misused-promises
+                onClick={() => createNewProfile(user.id)}
+              >
+                Create Profile
+              </Button>
             </div>
           )}
         </div>
