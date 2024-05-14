@@ -1,3 +1,5 @@
+"use client";
+
 import { ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { useParams, usePathname } from "next/navigation";
@@ -6,16 +8,20 @@ export default function Breadcrumbs({ title }: { title: string }) {
   const paths = usePathname().split("/").filter(Boolean).slice(0, -1);
   const pathParams = useParams();
 
-  console.log("pathParams", pathParams);
-  console.log("paths", paths);
+  const originalPaths = usePathname().split("/").filter(Boolean);
 
   // next doesnt expose the static path in the pathname
-  // we therefore have to match it manually
+  // we therefore have to match it manually, which is cumbersome
   if (paths.includes("opportunities")) {
     const opportunityIndex = paths.indexOf("opportunities");
+    const containsOpportunityId = "opportunity_id" in pathParams;
     const opportunityId = paths[opportunityIndex + 1];
-    if (opportunityId && !isNaN(Number(opportunityId))) {
-      // remove the id from the path
+    if (
+      containsOpportunityId &&
+      opportunityId &&
+      !isNaN(Number(opportunityId))
+    ) {
+      // remove the id from the displayed path
       paths.splice(opportunityIndex + 1, 1);
     }
   }
@@ -28,7 +34,14 @@ export default function Breadcrumbs({ title }: { title: string }) {
       {paths.map((path, index) => (
         <div key={index} className="flex items-center">
           <ChevronRight className="h-4 w-4 text-muted-foreground" />
-          <Link href={`/${path}`}>
+          <Link
+            href={
+              "/" +
+              originalPaths
+                .slice(0, originalPaths.findIndex((p) => p === path) + 1)
+                .join("/")
+            }
+          >
             <div className="text-muted-foreground">
               {path.slice(0, 1).toUpperCase() + path.slice(1)}
             </div>

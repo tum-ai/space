@@ -5,6 +5,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getServerAuthSession } from "server/auth";
 import db from "server/db";
+import Breadcrumbs from "@components/ui/breadcrumbs";
 
 export const dynamic = "force-dynamic";
 
@@ -35,9 +36,12 @@ export default async function OpportunitiesPage() {
     <div className="space-y-8 p-8">
       <div className="flex flex-col gap-8">
         <div className="flex justify-between">
-          <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
-            Opportunities
-          </h1>
+          <div>
+            <Breadcrumbs title="Opportunities" />
+            <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
+              Opportunities
+            </h1>
+          </div>
           <Link href="./opportunities/create">
             <Button>
               <Plus className="mr-2" />
