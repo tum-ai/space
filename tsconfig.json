@@ -45,6 +45,6 @@
     "build/types/**/*.ts",
     ".next/types/**/*.ts",
     "app/profile/page.tsx.client"
-, "lib/mock.mtsx"  ],
+  ],
   "exclude": ["node_modules"]
 }
