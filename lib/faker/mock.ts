@@ -1,47 +1,22 @@
 import { faker } from "@faker-js/faker";
-import { Person } from "./types/person";
+import { Person } from "../types/person";
 import { UniqueEnforcer } from "enforce-unique";
 import { z } from "zod";
 import {
   OpportunitySchema,
   PhaseSchema,
   QuestionnaireSchema,
-} from "./schemas/opportunity";
-import { Question } from "./types/question";
-import db from "../server/db";
+} from "../schemas/opportunity";
+import { Question } from "../types/question";
+import db from "../../server/db";
 import { v4 as uuidv4 } from "uuid";
-import { Command } from "commander";
-
-const program = new Command();
-
-program
-  .option("-u, --users <number>", "number of users to generate", "5")
-  .option(
-    "-o, --opportunities <number>",
-    "number of opportunities to generate",
-    "2",
-  )
-  .option(
-    "-minp <number>",
-    "minimal number of phases to generate per opportunitiy",
-    "2",
-  )
-  .option(
-    "-maxp <number>",
-    "maximal number of phases to generate per opportunitiy",
-    "5",
-  )
-  .option(
-    "-minq <number>",
-    "minimal number of questionnaires to generate per phase",
-    "2",
-  )
-  .option(
-    "-maxq <number>",
-    "maximal number of questionnaires to generate per phase",
-    "5",
-  )
-  .parse(process.argv);
+import {
+  emailUniqueEnforcer,
+  keyUniqueEnforcer,
+  now,
+  program,
+  uuidUniqueEnforcer,
+} from "./utils";
 
 const options = program.opts();
 const numberOfUsers = parseInt(options.users, 10);
@@ -50,12 +25,6 @@ const minNumberOfPhases = parseInt(options.minp, 10);
 const maxNumberOfPhases = parseInt(options.maxp, 10);
 const minNumberOfQuestionnaires = parseInt(options.minq, 10);
 const maxNumberOfQuestionnaires = parseInt(options.maxq, 10);
-
-const now = new Date();
-
-const emailUniqueEnforcer = new UniqueEnforcer();
-const keyUniqueEnforcer = new UniqueEnforcer();
-const uuidUniqueEnforcer = new UniqueEnforcer();
 
 let generatedUsers: Person[];
 
