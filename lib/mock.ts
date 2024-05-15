@@ -10,6 +10,46 @@ import {
 import { Question } from "./types/question";
 import db from "../server/db";
 import { v4 as uuidv4 } from "uuid";
+import { Command } from "commander";
+
+const program = new Command();
+
+program
+  .option("-u, --users <number>", "number of users to generate", "5")
+  .option(
+    "-o, --opportunities <number>",
+    "number of opportunities to generate",
+    "2",
+  )
+  .option(
+    "-minp <number>",
+    "minimal number of phases to generate per opportunitiy",
+    "2",
+  )
+  .option(
+    "-maxp <number>",
+    "maximal number of phases to generate per opportunitiy",
+    "5",
+  )
+  .option(
+    "-minq <number>",
+    "minimal number of questionnaires to generate per phase",
+    "2",
+  )
+  .option(
+    "-maxq <number>",
+    "maximal number of questionnaires to generate per phase",
+    "5",
+  )
+  .parse(process.argv);
+
+const options = program.opts();
+const numberOfUsers = parseInt(options.users, 10);
+const numberOfOpportunities = parseInt(options.opportunities, 10);
+const minNumberOfPhases = parseInt(options.minp, 10);
+const maxNumberOfPhases = parseInt(options.maxp, 10);
+const minNumberOfQuestionnaires = parseInt(options.minq, 10);
+const maxNumberOfQuestionnaires = parseInt(options.maxq, 10);
 
 const now = new Date();
 
@@ -21,9 +61,9 @@ let generatedUsers: Person[];
 
 try {
   await db.$connect;
-  await generateUsers(5);
+  await generateUsers(numberOfUsers);
   const users = await fetchAllUsers();
-  console.log("All users:", users)
+  console.log("All users:", users);
   generatedUsers =
     users?.map((user) => ({
       id: user.id!,
@@ -31,7 +71,7 @@ try {
       image: user.image!,
     })) || [];
   console.log("Users generated!");
-  await generateOpportunities();
+  await generateOpportunities(numberOfOpportunities);
   console.log("Opportunities generated!");
 } catch (error) {
   await db.$disconnect();
@@ -73,8 +113,10 @@ function generateUser() {
   };
 }
 
-async function generateOpportunities() {
-  const opportunities = Array.from({ length: 2 }, () => generateOpportunity());
+async function generateOpportunities(number: number) {
+  const opportunities = Array.from({ length: number }, () =>
+    generateOpportunity(),
+  );
 
   // createMany leads to errors
   for (const opportunity of opportunities) {
@@ -85,11 +127,9 @@ async function generateOpportunities() {
         start: opportunity.generalInformation.start,
         end: opportunity.generalInformation.end,
         admins: {
-          connect: opportunity.generalInformation.admins
-            .map((admin) => ({
-              id: admin.id,
-            }))
-            .concat(),
+          connect: opportunity.generalInformation.admins.map((admin) => ({
+            id: admin.id,
+          })),
         },
         phases: {
           create: opportunity.phases.map((phase) => ({
@@ -122,7 +162,6 @@ function generateOpportunity(): z.infer<typeof OpportunitySchema> {
 }
 
 function generateGeneralInformation() {
-  const lenght = faker.number.int({ min: 1, max: 4 });
   const start = faker.date.soon({ days: 10, refDate: now });
   const end = new Date(
     start.getTime() +
@@ -139,7 +178,10 @@ function generateGeneralInformation() {
 }
 
 export function generatePhases(): z.infer<typeof PhaseSchema>[] {
-  const length = faker.number.int({ min: 2, max: 5 });
+  const length = faker.number.int({
+    min: minNumberOfPhases,
+    max: maxNumberOfPhases,
+  });
   return Array.from({ length: length }, () => generatePhase());
 }
 
@@ -147,7 +189,12 @@ function generatePhase(): z.infer<typeof PhaseSchema> {
   return {
     name: faker.word.words(2),
     questionnaires: Array.from(
-      { length: faker.number.int({ min: 2, max: 5 }) },
+      {
+        length: faker.number.int({
+          min: minNumberOfQuestionnaires,
+          max: maxNumberOfQuestionnaires,
+        }),
+      },
       () => generateQuestionnaire(),
     ),
   };
