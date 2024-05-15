@@ -21,7 +21,15 @@ let generatedUsers: Person[];
 
 try {
   await db.$connect;
-  generatedUsers = await generateUsers(5);
+  await generateUsers(5);
+  const users = await fetchAllUsers();
+  console.log("All users:", users)
+  generatedUsers =
+    users?.map((user) => ({
+      id: user.id!,
+      name: user.name!,
+      image: user.image!,
+    })) || [];
   console.log("Users generated!");
   await generateOpportunities();
   console.log("Opportunities generated!");
@@ -30,6 +38,15 @@ try {
   console.error(error);
 } finally {
   await db.$disconnect();
+}
+
+async function fetchAllUsers() {
+  try {
+    const users = await db.user.findMany();
+    return users;
+  } catch (error) {
+    console.error("Error fetching users:", error);
+  }
 }
 
 async function generateUsers(number: number): Promise<Person[]> {
@@ -68,9 +85,11 @@ async function generateOpportunities() {
         start: opportunity.generalInformation.start,
         end: opportunity.generalInformation.end,
         admins: {
-          connect: opportunity.generalInformation.admins.map((admin) => ({
-            id: admin.id,
-          })),
+          connect: opportunity.generalInformation.admins
+            .map((admin) => ({
+              id: admin.id,
+            }))
+            .concat(),
         },
         phases: {
           create: opportunity.phases.map((phase) => ({
@@ -111,7 +130,7 @@ function generateGeneralInformation() {
   );
 
   return {
-    admins: faker.helpers.arrayElements(generatedUsers, lenght),
+    admins: generatedUsers,
     title: faker.lorem.word(),
     description: faker.lorem.paragraph(),
     start: start,
