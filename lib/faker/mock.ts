@@ -20,10 +20,12 @@ import {
 const options = program.opts();
 const numberOfUsers = parseInt(options.users, 10);
 const numberOfOpportunities = parseInt(options.opportunities, 10);
-const minNumberOfPhases = parseInt(options.minp, 10);
-const maxNumberOfPhases = parseInt(options.maxp, 10);
-const minNumberOfQuestionnaires = parseInt(options.minq, 10);
-const maxNumberOfQuestionnaires = parseInt(options.maxq, 10);
+const minNumberOfPhases = parseInt(options.minphases, 10);
+const maxNumberOfPhases = parseInt(options.maxphases, 10);
+const minNumberOfQuestionnaires = parseInt(options.minquestionnaires, 10);
+const maxNumberOfQuestionnaires = parseInt(options.maxquestionnaires, 10);
+
+console.log(minNumberOfPhases, maxNumberOfPhases)
 
 let generatedUsers: Person[];
 
