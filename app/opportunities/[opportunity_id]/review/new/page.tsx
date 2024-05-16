@@ -57,8 +57,6 @@ export default async function StartReview({ params }: StartReviewProps) {
     }
   }
 
-  console.log(suitableApplication, suitableQuestionnaire);
-
   if (!suitableApplication || !suitableQuestionnaire) {
     // No suitable application or questionnaire found
     return (
