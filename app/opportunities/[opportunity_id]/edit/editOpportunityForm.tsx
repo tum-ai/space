@@ -14,6 +14,7 @@ import { api } from "trpc/react";
 import { toast } from "sonner";
 import { Button } from "@components/ui/button";
 import { DeleteButton } from "./_components/deleteButton";
+import Breadcrumbs from "@components/ui/breadcrumbs";
 export interface EditOpportunityFormProps {
   initialValues: UseFormProps<
     z.infer<typeof OpportunitySchema>
@@ -50,6 +51,9 @@ export const EditOpportunityForm = ({
           <div className="mb-12 flex flex-col space-y-6">
             <div className="flex justify-between">
               <div className="flex flex-col gap-3">
+                <Breadcrumbs
+                  title={"Edit: " + form.getValues().generalInformation.title}
+                />
                 <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
                   Edit opportunity
                 </h1>

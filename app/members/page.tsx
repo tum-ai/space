@@ -4,6 +4,7 @@ import db from "server/db";
 import { DepartmentRole, SpaceRole } from "@prisma/client";
 import { getServerAuthSession } from "server/auth";
 import { redirect } from "next/navigation";
+import Breadcrumbs from "@components/ui/breadcrumbs";
 
 export default async function MembersPage() {
   const session = await getServerAuthSession();
@@ -61,6 +62,7 @@ export default async function MembersPage() {
   return (
     <div className="space-y-8 p-8">
       <div>
+        <Breadcrumbs title="Members" />
         <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
           Members list
         </h1>

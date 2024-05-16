@@ -6,6 +6,7 @@ import { DataTable } from "@components/ui/data-table";
 import { Button } from "@components/ui/button";
 import { FileCheck } from "lucide-react";
 import Link from "next/link";
+import Breadcrumbs from "@components/ui/breadcrumbs";
 
 interface ReviewPageProps {
   params: { opportunity_id: string };
@@ -14,6 +15,10 @@ interface ReviewPageProps {
 export default async function ReviewPage({ params }: ReviewPageProps) {
   const session = await getServerAuthSession();
   if (!session?.user?.id) redirect("/auth");
+
+  const opportunity = await db.opportunity.findUnique({
+    where: { id: Number(params.opportunity_id) },
+  });
 
   const reviews = await db.review.findMany({
     where: {
@@ -30,6 +35,7 @@ export default async function ReviewPage({ params }: ReviewPageProps) {
     <div className="space-y-8 p-8">
       <div className="flex justify-between">
         <div>
+          <Breadcrumbs title={`Reviews: ${opportunity?.title}`} />
           <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
             Your reviews
           </h1>

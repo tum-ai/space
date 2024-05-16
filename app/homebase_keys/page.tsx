@@ -3,6 +3,7 @@ import db from "server/db";
 import { KeyCard } from "./_components/key-card";
 import { redirect } from "next/navigation";
 import { CreateKeyButton } from "./_components/create-key-button";
+import Breadcrumbs from "@components/ui/breadcrumbs";
 
 export default async function HomebaseKeys() {
   const session = await getServerAuthSession();
@@ -16,6 +17,7 @@ export default async function HomebaseKeys() {
       <div className="mb-12 flex flex-col space-y-6">
         <div className="flex justify-between">
           <div className="flex flex-col gap-3">
+            <Breadcrumbs title="Keys" />
             <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
               Homebase key tracking
             </h1>
