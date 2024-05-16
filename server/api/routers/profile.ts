@@ -6,7 +6,6 @@ export const profileRouter = createTRPCRouter({
   update: protectedProcedure
     .input(ProfileSchema)
     .mutation(async ({ input, ctx }) => {
-      // Update phases and questionnaires
 
       await ctx.db.profile.update({
         where: {
@@ -38,7 +37,6 @@ export const profileRouter = createTRPCRouter({
       return await ctx.db.profile.create({
         data: {
           userId: input.userId,
-          // TODO: Add logic to change activityStatus to inactive if user is not active
           activityStatus: "active",
         },
       });

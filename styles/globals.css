@@ -49,7 +49,6 @@
   }
 }
 
-/* for the date Picker in order to work */
 .rdp-vhidden {
   @apply hidden;
 }

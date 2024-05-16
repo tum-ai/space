@@ -1,7 +1,6 @@
 import { z } from "zod";
 import { ContactType } from "@prisma/client";
 
-// create schema with id
 export const ContactSchema = z.object({
   id: z.number(),
   profileId: z.number(),
