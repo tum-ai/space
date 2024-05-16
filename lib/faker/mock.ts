@@ -25,24 +25,27 @@ const maxNumberOfPhases = parseInt(options.maxphases, 10);
 const minNumberOfQuestionnaires = parseInt(options.minquestionnaires, 10);
 const maxNumberOfQuestionnaires = parseInt(options.maxquestionnaires, 10);
 
-console.log(minNumberOfPhases, maxNumberOfPhases)
-
-let generatedUsers: Person[];
+let allPersons: Person[];
 
 try {
   await db.$connect;
-  await generateUsers(numberOfUsers);
-  const users = await fetchAllUsers();
-  console.log("All users:", users);
-  generatedUsers =
-    users?.map((user) => ({
+  const generatedUsers = await generateUsers(numberOfUsers);
+  const allUsers = await fetchAllUsers();
+  allPersons =
+    allUsers?.map((user) => ({
       id: user.id!,
       name: user.name!,
       image: user.image!,
     })) || [];
-  console.log("Users generated!");
-  await generateOpportunities(numberOfOpportunities);
-  console.log("Opportunities generated!");
+  console.log(
+    `${numberOfUsers} users generated: `,
+    generatedUsers.map((u) => u.name),
+  );
+  const opportunities = await generateOpportunities(numberOfOpportunities);
+  console.log(
+    `${numberOfOpportunities} opportunities generated: `,
+    opportunities.map((o) => o.generalInformation.title),
+  );
 } catch (error) {
   await db.$disconnect();
   console.error(error);
@@ -61,11 +64,9 @@ async function fetchAllUsers() {
 
 async function generateUsers(number: number): Promise<Person[]> {
   const generatedUsers = Array.from({ length: number }, () => generateUser());
-  console.log("Create");
   const result = await db.user.createMany({
     data: generatedUsers,
   });
-  console.log(result);
   const users = generatedUsers.map((u) => ({
     id: u.id,
     name: u.name!,
@@ -122,6 +123,8 @@ async function generateOpportunities(number: number) {
       },
     });
   }
+
+  return opportunities;
 }
 
 function generateOpportunity(): z.infer<typeof OpportunitySchema> {
@@ -139,7 +142,7 @@ function generateGeneralInformation() {
   );
 
   return {
-    admins: generatedUsers,
+    admins: allPersons,
     title: faker.lorem.word(),
     description: faker.lorem.paragraph(),
     start: start,
@@ -180,7 +183,7 @@ function generateQuestionnaire(): z.infer<typeof QuestionnaireSchema> {
       generateQuestion,
     ),
     conditions: [],
-    reviewers: faker.helpers.arrayElements(generatedUsers, 2),
+    reviewers: faker.helpers.arrayElements(allPersons, 2),
   };
 }
 
