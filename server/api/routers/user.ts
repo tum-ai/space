@@ -1,6 +1,7 @@
 import { createTRPCRouter, protectedProcedure } from "server/api/trpc";
 import { UserSchema } from "@lib/schemas/user";
 import { z } from "zod";
+import { TRPCError } from "@trpc/server";
 
 export const userRouter = createTRPCRouter({
   getAll: protectedProcedure.query(async ({ ctx }) => {
@@ -28,6 +29,14 @@ export const userRouter = createTRPCRouter({
   update: protectedProcedure
     .input(UserSchema)
     .mutation(async ({ input, ctx }) => {
+
+      if (ctx.session.user.id !== input.id) {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "You need to be an admin of this opportunity",
+        });
+      }
+
       await ctx.db.user.update({
         where: {
           id: input.id,
