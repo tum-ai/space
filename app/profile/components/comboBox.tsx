@@ -72,7 +72,7 @@ export const ComboBox: FC<ComboBoxProps> = ({
               - Implementation Suggestion: Modify the component to include a state that captures user input and dynamically creates an option based on this input if it does not match existing options. This should only be active when `strict` is set to false.
               - I dont wanna do this right now, so I'll just add a message that says "Nothing found. Do Other if not included"
             */}
-            <CommandEmpty>Nothing found. Do Other if not included</CommandEmpty>
+            <CommandEmpty>Nothing found</CommandEmpty>
             <CommandGroup>
               {options.map((option) => (
                 <CommandItem

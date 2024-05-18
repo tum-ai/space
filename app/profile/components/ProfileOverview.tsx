@@ -120,7 +120,6 @@ export function ProfileOverview({ user, contacts }: ProfileOverviewProps) {
     try {
       await updateProfileMutation.mutateAsync(values);
       toast.success("Successfully updated profile", { id });
-      window.location.reload();
     } catch (err) {
       toast.error("Failed to update profile", { id });
     }
@@ -131,7 +130,6 @@ export function ProfileOverview({ user, contacts }: ProfileOverviewProps) {
     try {
       await createProfileMutation.mutateAsync({ userId });
       toast.success("Successfully created profile", { id });
-      window.location.reload();
     } catch (err) {
       toast.error("Failed to create profile", { id });
     }
@@ -183,7 +181,6 @@ export function ProfileOverview({ user, contacts }: ProfileOverviewProps) {
       await createOrUpdateContact(phoneContact, newPhoneContact);
 
       toast.success("Successfully updated contact", { id });
-      window.location.reload();
     } catch (err) {
       toast.error("Failed to update contact", { id });
     }
@@ -194,7 +191,6 @@ export function ProfileOverview({ user, contacts }: ProfileOverviewProps) {
     try {
       await updateUserMutation.mutateAsync(values);
       toast.success("Successfully updated user", { id });
-      window.location.reload();
     } catch (err) {
       toast.error("Failed to update user", { id });
     }
