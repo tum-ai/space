@@ -3,6 +3,7 @@ import { ProfileOverview } from "../components/ProfileOverview";
 import { Search } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@components/ui/button";
+import { getServerAuthSession } from "server/auth";
 
 export default async function ProfilePage({
   params,
@@ -13,13 +14,18 @@ export default async function ProfilePage({
     where: { id: params.profile_id },
     include: { profile: true },
   });
-  const profileId = user?.profile.at(0)?.id;
+  const session = await getServerAuthSession();
 
-  const contacts = await db.contact.findMany({
-    where: { profileId: profileId },
-  });
+  if (!session?.user) {
+    return {
+      redirect: {
+        destination: "/auth",
+        permanent: false,
+      },
+    };
+  }
 
-  if (!user) {
+  if (!user || session.user.id !== user.id) {
     return (
       <div className="flex h-[50vh] flex-col items-center justify-center">
         <div className="flex flex-col items-center text-muted-foreground">
@@ -33,6 +39,12 @@ export default async function ProfilePage({
       </div>
     );
   }
+
+  const profileId = user?.profile.at(0)?.id;
+
+  const contacts = await db.contact.findMany({
+    where: { profileId: profileId },
+  });
 
   return <ProfileOverview user={user} contacts={contacts} />;
 }
