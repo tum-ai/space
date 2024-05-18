@@ -3,9 +3,7 @@ import db from "server/db";
 import { fetchAllUsers, keyUniqueEnforcer, now, options, uuidUniqueEnforcer } from "./utils";
 import { Person } from "@lib/types/person";
 import { Question } from "@lib/types/question";
-import { Questionnaire } from "@lib/types/questionnaire";
-import { Opportunity } from "@lib/types/opportunity";
-import { Phase } from "@lib/types/phase";
+import { Opportunity, Phase, Questionnaire } from "@lib/types/opportunity";
 
 const minNumberOfPhases = parseInt(options.minphases, 10);
 const maxNumberOfPhases = parseInt(options.maxphases, 10);
