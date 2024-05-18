@@ -67,11 +67,6 @@ export const ComboBox: FC<ComboBoxProps> = ({
         <PopoverContent className={cn("w-[200px] p-0", className)}>
           <Command>
             <CommandInput placeholder={placeholder} />
-            {/* TODO: Implement a `strict` parameter for the ComboBox component. 
-              - Purpose: When `strict` is set to false, the component should allow users to enter any text and use it as a selectable option, effectively enabling freeform text input alongside predefined options.
-              - Implementation Suggestion: Modify the component to include a state that captures user input and dynamically creates an option based on this input if it does not match existing options. This should only be active when `strict` is set to false.
-              - I dont wanna do this right now, so I'll just add a message that says "Nothing found. Do Other if not included"
-            */}
             <CommandEmpty>Nothing found</CommandEmpty>
             <CommandGroup>
               {options.map((option) => (
