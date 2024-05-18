@@ -41,6 +41,7 @@ import {
 } from "@lib/schemas/contact";
 import { api } from "trpc/react";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 interface ProfileOverviewProps {
   user: Prisma.UserGetPayload<{ include: { profile: true } }>;
@@ -59,6 +60,7 @@ const ContactInputSchema = z.object({
 });
 
 export function ProfileOverview({ user, contacts }: ProfileOverviewProps) {
+  const router = useRouter();
   const profile = user.profile.at(0);
 
   const linkedInContact = contacts.find(
@@ -120,6 +122,7 @@ export function ProfileOverview({ user, contacts }: ProfileOverviewProps) {
     try {
       await updateProfileMutation.mutateAsync(values);
       toast.success("Successfully updated profile", { id });
+      router.refresh();
     } catch (err) {
       toast.error("Failed to update profile", { id });
     }
@@ -130,6 +133,7 @@ export function ProfileOverview({ user, contacts }: ProfileOverviewProps) {
     try {
       await createProfileMutation.mutateAsync({ userId });
       toast.success("Successfully created profile", { id });
+      router.refresh();
     } catch (err) {
       toast.error("Failed to create profile", { id });
     }
@@ -181,6 +185,7 @@ export function ProfileOverview({ user, contacts }: ProfileOverviewProps) {
       await createOrUpdateContact(phoneContact, newPhoneContact);
 
       toast.success("Successfully updated contact", { id });
+      router.refresh();
     } catch (err) {
       toast.error("Failed to update contact", { id });
     }
@@ -191,6 +196,7 @@ export function ProfileOverview({ user, contacts }: ProfileOverviewProps) {
     try {
       await updateUserMutation.mutateAsync(values);
       toast.success("Successfully updated user", { id });
+      window.location.reload();
     } catch (err) {
       toast.error("Failed to update user", { id });
     }
