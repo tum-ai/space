@@ -1,5 +1,6 @@
 import { UniqueEnforcer } from "enforce-unique";
 import { Command } from "commander";
+import db from "server/db";
 
 // Unique Enforcers
 export const emailUniqueEnforcer = new UniqueEnforcer();
@@ -24,19 +25,28 @@ program
   .option(
     "-maxp, --maxphases <number>",
     "maximal number of phases to generate per opportunity",
-    "5",
+    "4",
   )
   .option(
     "-minq, --minquestionnaires <number>",
     "minimal number of questionnaires to generate per phase",
-    "2",
+    "1",
   )
   .option(
     "-maxq, --maxquestionnaires <number>",
     "maximal number of questionnaires to generate per phase",
-    "5",
+    "3",
   )
   .parse(process.argv);
 
 export const options = program.opts();
 export const now = new Date();
+
+export async function fetchAllUsers() {
+  try {
+    const users = await db.user.findMany();
+    return users;
+  } catch (error) {
+    console.error("Error fetching users:", error);
+  }
+}
