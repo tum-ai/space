@@ -33,6 +33,13 @@ const TallyDropdown = z.object({
   options: z.array(z.object({ id: z.string(), text: z.string() })),
 });
 
+const TallyMatrix = z.object({
+  type: z.literal("MATRIX"),
+  value: z.record(z.array(z.string())),
+  columns: z.array(z.object({ id: z.string(), text: z.string() })),
+  rows: z.array(z.object({ id: z.string(), text: z.string() })),
+});
+
 export const TallyField = z
   .object({
     key: z.string(),
@@ -44,6 +51,7 @@ export const TallyField = z
       TallyMultipleChoice,
       TallyFileUpload,
       TallyDropdown,
+      TallyMatrix,
       z.object({
         type: z
           .literal("TEXTAREA")

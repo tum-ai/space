@@ -139,6 +139,24 @@ const ApplicationValue = ({ field }: ApplicationFieldProps) => {
           ))}
         </div>
       );
+
+    case "MATRIX":
+      return (
+        <div className="flex flex-row">
+          {field.rows.map((row) => (
+            <div key={`row-${row.id}`}>
+              {field.columns.map((column) => (
+                <div key={`column-${column.id}`}>
+                  <Checkbox
+                    disabled
+                    checked={field.value[row.id]?.includes(column.id)}
+                  />
+                </div>
+              ))}
+            </div>
+          ))}
+        </div>
+      );
   }
 };
 
