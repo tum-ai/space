@@ -1,32 +1,23 @@
 import { faker } from "@faker-js/faker";
 import db from "server/db";
 import {
-  fetchAllUsers,
   keyUniqueEnforcer,
   now,
   options,
   uuidUniqueEnforcer,
 } from "./utils";
-import { Person } from "@lib/types/person";
 import { Question } from "@lib/types/question";
 import { Opportunity, Phase, Questionnaire } from "@lib/types/opportunity";
+import { allPersons } from "./mock";
 
 const minNumberOfPhases = parseInt(options.minphases, 10);
 const maxNumberOfPhases = parseInt(options.maxphases, 10);
 const minNumberOfQuestionnaires = parseInt(options.minquestionnaires, 10);
 const maxNumberOfQuestionnaires = parseInt(options.maxquestionnaires, 10);
 
-let allPersons: Person[];
+
 
 export async function generateOpportunities(number: number) {
-  const allUsers = await fetchAllUsers();
-  allPersons =
-    allUsers?.map((user) => ({
-      id: user.id!,
-      name: user.name!,
-      image: user.image!,
-    })) || [];
-
   const opportunities = Array.from({ length: number }, () =>
     generateOpportunity(),
   );

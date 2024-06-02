@@ -1,12 +1,15 @@
 import db from "../../server/db";
 import { generateUsers } from "./user";
 import { generateOpportunities } from "./opportunities";
-import { options } from "./utils";
+import { fetchAllUsers, options } from "./utils";
 import { generateApplications } from "./applications";
 import { connectQuestionnaires } from "server/shared/application";
+import { Person } from "@lib/types/person";
+import { generateReviews } from "./reviews";
 
 const numberOfOpportunities = parseInt(options.opportunities, 10);
 const numberOfUsers = parseInt(options.users, 10);
+export let allPersons: Person[];
 
 try {
   await db.$connect;
@@ -16,6 +19,14 @@ try {
     `${numberOfUsers} users generated:`,
     generatedUsers.map((u) => u.name),
   );
+
+  const allUsers = await fetchAllUsers();
+  allPersons =
+    allUsers?.map((user) => ({
+      id: user.id!,
+      name: user.name!,
+      image: user.image!,
+    })) || [];
 
   const opportunities = await generateOpportunities(numberOfOpportunities);
   console.log(
@@ -49,6 +60,9 @@ try {
       await connectQuestionnaires(a, questionnaires);
     });
   }
+
+  const reviews = await generateReviews();
+  // console.log(reviews);
 } catch (error) {
   await db.$disconnect();
   console.error(error);

@@ -46,6 +46,16 @@ program
     "maximal number of applications to generate per opportunity",
     "5"
   )
+  .option(
+    "-minr, --minreviews <number>",
+    "minimal number of reviews to generate per opportunity",
+    "1"
+  )
+  .option(
+    "-maxr, --maxreviews <number>",
+    "maximal number of applications to generate per opportunity",
+    "5"
+  )
   .parse(process.argv);
 
 export const options = program.opts();
