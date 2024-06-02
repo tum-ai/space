@@ -75,7 +75,9 @@ function generateTallyData(): TallyData {
     formId: faker.string.nanoid(6),
     formName: faker.science.chemicalElement().name,
     createdAt: now.toISOString(),
-    fields: Array.from({ length: 2 }, () => generateTallyField()),
+    fields: Array.from({ length: faker.number.int({ min: 3, max: 6 }) }, () =>
+      generateTallyField(),
+    ),
   };
 }
 

@@ -42,13 +42,12 @@ export default async function StartReview({ params }: StartReviewProps) {
       );
 
       // User has not reviewed questionnaire and application together
-      const hasNotReviewed =
-        questionnaire.reviews.filter(
-          (review) =>
-            review.userId === session.user.id &&
-            review.questionnaireId === questionnaire.id &&
-            review.applicationId === application.id,
-        ).length === 0;
+      const hasNotReviewed = !questionnaire.reviews.some(
+        (review) =>
+          review.userId === session.user.id &&
+          review.questionnaireId === questionnaire.id &&
+          review.applicationId === application.id,
+      );
 
       const lessReviewsThanRequired =
         questionnaire.reviews.filter(
