@@ -125,6 +125,22 @@ Consider checking out the commands listed in /app/Makefile.
 
 > Please only use them if you know what you are doing!
 
+### Generating mock data
+
+Generate mock users, opportunities, applications and reviews using **faker** scripts.
+
+Run command:
+
+```bash
+~ bun db:seed
+```
+
+Look up command line options:
+
+```bash
+~ bun db:seed -h
+```
+
 ### Working on a Linear ticket
 
 Working with Linear tickets is very similar to working with GitHub issues.
