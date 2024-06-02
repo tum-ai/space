@@ -3,6 +3,7 @@ import { generateUsers } from "./user";
 import { generateOpportunities } from "./opportunities";
 import { options } from "./utils";
 import { generateApplications } from "./applications";
+import { connectQuestionnaires } from "server/shared/application";
 
 const numberOfOpportunities = parseInt(options.opportunities, 10);
 const numberOfUsers = parseInt(options.users, 10);
@@ -29,6 +30,25 @@ try {
     `${applications.length} applications generated:`,
     applications.map((a) => a.content.eventId),
   );
+
+  // connect applications to questionnaires
+  for (const o of opportunities) {
+    const [apps, questionnaires] = [
+      await db.application.findMany({
+        where: { opportunityId: o.id },
+      }),
+      await db.questionnaire.findMany({
+        where: { phase: { opportunityId: o.id } },
+      }),
+    ];
+
+    apps.forEach(async (a) => {
+      console.log(
+        `Connecting application with ID ${a.id} to questionnaires of opportunity with ID: ${o.id}`,
+      );
+      await connectQuestionnaires(a, questionnaires);
+    });
+  }
 } catch (error) {
   await db.$disconnect();
   console.error(error);

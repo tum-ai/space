@@ -20,7 +20,7 @@ enum NormalFieldTypes {
 
 type Application = {
   content: Tally;
-  opportunity: number;
+  opportunityId: number;
 };
 
 const minNumberOfApplications = parseInt(options.minapplications, 10);
@@ -43,7 +43,7 @@ export async function generateApplications(opportunityIds: number[]) {
     await db.application.create({
       data: {
         content: application.content,
-        opportunity: { connect: { id: application.opportunity } },
+        opportunity: { connect: { id: application.opportunityId } },
       },
     });
   }
@@ -54,7 +54,7 @@ export async function generateApplications(opportunityIds: number[]) {
 function generateApplication(opportunityId: number): Application {
   return {
     content: generateTallyContent(),
-    opportunity: opportunityId,
+    opportunityId: opportunityId,
   };
 }
 
