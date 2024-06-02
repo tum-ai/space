@@ -1,6 +1,12 @@
 import { faker } from "@faker-js/faker";
 import db from "server/db";
-import { fetchAllUsers, keyUniqueEnforcer, now, options, uuidUniqueEnforcer } from "./utils";
+import {
+  fetchAllUsers,
+  keyUniqueEnforcer,
+  now,
+  options,
+  uuidUniqueEnforcer,
+} from "./utils";
 import { Person } from "@lib/types/person";
 import { Question } from "@lib/types/question";
 import { Opportunity, Phase, Questionnaire } from "@lib/types/opportunity";
@@ -29,6 +35,7 @@ export async function generateOpportunities(number: number) {
   for (const opportunity of opportunities) {
     await db.opportunity.create({
       data: {
+        id: opportunity.id,
         title: opportunity.generalInformation.title,
         description: opportunity.generalInformation.description,
         start: opportunity.generalInformation.start,
@@ -65,6 +72,7 @@ export async function generateOpportunities(number: number) {
 
 function generateOpportunity(): Opportunity {
   return {
+    id: uuidUniqueEnforcer.enforce(() => faker.number.int({ max: 9999999 })),
     generalInformation: generateGeneralInformation(),
     phases: generatePhases(),
   };
@@ -119,7 +127,7 @@ function generateQuestionnaire(): Questionnaire {
       generateQuestion,
     ),
     conditions: [],
-    reviewers: faker.helpers.arrayElements(allPersons, 2),
+    reviewers: allPersons,
   };
 }
 

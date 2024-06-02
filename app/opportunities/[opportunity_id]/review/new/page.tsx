@@ -27,29 +27,38 @@ export default async function StartReview({ params }: StartReviewProps) {
     },
   });
 
+  console.log(applications);
+
   let suitableApplication = null;
   let suitableQuestionnaire = null;
 
   // Iterate over applications to find the first suitable one
   for (const application of applications) {
     // Find a suitable questionnaire within this application
-    suitableQuestionnaire = application.questionnaires.find(
-      (questionnaire) =>
-        questionnaire.reviewers.some(
-          (reviewer) => reviewer.id === session.user.id,
-        ) && // User is a reviewer
+    suitableQuestionnaire = application.questionnaires.find((questionnaire) => {
+      // User is a reviewer
+      const isReviewer = questionnaire.reviewers.some(
+        (reviewer) => reviewer.id === session.user.id,
+      );
+
+      // User has not reviewed questionnaire and application together
+      const hasNotReviewed =
         questionnaire.reviews.filter(
           (review) =>
             review.userId === session.user.id &&
             review.questionnaireId === questionnaire.id &&
             review.applicationId === application.id,
-        ).length === 0 && // User has not reviewed questionnaire and application together
+        ).length === 0;
+
+      const lessReviewsThanRequired =
         questionnaire.reviews.filter(
           (review) =>
             review.questionnaireId === questionnaire.id &&
             review.applicationId === application.id,
-        ).length < questionnaire.requiredReviews, // Less reviews than required
-    );
+        ).length < questionnaire.requiredReviews;
+
+      return isReviewer && hasNotReviewed && lessReviewsThanRequired;
+    });
 
     if (suitableQuestionnaire) {
       suitableApplication = application;

@@ -51,14 +51,13 @@ export const TallyField = z
           .or(z.literal("INPUT_NUMBER"))
           .or(z.literal("INPUT_DATE"))
           .or(z.literal("INPUT_EMAIL"))
-          .or(z.literal("TEXTAREA"))
           .or(z.literal("INPUT_LINK")),
         value: z.string().nullable(),
       }),
     ]),
   );
 
-const TallyData = z.object({
+export const TallyData = z.object({
   responseId: z.string(),
   submissionId: z.string(),
   respondentId: z.string(),
