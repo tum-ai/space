@@ -18,20 +18,13 @@ export async function generateReviews() {
       questionnaires: true,
     },
   });
-  console.log(applications);
+
   let reviews: Review[] = [];
   for (const application of applications) {
     for (const questionnaire of application.questionnaires) {
-      const numberOfReviews = faker.number.int({
-        min: 1,
-        max: questionnaire.requiredReviews,
-      });
-      for (let i = 0; i < numberOfReviews; i++) {
-        reviews.push(generateReview(application.id, questionnaire));
-      }
+      reviews.push(generateReview(application.id, questionnaire));
     }
   }
-  //console.log(reviews);
   await db.review.createMany({ data: reviews });
   return reviews;
 }

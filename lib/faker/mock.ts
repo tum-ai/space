@@ -62,7 +62,14 @@ try {
   }
 
   const reviews = await generateReviews();
-  // console.log(reviews);
+  console.log(
+    `${reviews.length} reviews generated: `,
+    reviews.map((r) => ({
+      userId: r.userId,
+      applicationId: r.applicationId,
+      questionnaireId: r.questionnaireId,
+    })),
+  );
 } catch (error) {
   await db.$disconnect();
   console.error(error);

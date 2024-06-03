@@ -22,7 +22,6 @@ export async function generateOpportunities(number: number) {
     generateOpportunity(),
   );
 
-  // createMany leads to errors
   for (const opportunity of opportunities) {
     await db.opportunity.create({
       data: {
