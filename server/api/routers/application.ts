@@ -14,7 +14,7 @@ export const applicationRouter = createTRPCRouter({
       });
 
       if (
-        !opportunity?.admins.some((admin) => admin.id !== ctx.session.user.id)
+        !opportunity?.admins.some((admin) => admin.id === ctx.session.user.id)
       ) {
         throw new TRPCError({
           code: "UNAUTHORIZED",

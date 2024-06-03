@@ -1,5 +1,6 @@
+"use client";
+
 import * as React from "react";
-import { ColumnDef } from "@tanstack/react-table";
 import { MoreHorizontal } from "lucide-react";
 
 import { Button } from "@components/ui/button";
@@ -11,14 +12,10 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@components/ui/dropdown-menu";
-import { DataTableColumnHeader } from "./DataTabelHeader";
+import { DataTableColumnHeader } from "./components/DataTabelHeader";
 import { SpaceRole } from "@prisma/client";
 import { Avatar, AvatarFallback, AvatarImage } from "@components/ui/avatar";
-import { RowUser } from "./DataTableTypes";
-
-export type ExtendedColumnDef<TData, TUnknown> = ColumnDef<TData, TUnknown> & {
-  label: string;
-};
+import { ExtendedColumnDef, RowUser } from "./components/DataTableTypes";
 
 export const columns: ExtendedColumnDef<RowUser, unknown>[] = [
   {

@@ -2,7 +2,8 @@ import { redirect } from "next/navigation";
 import { getServerAuthSession } from "server/auth";
 import db from "server/db";
 import { columns } from "./columns";
-import { DataTable } from "@components/ui/data-table";
+import { DataTable } from "./components/DataTable";
+import { RowType } from "./components/DataTableTypes";
 import { Button } from "@components/ui/button";
 import { FileCheck } from "lucide-react";
 import Link from "next/link";
@@ -50,7 +51,11 @@ export default async function ReviewPage({ params }: ReviewPageProps) {
         </Button>
       </div>
 
-      <DataTable columns={columns} data={reviews} />
+      <DataTable<RowType>
+        rowData={reviews}
+        columnData={columns}
+        columnDefs={{}}
+      />
     </div>
   );
 }

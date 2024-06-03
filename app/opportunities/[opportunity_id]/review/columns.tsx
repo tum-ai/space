@@ -1,44 +1,40 @@
 "use client";
 
-import { ColumnDef } from "@tanstack/react-table";
 import { DataTableColumnHeader } from "@components/ui/data-table-column-header";
-import {
-  Application,
-  Questionnaire,
-  Review as PrismaReview,
-  Phase,
-} from "@prisma/client";
+import { RowType } from "./components/DataTableTypes";
 
 import { Button } from "@components/ui/button";
 import Link from "next/link";
 import { Edit } from "lucide-react";
 import { DeleteAlertDialog } from "./components/review-altert-dialog";
+import { ExtendedColumnDef } from "./components/DataTableTypes";
 
-export type Review = PrismaReview & {
-  application: Application;
-} & { questionnaire: Questionnaire & { phase: Phase } };
-
-export const columns: ColumnDef<Review>[] = [
+export const columns: ExtendedColumnDef<RowType, unknown>[] = [
   {
     accessorKey: "application.id",
     header: "Application",
+    label: "Application",
   },
   {
     accessorKey: "questionnaire.phase.name",
     header: "Phase",
+    label: "Phase",
   },
   {
     accessorKey: "questionnaire.name",
     header: "Questionnaire",
+    label: "Questionnaire",
   },
   {
     accessorKey: "status",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Status" />
     ),
+    label: "Status",
   },
   {
     id: "actions",
+    label: "Actions",
     cell: ({ row }) => {
       const review = row.original;
       return (
