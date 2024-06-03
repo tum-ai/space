@@ -19,15 +19,20 @@ export default async function ReviewPage({ params }: ReviewPageProps) {
 
   const opportunity = await db.opportunity.findUnique({
     where: { id: Number(params.opportunity_id) },
+    include: { admins: true },
   });
+
+  if (opportunity?.admins?.every((admin) => admin.id !== session.user.id)) {
+    redirect("/404");
+  }
 
   const reviews = await db.review.findMany({
     where: {
-      user: { id: session?.user.id },
       application: { opportunityId: Number(params.opportunity_id) },
     },
     include: {
       application: true,
+      user: { select: { name: true } },
       questionnaire: { include: { phase: true } },
     },
   });
@@ -38,9 +43,9 @@ export default async function ReviewPage({ params }: ReviewPageProps) {
         <div>
           <Breadcrumbs title={`Reviews: ${opportunity?.title}`} />
           <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
-            Your reviews
+            Reviews
           </h1>
-          <p className="text-muted-foreground">See and edit your reviews</p>
+          <p className="text-muted-foreground">See and edit the reviews</p>
         </div>
 
         <Button asChild>

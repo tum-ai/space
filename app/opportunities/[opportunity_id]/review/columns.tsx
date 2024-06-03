@@ -16,6 +16,11 @@ export const columns: ExtendedColumnDef<RowType, unknown>[] = [
     label: "Application",
   },
   {
+    accessorKey: "user.name",
+    header: "Reviewer",
+    label: "Reviewer",
+  },
+  {
     accessorKey: "questionnaire.phase.name",
     header: "Phase",
     label: "Phase",

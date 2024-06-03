@@ -19,7 +19,6 @@ export function DataTableToolbar<TData>({
   columnDefs,
 }: DataTableToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0;
-  console.log(table.getAllColumns())
 
   return (
     <div className="flex flex-col items-center justify-between gap-2 sm:flex-row">
@@ -27,6 +26,14 @@ export function DataTableToolbar<TData>({
         className="flex flex-1 flex-wrap items-center gap-2"
         style={{ maxWidth: "100%" }}
       >
+        <Input
+          placeholder={`Filter ${(table.getColumn("user_name")?.columnDef as ExtendedColumnDef<RowType, unknown>).label}...`}
+          value={(table.getColumn("user_name")?.getFilterValue() as string) ?? ""}
+          onChange={(event) =>
+            table.getColumn("user_name")?.setFilterValue(event.target.value)
+          }
+          className="h-8 w-full sm:w-[150px] lg:w-[250px]"
+        />
         <Input
           placeholder={`Filter ${(table.getColumn("questionnaire_phase.name")?.columnDef as ExtendedColumnDef<RowType, unknown>).label}...`}
           value={(table.getColumn("questionnaire_phase.name")?.getFilterValue() as string) ?? ""}

@@ -17,7 +17,9 @@ export interface Option {
 
 export type RowType = PrismaReview & {
   application: Application;
-} & { questionnaire: Questionnaire & { phase: Phase } };
+} & { questionnaire: Questionnaire & { phase: Phase } } & {
+  user: { name: string | null };
+};
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface ColumnDefs {}
