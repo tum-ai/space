@@ -73,22 +73,6 @@ export const columns: ExtendedColumnDef<RowUser, unknown>[] = [
     },
   },
   {
-    accessorKey: "id",
-    label: "Id",
-    header: ({ column }) => (
-      <DataTableColumnHeader
-        column={column}
-        title={(column.columnDef as ExtendedColumnDef<RowUser, unknown>).label}
-      />
-    ),
-    cell: ({ row }) => {
-      const value: string = row.getValue("id");
-      return (
-        <div className="lowercase">{value ? value.replace(/_/g, " ") : ""}</div>
-      );
-    },
-  },
-  {
     accessorKey: "email",
     label: "Email",
     header: ({ column }) => (
