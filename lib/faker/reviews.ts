@@ -53,17 +53,17 @@ function generateContent(questions: Question[]): Question[] {
       case "DROPDOWN":
         return {
           ...question,
-          value: faker.helpers.arrayElement(question.options).text,
+          value: faker.helpers.arrayElement(question.options).id,
         };
       case "CHECKBOXES":
         return {
           ...question,
           value: faker.helpers
             .arrayElements(question.options, {
-              min: 0,
+              min: 1,
               max: question.options.length,
             })
-            .map((option) => option.text),
+            .map((option) => option.id),
         };
       case "NUMERIC":
         return {

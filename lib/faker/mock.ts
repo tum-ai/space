@@ -14,6 +14,7 @@ export let allPersons: Person[];
 try {
   await db.$connect;
 
+  // generate Users
   const generatedUsers = await generateUsers(numberOfUsers);
   console.log(
     `${numberOfUsers} users generated:`,
@@ -28,6 +29,7 @@ try {
       image: user.image!,
     })) || [];
 
+  // generate opportunities
   const opportunities = await generateOpportunities(numberOfOpportunities);
   console.log(
     `${numberOfOpportunities} opportunities generated:`,
@@ -36,6 +38,7 @@ try {
 
   const opportunityIds = opportunities.map((o) => o.id!);
 
+  // generate applications
   const applications = await generateApplications(opportunityIds);
   console.log(
     `${applications.length} applications generated:`,
@@ -61,6 +64,7 @@ try {
     });
   }
 
+  // generate reviews
   const reviews = await generateReviews();
   console.log(
     `${reviews.length} reviews generated: `,
