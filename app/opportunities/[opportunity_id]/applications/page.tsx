@@ -52,10 +52,12 @@ export default async function OpportunityOverviewPage({
       <div className="space-y-8 p-8">
         <div className="flex justify-between">
           <div className="flex w-full flex-row items-center justify-between">
-            <Breadcrumbs title={`Applications: ${opportunity?.title}`} />
-            <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
-              Applications for {opportunity?.title}
-            </h1>
+            <div>
+              <Breadcrumbs title={`Applications`} opportunityTitle={opportunity?.title} />
+              <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
+                Applications for {opportunity?.title}
+              </h1>
+            </div>
             <div className="flex gap-2">
               <ExportButton
                 opportunityId={Number(params.opportunity_id)}
