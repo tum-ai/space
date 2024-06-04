@@ -7,7 +7,7 @@ import { getServerAuthSession } from "server/auth";
 import db from "server/db";
 import Breadcrumbs from "@components/ui/breadcrumbs";
 
-export const dynamic = "force-dynamic";
+//export const dynamic = "force-dynamic";
 
 export default async function OpportunitiesPage() {
   const session = await getServerAuthSession();
@@ -31,6 +31,8 @@ export default async function OpportunitiesPage() {
     },
     include: { admins: true },
   });
+
+  revalidatePath('/opportunities');
 
   return (
     <div className="space-y-8 p-8">
