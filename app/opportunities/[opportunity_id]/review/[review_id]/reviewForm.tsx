@@ -6,7 +6,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@components/ui/card";
 import { ApplicationField } from "@components/application/applicationField";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Question, QuestionSchema } from "@lib/schemas/question";
-import { QuestionField } from "./_components/questionField";
 import { Form } from "@components/ui/form";
 import { api } from "trpc/react";
 import { toast } from "sonner";
@@ -15,6 +14,7 @@ import { Tally } from "@lib/types/tally";
 import { useRouter } from "next/navigation";
 import { DeleteAlertDialog } from "../components/review-altert-dialog";
 import Breadcrumbs from "@components/ui/breadcrumbs";
+import { QuestionView } from "../../edit/_components/questionnaire/questionView";
 
 interface ReviewFormProps {
   application: Application;
@@ -100,7 +100,7 @@ export const ReviewForm = ({
           </div>
 
           <div className="grid gap-4 lg:grid-cols-2">
-            <Card>
+            <Card className="bg-slate-50">
               <CardHeader>
                 <CardTitle className="scroll-m-20 text-2xl font-semibold tracking-tight">
                   Application
@@ -126,11 +126,7 @@ export const ReviewForm = ({
               <CardContent className="h-[80vh] overflow-y-auto">
                 <div className="flex flex-col gap-12">
                   {questions.map((question, index) => (
-                    <QuestionField
-                      question={question}
-                      index={index}
-                      key={question.key}
-                    />
+                    <QuestionView question={question} />
                   ))}
                 </div>
               </CardContent>
