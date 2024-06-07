@@ -129,16 +129,36 @@ Consider checking out the commands listed in /app/Makefile.
 
 Generate mock users, opportunities, applications and reviews using **faker** scripts.
 
-Run command:
+How to generate mock data.
 
-```bash
-~ bun db:seed
-```
+1. **Run local DB**
 
-Look up command line options:
+    ```bash
+    docker-compose up
+    ```
+
+2. **Login via Slack Authentication**
+
+     - Open the UI and log in via Slack authentication. This will create a session and a User entry in the DB.
+  
+3. **Seed local DB**
+
+   - Run the following command to seed the local DB with mock data:
+
+    ```bash
+    bun db:seed
+    ```
+
+Command Line Options:
 
 ```bash
 ~ bun db:seed -h
+```
+
+Reset/Clear DB:
+
+```bash
+~ bun prisma migrate reset
 ```
 
 ### Working on a Linear ticket
