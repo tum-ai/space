@@ -129,7 +129,7 @@ Consider checking out the commands listed in /app/Makefile.
 
 Generate mock users, opportunities, applications and reviews using **faker** scripts.
 
-How to generate mock data.
+How to generate mock data:
 
 1. **Run local DB**
 
