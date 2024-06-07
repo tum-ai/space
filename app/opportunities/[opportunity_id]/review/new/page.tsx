@@ -27,8 +27,6 @@ export default async function StartReview({ params }: StartReviewProps) {
     },
   });
 
-  console.log(applications);
-
   let suitableApplication = null;
   let suitableQuestionnaire = null;
 
