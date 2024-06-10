@@ -12,7 +12,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@components/ui/dropdown-menu";
-import { DataTableColumnHeader } from "./components/DataTabelHeader";
+import { DataTableColumnHeader } from "./components/DataTableHeader";
 import { SpaceRole } from "@prisma/client";
 import { Avatar, AvatarFallback, AvatarImage } from "@components/ui/avatar";
 import { ExtendedColumnDef, RowUser } from "./components/DataTableTypes";

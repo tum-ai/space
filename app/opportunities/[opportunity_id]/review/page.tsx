@@ -22,13 +22,10 @@ export default async function ReviewPage({ params }: ReviewPageProps) {
     include: { admins: true },
   });
 
-  if (opportunity?.admins?.every((admin) => admin.id !== session.user.id)) {
-    redirect("/404");
-  }
-
   const reviews = await db.review.findMany({
     where: {
       application: { opportunityId: Number(params.opportunity_id) },
+      userId: session.user.id,
     },
     include: {
       application: true,

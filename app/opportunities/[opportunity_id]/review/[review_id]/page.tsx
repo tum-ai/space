@@ -14,10 +14,10 @@ export default async function Review({ params }: ReviewProps) {
   const session = await getServerAuthSession();
   if (!session?.user?.id) redirect("/auth");
 
+  
   const review = await db.review.findUnique({
     where: {
       id: Number(params.review_id),
-      user: { id: session.user.id },
     },
     include: { application: true, questionnaire: true },
   });
