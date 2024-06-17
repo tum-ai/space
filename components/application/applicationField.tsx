@@ -20,7 +20,6 @@ import { cn } from "@lib/utils";
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
@@ -45,7 +44,7 @@ const ApplicationValue = ({ field }: ApplicationFieldProps) => {
     case "CHECKBOXES":
       if (Array.isArray(field.value)) {
         return (
-          <div className="mt-3">
+          <div className="mt-3 space-y-1">
             {field.options!.map((option) => (
               <div key={option.id} className="flex items-center space-x-2">
                 <Checkbox

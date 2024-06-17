@@ -109,14 +109,12 @@ export const ReviewForm = ({
                   Application
                 </CardTitle>
               </CardHeader>
-              <CardContent className="h-[80vh] overflow-y-auto">
-                <div className="flex flex-col gap-12">
-                  {applicationFields
-                    .filter((field) => !!field.value)
-                    .map((field) => (
-                      <ApplicationField key={field.key} field={field} />
-                    ))}
-                </div>
+              <CardContent className="flex h-[80vh] flex-col gap-12 overflow-y-auto">
+                {applicationFields
+                  .filter((field) => !!field.value)
+                  .map((field) => (
+                    <ApplicationField key={field.key} field={field} />
+                  ))}
               </CardContent>
             </Card>
 
@@ -126,12 +124,10 @@ export const ReviewForm = ({
                   Review
                 </CardTitle>
               </CardHeader>
-              <CardContent className="h-[80vh] overflow-y-auto">
-                <div className="flex flex-col gap-12">
-                  {questions.map((question, index) => (
-                    <QuestionView question={question} />
-                  ))}
-                </div>
+              <CardContent className="flex h-[80vh] flex-col gap-12 overflow-y-auto">
+                {questions.map((question, index) => (
+                  <QuestionView question={question} />
+                ))}
               </CardContent>
             </Card>
           </div>
