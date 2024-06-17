@@ -17,6 +17,15 @@ import { Checkbox } from "@components/ui/checkbox";
 import { FileText, X } from "lucide-react";
 import { FormLabel } from "@components/ui/form";
 import { cn } from "@lib/utils";
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@components/ui/table";
 
 interface ApplicationFieldProps {
   field: TallyField;
@@ -142,6 +151,36 @@ const ApplicationValue = ({ field }: ApplicationFieldProps) => {
 
     case "MATRIX":
       return (
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="w-[120px]" />
+              {field.columns.map((col) => (
+                <TableHead>{col.text}</TableHead>
+              ))}
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {field.rows.map((row) => (
+              <TableRow key={`row-${row.id}`}>
+                <TableHead>{row.text}</TableHead>
+                {field.columns.map((col) => (
+                  <TableCell key={`row-${row.id}-col-${col.id}`}>
+                    <Checkbox
+                      disabled
+                      checked={field.value[row.id]?.includes(col.id)}
+                    />
+                  </TableCell>
+                ))}
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      );
+
+    /** 
+    case "MATRIX":
+      return (
         <div className="flex flex-row">
           {field.rows.map((row) => (
             <div key={`row-${row.id}`}>
@@ -157,11 +196,11 @@ const ApplicationValue = ({ field }: ApplicationFieldProps) => {
           ))}
         </div>
       );
+    **/
   }
 };
 
-export const 
-ApplicationField = ({
+export const ApplicationField = ({
   field,
   className,
 }: ApplicationFieldProps) => (
