@@ -183,7 +183,7 @@ export const ApplicationField = ({
   field,
   className,
 }: ApplicationFieldProps) => (
-  <div className={cn("flex flex-col gap-2", className)}>
+  <div className={cn("flex flex-col gap-1.5", className)}>
     <FormLabel>{field.label}</FormLabel>
     <ApplicationValue field={field} />
   </div>

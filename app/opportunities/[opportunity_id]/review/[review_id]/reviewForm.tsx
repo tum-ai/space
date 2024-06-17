@@ -103,7 +103,7 @@ export const ReviewForm = ({
           </div>
 
           <div className="grid gap-4 lg:grid-cols-2">
-            <Card className="bg-slate-50">
+            <Card>
               <CardHeader>
                 <CardTitle className="scroll-m-20 text-2xl font-semibold tracking-tight">
                   Application
