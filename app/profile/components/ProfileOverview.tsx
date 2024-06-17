@@ -41,6 +41,7 @@ import {
 } from "@lib/schemas/contact";
 import { api } from "trpc/react";
 import { toast } from "sonner";
+import Breadcrumbs from "@components/ui/breadcrumbs";
 
 interface ProfileOverviewProps {
   user: Prisma.UserGetPayload<{ include: { profile: true } }>;
@@ -200,6 +201,7 @@ export function ProfileOverview({ user, contacts }: ProfileOverviewProps) {
     <div className="space-y-8">
       <div className="flex flex-col items-center">
         <div className="flex w-1/2 min-w-[280px] flex-col gap-8">
+        <Breadcrumbs title="Me"/>
           <div className="flex justify-between">
             <div className="flex items-center gap-4">
               <Avatar className="h-28 w-28">

@@ -35,7 +35,7 @@ export default async function ReviewPage({ params }: ReviewPageProps) {
     <div className="space-y-8 p-8">
       <div className="flex justify-between">
         <div>
-          <Breadcrumbs title={`Reviews: ${opportunity?.title}`} />
+          <Breadcrumbs title={"Reviews"} opportunityTitle={opportunity?.title} />
           <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
             Your reviews
           </h1>

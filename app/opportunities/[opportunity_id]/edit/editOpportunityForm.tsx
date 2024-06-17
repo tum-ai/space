@@ -52,7 +52,8 @@ export const EditOpportunityForm = ({
             <div className="flex justify-between">
               <div className="flex flex-col gap-3">
                 <Breadcrumbs
-                  title={"Edit: " + form.getValues().generalInformation.title}
+                  title={"Edit"}
+                  opportunityTitle={form.getValues().generalInformation.title}
                 />
                 <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
                   Edit opportunity
