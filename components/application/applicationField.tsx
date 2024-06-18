@@ -25,10 +25,12 @@ import {
   TableHeader,
   TableRow,
 } from "@components/ui/table";
+import { Badge } from "@components/ui/badge";
 
 interface ApplicationFieldProps {
   field: TallyField;
   className?: string;
+  index?: number;
 }
 
 const ApplicationValue = ({ field }: ApplicationFieldProps) => {
@@ -44,7 +46,7 @@ const ApplicationValue = ({ field }: ApplicationFieldProps) => {
     case "CHECKBOXES":
       if (Array.isArray(field.value)) {
         return (
-          <div className="mt-3 space-y-1">
+          <div className="mt-3 space-y-2">
             {field.options!.map((option) => (
               <div key={option.id} className="flex items-center space-x-2">
                 <Checkbox
@@ -57,7 +59,7 @@ const ApplicationValue = ({ field }: ApplicationFieldProps) => {
                 />
                 <label
                   htmlFor="terms"
-                  className="text-sm font-medium leading-none"
+                  className="text-sm leading-none"
                 >
                   {option.text}
                 </label>
@@ -70,7 +72,7 @@ const ApplicationValue = ({ field }: ApplicationFieldProps) => {
       return (
         <div className="mt-3 flex items-center space-x-2">
           <Checkbox disabled checked={field.value} />
-          <label htmlFor="terms" className="text-sm font-medium leading-none">
+          <label htmlFor="terms" className="text-sm leading-none">
             Accept
           </label>
         </div>
@@ -103,7 +105,7 @@ const ApplicationValue = ({ field }: ApplicationFieldProps) => {
         (opt) => opt.id === field.value?.at(0),
       );
       if (selected_value) {
-        return <p>{selected_value.text}</p>;
+        return <p className="text-sm">{selected_value.text}</p>;
       }
 
       return <p>No value</p>;
@@ -182,9 +184,13 @@ const ApplicationValue = ({ field }: ApplicationFieldProps) => {
 export const ApplicationField = ({
   field,
   className,
+  index,
 }: ApplicationFieldProps) => (
-  <div className={cn("flex flex-col gap-1.5", className)}>
-    <FormLabel>{field.label}</FormLabel>
-    <ApplicationValue field={field} />
+  <div className="flex w-full items-start gap-4">
+    {index && <Badge variant="secondary">{index}</Badge>}
+    <div className={cn("flex flex-col gap-1.5 mt-1", className)}>
+      <FormLabel>{field.label}</FormLabel>
+      <ApplicationValue field={field} />
+    </div>
   </div>
 );

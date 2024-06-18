@@ -112,8 +112,8 @@ export const ReviewForm = ({
               <CardContent className="flex h-[80vh] flex-col gap-12 overflow-y-auto">
                 {applicationFields
                   .filter((field) => !!field.value)
-                  .map((field) => (
-                    <ApplicationField key={field.key} field={field} />
+                  .map((field, index) => (
+                    <ApplicationField key={field.key} field={field} index={index+1}/>
                   ))}
               </CardContent>
             </Card>
