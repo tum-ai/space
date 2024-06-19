@@ -13,6 +13,11 @@ export default async function ProfilePage({
     where: { id: params.profile_id },
     include: { profile: true },
   });
+  const profileId = user?.profile.at(0)?.id;
+
+  const contacts = await db.contact.findMany({
+    where: { profileId: profileId },
+  });
 
   if (!user) {
     return (
@@ -29,5 +34,5 @@ export default async function ProfilePage({
     );
   }
 
-  return <ProfileOverview user={user} />;
+  return <ProfileOverview user={user} contacts={contacts} />;
 }

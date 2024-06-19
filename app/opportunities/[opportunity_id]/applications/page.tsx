@@ -6,6 +6,9 @@ import { columns } from "./columns";
 import { Rabbit } from "lucide-react";
 import { Button } from "@components/ui/button";
 import Link from "next/link";
+import { ExportButton } from "./_components/exportButton";
+import { AssignQuestionnaireButton } from "./_components/assignQuestionnaireButton";
+import Breadcrumbs from "@components/ui/breadcrumbs";
 
 interface ApplicationsOverviewPageProps {
   params: {
@@ -24,6 +27,7 @@ export default async function OpportunityOverviewPage({
     where: {
       opportunityId: Number(params.opportunity_id),
     },
+    include: { _count: { select: { reviews: true } } },
   });
 
   const session = await getServerAuthSession();
@@ -47,10 +51,25 @@ export default async function OpportunityOverviewPage({
     return (
       <div className="space-y-8 p-8">
         <div className="flex justify-between">
-          <div>
-            <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
-              Applications for {opportunity?.title}
-            </h1>
+          <div className="flex w-full flex-row items-center justify-between">
+            <div>
+              <Breadcrumbs title={`Applications`} opportunityTitle={opportunity?.title} />
+              <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
+                Applications for {opportunity?.title}
+              </h1>
+            </div>
+            <div className="flex gap-2">
+              <ExportButton
+                opportunityId={Number(params.opportunity_id)}
+                opportunityTitle={
+                  opportunity?.title ??
+                  `TUM.ai Opportunity ${params.opportunity_id}`
+                }
+              />
+              <AssignQuestionnaireButton
+                opportunityId={Number(params.opportunity_id)}
+              />
+            </div>
           </div>
         </div>
 

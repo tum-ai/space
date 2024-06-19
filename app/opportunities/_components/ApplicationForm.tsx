@@ -22,10 +22,8 @@ const ApplicationForm = ({ application }: ApplicationFormProps) => {
     <Form {...form}>
       <Card>
         <CardHeader>
-          <CardTitle className="flex justify-between">
-            <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
-              Application Content
-            </h3>
+          <CardTitle className="flex scroll-m-20 justify-between text-2xl font-semibold tracking-tight">
+            Application Content
             <div className="flex gap-2">
               <Button asChild variant="secondary">
                 <Link href={`${application.id - 1}`}>

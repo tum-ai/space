@@ -5,6 +5,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getServerAuthSession } from "server/auth";
 import db from "server/db";
+import Breadcrumbs from "@components/ui/breadcrumbs";
 
 export const dynamic = "force-dynamic";
 
@@ -17,7 +18,7 @@ export default async function OpportunitiesPage() {
     where: {
       OR: [
         // user is admin of opportunity
-        { adminId: userId },
+        { admins: { some: { id: userId } } },
         // or user is a reviewer of a questionnaire in the opportunity
         {
           phases: {
@@ -28,15 +29,19 @@ export default async function OpportunitiesPage() {
         },
       ],
     },
+    include: { admins: true },
   });
 
   return (
     <div className="space-y-8 p-8">
       <div className="flex flex-col gap-8">
         <div className="flex justify-between">
-          <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
-            Opportunities
-          </h1>
+          <div>
+            <Breadcrumbs title="Opportunities" />
+            <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
+              Opportunities
+            </h1>
+          </div>
           <Link href="./opportunities/create">
             <Button>
               <Plus className="mr-2" />
@@ -49,10 +54,7 @@ export default async function OpportunitiesPage() {
           <div className="flex h-[50vh] flex-col items-center justify-center">
             <div className="flex flex-col items-center text-muted-foreground">
               <Rabbit className="mb-8 h-16 w-16" />
-              <p>
-                {/* TODO: Not correct for non-admin users */}
-                No opportunities found. Create a new opportunity to get started.
-              </p>
+              <p>No opportunities found.</p>
             </div>
 
             <Button variant="link">
@@ -65,7 +67,7 @@ export default async function OpportunitiesPage() {
             {opportunities?.map((item, index) => {
               return (
                 <OpportunityCard
-                  isAdmin={item.adminId === userId}
+                  isAdmin={item.admins.some((admin) => admin.id === userId)}
                   opportunity={item}
                   key={index}
                 />

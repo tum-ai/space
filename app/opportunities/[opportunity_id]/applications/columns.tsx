@@ -1,12 +1,16 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { Application } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 import { Button } from "@components/ui/button";
 import { Edit } from "lucide-react";
 import Link from "next/link";
 
-export const columns: ColumnDef<Application>[] = [
+export const columns: ColumnDef<
+  Prisma.ApplicationGetPayload<{
+    include: { _count: { select: { reviews: true } } };
+  }>
+>[] = [
   {
     accessorKey: "id",
     header: () => "ID",
@@ -14,6 +18,10 @@ export const columns: ColumnDef<Application>[] = [
   {
     accessorKey: "createdAt",
     header: () => "Created At",
+  },
+  {
+    accessorKey: "_count.reviews",
+    header: () => "Reviews",
   },
   {
     id: "actions",

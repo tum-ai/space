@@ -13,16 +13,20 @@ import { toast } from "sonner";
 import { Application, Review } from "@prisma/client";
 import { Tally } from "@lib/types/tally";
 import { useRouter } from "next/navigation";
+import { DeleteAlertDialog } from "../components/review-altert-dialog";
+import Breadcrumbs from "@components/ui/breadcrumbs";
 
 interface ReviewFormProps {
   application: Application;
   review: Review;
   questions: Question[];
+  opportunityTitle: string | undefined;
 }
 export const ReviewForm = ({
   application,
   questions,
   review,
+  opportunityTitle,
 }: ReviewFormProps) => {
   const applicationFields = (application.content as Tally).data.fields;
 
@@ -72,25 +76,37 @@ export const ReviewForm = ({
         <div className="space-y-8 p-8">
           <div className="flex justify-between">
             <div>
+              <Breadcrumbs
+                title={`Application: ${application.opportunityId}`}
+                opportunityTitle={opportunityTitle}
+              />
               <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
                 Review application
               </h1>
               <p className="text-muted-foreground">Review a candidate</p>
             </div>
 
-            <Button variant="default" type="submit">
-              <Save className="mr-2" />
-              Save
-            </Button>
+            <div className="flex items-center space-x-4">
+              <Button variant="default" type="submit">
+                <Save className="mr-2" />
+                Save
+              </Button>
+              <Button size="icon" asChild>
+                <div>
+                  <DeleteAlertDialog
+                    inputReviewId={review.id}
+                    inputOpportunityId={application.opportunityId}
+                  />
+                </div>
+              </Button>
+            </div>
           </div>
 
           <div className="grid gap-4 grid-cols-1 lg:grid-cols-2">
             <Card>
               <CardHeader>
-                <CardTitle>
-                  <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
-                    Application
-                  </h3>
+                <CardTitle className="scroll-m-20 text-2xl font-semibold tracking-tight">
+                  Application
                 </CardTitle>
               </CardHeader>
               <CardContent className="h-[80vh] overflow-y-auto">
@@ -106,9 +122,9 @@ export const ReviewForm = ({
 
             <Card>
               <CardHeader>
-                <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
+                <CardTitle className="scroll-m-20 text-2xl font-semibold tracking-tight">
                   Review
-                </h3>
+                </CardTitle>
               </CardHeader>
               <CardContent className="h-[80vh] overflow-y-auto">
                 <div className="flex flex-col gap-12">

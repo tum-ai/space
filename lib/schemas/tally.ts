@@ -6,6 +6,12 @@ const TallyCheckboxes = z.object({
   options: z.array(z.object({ id: z.string(), text: z.string() })).optional(),
 });
 
+const TallyMultipleChoice = z.object({
+  type: z.literal("MULTIPLE_CHOICE"),
+  value: z.array(z.string().uuid()).nullable(),
+  options: z.array(z.object({ id: z.string(), text: z.string() })).optional(),
+});
+
 const TallyFileUpload = z.object({
   type: z.literal("FILE_UPLOAD"),
   value: z
@@ -35,22 +41,23 @@ export const TallyField = z
   .and(
     z.union([
       TallyCheckboxes,
+      TallyMultipleChoice,
       TallyFileUpload,
       TallyDropdown,
       z.object({
         type: z
           .literal("TEXTAREA")
           .or(z.literal("INPUT_TEXT"))
+          .or(z.literal("INPUT_NUMBER"))
           .or(z.literal("INPUT_DATE"))
           .or(z.literal("INPUT_EMAIL"))
-          .or(z.literal("TEXTAREA"))
           .or(z.literal("INPUT_LINK")),
         value: z.string().nullable(),
       }),
     ]),
   );
 
-const TallyData = z.object({
+export const TallyData = z.object({
   responseId: z.string(),
   submissionId: z.string(),
   respondentId: z.string(),
