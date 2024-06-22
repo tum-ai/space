@@ -15,6 +15,7 @@ import { useRouter } from "next/navigation";
 import { DeleteAlertDialog } from "../components/review-altert-dialog";
 import Breadcrumbs from "@components/ui/breadcrumbs";
 import { QuestionView } from "../../edit/_components/questionnaire/questionView";
+import { QuestionField } from "./_components/questionField";
 
 interface ReviewFormProps {
   application: Application;
@@ -69,6 +70,8 @@ export const ReviewForm = ({
     );
   };
 
+  console.log(questions);
+
   return (
     <Form {...form}>
       {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
@@ -113,7 +116,11 @@ export const ReviewForm = ({
                 {applicationFields
                   .filter((field) => !!field.value)
                   .map((field, index) => (
-                    <ApplicationField key={field.key} field={field} index={index+1}/>
+                    <ApplicationField
+                      key={field.key}
+                      field={field}
+                      index={index + 1}
+                    />
                   ))}
               </CardContent>
             </Card>
@@ -126,7 +133,11 @@ export const ReviewForm = ({
               </CardHeader>
               <CardContent className="flex h-[80vh] flex-col gap-12 overflow-y-auto">
                 {questions.map((question, index) => (
-                  <QuestionView question={question} />
+                  <QuestionField
+                    question={question}
+                    index={index}
+                    key={question.key}
+                  />
                 ))}
               </CardContent>
             </Card>
