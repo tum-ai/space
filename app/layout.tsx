@@ -11,7 +11,7 @@ interface Props {
 export default function RootLayout({ children }: Props) {
   return (
     <html lang="en">
-      <body>
+      <body className="">
         <TRPCReactProvider>
           <ThemeProvider
             attribute="class"

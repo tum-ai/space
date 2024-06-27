@@ -61,7 +61,7 @@ export default async function MembersPage() {
 
   return (
     <div className="space-y-8 p-8">
-      <div>
+      <div className="flex flex-col gap-3">
         <Breadcrumbs title="Members" />
         <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
           Members list

@@ -51,7 +51,7 @@ export const TallyForm = () => {
       <p className="text-muted-foreground">
         Create a form in tally that is sent to the applicants
       </p>
-      <div className="mt-12 grid gap-8 md:grid-cols-3">
+      <div className="mt-12 grid gap-8 grid-cols-2 md:grid-cols-3">
         <FormField
           control={form.control}
           name="id"

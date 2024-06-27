@@ -10,17 +10,22 @@ async function Header() {
 
   return (
     <header className="w-full">
-      <div className="flex w-full justify-between px-2 py-4 md:px-8">
-        <Navigation />
-        {session?.user && <UserComponent user={session.user} />}
-        {!session?.user && (
-          <Button asChild className="flex gap-2">
-            <Link href="/auth">
-              <LogIn />
-              Sign in
-            </Link>
-          </Button>
-        )}
+      <div className="flex flex-row justify-between px-2 py-4 sm:gap-4 md:px-8">
+        <div className="order-1">
+          <Navigation />
+        </div>
+        <div className="order-2">
+          {session?.user ? (
+            <UserComponent user={session.user} />
+          ) : (
+            <Button asChild className="flex gap-2">
+              <Link href="/auth">
+                <LogIn />
+                Sign in
+              </Link>
+            </Button>
+          )}
+        </div>
       </div>
     </header>
   );

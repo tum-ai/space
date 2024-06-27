@@ -24,8 +24,8 @@ export const CreateKeyButton = () => {
         }
       }}
     >
-      <Plus className="mr-2" />
-      Add new key
+      <Plus className="mr-0 sm:mr-2" />
+      <span className="hidden sm:inline">Add new key</span>
     </Button>
   );
 };

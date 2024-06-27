@@ -15,7 +15,7 @@ export default async function HomebaseKeys() {
   return (
     <section className="p-8">
       <div className="mb-12 flex flex-col space-y-6">
-        <div className="flex justify-between">
+        <div className="flex items-center justify-between">
           <div className="flex flex-col gap-3">
             <Breadcrumbs title="Keys" />
             <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
@@ -28,7 +28,7 @@ export default async function HomebaseKeys() {
         </div>
       </div>
 
-      <div className="grid gap-8 xl:grid-cols-2">
+      <div className="grid grid-cols-1 gap-8 xl:grid-cols-2">
         {keys.map((key) => (
           <KeyCard
             key={`key-${key.id}`}

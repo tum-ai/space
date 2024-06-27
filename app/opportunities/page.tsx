@@ -35,17 +35,17 @@ export default async function OpportunitiesPage() {
   return (
     <div className="space-y-8 p-8">
       <div className="flex flex-col gap-8">
-        <div className="flex justify-between">
-          <div>
+        <div className="flex items-end justify-between">
+          <div className="flex flex-col gap-3">
             <Breadcrumbs title="Opportunities" />
             <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
               Opportunities
             </h1>
           </div>
           <Link href="./opportunities/create">
-            <Button>
-              <Plus className="mr-2" />
-              Create new
+            <Button className="flex w-full items-center justify-center sm:h-auto sm:w-auto">
+              <Plus className="mr-0 sm:mr-2" />
+              <span className="hidden sm:inline">Create new</span>
             </Button>
           </Link>
         </div>
@@ -63,7 +63,7 @@ export default async function OpportunitiesPage() {
           </div>
         )}
         {!!opportunities.length && (
-          <div className="grid gap-8 md:grid-cols-2 xl:grid-cols-3">
+          <div className="grid gap-8 sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
             {opportunities?.map((item, index) => {
               return (
                 <OpportunityCard

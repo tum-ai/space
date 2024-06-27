@@ -47,7 +47,7 @@ export function GeneralInformation() {
         General information
       </h2>
 
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-2 gap-3 xl:grid-cols-3">
         <FormField
           control={form.control}
           name="generalInformation.title"
