@@ -113,7 +113,7 @@ function generateQuestionnaire(): Questionnaire {
     name: faker.color.human(),
     requiredReviews: faker.number.int({ min: 1, max: 3 }),
     questions: Array.from(
-      { length: faker.number.int({ min: 1, max: 5 }) },
+      { length: faker.number.int({ min: 3, max: 5 }) },
       generateQuestion,
     ),
     conditions: [],

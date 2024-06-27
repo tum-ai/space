@@ -7,6 +7,7 @@ enum FieldTypes {
   CHECKBOXES = "CHECKBOXES",
   MULTIPLE_CHOICE = "MULTIPLE_CHOICE",
   DROPDOWN = "DROPDOWN",
+  MATRIX = "MATRIX",
 }
 
 enum NormalFieldTypes {
@@ -145,6 +146,32 @@ function generateTallyFieldDetails(
         ),
         options: multiple_options,
       };
+
+    case FieldTypes.MATRIX:
+      const rows = Array.from(
+        { length: faker.number.int({ min: 3, max: 5 }) },
+        () => ({ id: faker.string.uuid(), text: faker.lorem.word() }),
+      );
+
+      const columns = Array.from(
+        { length: faker.number.int({ min: 3, max: 5 }) },
+        () => ({ id: faker.string.uuid(), text: faker.word.adjective() }),
+      );
+      const value = rows.reduce(
+        (acc, row) => {
+          acc[row.id] = [faker.helpers.arrayElement(columns).id];
+          return acc;
+        },
+        {} as Record<string, string[]>,
+      );
+
+      return {
+        ...baseField,
+        type: FieldTypes.MATRIX,
+        value: value,
+        rows: rows,
+        columns: columns,
+      }
 
     default:
       if (

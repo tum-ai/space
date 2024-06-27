@@ -6,7 +6,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@components/ui/card";
 import { ApplicationField } from "@components/application/applicationField";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Question, QuestionSchema } from "@lib/schemas/question";
-import { QuestionField } from "./_components/questionField";
 import { Form } from "@components/ui/form";
 import { api } from "trpc/react";
 import { toast } from "sonner";
@@ -15,6 +14,8 @@ import { Tally } from "@lib/types/tally";
 import { useRouter } from "next/navigation";
 import { DeleteAlertDialog } from "../components/review-altert-dialog";
 import Breadcrumbs from "@components/ui/breadcrumbs";
+import { QuestionView } from "../../edit/_components/questionnaire/questionView";
+import { QuestionField } from "./_components/questionField";
 
 interface ReviewFormProps {
   application: Application;
@@ -69,6 +70,8 @@ export const ReviewForm = ({
     );
   };
 
+  console.log(questions);
+
   return (
     <Form {...form}>
       {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
@@ -109,14 +112,16 @@ export const ReviewForm = ({
                   Application
                 </CardTitle>
               </CardHeader>
-              <CardContent className="h-[80vh] overflow-y-auto">
-                <div className="flex flex-col gap-12">
-                  {applicationFields
-                    .filter((field) => !!field.value)
-                    .map((field) => (
-                      <ApplicationField key={field.key} field={field} />
-                    ))}
-                </div>
+              <CardContent className="flex h-[80vh] flex-col gap-12 overflow-y-auto">
+                {applicationFields
+                  .filter((field) => !!field.value)
+                  .map((field, index) => (
+                    <ApplicationField
+                      key={field.key}
+                      field={field}
+                      index={index + 1}
+                    />
+                  ))}
               </CardContent>
             </Card>
 
@@ -126,16 +131,14 @@ export const ReviewForm = ({
                   Review
                 </CardTitle>
               </CardHeader>
-              <CardContent className="h-[80vh] overflow-y-auto">
-                <div className="flex flex-col gap-12">
-                  {questions.map((question, index) => (
-                    <QuestionField
-                      question={question}
-                      index={index}
-                      key={question.key}
-                    />
-                  ))}
-                </div>
+              <CardContent className="flex h-[80vh] flex-col gap-12 overflow-y-auto">
+                {questions.map((question, index) => (
+                  <QuestionField
+                    question={question}
+                    index={index}
+                    key={question.key}
+                  />
+                ))}
               </CardContent>
             </Card>
           </div>
