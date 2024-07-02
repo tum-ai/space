@@ -26,6 +26,7 @@ import {
 } from "@components/ui/dialog";
 import { Input } from "@components/ui/input";
 import { useRouter } from "next/navigation";
+import { revalidate } from "@lib/revalidate";
 
 interface DeleteButtonProps {
   title: string;
@@ -94,6 +95,7 @@ export const DeleteButton = ({ title, id }: DeleteButtonProps) => {
                           id: toastId,
                         },
                       );
+                      revalidate("/opportunities");
                       router.push("/opportunities");
                     } catch (err) {
                       toast.error("Failed to delete opportunity", {
