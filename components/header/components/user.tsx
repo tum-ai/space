@@ -23,12 +23,12 @@ export const UserComponent = ({ user }: UserProps) => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
-        <div className="flex items-center space-x-4 rounded-full bg-background sm:p-3">
+        <div className="flex items-center space-x-4 rounded-full bg-background sm:p-4">
           <Avatar>
             <AvatarImage src={user.image ?? undefined} />
             <AvatarFallback>{extractInitials(user.name ?? "")}</AvatarFallback>
           </Avatar>
-          <p className="hidden pr-3 sm:flex">{user.name}</p>
+          <p className="hidden pr-2 sm:flex">{user.name}</p>
         </div>
       </DropdownMenuTrigger>
       <MenuActions user={user} />

@@ -7,6 +7,7 @@ import { Button } from "@components/ui/button";
 import { FileCheck } from "lucide-react";
 import Link from "next/link";
 import Breadcrumbs from "@components/ui/breadcrumbs";
+import PageTemplate from "@components/PageTemplate";
 
 interface ReviewPageProps {
   params: { opportunity_id: string };
@@ -32,25 +33,20 @@ export default async function ReviewPage({ params }: ReviewPageProps) {
   });
 
   return (
-    <div className="space-y-8 p-8">
-      <div className="flex justify-between">
-        <div>
-          <Breadcrumbs title={"Reviews"} opportunityTitle={opportunity?.title} />
-          <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
-            Your reviews
-          </h1>
-          <p className="text-muted-foreground">See and edit your reviews</p>
-        </div>
-
+    <PageTemplate
+      breadcrumbsTitle={`Reviews:  ${opportunity?.title}`}
+      pageTitle="Your reviews"
+      pageDescription="See and edit your reviews."
+      buttons={[
         <Button asChild>
           <Link href="review/new">
             <FileCheck className="mr-2" />
             Start new review
           </Link>
-        </Button>
-      </div>
-
+        </Button>,
+      ]}
+    >
       <DataTable columns={columns} data={reviews} />
-    </div>
+    </PageTemplate>
   );
 }

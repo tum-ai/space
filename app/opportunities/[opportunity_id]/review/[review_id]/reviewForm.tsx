@@ -14,7 +14,7 @@ import { Application, Review } from "@prisma/client";
 import { Tally } from "@lib/types/tally";
 import { useRouter } from "next/navigation";
 import { DeleteAlertDialog } from "../components/review-altert-dialog";
-import Breadcrumbs from "@components/ui/breadcrumbs";
+import PageTemplate from "@components/PageTemplate";
 
 interface ReviewFormProps {
   application: Application;
@@ -73,36 +73,26 @@ export const ReviewForm = ({
     <Form {...form}>
       {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
       <form onSubmit={form.handleSubmit(onSubmit, (err) => console.error(err))}>
-        <div className="space-y-8 p-8">
-          <div className="flex justify-between">
-            <div>
-              <Breadcrumbs
-                title={`Application: ${application.opportunityId}`}
-                opportunityTitle={opportunityTitle}
-              />
-              <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
-                Review application
-              </h1>
-              <p className="text-muted-foreground">Review a candidate</p>
-            </div>
-
-            <div className="flex items-center space-x-4">
-              <Button variant="default" type="submit">
-                <Save className="mr-2" />
-                Save
-              </Button>
-              <Button size="icon" asChild>
-                <div>
-                  <DeleteAlertDialog
-                    inputReviewId={review.id}
-                    inputOpportunityId={application.opportunityId}
-                  />
-                </div>
-              </Button>
-            </div>
-          </div>
-
-          <div className="grid gap-4 grid-cols-1 lg:grid-cols-2">
+        <PageTemplate
+          breadcrumbsTitle={`Application: ${application.opportunityId}`}
+          pageTitle="Review application"
+          pageDescription="Review a candidate."
+          buttons={[
+            <Button variant="default" type="submit">
+              <Save className="mr-2" />
+              Save
+            </Button>,
+            <Button size="icon" asChild>
+              <div>
+                <DeleteAlertDialog
+                  inputReviewId={review.id}
+                  inputOpportunityId={application.opportunityId}
+                />
+              </div>
+            </Button>,
+          ]}
+        >
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
             <Card>
               <CardHeader>
                 <CardTitle className="scroll-m-20 text-2xl font-semibold tracking-tight">
@@ -139,7 +129,7 @@ export const ReviewForm = ({
               </CardContent>
             </Card>
           </div>
-        </div>
+        </PageTemplate>
       </form>
     </Form>
   );

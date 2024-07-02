@@ -51,48 +51,50 @@ export const TallyForm = () => {
       <p className="text-muted-foreground">
         Create a form in tally that is sent to the applicants
       </p>
-      <div className="mt-12 grid gap-8 grid-cols-2 md:grid-cols-3">
-        <FormField
-          control={form.control}
-          name="id"
-          render={({ field }) => (
-            <FormItem className="w-full">
-              <FormLabel>Webhook url</FormLabel>
-              <FormControl>
-                <div className="flex w-full gap-2">
-                  <Input
-                    type="text"
-                    readOnly
-                    value={`${window.location.origin}/api/tally/opportunity/${field.value}`}
-                  />
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="icon"
-                    onClick={() => {
-                      toast.promise(
-                        navigator.clipboard.writeText(
-                          `${window.location.origin}/api/tally/opportunity/${field.value}`,
-                        ),
-                        {
-                          loading: "Copying to clipboard",
-                          success: "Copied to clipboard",
-                          error: "Failed to copy to clipboard",
-                        },
-                      );
-                    }}
-                  >
-                    <Copy />
-                  </Button>
-                </div>
-              </FormControl>
-              <FormDescription>
-                Set this Webhook url in Tally to receive the applications
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+      <div className="mt-6 grid grid-cols-2 xl:grid-cols-3 gap-8">
+        <div className="col-span-2">
+          <FormField
+            control={form.control}
+            name="id"
+            render={({ field }) => (
+              <FormItem className="w-full">
+                <FormLabel>Webhook url</FormLabel>
+                <FormControl>
+                  <div className="flex w-full gap-2">
+                    <Input
+                      type="text"
+                      readOnly
+                      value={`${window.location.origin}/api/tally/opportunity/${field.value}`}
+                    />
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="icon"
+                      onClick={() => {
+                        toast.promise(
+                          navigator.clipboard.writeText(
+                            `${window.location.origin}/api/tally/opportunity/${field.value}`,
+                          ),
+                          {
+                            loading: "Copying to clipboard",
+                            success: "Copied to clipboard",
+                            error: "Failed to copy to clipboard",
+                          },
+                        );
+                      }}
+                    >
+                      <Copy />
+                    </Button>
+                  </div>
+                </FormControl>
+                <FormDescription>
+                  Set this Webhook url in Tally to receive the applications
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
 
         <Card className="col-span-2">
           <CardHeader>

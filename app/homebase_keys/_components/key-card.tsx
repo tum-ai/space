@@ -69,10 +69,10 @@ export const KeyCard = ({ realKey: key, session, users }: Props) => {
                     await deleteMutation.mutateAsync({
                       keyId: key.id,
                     });
-                    toast.success("Created new key", { id: toastId });
+                    toast.success("Deleted the key", { id: toastId });
                     router.refresh();
                   } catch (err) {
-                    toast.error("Failed to create new key", { id: toastId });
+                    toast.error("Failed to delete the key", { id: toastId });
                   }
                 }}
               >

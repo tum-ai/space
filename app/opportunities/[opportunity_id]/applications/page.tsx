@@ -8,7 +8,7 @@ import { Button } from "@components/ui/button";
 import Link from "next/link";
 import { ExportButton } from "./_components/exportButton";
 import { AssignQuestionnaireButton } from "./_components/assignQuestionnaireButton";
-import Breadcrumbs from "@components/ui/breadcrumbs";
+import PageTemplate from "@components/PageTemplate";
 
 interface ApplicationsOverviewPageProps {
   params: {
@@ -49,32 +49,26 @@ export default async function OpportunityOverviewPage({
 
   if (applications.length) {
     return (
-      <div className="space-y-8 p-8">
-        <div className="flex justify-between">
-          <div className="flex w-full flex-row items-center justify-between">
-            <div>
-              <Breadcrumbs title={`Applications`} opportunityTitle={opportunity?.title} />
-              <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
-                Applications for {opportunity?.title}
-              </h1>
-            </div>
-            <div className="flex gap-2">
-              <ExportButton
-                opportunityId={Number(params.opportunity_id)}
-                opportunityTitle={
-                  opportunity?.title ??
-                  `TUM.ai Opportunity ${params.opportunity_id}`
-                }
-              />
-              <AssignQuestionnaireButton
-                opportunityId={Number(params.opportunity_id)}
-              />
-            </div>
-          </div>
-        </div>
-
+      <PageTemplate
+        breadcrumbsTitle="Applications"
+        opportunityTitle={opportunity?.title}
+        pageTitle={`Applications for ${opportunity?.title}`}
+        pageDescription="Configure an existing opportunity."
+        buttons={[
+          <ExportButton
+            opportunityId={Number(params.opportunity_id)}
+            opportunityTitle={
+              opportunity?.title ??
+              `TUM.ai Opportunity ${params.opportunity_id}`
+            }
+          />,
+          <AssignQuestionnaireButton
+            opportunityId={Number(params.opportunity_id)}
+          />,
+        ]}
+      >
         <DataTable columns={columns} data={applications} />
-      </div>
+      </PageTemplate>
     );
   }
 }

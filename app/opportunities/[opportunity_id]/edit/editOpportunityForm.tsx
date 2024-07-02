@@ -14,7 +14,7 @@ import { api } from "trpc/react";
 import { toast } from "sonner";
 import { Button } from "@components/ui/button";
 import { DeleteButton } from "./_components/deleteButton";
-import Breadcrumbs from "@components/ui/breadcrumbs";
+import PageTemplate from "@components/PageTemplate";
 export interface EditOpportunityFormProps {
   initialValues: UseFormProps<
     z.infer<typeof OpportunitySchema>
@@ -47,53 +47,40 @@ export const EditOpportunityForm = ({
         // eslint-disable-next-line @typescript-eslint/no-misused-promises
         onSubmit={form.handleSubmit(onSubmit, (err) => console.error(err))}
       >
-        <Tabs defaultValue="general" className="p-8">
-          <div className="mb-12 flex flex-col space-y-6">
-            <div className="flex justify-between">
-              <div className="flex flex-col gap-3">
-                <Breadcrumbs
-                  title={"Edit"}
-                  opportunityTitle={form.getValues().generalInformation.title}
-                />
-                <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
-                  Edit opportunity
-                </h1>
-                <p className="text-muted-foreground">
-                  Configure an existing opportunity
-                </p>
-              </div>
-
-              <div className="flex gap-2">
-                <DeleteButton
-                  id={form.watch("id")!}
-                  title={form.watch("generalInformation.title")}
-                />
-                <Button type="submit">
-                  <Save className="mr-2" />
-                  Save
-                </Button>
-              </div>
-            </div>
-
-            <TabsList className="self-center">
+        <Tabs defaultValue="general">
+          <PageTemplate
+            breadcrumbsTitle="Edit"
+            opportunityTitle={form.getValues().generalInformation.title}
+            pageTitle="Edit opportunity"
+            pageDescription="Configure an existing opportunity."
+            buttons={[
+              <DeleteButton //Different delete icon compared to reviewFrom
+                id={form.watch("id")!}
+                title={form.watch("generalInformation.title")}
+              />,
+              <Button type="submit">
+                <Save className="mr-2" />
+                Save
+              </Button>,
+            ]}
+          >
+            <TabsList className="mt-2 self-center">
               <TabsTrigger value="general">General</TabsTrigger>
               <ArrowRightIcon className="mx-2 h-5 w-5" />
               <TabsTrigger value="steps">Phases</TabsTrigger>
               <ArrowRightIcon className="mx-2 h-5 w-5" />
               <TabsTrigger value="tally">Tally</TabsTrigger>
             </TabsList>
-          </div>
-          <TabsContent value="general">
-            <GeneralInformation />
-          </TabsContent>
-
-          <TabsContent value="tally">
-            <TallyForm />
-          </TabsContent>
-
-          <TabsContent value="steps">
-            <Phases />
-          </TabsContent>
+            <TabsContent value="general">
+              <GeneralInformation />
+            </TabsContent>
+            <TabsContent value="steps">
+              <Phases />
+            </TabsContent>
+            <TabsContent value="tally">
+              <TallyForm />
+            </TabsContent>
+          </PageTemplate>
         </Tabs>
       </form>
     </Form>

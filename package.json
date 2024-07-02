@@ -88,8 +88,8 @@
     "autoprefixer": "10.4.15",
     "env-cmd": "^10.1.0",
     "postcss": "^8.4.38",
-    "prettier": "^3.0.2",
-    "prettier-plugin-tailwindcss": "^0.5.3",
+    "prettier": "^3.3.2",
+    "prettier-plugin-tailwindcss": "^0.6.5",
     "prisma": "latest",
     "tailwindcss": "3.3.3",
     "webpack": "^5.88.2"
