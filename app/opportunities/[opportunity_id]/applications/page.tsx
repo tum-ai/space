@@ -62,9 +62,6 @@ export default async function OpportunityOverviewPage({
               `TUM.ai Opportunity ${params.opportunity_id}`
             }
           />,
-          <AssignQuestionnaireButton
-            opportunityId={Number(params.opportunity_id)}
-          />,
         ]}
       >
         <DataTable columns={columns} data={applications} />
