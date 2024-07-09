@@ -30,14 +30,30 @@ export const EditOpportunityForm = ({
   });
 
   const updateMutation = api.opportunity.update.useMutation();
+  const reassignMutation =
+    api.application.reassignAllApplicationsToQuestionnaires.useMutation();
 
   async function onSubmit(values: z.infer<typeof OpportunitySchema>) {
-    const id = toast.loading("Updating opportunity");
+    const updateId = toast.loading("Updating opportunity");
     try {
-      await updateMutation.mutateAsync(values);
-      toast.success("Successfully updated opportunity", { id });
+      await updateMutation.mutateAsync({ ...values });
+      toast.success("Successfully updated opportunity", { id: updateId });
+
+      // After successful update, reassign questionnaires
+      const { id: opportunityId } = values;
+      if (opportunityId !== undefined) {
+        const reassignId = toast.loading("Reassigning questionnaires...");
+        try {
+          await reassignMutation.mutateAsync({ opportunityId });
+          toast.success("Reassigned questionnaires", { id: reassignId });
+        } catch (err) {
+          toast.error("Failed to reassign questionnaires", { id: reassignId });
+        }
+      } else {
+        toast.error("Opportunity ID is undefined");
+      }
     } catch (err) {
-      toast.error("Failed to update opportunity", { id });
+      toast.error("Failed to update opportunity", { id: updateId });
     }
   }
 
