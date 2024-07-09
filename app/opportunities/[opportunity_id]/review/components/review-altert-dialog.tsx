@@ -11,6 +11,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@components/ui/alert-dialog";
+import { revalidate } from "@lib/revalidate";
 import { Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -29,6 +30,7 @@ export const DeleteAlertDialog = ({
   const handleDelete = () => {
     toast.promise(
       deleteMutation.mutateAsync({ id: inputReviewId }).then(() => {
+        revalidate(`/opportunities/${inputOpportunityId}/review`);
         router.push(`/opportunities/${inputOpportunityId}/review`);
       }),
       {
