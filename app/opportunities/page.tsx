@@ -4,31 +4,15 @@ import { Button } from "@components/ui/button";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getServerAuthSession } from "server/auth";
-import db from "server/db";
 import Breadcrumbs from "@components/ui/breadcrumbs";
+import { api } from "trpc/server";
 
 export default async function OpportunitiesPage() {
   const session = await getServerAuthSession();
   const userId = session?.user.id;
   if (!userId) redirect("/auth");
 
-  const opportunities = await db.opportunity.findMany({
-    where: {
-      OR: [
-        // user is admin of opportunity
-        { admins: { some: { id: userId } } },
-        // or user is a reviewer of a questionnaire in the opportunity
-        {
-          phases: {
-            some: {
-              questionnaires: { some: { reviewers: { some: { id: userId } } } },
-            },
-          },
-        },
-      ],
-    },
-    include: { admins: true },
-  });
+  const opportunities = await api.opportunity.getAll.query();
 
   return (
     <div className="space-y-8 p-8">
