@@ -18,10 +18,10 @@ async function Header() {
           {session?.user ? (
             <UserComponent user={session.user} />
           ) : (
-            <Button asChild variant="outline" size="sm">
+            <Button asChild className="flex gap-2">
               <Link href="/auth">
-                <LogIn className="mr-2 h-4 w-4" />
-                <span className="hidden sm:inline">Sign in</span>
+                <LogIn />
+                Sign in
               </Link>
             </Button>
           )}

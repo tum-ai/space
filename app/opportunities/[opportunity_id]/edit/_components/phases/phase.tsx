@@ -78,7 +78,7 @@ export default function Phase({ index, phase, remove: removePhase }: Props) {
       </div>
       <div>
         <Separator />
-        <div className="flex h-full w-4/5 flex-col items-center justify-center gap-2">
+        <div className="justify-top flex h-full w-4/5 flex-col items-center gap-2 pt-2">
           {questionaires.map((questionnaire, index) => (
             <QuestionnaireDialog
               key={questionnaire.id}
