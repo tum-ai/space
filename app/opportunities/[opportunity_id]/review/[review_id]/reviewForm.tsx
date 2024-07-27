@@ -20,11 +20,13 @@ interface ReviewFormProps {
   application: Application;
   review: Review;
   questions: Question[];
+  opportunityTitle: string | undefined;
 }
 export const ReviewForm = ({
   application,
   questions,
   review,
+  opportunityTitle,
 }: ReviewFormProps) => {
   const applicationFields = (application.content as Tally).data.fields;
 
@@ -76,6 +78,7 @@ export const ReviewForm = ({
             <div>
               <Breadcrumbs
                 title={`Application: ${application.opportunityId}`}
+                opportunityTitle={opportunityTitle}
               />
               <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
                 Review application

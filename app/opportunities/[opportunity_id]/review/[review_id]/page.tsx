@@ -22,6 +22,12 @@ export default async function Review({ params }: ReviewProps) {
     include: { application: true, questionnaire: true },
   });
 
+  const opportunityTitle = db.opportunity.findUnique({
+    where: {
+      id: review?.application.opportunityId,
+    },
+  }).then((opportunity) => opportunity?.title);
+
   if (!review) redirect("/404");
 
   const questions = review.questionnaire.questions as Question[];
@@ -31,6 +37,7 @@ export default async function Review({ params }: ReviewProps) {
       questions={questions}
       application={review.application}
       review={review}
+      opportunityTitle={await opportunityTitle}
     />
   );
 }
