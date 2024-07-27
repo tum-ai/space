@@ -19,8 +19,11 @@ export default async function Review({ params }: ReviewProps) {
     where: {
       id: Number(params.review_id),
     },
-    include: { application: true, questionnaire: true },
+    include: { application: true, questionnaire: true, user: true },
   });
+
+  if (!review) redirect("/404");
+  if (review.userId !== session.user.id) redirect("/404");
 
   const opportunityTitle = db.opportunity.findUnique({
     where: {
@@ -28,7 +31,6 @@ export default async function Review({ params }: ReviewProps) {
     },
   }).then((opportunity) => opportunity?.title);
 
-  if (!review) redirect("/404");
 
   const questions = review.questionnaire.questions as Question[];
 
