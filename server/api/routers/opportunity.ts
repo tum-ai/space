@@ -104,6 +104,28 @@ export const opportunityRouter = createTRPCRouter({
       });
     }),
 
+  getAll: protectedProcedure.query(async ({ ctx }) => {
+    const userId = ctx.session.user.id;
+    const opportunities = await ctx.db.opportunity.findMany({
+      where: {
+        OR: [
+          { admins: { some: { id: userId } } },
+          {
+            phases: {
+              some: {
+                questionnaires: {
+                  some: { reviewers: { some: { id: userId } } },
+                },
+              },
+            },
+          },
+        ],
+      },
+      include: { admins: true },
+    });
+    return opportunities;
+  }),
+
   getById: protectedProcedure
     .input(z.object({ id: z.number() }))
     .query(async ({ input, ctx }) => {

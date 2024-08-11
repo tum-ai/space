@@ -16,6 +16,7 @@ import { DeleteAlertDialog } from "../components/review-altert-dialog";
 import Breadcrumbs from "@components/ui/breadcrumbs";
 import { QuestionView } from "../../edit/_components/questionnaire/questionView";
 import { QuestionField } from "./_components/questionField";
+import { revalidate } from "@lib/revalidate";
 
 interface ReviewFormProps {
   application: Application;
@@ -60,6 +61,7 @@ export const ReviewForm = ({
           status: "DONE",
         })
         .then(() => {
+          revalidate(`/opportunities/${application.opportunityId}/review`)
           router.push(`/opportunities/${application.opportunityId}/review`);
         }),
       {
