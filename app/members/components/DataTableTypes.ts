@@ -1,4 +1,9 @@
 import { SpaceRole } from "@prisma/client";
+import { ColumnDef } from "@tanstack/react-table";
+
+export type ExtendedColumnDef<TData, TUnknown> = ColumnDef<TData, TUnknown> & {
+  label: string;
+};
 
 export interface Option {
   label: string | number;
@@ -15,7 +20,7 @@ export interface RowUser {
   currentDepartmentPosition: string;
 }
 
-export interface ColumnData {
+export interface ColumnDefs {
   departments: Option[];
   roles: Option[];
   positions: Option[];

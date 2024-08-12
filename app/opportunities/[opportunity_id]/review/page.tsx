@@ -2,7 +2,8 @@ import { redirect } from "next/navigation";
 import { getServerAuthSession } from "server/auth";
 import db from "server/db";
 import { columns } from "./columns";
-import { DataTable } from "@components/ui/data-table";
+import { DataTable } from "./components/DataTable";
+import { RowType } from "./components/DataTableTypes";
 import { Button } from "@components/ui/button";
 import { FileCheck } from "lucide-react";
 import Link from "next/link";
@@ -18,28 +19,51 @@ export default async function ReviewPage({ params }: ReviewPageProps) {
 
   const opportunity = await db.opportunity.findUnique({
     where: { id: Number(params.opportunity_id) },
+    include: { admins: true },
   });
 
-  const reviews = await db.review.findMany({
-    where: {
-      user: { id: session?.user.id },
-      application: { opportunityId: Number(params.opportunity_id) },
-    },
-    include: {
-      application: true,
-      questionnaire: { include: { phase: true } },
-    },
-  });
+  if (!opportunity) redirect("/404");
+
+  let reviews;
+
+  if (opportunity.admins.some((admin) => admin.id === session.user.id)) {
+
+    reviews = await db.review.findMany({
+      where: {
+        application: { opportunityId: Number(params.opportunity_id) },
+      },
+      include: {
+        application: true,
+        user: { select: { name: true } },
+        questionnaire: { include: { phase: true } },
+      },
+    });
+  } else {
+    reviews = await db.review.findMany({
+      where: {
+        application: { opportunityId: Number(params.opportunity_id) },
+        userId: session.user.id,
+      },
+      include: {
+        application: true,
+        user: { select: { name: true } },
+        questionnaire: { include: { phase: true } },
+      },
+    });
+  }
 
   return (
     <div className="space-y-8 p-8">
       <div className="flex justify-between">
         <div>
-          <Breadcrumbs title={"Reviews"} opportunityTitle={opportunity?.title} />
+          <Breadcrumbs
+            title={"Reviews"}
+            opportunityTitle={opportunity?.title}
+          />
           <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
-            Your reviews
+            Reviews
           </h1>
-          <p className="text-muted-foreground">See and edit your reviews</p>
+          <p className="text-muted-foreground">See and edit the reviews</p>
         </div>
 
         <Button asChild>
@@ -50,7 +74,11 @@ export default async function ReviewPage({ params }: ReviewPageProps) {
         </Button>
       </div>
 
-      <DataTable columns={columns} data={reviews} />
+      <DataTable<RowType>
+        rowData={reviews}
+        columnData={columns}
+        columnDefs={{}}
+      />
     </div>
   );
 }

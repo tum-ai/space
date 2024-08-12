@@ -29,11 +29,11 @@ export const ReviewForm = ({
   review,
   opportunityTitle,
 }: ReviewFormProps) => {
-  const applicationFields = (application.content as Tally).data.fields;
+  const applicationFields = (application?.content as Tally).data?.fields ?? [];
 
   const form = useForm<Question["value"][]>();
   const defaultValues = (review.content as Question[]).map((question) => {
-    return question.value;
+    return question.value; 
   });
   // Workaround to set default values
   defaultValues.forEach((value, index) => {
@@ -47,10 +47,14 @@ export const ReviewForm = ({
   const onSubmit: SubmitHandler<Question["value"][]> = (data) => {
     const content = QuestionSchema.array().parse(
       questions.map((question, index) => ({
-        ...question,
         value: data[index],
+        ...question,
       })),
     );
+
+    console.log(questions);
+    console.log(data);
+    console.log(content);
 
     toast.promise(
       updateMutation

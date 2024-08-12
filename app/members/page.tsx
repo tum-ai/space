@@ -1,9 +1,10 @@
 import { DataTable } from "./components/DataTable";
-import { RowUser } from "./components/DataTableTypes";
 import db from "server/db";
 import { DepartmentRole, SpaceRole } from "@prisma/client";
 import { getServerAuthSession } from "server/auth";
 import { redirect } from "next/navigation";
+import { columns } from "./columns";
+import { RowUser } from "./components/DataTableTypes";
 import Breadcrumbs from "@components/ui/breadcrumbs";
 
 export default async function MembersPage() {
@@ -53,7 +54,7 @@ export default async function MembersPage() {
     value: position[1],
   }));
 
-  const columnData = {
+  const columnDefs = {
     departments: departments,
     roles: roles,
     positions: positions,
@@ -68,7 +69,11 @@ export default async function MembersPage() {
         </h1>
         <p className="text-muted-foreground">Manage and list members</p>
       </div>
-      <DataTable rowData={profiles} columnData={columnData}></DataTable>
+      <DataTable<RowUser>
+        rowData={profiles}
+        columnData={columns}
+        columnDefs={columnDefs}
+      ></DataTable>
     </div>
   );
 }

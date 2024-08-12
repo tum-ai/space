@@ -7,17 +7,17 @@ import { DataTableViewOptions } from "./DataTableViewOptions";
 
 import { DataTableFacetedFilter } from "./DataTableFacetedFilter";
 import React, { useState, useEffect } from "react";
-import { ColumnData, Option, RowUser } from "./DataTableTypes";
-import { ExtendedColumnDef } from "./Columns";
+import { ColumnDefs, ExtendedColumnDef, Option, RowUser } from "./DataTableTypes";
+
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>;
-  columnData: ColumnData;
+  columnDefs: ColumnDefs;
 }
 
 export function DataTableToolbar<TData>({
   table,
-  columnData,
+  columnDefs,
 }: DataTableToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0;
   const [departments, setDepartments] = useState<Option[]>([]);
@@ -25,10 +25,10 @@ export function DataTableToolbar<TData>({
   const [positions, setPositions] = useState<Option[]>([]);
 
   useEffect(() => {
-    setDepartments(columnData.departments);
-    setRoles(columnData.roles);
-    setPositions(columnData.positions);
-  }, [columnData.departments, columnData.positions, columnData.roles]);
+    setDepartments(columnDefs.departments);
+    setRoles(columnDefs.roles);
+    setPositions(columnDefs.positions);
+  }, [columnDefs.departments, columnDefs.positions, columnDefs.roles]);
 
   // Remove the unused getSelectedRows function
   // const getSelectedRows = () => {
