@@ -23,7 +23,6 @@ export default async function Review({ params }: ReviewProps) {
   });
 
   if (!review) redirect("/404");
-  if (review.userId !== session.user.id) redirect("/404");
 
   const opportunityTitle = db.opportunity.findUnique({
     where: {

@@ -14,6 +14,30 @@ export const reviewRouter = createTRPCRouter({
     )
     .mutation(async ({ input, ctx }) => {
       const { id, content, status } = input;
+
+      const review = await ctx.db.review.findUnique({
+        where: { id },
+        include: { application: true },
+      });
+
+      if (!review) {
+        throw new Error("Review not found");
+      }
+
+      const opportunity = await ctx.db.opportunity.findUnique({
+        where: { id: review.application.opportunityId },
+        include: { admins: true },
+      });
+
+      if (
+        !opportunity?.admins.some(
+          (admin) => admin.id === ctx.session.user.id,
+        ) &&
+        review.userId !== ctx.session.user.id
+      ) {
+        throw new Error("Unauthorized");
+      }
+
       await ctx.db.review.update({
         data: { content, status },
         where: { id },
@@ -22,6 +46,31 @@ export const reviewRouter = createTRPCRouter({
   deleteById: protectedProcedure
     .input(z.object({ id: z.number() }))
     .mutation(async ({ input, ctx }) => {
+      const { id } = input;
+
+      const review = await ctx.db.review.findUnique({
+        where: { id },
+        include: { application: true },
+      });
+
+      if (!review) {
+        throw new Error("Review not found");
+      }
+
+      const opportunity = await ctx.db.opportunity.findUnique({
+        where: { id: review.application.opportunityId },
+        include: { admins: true },
+      });
+
+      if (
+        !opportunity?.admins.some(
+          (admin) => admin.id === ctx.session.user.id,
+        ) &&
+        review.userId !== ctx.session.user.id
+      ) {
+        throw new Error("Unauthorized");
+      }
+
       return await ctx.db.review.delete({
         where: {
           id: input.id,
