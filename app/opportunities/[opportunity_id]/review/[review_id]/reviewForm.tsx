@@ -14,7 +14,6 @@ import { Tally } from "@lib/types/tally";
 import { useRouter } from "next/navigation";
 import { DeleteAlertDialog } from "../components/review-altert-dialog";
 import Breadcrumbs from "@components/ui/breadcrumbs";
-import { QuestionView } from "../../edit/_components/questionnaire/questionView";
 import { QuestionField } from "./_components/questionField";
 
 interface ReviewFormProps {
@@ -23,6 +22,7 @@ interface ReviewFormProps {
   questions: Question[];
   opportunityTitle: string | undefined;
 }
+
 export const ReviewForm = ({
   application,
   questions,
@@ -31,26 +31,31 @@ export const ReviewForm = ({
 }: ReviewFormProps) => {
   const applicationFields = (application.content as Tally).data.fields;
 
-  const form = useForm<Question["value"][]>();
-  const defaultValues = (review.content as Question[]).map((question) => {
-    return question.value;
-  });
-  // Workaround to set default values
-  defaultValues.forEach((value, index) => {
-    form.setValue(`${index}`, value);
+  const defaultValues = (review.content as Question[]).reduce(
+    (acc, question, index) => {
+      acc[`${index}`] = question.value;
+      return acc;
+    },
+    {} as Record<string, Question["value"]>,
+  );
+
+  const form = useForm<Record<string, Question["value"]>>({
+    defaultValues,
   });
 
   const router = useRouter();
 
   const updateMutation = api.review.update.useMutation();
 
-  const onSubmit: SubmitHandler<Question["value"][]> = (data) => {
+  const onSubmit: SubmitHandler<Record<string, Question["value"]>> = (data) => {
     const content = QuestionSchema.array().parse(
       questions.map((question, index) => ({
         ...question,
-        value: data[index],
+        value: data[`${index}`],
       })),
     );
+
+    console.log("Content", content);
 
     toast.promise(
       updateMutation
@@ -69,8 +74,6 @@ export const ReviewForm = ({
       },
     );
   };
-
-  console.log(questions);
 
   return (
     <Form {...form}>
