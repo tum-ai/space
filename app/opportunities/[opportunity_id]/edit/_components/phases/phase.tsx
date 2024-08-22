@@ -51,10 +51,10 @@ export default function Phase({ index, phase, remove: removePhase }: Props) {
 
   return (
     <div className="grid min-h-[250px] grid-rows-[3rem,_1fr]" style={style}>
-      <div className="flex w-4/5 items-center justify-between">
-        <div className="flex items-center space-x-1.5 text-sm font-medium">
+      <div className="flex w-4/5 items-center justify-between overflow-hidden">
+        <div className="flex items-center space-x-1.5 overflow-hidden text-sm font-medium">
           <Badge variant="secondary">{index + 1}</Badge>
-          <h4 className="scroll-m-20 text-xl font-semibold tracking-tight">
+          <h4 className="scroll-m-20 overflow-x-auto whitespace-nowrap p-1 text-xl font-semibold tracking-tight">
             {phase.name}
           </h4>
         </div>
@@ -76,7 +76,7 @@ export default function Phase({ index, phase, remove: removePhase }: Props) {
           </div>
         </div>
       </div>
-      <div>
+      <div className="overflow-hidden">
         <Separator />
         <div className="justify-top flex h-full w-4/5 flex-col items-center gap-2 pt-2">
           {questionaires.map((questionnaire, index) => (
@@ -86,7 +86,10 @@ export default function Phase({ index, phase, remove: removePhase }: Props) {
               onSave={(data) => update(index, data)}
               onRemove={() => remove(index)}
             >
-              <Button variant="outline" className="w-full">
+              <Button
+                variant="outline"
+                className="w-full overflow-x-auto whitespace-nowrap"
+              >
                 {questionnaire.name}
               </Button>
             </QuestionnaireDialog>

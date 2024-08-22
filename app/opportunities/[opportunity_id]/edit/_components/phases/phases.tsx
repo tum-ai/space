@@ -68,8 +68,8 @@ export function Phases() {
                 <AddPhasePopover append={append} />
 
                 <div>
-                  <Separator />
-                  <p className="mt-4 w-full text-center text-sm text-muted-foreground">
+                  <Separator className="w-4/5" />
+                  <p className="mt-4 w-4/5 text-center text-sm text-muted-foreground">
                     Add phases to define questionnaires
                   </p>
                 </div>
