@@ -24,7 +24,7 @@ interface QuestionFieldProps {
 }
 
 export const QuestionField = ({ index, question }: QuestionFieldProps) => {
-  const form = useFormContext<Question["value"][]>();
+  const form = useFormContext<Record<string, Question["value"]>>();
 
   switch (question.type) {
     case "INPUT_TEXT": {
@@ -58,7 +58,7 @@ export const QuestionField = ({ index, question }: QuestionFieldProps) => {
               <FormControl>
                 <Select
                   onValueChange={field.onChange}
-                  defaultValue={field.value as string}
+                  value={field.value as string}
                 >
                   <FormControl>
                     <SelectTrigger>
@@ -105,7 +105,7 @@ export const QuestionField = ({ index, question }: QuestionFieldProps) => {
                           return checked
                             ? field.onChange([...(fieldValue ?? []), item.id])
                             : field.onChange(
-                                (field.value as string[])?.filter(
+                                fieldValue?.filter(
                                   (value) => value !== item.id,
                                 ),
                               );
@@ -122,6 +122,7 @@ export const QuestionField = ({ index, question }: QuestionFieldProps) => {
         </FormItem>
       );
     }
+
     case "NUMERIC": {
       return (
         <FormField
@@ -137,6 +138,7 @@ export const QuestionField = ({ index, question }: QuestionFieldProps) => {
                   type="number"
                   min={question.options.min}
                   max={question.options.max}
+                  value={field.value ?? ""}
                   onChange={(e) => {
                     const inputValue =
                       e.target.value === ""
