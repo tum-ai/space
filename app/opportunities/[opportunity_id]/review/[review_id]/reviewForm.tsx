@@ -55,8 +55,6 @@ export const ReviewForm = ({
       })),
     );
 
-    console.log("Content", content);
-
     toast.promise(
       updateMutation
         .mutateAsync({
