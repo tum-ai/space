@@ -164,7 +164,7 @@ model Review {
   applicationId   Int           @map("reviewId")
   application     Application   @relation(fields: [applicationId], references: [id], onDelete: Cascade)
   questionnaireId String
-  questionnaire   Questionnaire @relation(fields: [questionnaireId], references: [id])
+  questionnaire   Questionnaire @relation(fields: [questionnaireId], references: [id], onDelete: Cascade)
   status          ReviewStatus
 
   @@unique([applicationId, userId, questionnaireId])
