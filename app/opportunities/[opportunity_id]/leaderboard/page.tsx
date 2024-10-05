@@ -33,7 +33,11 @@ export default async function OpportunityPage({ params }: OpportunityProps) {
       name: true,
       _count: {
         select: {
-          reviews: true,
+          reviews: {
+            where: {
+              application: { opportunityId: Number(params.opportunity_id) },
+            },
+          },
         },
       },
     },
