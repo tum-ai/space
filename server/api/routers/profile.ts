@@ -6,7 +6,6 @@ export const profileRouter = createTRPCRouter({
   update: protectedProcedure
     .input(ProfileSchema)
     .mutation(async ({ input, ctx }) => {
-
       await ctx.db.profile.update({
         where: {
           userId: input.userId,

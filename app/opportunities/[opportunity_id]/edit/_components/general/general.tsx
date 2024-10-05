@@ -92,7 +92,6 @@ export function GeneralInformation() {
                     mode="single"
                     selected={field.value}
                     onSelect={field.onChange}
-                    initialFocus
                   />
                 </PopoverContent>
               </Popover>
@@ -135,7 +134,6 @@ export function GeneralInformation() {
                       date <
                       new Date(form.getValues("generalInformation.start"))
                     }
-                    initialFocus
                   />
                 </PopoverContent>
               </Popover>

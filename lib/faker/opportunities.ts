@@ -1,11 +1,6 @@
 import { faker } from "@faker-js/faker";
 import db from "server/db";
-import {
-  keyUniqueEnforcer,
-  now,
-  options,
-  uuidUniqueEnforcer,
-} from "./utils";
+import { keyUniqueEnforcer, now, options, uuidUniqueEnforcer } from "./utils";
 import { Question } from "@lib/types/question";
 import { Opportunity, Phase, Questionnaire } from "@lib/types/opportunity";
 import { allPersons } from "./mock";
@@ -14,8 +9,6 @@ const minNumberOfPhases = parseInt(options.minphases, 10);
 const maxNumberOfPhases = parseInt(options.maxphases, 10);
 const minNumberOfQuestionnaires = parseInt(options.minquestionnaires, 10);
 const maxNumberOfQuestionnaires = parseInt(options.maxquestionnaires, 10);
-
-
 
 export async function generateOpportunities(number: number) {
   const opportunities = Array.from({ length: number }, () =>

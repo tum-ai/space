@@ -1,11 +1,14 @@
 # TUM.ai Space 🚀
+
 TUM.ai Space is an all-in-one platform with the purpose of tracking all internal processes related to members. This entails: development, performance, projects, and recruitment.
 
 TUM.ai Space solves the following issues:
+
 - Lack of a clear, systematic, observable overview of members' achievements
 - Decoupled nature of the existing systems and the lack of extensibility thereof
 
-Hence, TUM.ai Space facilitates the following: 
+Hence, TUM.ai Space facilitates the following:
+
 - Increased observability of TUM.ai's existing stakeholder data and projects in addition to prospective stakeholder data
 - Centralized organization of internal information that is setup in an extensible and manageable format
 
@@ -29,19 +32,24 @@ For instructions on working and developing a Linear ticket, please refer to [thi
 ### Installation and Prerequisites
 
 Consider the following as an ordered checklist of prerequisites for [running TUM.ai Space](#running-the-project)
+
 - Linux Only: build/dev tools, mainly for make
+
 1. Homebrew: See [here](https://brew.sh)
 2. Node + NPM: See [here](https://nodejs.org/en/download/package-manager) <br>
 3. Docker + Docker Compose: See [here](https://docs.docker.com/get-docker/)
 4. Micromamba or Anaconda: See (recommended) [Micromamba](https://mamba.readthedocs.io/en/latest/micromamba-installation.html) or [Anaconda](https://docs.anaconda.com/free/anaconda/install/index.html)
 5. Create the development environment using environment.yml: <br>
 
-If you have Anaconda: 
+If you have Anaconda:
+
 ```bash
 ~ cd api
 ~ conda env create -f environment.yml
 ```
+
 If you have Micromamba:
+
 ```bash
 ~ cd api
 ~ micromamba env create -f environment.yml
@@ -53,54 +61,70 @@ If you have Micromamba:
 ### Setup
 
 **Initial setup** \
-For MacOS: 
-1. Find your python version 
+For MacOS:
+
+1. Find your python version
 2. Execute the following:
+
 ```bash
 open /Applications/Python\ {your python version}/Install\ Certificate.command
 ```
 
-For Linux, MacOS, Windows: 
+For Linux, MacOS, Windows:
+
 1. Create .env within /api
 2. Paste [this](https://tum-ai-internal.slack.com/archives/C02787QJ95W/p1698584387138569) into /api/.env
 3. Create .env within /app and paste in the following:
 4. Create /api/.secrets and then /api/.secrets/tumai-space-firebase-adminsdk.json
-5. Paste [this](https://tum-ai-internal.slack.com/archives/C02787QJ95W/p1698583880296439) into /api/.secrets/tumai-space-firebase-adminsdk.json - Add Firebase Admin SDK Certificate (for staging env): the development environment will use authentication of the Staging Firebase project 
+5. Paste [this](https://tum-ai-internal.slack.com/archives/C02787QJ95W/p1698583880296439) into /api/.secrets/tumai-space-firebase-adminsdk.json - Add Firebase Admin SDK Certificate (for staging env): the development environment will use authentication of the Staging Firebase project
 
 ### Running the Project
 
 **Backend** in `/api/`
+
 1. Change into the api directory:
+
 ```bash
 ~ cd api
 ```
+
 2. Activate the Conda environment using either Micromamba or Anaconda:
+
 ```bash
 ~ micromamba activate space
 ```
+
 or
+
 ```bash
 ~ conda activate space
 ```
+
 3. Run the backend:
 
 (Recommended)
+
 ```bash
 ~ uvicorn space_api.main:app --host 0.0.0.0 --reload --port 8000
 ```
+
 or
+
 ```bash
 ~ make run  # in root dir (launch api in docker container)
 ```
 
 **Frontend** in `/app/`
+
 1. Install the project's frontend dependencies listed in the package.json file, create a node_modules directory and ensuring the correct package versions are used:
+
 ```bash
 ~ cd app
 ~ npm install
 ```
 
 2. Start a development server for the frontend using npm:
+
 ```bash
 ~ npm run dev
 ```
@@ -133,21 +157,21 @@ How to generate mock data:
 
 1. **Run local DB**
 
-    ```bash
-    docker-compose up
-    ```
+   ```bash
+   docker-compose up
+   ```
 
 2. **Login via Slack Authentication**
 
-     - Open the UI and log in via Slack authentication. This will create a session and a User entry in the DB.
-  
+   - Open the UI and log in via Slack authentication. This will create a session and a User entry in the DB.
+
 3. **Seed local DB**
 
    - Run the following command to seed the local DB with mock data:
 
-    ```bash
-    bun db:seed
-    ```
+   ```bash
+   bun db:seed
+   ```
 
 Command Line Options:
 

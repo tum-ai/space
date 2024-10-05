@@ -201,7 +201,7 @@ export function ProfileOverview({ user, contacts }: ProfileOverviewProps) {
     <div className="space-y-8">
       <div className="flex flex-col items-center">
         <div className="flex w-1/2 min-w-[280px] flex-col gap-8">
-        <Breadcrumbs title="Me"/>
+          <Breadcrumbs title="Me" />
           <div className="flex justify-between">
             <div className="flex items-center gap-4">
               <Avatar className="h-28 w-28">
@@ -235,7 +235,7 @@ export function ProfileOverview({ user, contacts }: ProfileOverviewProps) {
                     <div className="flex flex-col gap-2">
                       <div className="felx flex-col items-start gap-0">
                         <div className="flex items-center justify-between">
-                          <h2 className="text-lg font-bold ">Details</h2>
+                          <h2 className="text-lg font-bold">Details</h2>
                           <PencilIcon className="w-5" />
                         </div>
                         <Divider className="m-1" />
@@ -297,7 +297,7 @@ export function ProfileOverview({ user, contacts }: ProfileOverviewProps) {
                     <div className="flex flex-col gap-2">
                       <div className="felx flex-col items-start gap-0">
                         <div className="flex items-center justify-between">
-                          <h2 className="text-lg font-bold ">Education</h2>
+                          <h2 className="text-lg font-bold">Education</h2>
                           <AcademicCapIcon className="w-5" />
                         </div>
                         <Divider className="m-1" />
@@ -418,7 +418,7 @@ export function ProfileOverview({ user, contacts }: ProfileOverviewProps) {
                   <div className="flex flex-col gap-2">
                     <div className="felx flex-col items-start gap-0">
                       <div className="flex items-center justify-between">
-                        <h2 className="text-lg font-bold ">Contacts</h2>
+                        <h2 className="text-lg font-bold">Contacts</h2>
                         <ContactIcon className="w-5" />
                       </div>
                       <Divider className="m-1" />
@@ -508,7 +508,7 @@ export function ProfileOverview({ user, contacts }: ProfileOverviewProps) {
                     <div className="flex flex-col gap-2">
                       <div className="felx flex-col items-start gap-0">
                         <div className="flex items-center justify-between">
-                          <h2 className="text-lg font-bold ">Account</h2>
+                          <h2 className="text-lg font-bold">Account</h2>
                           <UserIcon className="w-5" />
                         </div>
                         <Divider className="m-1" />

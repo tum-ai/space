@@ -36,15 +36,16 @@ program
     "-maxq, --maxquestionnaires <number>",
     "maximal number of questionnaires to generate per phase",
     "3",
-  ).option(
+  )
+  .option(
     "-mina, --minapplications <number>",
     "minimal number of applications to generate per opportunity",
-    "1"
+    "1",
   )
   .option(
     "-maxa, --maxapplications <number>",
     "maximal number of applications to generate per opportunity",
-    "5"
+    "5",
   )
   .parse(process.argv);
 

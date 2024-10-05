@@ -12,9 +12,7 @@ import {
   useSensors,
   DragEndEvent,
 } from "@dnd-kit/core";
-import {
-  SortableContext,
-} from "@dnd-kit/sortable";
+import { SortableContext } from "@dnd-kit/sortable";
 
 export function Phases() {
   const form = useFormContext<z.infer<typeof OpportunitySchema>>();

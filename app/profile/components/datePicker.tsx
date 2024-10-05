@@ -54,11 +54,9 @@ export function BirthDatePicker({
               onChange(newDate);
             }
           }}
-          captionLayout="dropdown-buttons"
           defaultMonth={date ?? new Date(new Date().getFullYear() - 18, 0)}
           fromYear={new Date().getFullYear() - 85}
           toYear={new Date().getFullYear() - 16}
-          initialFocus
         />
       </PopoverContent>
     </Popover>

@@ -20,8 +20,8 @@ export const DeleteAlertDialog = ({
   inputReviewId,
   inputOpportunityId,
 }: {
-    inputReviewId: number;
-    inputOpportunityId: number;
+  inputReviewId: number;
+  inputOpportunityId: number;
 }) => {
   const deleteMutation = api.review.deleteById.useMutation();
   const router = useRouter();

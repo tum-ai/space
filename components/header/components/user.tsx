@@ -16,7 +16,10 @@ export const UserComponent = ({ user }: UserProps) => {
     const words = name.split(" ");
 
     // Extract the first letter of each word and join them
-    const initials = words.map((word) => word.charAt(0)).join("").slice(0, 2);
+    const initials = words
+      .map((word) => word.charAt(0))
+      .join("")
+      .slice(0, 2);
     return initials.toUpperCase(); // Convert to uppercase for consistency
   };
 

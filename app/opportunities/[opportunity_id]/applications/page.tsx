@@ -7,7 +7,6 @@ import { Rabbit } from "lucide-react";
 import { Button } from "@components/ui/button";
 import Link from "next/link";
 import { ExportButton } from "./_components/exportButton";
-import { AssignQuestionnaireButton } from "./_components/assignQuestionnaireButton";
 import Breadcrumbs from "@components/ui/breadcrumbs";
 
 interface ApplicationsOverviewPageProps {
@@ -53,7 +52,10 @@ export default async function OpportunityOverviewPage({
         <div className="flex justify-between">
           <div className="flex w-full flex-row items-center justify-between">
             <div>
-              <Breadcrumbs title={`Applications`} opportunityTitle={opportunity?.title} />
+              <Breadcrumbs
+                title={`Applications`}
+                opportunityTitle={opportunity?.title}
+              />
               <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
                 Applications for {opportunity?.title}
               </h1>

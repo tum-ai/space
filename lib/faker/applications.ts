@@ -171,7 +171,7 @@ function generateTallyFieldDetails(
         value: value,
         rows: rows,
         columns: columns,
-      }
+      };
 
     default:
       if (

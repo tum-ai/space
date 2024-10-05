@@ -73,92 +73,94 @@ export const ReviewForm = ({
       {
         loading: "Saving review",
         success: "Review saved",
-        error: "Failed to save review",
+        error: (e) => {
+          console.error(e);
+          return "Failed to save review";
+        },
       },
     );
   };
 
-  console.log(applicationFields.filter((field) => !!field.value)[22]);
-
   return (
     <Form {...form}>
       {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
-      <form onSubmit={form.handleSubmit(onSubmit, (err) => console.error(err))}>
-        <div className="space-y-8 p-8">
-          <div className="flex justify-between">
-            <div>
-              <Breadcrumbs
-                title={`Application: ${application.opportunityId}`}
-                opportunityTitle={opportunityTitle}
-              />
-              <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
-                Review application
-              </h1>
-              <p className="text-muted-foreground">Review a candidate</p>
-            </div>
-
-            <div className="flex items-center space-x-4">
-              <Button variant="default" type="submit">
-                <Save className="mr-2" />
-                Save
-              </Button>
-              <Button size="icon" asChild>
-                <div>
-                  <DeleteAlertDialog
-                    inputReviewId={review.id}
-                    inputOpportunityId={application.opportunityId}
-                  />
-                </div>
-              </Button>
-            </div>
+      <div className="space-y-8 p-8">
+        <div className="flex justify-between">
+          <div>
+            <Breadcrumbs
+              title={`Application: ${application.opportunityId}`}
+              opportunityTitle={opportunityTitle}
+            />
+            <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
+              Review application
+            </h1>
+            <p className="text-muted-foreground">Review a candidate</p>
           </div>
 
-          <ResizablePanelGroup direction="horizontal" className="gap-4">
-            <ResizablePanel>
-              <Card>
-                <CardHeader>
-                  <CardTitle className="scroll-m-20 text-2xl font-semibold tracking-tight">
-                    Application
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="flex h-[80vh] flex-col gap-12 overflow-y-auto">
-                  {applicationFields
-                    .filter((field) => !!field.value)
-                    .map((field, index) => (
-                      <ApplicationField
-                        className="w-full"
-                        key={field.key}
-                        field={field}
-                        index={index + 1}
-                      />
-                    ))}
-                </CardContent>
-              </Card>
-            </ResizablePanel>
+          <div className="flex items-center space-x-4">
+            <Button
+              variant="default"
+              onClick={form.handleSubmit(onSubmit, (err) => console.error(err))}
+            >
+              <Save className="mr-2" />
+              Save
+            </Button>
+            <Button size="icon" asChild>
+              <div>
+                <DeleteAlertDialog
+                  inputReviewId={review.id}
+                  inputOpportunityId={application.opportunityId}
+                />
+              </div>
+            </Button>
+          </div>
+        </div>
 
-            <ResizableHandle />
-
-            <ResizablePanel>
-              <Card>
-                <CardHeader>
-                  <CardTitle className="scroll-m-20 text-2xl font-semibold tracking-tight">
-                    Review
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="flex h-[80vh] flex-col gap-12 overflow-y-auto">
-                  {questions.map((question, index) => (
-                    <QuestionField
-                      question={question}
-                      index={index}
-                      key={question.key}
+        <ResizablePanelGroup direction="horizontal" className="gap-4">
+          <ResizablePanel defaultSize={50}>
+            <Card>
+              <CardHeader>
+                <CardTitle className="scroll-m-20 text-2xl font-semibold tracking-tight">
+                  Application
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="flex h-[80vh] flex-col gap-12">
+                {applicationFields
+                  .filter((field) => !!field.value)
+                  .map((field, index) => (
+                    <ApplicationField
+                      className="w-full"
+                      key={field.key}
+                      field={field}
+                      index={index + 1}
                     />
                   ))}
-                </CardContent>
-              </Card>
-            </ResizablePanel>
-          </ResizablePanelGroup>
-        </div>
-      </form>
+              </CardContent>
+            </Card>
+          </ResizablePanel>
+
+          <ResizableHandle withHandle />
+
+          <ResizablePanel defaultSize={50}>
+            <Card className="overflow-hidden">
+              <CardHeader>
+                <CardTitle className="scroll-m-20 text-2xl font-semibold tracking-tight">
+                  Review
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="flex h-[80vh] flex-col gap-12">
+                {questions.map((question, index) => (
+                  <QuestionField
+                    question={question}
+                    index={index}
+                    key={question.key}
+                  />
+                ))}
+              </CardContent>
+            </Card>
+          </ResizablePanel>
+        </ResizablePanelGroup>
+      </div>
     </Form>
   );
 };
