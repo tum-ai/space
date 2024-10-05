@@ -59,7 +59,8 @@ export const TallyField = z
           .or(z.literal("INPUT_NUMBER"))
           .or(z.literal("INPUT_DATE"))
           .or(z.literal("INPUT_EMAIL"))
-          .or(z.literal("INPUT_LINK")),
+          .or(z.literal("INPUT_LINK"))
+          .or(z.literal("LINEAR_SCALE")),
         value: z.string().nullable(),
       }),
     ]),

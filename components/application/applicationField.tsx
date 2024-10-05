@@ -26,6 +26,7 @@ import {
   TableRow,
 } from "@components/ui/table";
 import { Badge } from "@components/ui/badge";
+import { Slider } from "@components/ui/slider";
 
 interface ApplicationFieldProps {
   field: TallyField;
@@ -57,10 +58,7 @@ const ApplicationValue = ({ field }: ApplicationFieldProps) => {
                     )
                   }
                 />
-                <label
-                  htmlFor="terms"
-                  className="text-sm leading-none"
-                >
+                <label htmlFor="terms" className="text-sm leading-none">
                   {option.text}
                 </label>
               </div>
@@ -178,6 +176,17 @@ const ApplicationValue = ({ field }: ApplicationFieldProps) => {
           </TableBody>
         </Table>
       );
+
+    case "LINEAR_SCALE":
+      const scaleValue = [Number(field.value)];
+      return (
+        <div className="mx-auto w-full max-w-sm space-y-6">
+          <div className="flex items-center justify-center">
+            <span className="font-bold">{scaleValue}</span>
+          </div>
+          <Slider value={scaleValue} max={7} />
+        </div>
+      );
   }
 };
 
@@ -188,8 +197,8 @@ export const ApplicationField = ({
 }: ApplicationFieldProps) => (
   <div className="flex w-full items-start gap-4">
     {index && <Badge variant="secondary">{index}</Badge>}
-    <div className={cn("flex flex-col gap-1.5 mt-1", className)}>
-      <FormLabel>{field.label}</FormLabel>
+    <div className={cn("mt-1 flex flex-col gap-1.5", className)}>
+      {!!field.label && <FormLabel>{field.label}</FormLabel>}
       <ApplicationValue field={field} />
     </div>
   </div>

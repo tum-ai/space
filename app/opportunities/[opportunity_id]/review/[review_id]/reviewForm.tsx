@@ -15,6 +15,11 @@ import { useRouter } from "next/navigation";
 import { DeleteAlertDialog } from "../components/review-altert-dialog";
 import Breadcrumbs from "@components/ui/breadcrumbs";
 import { QuestionField } from "./_components/questionField";
+import {
+  ResizableHandle,
+  ResizablePanel,
+  ResizablePanelGroup,
+} from "@components/ui/resizable";
 
 interface ReviewFormProps {
   application: Application;
@@ -73,6 +78,8 @@ export const ReviewForm = ({
     );
   };
 
+  console.log(applicationFields.filter((field) => !!field.value)[22]);
+
   return (
     <Form {...form}>
       {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
@@ -106,43 +113,50 @@ export const ReviewForm = ({
             </div>
           </div>
 
-          <div className="grid gap-4 lg:grid-cols-2">
-            <Card>
-              <CardHeader>
-                <CardTitle className="scroll-m-20 text-2xl font-semibold tracking-tight">
-                  Application
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="flex h-[80vh] flex-col gap-12 overflow-y-auto">
-                {applicationFields
-                  .filter((field) => !!field.value)
-                  .map((field, index) => (
-                    <ApplicationField
-                      key={field.key}
-                      field={field}
-                      index={index + 1}
+          <ResizablePanelGroup direction="horizontal" className="gap-4">
+            <ResizablePanel>
+              <Card>
+                <CardHeader>
+                  <CardTitle className="scroll-m-20 text-2xl font-semibold tracking-tight">
+                    Application
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="flex h-[80vh] flex-col gap-12 overflow-y-auto">
+                  {applicationFields
+                    .filter((field) => !!field.value)
+                    .map((field, index) => (
+                      <ApplicationField
+                        className="w-full"
+                        key={field.key}
+                        field={field}
+                        index={index + 1}
+                      />
+                    ))}
+                </CardContent>
+              </Card>
+            </ResizablePanel>
+
+            <ResizableHandle />
+
+            <ResizablePanel>
+              <Card>
+                <CardHeader>
+                  <CardTitle className="scroll-m-20 text-2xl font-semibold tracking-tight">
+                    Review
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="flex h-[80vh] flex-col gap-12 overflow-y-auto">
+                  {questions.map((question, index) => (
+                    <QuestionField
+                      question={question}
+                      index={index}
+                      key={question.key}
                     />
                   ))}
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle className="scroll-m-20 text-2xl font-semibold tracking-tight">
-                  Review
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="flex h-[80vh] flex-col gap-12 overflow-y-auto">
-                {questions.map((question, index) => (
-                  <QuestionField
-                    question={question}
-                    index={index}
-                    key={question.key}
-                  />
-                ))}
-              </CardContent>
-            </Card>
-          </div>
+                </CardContent>
+              </Card>
+            </ResizablePanel>
+          </ResizablePanelGroup>
         </div>
       </form>
     </Form>
