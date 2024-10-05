@@ -41,19 +41,24 @@ export default function OpportunityCard({
           {opportunity.description}
         </CardContent>
       </div>
+
       <CardFooter className="mt-auto flex divide-x divide-solid border-t p-0">
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button className="flex-1 rounded-none" asChild variant="ghost">
-              <Link href={"opportunities/" + +opportunity.id + "/leaderboard"}>
-                <BarChart2 />
-              </Link>
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>Leaderboard</p>
-          </TooltipContent>
-        </Tooltip>
+        {isAdmin && (
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button className="flex-1 rounded-none" asChild variant="ghost">
+                <Link
+                  href={"opportunities/" + +opportunity.id + "/leaderboard"}
+                >
+                  <BarChart2 />
+                </Link>
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Leaderboard</p>
+            </TooltipContent>
+          </Tooltip>
+        )}
 
         <Tooltip>
           <TooltipTrigger asChild>
