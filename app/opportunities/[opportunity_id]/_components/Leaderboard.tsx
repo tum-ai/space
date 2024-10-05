@@ -23,7 +23,7 @@ export function Leaderboard({ reviewers }: LeaderboardProps) {
   return (
     <div className="p-6">
       <h1 className="mb-8 text-center text-3xl font-bold">
-        Application Review Leaderboard
+        The true MVPs
       </h1>
 
       <div className="mb-12 flex items-end justify-center space-x-4">

@@ -4,6 +4,12 @@ import { CalendarIcon } from "@radix-ui/react-icons";
 import Link from "next/link";
 import { Opportunity } from "@prisma/client";
 import { format } from "date-fns";
+import { BarChart2, Edit, Eye, Users } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@components/ui/tooltip";
 
 interface OpportunityCardProps {
   opportunity: Opportunity;
@@ -36,26 +42,62 @@ export default function OpportunityCard({
         </CardContent>
       </div>
       <CardFooter className="mt-auto flex divide-x divide-solid border-t p-0">
-        <Button className="flex-1 rounded-none" asChild variant="ghost">
-          <Link href={"opportunities/" + +opportunity.id + "/review"}>
-            Review
-          </Link>
-        </Button>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button className="flex-1 rounded-none" asChild variant="ghost">
+              <Link href={"opportunities/" + +opportunity.id + "/leaderboard"}>
+                <BarChart2 />
+              </Link>
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>Leaderboard</p>
+          </TooltipContent>
+        </Tooltip>
+
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button className="flex-1 rounded-none" asChild variant="ghost">
+              <Link href={"opportunities/" + +opportunity.id + "/review"}>
+                <Eye />
+              </Link>
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>Review</p>
+          </TooltipContent>
+        </Tooltip>
 
         {isAdmin && (
-          <Button className="flex-1 rounded-none" asChild variant="ghost">
-            <Link href={"opportunities/" + +opportunity.id + "/applications"}>
-              Applications
-            </Link>
-          </Button>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button className="flex-1 rounded-none" asChild variant="ghost">
+                <Link
+                  href={"opportunities/" + +opportunity.id + "/applications"}
+                >
+                  <Users />
+                </Link>
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Applications</p>
+            </TooltipContent>
+          </Tooltip>
         )}
 
         {isAdmin && (
-          <Button className="flex-1 rounded-none" asChild variant="ghost">
-            <Link href={"opportunities/" + +opportunity.id + "/edit"}>
-              Edit
-            </Link>
-          </Button>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button className="flex-1 rounded-none" asChild variant="ghost">
+                <Link href={"opportunities/" + +opportunity.id + "/edit"}>
+                  <Edit />
+                </Link>
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Edit</p>
+            </TooltipContent>
+          </Tooltip>
         )}
       </CardFooter>
     </Card>

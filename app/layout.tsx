@@ -3,6 +3,7 @@ import "@styles/globals.css";
 import { ThemeProvider } from "@providers/theme-provider";
 import { Toaster } from "@components/ui/sonner";
 import { TRPCReactProvider } from "trpc/react";
+import { TooltipProvider } from "@radix-ui/react-tooltip";
 
 interface Props {
   children: React.ReactNode;
@@ -12,18 +13,20 @@ export default function RootLayout({ children }: Props) {
   return (
     <html lang="en">
       <body>
-        <TRPCReactProvider>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-          >
-            <Header />
-            <main>{children}</main>
-            <Toaster />
-          </ThemeProvider>
-        </TRPCReactProvider>
+        <TooltipProvider>
+          <TRPCReactProvider>
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="system"
+              enableSystem
+              disableTransitionOnChange
+            >
+              <Header />
+              <main>{children}</main>
+              <Toaster />
+            </ThemeProvider>
+          </TRPCReactProvider>
+        </TooltipProvider>
       </body>
     </html>
   );
