@@ -47,7 +47,7 @@ const ApplicationValue = ({ field }: ApplicationFieldProps) => {
     case "CHECKBOXES":
       if (Array.isArray(field.value)) {
         return (
-          <div className="mt-3 space-y-2">
+          <div className="space-y-2">
             {field.options!.map((option) => (
               <div key={option.id} className="flex items-center space-x-2">
                 <Checkbox
@@ -68,7 +68,7 @@ const ApplicationValue = ({ field }: ApplicationFieldProps) => {
       }
 
       return (
-        <div className="mt-3 flex items-center space-x-2">
+        <div className="flex items-center space-x-2">
           <Checkbox disabled checked={field.value} />
           <label htmlFor="terms" className="text-sm leading-none">
             Accept
@@ -197,7 +197,7 @@ export const ApplicationField = ({
 }: ApplicationFieldProps) => (
   <div className="flex w-full items-start gap-4">
     {index && <Badge variant="secondary">{index}</Badge>}
-    <div className={cn("mt-1 flex flex-col gap-1.5", className)}>
+    <div className={cn("flex flex-col gap-3", className)}>
       {!!field.label && <FormLabel>{field.label}</FormLabel>}
       <ApplicationValue field={field} />
     </div>

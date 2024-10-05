@@ -11,7 +11,8 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@components/ui/alert-dialog";
-import { Trash2 } from "lucide-react";
+import { Button } from "@components/ui/button";
+import { Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { api } from "trpc/react";
@@ -19,9 +20,11 @@ import { api } from "trpc/react";
 export const DeleteAlertDialog = ({
   inputReviewId,
   inputOpportunityId,
+  children,
 }: {
   inputReviewId: number;
   inputOpportunityId: number;
+  children?: React.ReactNode;
 }) => {
   const deleteMutation = api.review.deleteById.useMutation();
   const router = useRouter();
@@ -41,9 +44,7 @@ export const DeleteAlertDialog = ({
 
   return (
     <AlertDialog>
-      <AlertDialogTrigger>
-        <Trash2 className="text-red-500" />
-      </AlertDialogTrigger>
+      <AlertDialogTrigger asChild>{children}</AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>

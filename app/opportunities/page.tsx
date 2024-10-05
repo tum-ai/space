@@ -36,7 +36,7 @@ export default async function OpportunitiesPage() {
     <div className="space-y-8 p-8">
       <div className="flex flex-col gap-8">
         <div className="flex justify-between">
-          <div>
+          <div className="flex flex-col gap-3">
             <Breadcrumbs title="Opportunities" />
             <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
               Opportunities

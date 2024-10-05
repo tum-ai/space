@@ -11,7 +11,7 @@ import {
 
 import { Button } from "@components/ui/button";
 import Link from "next/link";
-import { Edit } from "lucide-react";
+import { Edit, Trash } from "lucide-react";
 import { DeleteAlertDialog } from "./components/review-altert-dialog";
 
 export type Review = PrismaReview & {
@@ -42,20 +42,22 @@ export const columns: ColumnDef<Review>[] = [
     cell: ({ row }) => {
       const review = row.original;
       return (
-        <div className="mr-4 flex justify-end gap-6">
-          <Button size="icon" asChild>
-            <Link href={`review/${review.id}`}>
-              <Edit />
-            </Link>
-          </Button>
+        <div className="mr-4 flex justify-end gap-2">
+          <DeleteAlertDialog
+            inputReviewId={review.id}
+            inputOpportunityId={review.application.opportunityId}
+          >
+            <Button type="button" variant="destructive">
+              <Trash className="mr-2" />
+              Delete
+            </Button>
+          </DeleteAlertDialog>
 
-          <Button size="icon" asChild>
-            <div>
-              <DeleteAlertDialog
-                inputReviewId={review.id}
-                inputOpportunityId={review.application.opportunityId}
-              />
-            </div>
+          <Button asChild>
+            <Link href={`review/${review.id}`}>
+              <Edit className="mr-2" />
+              Edit
+            </Link>
           </Button>
         </div>
       );

@@ -34,7 +34,7 @@ export default async function ReviewPage({ params }: ReviewPageProps) {
   return (
     <div className="space-y-8 p-8">
       <div className="flex justify-between">
-        <div>
+        <div className="flex flex-col gap-3">
           <Breadcrumbs
             title={"Reviews"}
             opportunityTitle={opportunity?.title}

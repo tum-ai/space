@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@components/ui/button";
-import { Save } from "lucide-react";
+import { Save, Trash } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@components/ui/card";
 import { ApplicationField } from "@components/application/applicationField";
 import { SubmitHandler, useForm } from "react-hook-form";
@@ -86,7 +86,7 @@ export const ReviewForm = ({
       {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
       <div className="space-y-8 p-8">
         <div className="flex justify-between">
-          <div>
+          <div className="flex flex-col gap-3">
             <Breadcrumbs
               title={`Application: ${application.opportunityId}`}
               opportunityTitle={opportunityTitle}
@@ -97,21 +97,25 @@ export const ReviewForm = ({
             <p className="text-muted-foreground">Review a candidate</p>
           </div>
 
-          <div className="flex items-center space-x-4">
+          <div className="flex gap-2">
+            <div>
+              <DeleteAlertDialog
+                inputReviewId={review.id}
+                inputOpportunityId={application.opportunityId}
+              >
+                <Button type="button" variant="destructive">
+                  <Trash className="mr-2" />
+                  Delete
+                </Button>
+              </DeleteAlertDialog>
+            </div>
+
             <Button
               variant="default"
               onClick={form.handleSubmit(onSubmit, (err) => console.error(err))}
             >
               <Save className="mr-2" />
               Save
-            </Button>
-            <Button size="icon" asChild>
-              <div>
-                <DeleteAlertDialog
-                  inputReviewId={review.id}
-                  inputOpportunityId={application.opportunityId}
-                />
-              </div>
             </Button>
           </div>
         </div>
