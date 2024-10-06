@@ -8,7 +8,7 @@ import {
 import { Button } from "@components/ui/button";
 import { Separator } from "@components/ui/separator";
 import { z } from "zod";
-import { OpportunitySchema, PhaseSchema } from "@lib/schemas/opportunity";
+import { PhasesSchema } from "@lib/schemas/opportunity";
 import { GripVertical, Plus, X } from "lucide-react";
 import { QuestionnaireDialog } from "../questionnaire/questionnaireDialog";
 import { useSortable } from "@dnd-kit/sortable";
@@ -16,19 +16,20 @@ import { CSS } from "@dnd-kit/utilities";
 
 interface Props {
   index: number;
-  phase: z.infer<typeof PhaseSchema>;
+  phase: z.infer<typeof PhasesSchema>["phases"][number];
   remove: UseFieldArrayRemove;
-  update: UseFieldArrayUpdate<z.infer<typeof OpportunitySchema>, "phases">;
+  update: UseFieldArrayUpdate<z.infer<typeof PhasesSchema>, "phases">;
 }
 
 export default function Phase({ index, phase, remove: removePhase }: Props) {
-  const form = useFormContext<z.infer<typeof OpportunitySchema>>();
+  const form = useFormContext<z.infer<typeof PhasesSchema>>();
   const {
     fields: questionaires,
     append,
     remove,
     update,
   } = useFieldArray({
+    keyName: `fieldId`,
     control: form.control,
     name: `phases.${index}.questionnaires`,
   });

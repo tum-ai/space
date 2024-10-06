@@ -13,7 +13,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@components/ui/popover";
-import { OpportunitySchema } from "@lib/schemas/opportunity";
+import { PhasesSchema } from "@lib/schemas/opportunity";
 import { TallyField } from "@lib/types/tally";
 import { Plus } from "lucide-react";
 import { Form, useForm, useFormContext } from "react-hook-form";
@@ -35,7 +35,7 @@ export const ConditionPopover = ({
   field: tallyField,
 }: ConditionPopoverProps) => {
   const [popoverOpen, setPopoverOpen] = useState(false);
-  const opportunityForm = useFormContext<z.infer<typeof OpportunitySchema>>();
+  const opportunityForm = useFormContext<z.infer<typeof PhasesSchema>>();
   const form = useForm<ConditionConfiguration>();
 
   return (

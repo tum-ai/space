@@ -6,7 +6,7 @@ import {
   PopoverTrigger,
 } from "@components/ui/popover";
 import { SubmitHandler, UseFieldArrayAppend, useForm } from "react-hook-form";
-import { OpportunitySchema, PhaseSchema } from "@lib/schemas/opportunity";
+import { PhasesSchema, PhaseSchema } from "@lib/schemas/opportunity";
 import { z } from "zod";
 import { useState } from "react";
 import {
@@ -21,7 +21,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Plus } from "lucide-react";
 
 interface AddPhasePopoverProps {
-  append: UseFieldArrayAppend<z.infer<typeof OpportunitySchema>, "phases">;
+  append: UseFieldArrayAppend<z.infer<typeof PhasesSchema>, "phases">;
 }
 
 export const AddPhasePopover = ({ append }: AddPhasePopoverProps) => {

@@ -83,6 +83,7 @@ export const QuestionnaireDialog = ({
     update: updateQuestion,
     remove: removeQuestion,
   } = useFieldArray({
+    keyName: `fieldId`,
     control: form.control,
     name: `questions`,
   });
@@ -92,6 +93,7 @@ export const QuestionnaireDialog = ({
     append: appendReviewer,
     remove: removeReviewer,
   } = useFieldArray({
+    keyName: `fieldId`,
     control: form.control,
     name: `reviewers`,
   });
@@ -214,7 +216,7 @@ export const QuestionnaireDialog = ({
               </div>
             ))}
 
-            <AddUserPopup append={appendReviewer} />
+            <AddUserPopup append={appendReviewer} users={reviewers} />
           </div>
         </div>
 

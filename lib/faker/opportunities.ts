@@ -2,7 +2,11 @@ import { faker } from "@faker-js/faker";
 import db from "server/db";
 import { keyUniqueEnforcer, now, options, uuidUniqueEnforcer } from "./utils";
 import { Question } from "@lib/types/question";
-import { Opportunity, Phase, Questionnaire } from "@lib/types/opportunity";
+import {
+  GeneralInformation,
+  Phase,
+  Questionnaire,
+} from "@lib/types/opportunity";
 import { allPersons } from "./mock";
 
 const minNumberOfPhases = parseInt(options.minphases, 10);
@@ -53,7 +57,7 @@ export async function generateOpportunities(number: number) {
   return opportunities;
 }
 
-function generateOpportunity(): Opportunity {
+function generateOpportunity() {
   return {
     id: uuidUniqueEnforcer.enforce(() => faker.number.int({ max: 9999999 })),
     generalInformation: generateGeneralInformation(),
@@ -61,7 +65,7 @@ function generateOpportunity(): Opportunity {
   };
 }
 
-function generateGeneralInformation() {
+function generateGeneralInformation(): GeneralInformation {
   const start = faker.date.soon({ days: 10, refDate: now });
   const end = new Date(
     start.getTime() +

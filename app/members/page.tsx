@@ -62,13 +62,13 @@ export default async function MembersPage() {
   return (
     <section className="p-8">
       <div className="mb-12 flex flex-col space-y-6">
-          <div className="flex flex-col gap-3">
-            <Breadcrumbs title="Members" />
-            <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
-              Members
-            </h1>
-            <p className="text-muted-foreground">Manage and list members</p>
-          </div>
+        <div className="flex flex-col gap-3">
+          <Breadcrumbs title="Members" />
+          <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
+            Members
+          </h1>
+          <p className="text-muted-foreground">Manage and list members</p>
+        </div>
       </div>
 
       <DataTable rowData={profiles} columnData={columnData}></DataTable>

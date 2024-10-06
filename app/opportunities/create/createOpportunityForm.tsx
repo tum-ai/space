@@ -1,53 +1,50 @@
 "use client";
 
-import { Form } from "@components/ui/form";
-import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { OpportunitySchema } from "@lib/schemas/opportunity";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { api } from "trpc/react";
+import { GeneralInformationSchema } from "@lib/schemas/opportunity";
 import { Save } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@components/ui/button";
 import { useRouter } from "next/navigation";
-import { GeneralInformation } from "../[opportunity_id]/edit/_components/general";
+import { GeneralInformation } from "../[opportunity_id]/_components/general/general";
 import { Session } from "next-auth";
 import Breadcrumbs from "@components/ui/breadcrumbs";
+import { Form } from "@components/ui/form";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Opportunity } from "@prisma/client";
 
 interface Props {
   session: Session;
+  create: (
+    input: z.infer<typeof GeneralInformationSchema>,
+  ) => Promise<Opportunity>;
 }
-const CreateOpportunityForm = ({ session }: Props) => {
+const CreateOpportunityForm = ({ session, create }: Props) => {
   const user = session.user;
 
   const router = useRouter();
-  const form = useForm<z.infer<typeof OpportunitySchema>>({
-    resolver: zodResolver(OpportunitySchema),
+  const form = useForm<z.infer<typeof GeneralInformationSchema>>({
+    resolver: zodResolver(GeneralInformationSchema),
     defaultValues: {
-      generalInformation: {
-        admins: [
-          {
-            id: user.id,
-            name: user.name ?? undefined,
-            image: user.image ?? undefined,
-          },
-        ],
-        title: "",
-        start: undefined,
-        end: undefined,
-        description: "",
-      },
-      phases: [],
+      admins: [
+        {
+          id: user.id,
+          name: user.name ?? undefined,
+          image: user.image ?? undefined,
+        },
+      ],
+      title: "",
+      start: undefined,
+      end: undefined,
+      description: "",
     },
   });
-  const createMutation = api.opportunity.create.useMutation();
 
-  async function onSubmit(values: z.infer<typeof OpportunitySchema>) {
+  async function onSubmit(values: z.infer<typeof GeneralInformationSchema>) {
     const id = toast.loading("Creating opportunity");
     try {
-      const opportunity = await createMutation.mutateAsync(
-        values.generalInformation,
-      );
+      const opportunity = await create(values);
       toast.success("Successfully created opportunity", { id });
       router.push(`/opportunities/${opportunity.id}/edit`);
     } catch (err) {

@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { getServerAuthSession } from "server/auth";
 import db from "server/db";
-import { Leaderboard } from "../_components/Leaderboard";
+import { Leaderboard } from "./_components/Leaderboard";
 import Breadcrumbs from "@components/ui/breadcrumbs";
 
 interface OpportunityProps {

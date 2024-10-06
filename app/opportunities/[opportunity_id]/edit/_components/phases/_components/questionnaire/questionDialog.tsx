@@ -161,6 +161,7 @@ const ChoiceOptions = () => {
     append,
     remove,
   } = useFieldArray({
+    keyName: `fieldId`,
     control: questionForm.control,
     name: "options",
   });

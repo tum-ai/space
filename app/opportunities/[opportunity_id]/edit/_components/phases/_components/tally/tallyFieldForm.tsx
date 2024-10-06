@@ -5,7 +5,6 @@ import { Questionnaire } from "@lib/types/questionnaire";
 import { useEffect, useState } from "react";
 import { useFormContext } from "react-hook-form";
 import { z } from "zod";
-import { OpportunitySchema } from "@lib/schemas/opportunity";
 import {
   HoverCard,
   HoverCardContent,
@@ -14,13 +13,14 @@ import {
 import { QuestionView } from "../questionnaire/questionView";
 import { Badge } from "@components/ui/badge";
 import { ArrowRight, Minus } from "lucide-react";
+import { PhasesSchema } from "@lib/schemas/opportunity";
 
 interface Props {
   field: TallyField;
 }
 
 export const TallyFieldForm = ({ field }: Props) => {
-  const opportunityForm = useFormContext<z.infer<typeof OpportunitySchema>>();
+  const opportunityForm = useFormContext<z.infer<typeof PhasesSchema>>();
   const [assignedQuestionnaire, setAssignedQuestionnaire] = useState<
     Questionnaire[]
   >([]);

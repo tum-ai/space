@@ -11,6 +11,7 @@ export const userRouter = createTRPCRouter({
       console.error(e);
     }
   }),
+
   getById: protectedProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ input, ctx }) => {

@@ -12,13 +12,20 @@ export const QuestionnaireSchema = z.object({
 });
 
 export const PhaseSchema = z.object({
+  opportunityId: z.number().optional(),
   id: z.string().uuid().optional(),
   name: z.string().min(1, "Phase name is required"),
   questionnaires: z.array(QuestionnaireSchema),
 });
 
+export const PhasesSchema = z.object({
+  opportunityId: z.number().optional(),
+  phases: z.array(PhaseSchema),
+});
+
 export const GeneralInformationSchema = z
   .object({
+    opportunityId: z.number().optional(),
     admins: PersonSchema.array().min(1, "At least one admin is required"),
     title: z.string().min(1, "Opportunity name is required"),
     start: z
@@ -45,9 +52,3 @@ export const GeneralInformationSchema = z
       path: ["end"],
     },
   );
-
-export const OpportunitySchema = z.object({
-  id: z.number().optional(),
-  generalInformation: GeneralInformationSchema,
-  phases: z.array(PhaseSchema),
-});

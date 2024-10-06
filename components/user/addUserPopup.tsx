@@ -14,14 +14,16 @@ import {
   CommandGroup,
   CommandInput,
   CommandItem,
+  CommandList,
 } from "@components/ui/command";
 import { Person } from "@lib/types/person";
 
 interface Props {
   append: (person: Person) => void;
+  users: Person[];
 }
 
-export const AddUserPopup = ({ append }: Props) => {
+export const AddUserPopup = ({ append, users }: Props) => {
   const { data } = api.user.getAll.useQuery();
   const [open, setOpen] = useState(false);
 
@@ -42,32 +44,39 @@ export const AddUserPopup = ({ append }: Props) => {
       </PopoverTrigger>
       <PopoverContent className="w-96 p-0">
         <Command>
-          <CommandEmpty>No users found</CommandEmpty>
-          <CommandGroup className="max-h-64 overflow-y-auto">
-            {data?.map((member) => (
-              <CommandItem
-                key={member.id}
-                value={member.name ?? ""}
-                onSelect={() => {
-                  append({
-                    ...member,
-                    name: member.name ?? undefined,
-                    image: member.image ?? undefined,
-                  });
-                  setOpen(false);
-                }}
-              >
-                <div className="flex w-full items-center gap-6">
-                  <Avatar>
-                    <AvatarImage src={member.image ?? undefined} />
-                    <AvatarFallback>{member.name}</AvatarFallback>
-                  </Avatar>
-                  <h3>{member.name}</h3>
-                </div>
-              </CommandItem>
-            ))}
-          </CommandGroup>
           <CommandInput placeholder="Search member" />
+          <CommandEmpty>No users found</CommandEmpty>
+          <CommandList>
+            <CommandGroup className="max-h-64 overflow-y-auto">
+              {data
+                ?.filter((member) => {
+                  const userIds = users.map((user) => user.id);
+                  return !userIds.includes(member.id);
+                })
+                ?.map((member) => (
+                  <CommandItem
+                    key={member.id}
+                    value={member.name ?? ""}
+                    onSelect={() => {
+                      append({
+                        id: member.id,
+                        name: member.name ?? undefined,
+                        image: member.image ?? undefined,
+                      });
+                      setOpen(false);
+                    }}
+                  >
+                    <div className="flex w-full items-center gap-6">
+                      <Avatar>
+                        <AvatarImage src={member.image ?? undefined} />
+                        <AvatarFallback>{member.name}</AvatarFallback>
+                      </Avatar>
+                      <h3>{member.name}</h3>
+                    </div>
+                  </CommandItem>
+                ))}
+            </CommandGroup>
+          </CommandList>
         </Command>
       </PopoverContent>
     </Popover>
