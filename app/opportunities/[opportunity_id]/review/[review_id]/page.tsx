@@ -17,20 +17,24 @@ export default async function Review({ params }: ReviewProps) {
   const review = await db.review.findUnique({
     where: {
       id: Number(params.review_id),
-      user: { id: session.user.id },
     },
-    include: { application: true, questionnaire: true },
+    include: { application: true, questionnaire: true, user: true },
   });
 
-  const opportunityTitle = db.opportunity
-    .findUnique({
-      where: {
-        id: review?.application.opportunityId,
-      },
-    })
-    .then((opportunity) => opportunity?.title);
+  const opportunity = await db.opportunity.findUnique({
+    where: {
+      id: review?.application.opportunityId,
+    },
+    include: { admins: true },
+  });
 
-  if (!review) redirect("/404");
+  if (
+    !review ||
+    (review?.user.id !== session.user.id &&
+      !opportunity?.admins.map((admin) => admin.id).includes(session.user.id))
+  ) {
+    redirect("/404");
+  }
 
   const questions = review.questionnaire.questions as Question[];
 
@@ -39,7 +43,7 @@ export default async function Review({ params }: ReviewProps) {
       questions={questions}
       application={review.application}
       review={review}
-      opportunityTitle={await opportunityTitle}
+      opportunityTitle={opportunity?.title}
     />
   );
 }

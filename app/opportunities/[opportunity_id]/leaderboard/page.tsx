@@ -15,6 +15,7 @@ export default async function OpportunityPage({ params }: OpportunityProps) {
   const opportunity = await db.opportunity.findUnique({
     where: {
       id: Number(params.opportunity_id),
+      admins: { some: { id: session.user.id } },
     },
   });
 

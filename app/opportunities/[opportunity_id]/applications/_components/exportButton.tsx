@@ -1,39 +1,32 @@
 "use client";
 
 import { Button } from "@components/ui/button";
-import { Plus } from "lucide-react";
+import { FileDown } from "lucide-react";
+import { JsonValue } from "next-auth/adapters";
 import { toast } from "sonner";
-import { api } from "trpc/react";
 
-/**
- *  A button for exporting all reviews and applications for a particular opportunity
- *
- * @param opportunityId
- * @param opportunityTitle
- * @returns ExportButton
- */
 export const ExportButton = ({
-  opportunityId,
-  opportunityTitle,
+  getExportData,
 }: {
-  opportunityId: number;
-  opportunityTitle: string;
+  getExportData: () => Promise<
+    {
+      content: JsonValue;
+      reviews: {
+        content: JsonValue;
+      }[];
+    }[]
+  >;
 }) => {
-  const query = api.application.getReviewsWithApplications.useQuery(
-    { id: opportunityId },
-    { refetchOnMount: false },
-  );
-
   const exportApplications = async (): Promise<void> => {
     try {
-      await query.refetch();
-      const jsonString = JSON.stringify(query.data);
+      const data = await getExportData();
+      const jsonString = JSON.stringify(data);
       const blob = new Blob([jsonString], { type: "application/json" });
       const url = URL.createObjectURL(blob);
 
       const a = document.createElement("a");
       a.href = url;
-      a.download = `${opportunityTitle} Applications`;
+      a.download = "Applications";
       document.body.appendChild(a);
       a.click();
 
@@ -57,8 +50,8 @@ export const ExportButton = ({
         }
       }}
     >
-      <Plus className="mr-2" />
-      Export Data
+      <FileDown className="mr-2" />
+      Export
     </Button>
   );
 };

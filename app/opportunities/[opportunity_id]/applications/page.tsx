@@ -18,6 +18,9 @@ interface ApplicationsOverviewPageProps {
 export default async function OpportunityOverviewPage({
   params,
 }: ApplicationsOverviewPageProps) {
+  const session = await getServerAuthSession();
+  if (!session?.user?.id) redirect("/auth");
+
   const opportunity = await db.opportunity.findUnique({
     where: { id: Number(params.opportunity_id) },
   });
@@ -26,11 +29,35 @@ export default async function OpportunityOverviewPage({
     where: {
       opportunityId: Number(params.opportunity_id),
     },
-    include: { _count: { select: { reviews: true } } },
+    select: {
+      id: true,
+      createdAt: true,
+      _count: {
+        select: { reviews: true },
+      },
+      reviews: {
+        select: { id: true, user: { select: { image: true } } },
+      },
+    },
   });
 
-  const session = await getServerAuthSession();
-  if (!session?.user?.id) redirect("/auth");
+  async function getExportData() {
+    "use server";
+
+    return await db.application.findMany({
+      where: {
+        opportunityId: Number(params.opportunity_id),
+      },
+      select: {
+        content: true,
+        reviews: {
+          select: {
+            content: true,
+          },
+        },
+      },
+    });
+  }
 
   if (!applications.length)
     return (
@@ -51,7 +78,7 @@ export default async function OpportunityOverviewPage({
       <div className="space-y-8 p-8">
         <div className="flex justify-between">
           <div className="flex w-full flex-row items-center justify-between">
-            <div>
+            <div className="flex flex-col gap-3">
               <Breadcrumbs
                 title={`Applications`}
                 opportunityTitle={opportunity?.title}
@@ -61,13 +88,7 @@ export default async function OpportunityOverviewPage({
               </h1>
             </div>
             <div className="flex gap-2">
-              <ExportButton
-                opportunityId={Number(params.opportunity_id)}
-                opportunityTitle={
-                  opportunity?.title ??
-                  `TUM.ai Opportunity ${params.opportunity_id}`
-                }
-              />
+              <ExportButton getExportData={getExportData} />
             </div>
           </div>
         </div>

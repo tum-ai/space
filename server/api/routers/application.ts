@@ -37,22 +37,4 @@ export const applicationRouter = createTRPCRouter({
         }),
       );
     }),
-
-  getReviewsWithApplications: protectedProcedure
-    .input(z.object({ id: z.number() }))
-    .query(async ({ input, ctx }) => {
-      return await ctx.db.application.findMany({
-        where: {
-          opportunityId: input.id,
-        },
-        select: {
-          content: true,
-          reviews: {
-            select: {
-              content: true,
-            },
-          },
-        },
-      });
-    }),
 });

@@ -3,12 +3,33 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { Prisma } from "@prisma/client";
 import { Button } from "@components/ui/button";
-import { Edit } from "lucide-react";
+import { Eye } from "lucide-react";
 import Link from "next/link";
+import { Avatar, AvatarImage } from "@components/ui/avatar";
+import { format, isToday, isYesterday } from "date-fns";
+
+const formatDate = (date: Date) => {
+  if (isToday(date)) {
+    return `Today at ${format(date, "h:mm a")}`;
+  } else if (isYesterday(date)) {
+    return `Yesterday at ${format(date, "h:mm a")}`;
+  } else {
+    return format(date, "MMM d, yyyy 'at' h:mm a");
+  }
+};
 
 export const columns: ColumnDef<
   Prisma.ApplicationGetPayload<{
-    include: { _count: { select: { reviews: true } } };
+    select: {
+      id: true;
+      createdAt: true;
+      _count: {
+        select: { reviews: true };
+      };
+      reviews: {
+        select: { id: true; user: { select: { image: true } } };
+      };
+    };
   }>
 >[] = [
   {
@@ -18,10 +39,24 @@ export const columns: ColumnDef<
   {
     accessorKey: "createdAt",
     header: () => "Created At",
+    cell: ({ row }) => formatDate(row.original.createdAt),
   },
   {
     accessorKey: "_count.reviews",
     header: () => "Reviews",
+    cell: ({ row }) => {
+      return (
+        <div className="flex -space-x-3 overflow-hidden">
+          {row.original.reviews.map((review, i) => (
+            <Link key={i} href={`review/${review.id}`}>
+              <Avatar className="border">
+                <AvatarImage src={review.user.image ?? undefined} />
+              </Avatar>
+            </Link>
+          ))}
+        </div>
+      );
+    },
   },
   {
     id: "actions",
@@ -32,7 +67,7 @@ export const columns: ColumnDef<
       return (
         <Button size="icon" asChild>
           <Link href={`applications/${application.id}`}>
-            <Edit />
+            <Eye />
           </Link>
         </Button>
       );
