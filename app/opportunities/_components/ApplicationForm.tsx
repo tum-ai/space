@@ -20,33 +20,22 @@ const ApplicationForm = ({ application }: ApplicationFormProps) => {
 
   return (
     <Form {...form}>
-      <Card>
+      <Card className="h-full overflow-y-auto">
         <CardHeader>
           <CardTitle className="flex scroll-m-20 justify-between text-2xl font-semibold tracking-tight">
             Application Content
-            <div className="flex gap-2">
-              <Button asChild variant="secondary">
-                <Link href={`${application.id - 1}`}>
-                  <ChevronLeft />
-                  Prev
-                </Link>
-              </Button>
-
-              <Button asChild variant="secondary">
-                <Link href={`${application.id + 1}`}>
-                  Next
-                  <ChevronRight />
-                </Link>
-              </Button>
-            </div>
           </CardTitle>
         </CardHeader>
-        <CardContent className="h-[80vh] overflow-y-auto">
+        <CardContent>
           <div className="flex flex-col gap-12">
             {applicationFields
               .filter((field) => !!field.value)
               .map((field) => (
-                <ApplicationField key={field.key} field={field} />
+                <ApplicationField
+                  className="w-full"
+                  key={field.key}
+                  field={field}
+                />
               ))}
           </div>
         </CardContent>

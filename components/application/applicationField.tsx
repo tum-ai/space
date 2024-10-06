@@ -204,11 +204,13 @@ export const ApplicationField = ({
   className,
   index,
 }: ApplicationFieldProps) => (
-  <div className="grid w-full grid-cols-[3rem_1fr] items-start gap-4">
+  <div className="flex w-full items-start gap-4">
     {index && (
-      <Badge variant="secondary" className="ml-auto w-max">
-        {index}
-      </Badge>
+      <div className="w-12">
+        <Badge variant="secondary" className="ml-auto w-max">
+          {index}
+        </Badge>
+      </div>
     )}
     <div className={cn("flex flex-col gap-3", className)}>
       {!!field.label && <FormLabel>{field.label}</FormLabel>}
