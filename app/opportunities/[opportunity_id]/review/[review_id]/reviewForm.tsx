@@ -84,7 +84,7 @@ export const ReviewForm = ({
   return (
     <Form {...form}>
       {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
-      <div className="space-y-8 p-8">
+      <div className="flex h-screen flex-col space-y-8 p-8">
         <div className="flex justify-between">
           <div className="flex flex-col gap-3">
             <Breadcrumbs
@@ -120,15 +120,19 @@ export const ReviewForm = ({
           </div>
         </div>
 
-        <ResizablePanelGroup direction="horizontal" className="gap-4">
+        <ResizablePanelGroup
+          direction="horizontal"
+          className="gap-4"
+          autoSaveId="application-review"
+        >
           <ResizablePanel defaultSize={50}>
-            <Card>
+            <Card className="h-full overflow-y-auto">
               <CardHeader>
                 <CardTitle className="scroll-m-20 text-2xl font-semibold tracking-tight">
                   Application
                 </CardTitle>
               </CardHeader>
-              <CardContent className="flex h-[70vh] flex-col gap-8 overflow-y-auto">
+              <CardContent className="flex flex-col gap-8">
                 {applicationFields
                   .filter((field) => !!field.value)
                   .map((field, index) => (
@@ -146,13 +150,13 @@ export const ReviewForm = ({
           <ResizableHandle withHandle />
 
           <ResizablePanel defaultSize={50}>
-            <Card className="overflow-hidden">
+            <Card className="h-full overflow-y-auto">
               <CardHeader>
                 <CardTitle className="scroll-m-20 text-2xl font-semibold tracking-tight">
                   Review
                 </CardTitle>
               </CardHeader>
-              <CardContent className="flex h-[70vh] flex-col gap-8 overflow-y-auto">
+              <CardContent className="flex flex-col gap-8">
                 {questions.map((question, index) => (
                   <QuestionField
                     question={question}
