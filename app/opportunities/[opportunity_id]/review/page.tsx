@@ -7,6 +7,7 @@ import { Button } from "@components/ui/button";
 import { FileCheck } from "lucide-react";
 import Link from "next/link";
 import Breadcrumbs from "@components/ui/breadcrumbs";
+import { Progress } from "@components/ui/progress";
 
 interface ReviewPageProps {
   params: { opportunity_id: string };
@@ -20,7 +21,7 @@ export default async function ReviewPage({ params }: ReviewPageProps) {
     where: { id: Number(params.opportunity_id) },
   });
 
-  const reviews = await db.review.findMany({
+  const userReviews = await db.review.findMany({
     where: {
       user: { id: session?.user.id },
       application: { opportunityId: Number(params.opportunity_id) },
@@ -30,6 +31,35 @@ export default async function ReviewPage({ params }: ReviewPageProps) {
       questionnaire: { include: { phase: true } },
     },
   });
+
+  const reviewCount = await db.review.count({
+    where: {
+      status: "DONE",
+      application: { opportunityId: Number(params.opportunity_id) },
+    },
+  });
+
+  const reviewsPerApplication = await db.questionnaire
+    .aggregate({
+      _sum: {
+        requiredReviews: true,
+      },
+      where: {
+        phase: {
+          opportunityId: Number(params.opportunity_id),
+        },
+      },
+    })
+    .then((res) => res._sum.requiredReviews ?? 1);
+
+  const applicationCount = await db.application.count({
+    where: {
+      opportunityId: Number(params.opportunity_id),
+    },
+  });
+
+  const totalRequiredReviews = reviewsPerApplication * applicationCount;
+  const progress = (reviewCount / totalRequiredReviews) * 100;
 
   return (
     <div className="space-y-8 p-8">
@@ -53,7 +83,23 @@ export default async function ReviewPage({ params }: ReviewPageProps) {
         </Button>
       </div>
 
-      <DataTable columns={columns} data={reviews} />
+      <div>
+        <div className="mb-4 flex flex-col items-center justify-between sm:flex-row">
+          <p className="mb-2 text-lg sm:mb-0">
+            <span className="font-semibold">{reviewCount}</span> out of{" "}
+            {!!totalRequiredReviews && (
+              <span className="font-semibold">{totalRequiredReviews}</span>
+            )}{" "}
+            reviews submitted
+          </p>
+          <p className="text-lg font-medium text-muted-foreground">
+            {progress.toFixed(0)}% Complete
+          </p>
+        </div>
+        <Progress value={progress} className="h-2 w-full" />
+      </div>
+
+      <DataTable columns={columns} data={userReviews} />
     </div>
   );
 }

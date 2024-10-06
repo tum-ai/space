@@ -17,9 +17,12 @@ export default async function StartReview({ params }: StartReviewProps) {
     where: {
       opportunityId: Number(params.opportunity_id),
     },
-    include: {
+    select: {
+      id: true,
       questionnaires: {
-        include: {
+        select: {
+          id: true,
+          requiredReviews: true,
           reviews: true,
           reviewers: true,
         },
