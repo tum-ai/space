@@ -121,9 +121,18 @@ const ApplicationValue = ({ field }: ApplicationFieldProps) => {
       return <Input readOnly value={format(new Date(field.value), "PPP")} />;
 
     case "INPUT_LINK":
+      const ensureHttps = (url: string): string => {
+        if (!url.startsWith("http")) {
+          return `https://${url}`;
+        }
+        return url;
+      };
+
       return (
         <Button asChild variant="outline">
-          <Link href={field.value}>{field.value}</Link>
+          <Link href={ensureHttps(field.value)} target="_blank">
+            {field.value}
+          </Link>
         </Button>
       );
 
