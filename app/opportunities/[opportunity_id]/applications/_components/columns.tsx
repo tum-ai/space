@@ -7,6 +7,11 @@ import { Eye } from "lucide-react";
 import Link from "next/link";
 import { Avatar, AvatarImage } from "@components/ui/avatar";
 import { format, isToday, isYesterday } from "date-fns";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@components/ui/tooltip";
 
 const formatDate = (date: Date) => {
   if (isToday(date)) {
@@ -28,7 +33,12 @@ export const columns: ColumnDef<
       };
       content: true;
       reviews: {
-        select: { id: true; user: { select: { image: true } } };
+        select: {
+          id: true;
+          user: {
+            select: { image: true; name: true };
+          };
+        };
       };
     };
   }>
@@ -65,11 +75,18 @@ export const columns: ColumnDef<
       return (
         <div className="flex -space-x-3 overflow-hidden">
           {row.original.reviews.map((review, i) => (
-            <Link key={i} href={`review/${review.id}`}>
-              <Avatar className="border">
-                <AvatarImage src={review.user.image ?? undefined} />
-              </Avatar>
-            </Link>
+            <Tooltip key={i}>
+              <TooltipTrigger>
+                <Link href={`review/${review.id}`}>
+                  <Avatar className="border">
+                    <AvatarImage src={review.user.image ?? undefined} />
+                  </Avatar>
+                </Link>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>{review.user.name}</p>
+              </TooltipContent>
+            </Tooltip>
           ))}
         </div>
       );

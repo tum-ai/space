@@ -37,7 +37,10 @@ export default async function OpportunityOverviewPage({
       },
       content: true,
       reviews: {
-        select: { id: true, user: { select: { image: true } } },
+        select: {
+          id: true,
+          user: { select: { image: true, name: true } },
+        },
       },
     },
   });
@@ -76,7 +79,7 @@ export default async function OpportunityOverviewPage({
 
   if (applications.length) {
     return (
-      <div className="space-y-8 p-8">
+      <div className="flex flex-col space-y-8 p-8">
         <div className="flex justify-between">
           <div className="flex w-full flex-row items-center justify-between">
             <div className="flex flex-col gap-3">
@@ -94,7 +97,7 @@ export default async function OpportunityOverviewPage({
           </div>
         </div>
 
-        <DataTable columns={columns} data={applications} />
+        <DataTable columns={columns} data={applications}/>
       </div>
     );
   }
