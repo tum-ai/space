@@ -1,25 +1,14 @@
-"use client";
-import { Button } from "@components/ui/button";
-import { signIn } from "next-auth/react";
-import { toast } from "sonner";
+import { getServerAuthSession } from "server/auth";
+import { LoginForm } from "./_components/loginForm";
+import { redirect } from "next/navigation";
 
-const Auth = () => {
+const Auth = async () => {
+  const session = await getServerAuthSession();
+  if (session?.user?.id) redirect("/");
+
   return (
-    <section>
-      <div className="mx-auto max-w-lg space-y-8">
-        <Button
-          className="w-full"
-          onClick={() =>
-            toast.promise(signIn("slack"), {
-              loading: "Logging in with slack",
-              success: "Redirecting to slack. See you soon!",
-              error: "Failed to login. Please retry later",
-            })
-          }
-        >
-          Log in with Slack
-        </Button>
-      </div>
+    <section className="flex justify-center pt-32">
+      <LoginForm />
     </section>
   );
 };
