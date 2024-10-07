@@ -11,8 +11,8 @@ export default function OpportunityEdit({ params }: Props) {
   const opportunityId = params.opportunity_id;
   return (
     <>
-      <EditGeneral opportunityId={opportunityId} />;
-      <EditPhases opportunityId={opportunityId} />;
+      <EditGeneral opportunityId={opportunityId} />
+      <EditPhases opportunityId={opportunityId} />
     </>
   );
 }

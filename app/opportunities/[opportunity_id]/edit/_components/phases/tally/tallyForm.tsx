@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "@components/ui/button";
 import {
   Card,
@@ -23,6 +25,7 @@ import { z } from "zod";
 import { api } from "trpc/react";
 import { Tally } from "@lib/types/tally";
 import { TallyFieldForm } from "./tallyFieldForm";
+import { useEffect, useState } from "react";
 
 export const TallyForm = () => {
   const form = useFormContext<z.infer<typeof PhasesSchema>>();
@@ -34,50 +37,44 @@ export const TallyForm = () => {
   });
 
   const applicationFields = (data?.tallySchema as Tally)?.data?.fields ?? [];
+  const [webhookUrl, setWebhookUrl] = useState("");
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setWebhookUrl(
+        `${window.location.origin}/api/tally/opportunity/${form.getValues("opportunityId")}`,
+      );
+    }
+  }, []);
 
   return (
     <div className="grid gap-8 md:grid-cols-3">
-      <FormField
-        control={form.control}
-        name="opportunityId"
-        render={({ field }) => (
-          <FormItem className="w-full">
-            <FormLabel>Webhook url</FormLabel>
-            <FormControl>
-              <div className="flex w-full gap-2">
-                <Input
-                  type="text"
-                  readOnly
-                  value={`${window.location.origin}/api/tally/opportunity/${field.value}`}
-                />
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="icon"
-                  onClick={() => {
-                    toast.promise(
-                      navigator.clipboard.writeText(
-                        `${window.location.origin}/api/tally/opportunity/${field.value}`,
-                      ),
-                      {
-                        loading: "Copying to clipboard",
-                        success: "Copied to clipboard",
-                        error: "Failed to copy to clipboard",
-                      },
-                    );
-                  }}
-                >
-                  <Copy />
-                </Button>
-              </div>
-            </FormControl>
-            <FormDescription>
-              Set this Webhook url in Tally to receive the applications
-            </FormDescription>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
+      <FormItem className="w-full">
+        <FormLabel>Webhook url</FormLabel>
+        <FormControl>
+          <div className="flex w-full gap-2">
+            <Input type="text" readOnly value={webhookUrl} />
+            <Button
+              type="button"
+              variant="outline"
+              size="icon"
+              onClick={() => {
+                toast.promise(navigator.clipboard.writeText(webhookUrl), {
+                  loading: "Copying to clipboard",
+                  success: "Copied to clipboard",
+                  error: "Failed to copy to clipboard",
+                });
+              }}
+            >
+              <Copy />
+            </Button>
+          </div>
+        </FormControl>
+        <FormDescription>
+          Set this Webhook url in Tally to receive the applications
+        </FormDescription>
+        <FormMessage />
+      </FormItem>
 
       <Card className="col-span-2">
         <CardHeader>

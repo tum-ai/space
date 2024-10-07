@@ -31,7 +31,7 @@ const EditGeneralForm = ({ session, defaultValues, update }: Props) => {
   async function onSubmit(values: z.infer<typeof GeneralInformationSchema>) {
     const id = toast.loading("Saving opportunity");
     try {
-      const opportunity = await update(values);
+      await update(values);
       toast.success("Successfully saved opportunity", { id });
     } catch (err) {
       toast.error("Failed to save opportunity", { id });

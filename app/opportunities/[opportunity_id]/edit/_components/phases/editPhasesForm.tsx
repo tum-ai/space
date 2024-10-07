@@ -1,17 +1,17 @@
 "use client";
 
 import { useFieldArray, useForm } from "react-hook-form";
-import Phase from "./_components/phases/phase";
+import Phase from "./phases/phase";
 import { z } from "zod";
 import { Separator } from "@components/ui/separator";
-import { AddPhasePopover } from "./_components/phases/addPhasePopover";
+import { AddPhasePopover } from "./phases/addPhasePopover";
 import { PhasesSchema } from "@lib/schemas/opportunity";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@components/ui/button";
 import { Save } from "lucide-react";
 import { Form } from "@components/ui/form";
 import { toast } from "sonner";
-import { TallyForm } from "./_components/tally/tallyForm";
+import { TallyForm } from "./tally/tallyForm";
 
 interface Props {
   update: (input: z.infer<typeof PhasesSchema>) => Promise<void>;
@@ -38,6 +38,7 @@ export function EditPhasesForm({ defaultValues, update }: Props) {
   async function onSubmit(values: z.infer<typeof PhasesSchema>) {
     const id = toast.loading("Updating phases");
     try {
+      await update(values);
       toast.success("Successfully updated phases", { id });
     } catch (err) {
       toast.error("Failed to update phases", { id });
