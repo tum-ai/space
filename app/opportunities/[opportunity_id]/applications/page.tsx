@@ -2,7 +2,7 @@ import db from "server/db";
 import { getServerAuthSession } from "server/auth";
 import { redirect } from "next/navigation";
 import { DataTable } from "@components/ui/data-table";
-import { columns } from "./columns";
+import { columns } from "./_components/columns";
 import { Rabbit } from "lucide-react";
 import { Button } from "@components/ui/button";
 import Link from "next/link";
@@ -35,6 +35,7 @@ export default async function OpportunityOverviewPage({
       _count: {
         select: { reviews: true },
       },
+      content: true,
       reviews: {
         select: { id: true, user: { select: { image: true } } },
       },

@@ -26,6 +26,7 @@ export const columns: ColumnDef<
       _count: {
         select: { reviews: true };
       };
+      content: true;
       reviews: {
         select: { id: true; user: { select: { image: true } } };
       };
@@ -40,6 +41,22 @@ export const columns: ColumnDef<
     accessorKey: "createdAt",
     header: () => "Created At",
     cell: ({ row }) => formatDate(row.original.createdAt),
+  },
+  {
+    accessorKey: "content",
+    header: () => "Name",
+    cell: ({ row }) => {
+      const firstName = (row.original.content as any).data?.fields
+        .filter((field: any) => field.key === "question_gaMNpP")
+        .map((field: any) => field.value)
+        .join(" ");
+      const lastName = (row.original.content as any).data.fields
+        .filter((field: any) => field.key === "question_yM9qG8")
+        .map((field: any) => field.value)
+        .join(" ");
+
+      return firstName + " " + lastName;
+    },
   },
   {
     accessorKey: "_count.reviews",
