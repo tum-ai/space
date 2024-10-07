@@ -65,7 +65,7 @@ export default async function OpportunityOverviewPage({
 
   if (!applications.length)
     return (
-      <div className="flex h-[50vh] flex-col items-center justify-center">
+      <div className="flex h-screen flex-col items-center justify-center">
         <div className="flex flex-col items-center text-muted-foreground">
           <Rabbit className="mb-8 h-16 w-16" />
           <p>No applications submitted yet.</p>

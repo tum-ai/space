@@ -78,7 +78,8 @@ export function EditPhasesForm({ defaultValues, update }: Props) {
               </p>
             </div>
 
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 sm:gap-x-0 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+            {/* TODO: Fix horizontal overflow */}
+            <div className="flex min-h-80 gap-4">
               {phases.map((phase, index) => (
                 <Phase
                   key={phase.name}
@@ -89,16 +90,7 @@ export function EditPhasesForm({ defaultValues, update }: Props) {
                 />
               ))}
 
-              <div className="grid min-h-[250px] grid-rows-[3rem,_1fr]">
-                <AddPhasePopover append={appendPhases} />
-
-                <div>
-                  <Separator />
-                  <p className="mt-4 w-full text-center text-sm text-muted-foreground">
-                    Add phases to define questionnaires
-                  </p>
-                </div>
-              </div>
+              <AddPhasePopover append={appendPhases} />
             </div>
           </div>
 

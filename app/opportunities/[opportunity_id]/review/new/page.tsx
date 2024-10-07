@@ -69,7 +69,7 @@ export default async function StartReview({ params }: StartReviewProps) {
   if (!suitableApplication || !suitableQuestionnaire) {
     // No suitable application or questionnaire found
     return (
-      <div className="flex h-[50vh] flex-col items-center justify-center">
+      <div className="flex h-screen flex-col items-center justify-center">
         <Rabbit className="mb-8 h-16 w-16" />
         <p>No applications require your review. Please try again later</p>
         <Button variant="link">

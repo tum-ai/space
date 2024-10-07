@@ -1,4 +1,3 @@
-import { Badge } from "@components/ui/badge";
 import {
   type UseFieldArrayRemove,
   type UseFieldArrayUpdate,
@@ -9,10 +8,21 @@ import { Button } from "@components/ui/button";
 import { Separator } from "@components/ui/separator";
 import { type z } from "zod";
 import { type PhasesSchema } from "@lib/schemas/opportunity";
-import { GripVertical, Plus, X } from "lucide-react";
+import { Ellipsis, FolderPen, Move, Plus, Trash, X } from "lucide-react";
 import { QuestionnaireDialog } from "../questionnaire/questionnaireDialog";
-import { useSortable } from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
+import { Card } from "@components/ui/card";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@components/ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "@components/ui/avatar";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@components/ui/tooltip";
 
 interface Props {
   index: number;
@@ -34,73 +44,97 @@ export default function Phase({ index, phase, remove: removePhase }: Props) {
     name: `phases.${index}.questionnaires`,
   });
 
-  const { attributes, listeners, setNodeRef, transform, transition } =
-    useSortable({
-      id:
-        phase.id ??
-        (() => {
-          // phase id can theoretically be optional
-          console.warn("No phase id found");
-          return "placeholder_id";
-        })(),
-    });
-
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition: transition,
-  };
-
   return (
-    <div className="grid min-h-[250px] grid-rows-[3rem,_1fr]" style={style}>
-      <div className="flex w-4/5 items-center justify-between">
-        <div className="flex items-center space-x-1.5 text-sm font-medium">
-          <Badge variant="secondary">{index + 1}</Badge>
-          <h4 className="scroll-m-20 text-xl font-semibold tracking-tight">
-            {phase.name}
-          </h4>
-        </div>
-        <div className="flex items-center">
-          <Button
-            onClick={() => removePhase(index)}
-            size="icon"
-            variant="ghost"
-          >
-            <X color="gray" />
-          </Button>
-          {/* Div required for typescript */}
-          <div ref={setNodeRef}>
-            <GripVertical
-              {...attributes}
-              {...listeners}
-              color="gray"
-            ></GripVertical>
-          </div>
-        </div>
-      </div>
-      <div>
-        <Separator />
-        <div className="flex h-full w-4/5 flex-col items-center justify-center gap-2">
-          {questionaires.map((questionnaire, index) => (
-            <QuestionnaireDialog
-              key={questionnaire.id}
-              defaultValues={questionnaire}
-              onSave={(data) => update(index, data)}
-              onRemove={() => remove(index)}
-            >
-              <Button variant="outline" className="w-full">
-                {questionnaire.name}
+    <Card className="group w-80">
+      <div className="flex flex-row items-center justify-between p-2">
+        <h4 className="scroll-m-20 text-xl font-semibold tracking-tight">
+          {phase.name}
+        </h4>
+        <div className="flex flex-row gap-1">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                type="button"
+                size="icon-sm"
+                variant="ghost"
+                className="text-muted-foreground"
+              >
+                <Ellipsis />
               </Button>
-            </QuestionnaireDialog>
-          ))}
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuItem>
+                <FolderPen className="mr-2 h-4 w-4" />
+                <span>Rename</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <Move className="mr-2 h-4 w-4" />
+                <span>Move</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => removePhase(index)}>
+                <Trash className="mr-2 h-4 w-4" />
+                <span>Delete</span>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
 
           <QuestionnaireDialog onSave={(data) => append(data)}>
-            <Button variant="secondary" className="w-full">
-              <Plus className="mr-2" />
-              Add questionaire
+            <Button
+              type="button"
+              size="icon-sm"
+              variant="ghost"
+              className="text-muted-foreground"
+            >
+              <Plus />
             </Button>
           </QuestionnaireDialog>
         </div>
       </div>
-    </div>
+
+      <Separator />
+
+      <div className="flex flex-col gap-2 p-2">
+        {questionaires.map((questionnaire, index) => (
+          <QuestionnaireDialog
+            key={questionnaire.id}
+            defaultValues={questionnaire}
+            onSave={(data) => update(index, data)}
+            onRemove={() => remove(index)}
+          >
+            <Card className="cursor-pointer p-2">
+              <div className="flex flex-row justify-between">
+                <p>{questionnaire.name}</p>
+
+                <div className="flex -space-x-3 overflow-hidden">
+                  {questionnaire.reviewers.splice(0, 5).map((reviewer) => (
+                    <Tooltip
+                      key={`reviewer-${questionnaire.name}-${reviewer.id}`}
+                    >
+                      <TooltipTrigger>
+                        <Avatar className="h-6 w-6 border">
+                          <AvatarImage src={reviewer.image ?? undefined} />
+                        </Avatar>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>{reviewer.name}</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  ))}
+                </div>
+              </div>
+            </Card>
+          </QuestionnaireDialog>
+        ))}
+
+        <QuestionnaireDialog onSave={(data) => append(data)}>
+          <Button
+            variant="outline"
+            className="h-8 w-full py-1 opacity-0 group-hover:opacity-100"
+          >
+            <Plus />
+          </Button>
+        </QuestionnaireDialog>
+      </div>
+    </Card>
   );
 }

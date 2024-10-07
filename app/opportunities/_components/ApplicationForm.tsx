@@ -6,9 +6,6 @@ import { Form } from "@components/ui/form";
 import { useForm } from "react-hook-form";
 import { type Tally } from "@lib/types/tally";
 import { Card, CardContent, CardHeader, CardTitle } from "@components/ui/card";
-import { Button } from "@components/ui/button";
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import Link from "next/link";
 
 interface ApplicationFormProps {
   application: Application;

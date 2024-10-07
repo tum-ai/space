@@ -47,7 +47,7 @@ export const AddPhasePopover = ({ append }: AddPhasePopoverProps) => {
   return (
     <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
       <PopoverTrigger asChild>
-        <Button variant="secondary" className="w-full">
+        <Button variant="secondary" className="w-80">
           <Plus className="mr-2" />
           Add phase
         </Button>

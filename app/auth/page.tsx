@@ -7,7 +7,7 @@ const Auth = async () => {
   if (session?.user?.id) redirect("/");
 
   return (
-    <section className="flex justify-center pt-32">
+    <section className="flex h-screen items-center justify-center">
       <LoginForm />
     </section>
   );

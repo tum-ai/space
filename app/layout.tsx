@@ -43,46 +43,50 @@ export default async function RootLayout({ children }: Props) {
                       <Logo className="h-8 w-8 transition-all group-hover:scale-110" />
                       <span className="sr-only">TUM.ai space</span>
                     </Link>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Link
-                          href="/opportunities"
-                          className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
-                        >
-                          <Goal className="h-5 w-5" />
-                          <span className="sr-only">Opportunities</span>
-                        </Link>
-                      </TooltipTrigger>
-                      <TooltipContent side="right">
-                        Opportunities
-                      </TooltipContent>
-                    </Tooltip>
+                    {!!session && (
+                      <>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Link
+                              href="/opportunities"
+                              className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
+                            >
+                              <Goal className="h-5 w-5" />
+                              <span className="sr-only">Opportunities</span>
+                            </Link>
+                          </TooltipTrigger>
+                          <TooltipContent side="right">
+                            Opportunities
+                          </TooltipContent>
+                        </Tooltip>
 
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Link
-                          href="/members"
-                          className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
-                        >
-                          <Users className="h-5 w-5" />
-                          <span className="sr-only">Members</span>
-                        </Link>
-                      </TooltipTrigger>
-                      <TooltipContent side="right">Members</TooltipContent>
-                    </Tooltip>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Link
+                              href="/members"
+                              className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
+                            >
+                              <Users className="h-5 w-5" />
+                              <span className="sr-only">Members</span>
+                            </Link>
+                          </TooltipTrigger>
+                          <TooltipContent side="right">Members</TooltipContent>
+                        </Tooltip>
 
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Link
-                          href="/homebase_keys"
-                          className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
-                        >
-                          <Key className="h-5 w-5" />
-                          <span className="sr-only">Keys</span>
-                        </Link>
-                      </TooltipTrigger>
-                      <TooltipContent side="right">Keys</TooltipContent>
-                    </Tooltip>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Link
+                              href="/homebase_keys"
+                              className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
+                            >
+                              <Key className="h-5 w-5" />
+                              <span className="sr-only">Keys</span>
+                            </Link>
+                          </TooltipTrigger>
+                          <TooltipContent side="right">Keys</TooltipContent>
+                        </Tooltip>
+                      </>
+                    )}
                   </nav>
                   <nav className="mt-auto flex flex-col items-center gap-4 px-2 sm:py-5">
                     {session && <UserComponent user={session.user} />}

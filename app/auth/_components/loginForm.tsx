@@ -32,9 +32,10 @@ export const LoginForm = () => {
           <Input id="password" type="password" required />
         </div>
       </CardContent>
-      <CardFooter className="flex flex-col space-y-2">
-        <Button className="w-full">Sign in</Button>
+      <CardFooter className="flex flex-col space-y-3">
+        <Button className="w-full">Login</Button>
         <Button
+          variant="outline"
           className="w-full"
           onClick={() =>
             toast.promise(signIn("slack"), {
@@ -44,7 +45,7 @@ export const LoginForm = () => {
             })
           }
         >
-          Log in with Slack
+          Login with Slack
         </Button>
       </CardFooter>
     </Card>
