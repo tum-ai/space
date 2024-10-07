@@ -1,5 +1,5 @@
 import { getDayOfYear } from "date-fns";
-import { Quote, Rocket } from "lucide-react";
+import { type Quote, Rocket } from "lucide-react";
 import Loading from "./loading";
 
 type Quote = {

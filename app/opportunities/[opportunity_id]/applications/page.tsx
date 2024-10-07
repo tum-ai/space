@@ -97,7 +97,7 @@ export default async function OpportunityOverviewPage({
           </div>
         </div>
 
-        <DataTable columns={columns} data={applications}/>
+        <DataTable columns={columns} data={applications} />
       </div>
     );
   }
