@@ -1,4 +1,8 @@
-import { type TallyData, type TallyField, type TallySchema } from "@lib/schemas/tally";
+import {
+  type TallyData,
+  type TallyField,
+  type TallySchema,
+} from "@lib/schemas/tally";
 import { type z } from "zod";
 
 export type Tally = z.infer<typeof TallySchema>;

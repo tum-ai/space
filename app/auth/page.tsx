@@ -1,7 +1,6 @@
 "use client";
 import { Button } from "@components/ui/button";
 import { signIn } from "next-auth/react";
-import { SlackLogo } from "@phosphor-icons/react";
 import { toast } from "sonner";
 
 const Auth = () => {
@@ -18,7 +17,7 @@ const Auth = () => {
             })
           }
         >
-          <SlackLogo size={20} className="mr-2" /> Log in with Slack
+          Log in with Slack
         </Button>
       </div>
     </section>

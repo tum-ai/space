@@ -1,6 +1,6 @@
 "use client";
 
-import { AcademicCapIcon, PencilIcon } from "@heroicons/react/24/outline";
+import { GraduationCap, Pencil } from "lucide-react";
 import { User as UserIcon, Contact as ContactIcon } from "lucide-react";
 import { type Prisma } from "@prisma/client";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -236,7 +236,7 @@ export function ProfileOverview({ user, contacts }: ProfileOverviewProps) {
                       <div className="felx flex-col items-start gap-0">
                         <div className="flex items-center justify-between">
                           <h2 className="text-lg font-bold">Details</h2>
-                          <PencilIcon className="w-5" />
+                          <Pencil className="w-5" />
                         </div>
                         <Divider className="m-1" />
                       </div>
@@ -298,7 +298,7 @@ export function ProfileOverview({ user, contacts }: ProfileOverviewProps) {
                       <div className="felx flex-col items-start gap-0">
                         <div className="flex items-center justify-between">
                           <h2 className="text-lg font-bold">Education</h2>
-                          <AcademicCapIcon className="w-5" />
+                          <GraduationCap className="w-5" />
                         </div>
                         <Divider className="m-1" />
                       </div>
