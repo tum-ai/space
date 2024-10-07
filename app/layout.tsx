@@ -109,7 +109,7 @@ export default function RootLayout({ children }: Props) {
                     </Tooltip>
                   </nav>
                 </aside>
-                <div className="flex flex-col pl-14 sm:gap-4 sm:py-4">
+                <div className="flex flex-col pl-14 sm:gap-4">
                   <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
                     {children}
                   </main>
