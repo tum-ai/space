@@ -21,8 +21,8 @@ import { cn } from "@lib/utils";
 import { format } from "date-fns";
 import { Calendar } from "@components/ui/calendar";
 import { CalendarIcon, UserMinus } from "lucide-react";
-import { GeneralInformationSchema } from "@lib/schemas/opportunity";
-import { z } from "zod";
+import { type GeneralInformationSchema } from "@lib/schemas/opportunity";
+import { type z } from "zod";
 import { AddUserPopup } from "@components/user/addUserPopup";
 import { Avatar, AvatarFallback, AvatarImage } from "@components/ui/avatar";
 

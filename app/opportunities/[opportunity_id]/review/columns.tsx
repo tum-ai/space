@@ -1,12 +1,12 @@
 "use client";
 
-import { ColumnDef } from "@tanstack/react-table";
+import { type ColumnDef } from "@tanstack/react-table";
 import { DataTableColumnHeader } from "@components/ui/data-table-column-header";
 import {
-  Application,
-  Questionnaire,
-  Review as PrismaReview,
-  Phase,
+  type Application,
+  type Questionnaire,
+  type Review as PrismaReview,
+  type Phase,
 } from "@prisma/client";
 
 import { Button } from "@components/ui/button";

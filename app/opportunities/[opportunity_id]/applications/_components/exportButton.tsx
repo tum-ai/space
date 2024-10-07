@@ -2,7 +2,7 @@
 
 import { Button } from "@components/ui/button";
 import { FileDown } from "lucide-react";
-import { JsonValue } from "next-auth/adapters";
+import { type JsonValue } from "next-auth/adapters";
 import { toast } from "sonner";
 
 export const ExportButton = ({

@@ -1,17 +1,17 @@
 "use client";
 
-import { z } from "zod";
+import { type z } from "zod";
 import { GeneralInformationSchema } from "@lib/schemas/opportunity";
 import { Save } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@components/ui/button";
 import { useRouter } from "next/navigation";
-import { Session } from "next-auth";
+import { type Session } from "next-auth";
 import Breadcrumbs from "@components/ui/breadcrumbs";
 import { Form } from "@components/ui/form";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Opportunity } from "@prisma/client";
+import { type Opportunity } from "@prisma/client";
 import { GeneralInformation } from "../../../_components/general/general";
 import { DeleteButton } from "../deleteButton";
 

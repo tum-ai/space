@@ -1,8 +1,8 @@
 import { redirect } from "next/navigation";
 import { getServerAuthSession } from "server/auth";
 import CreateOpportunityForm from "./createOpportunityForm";
-import { GeneralInformationSchema } from "@lib/schemas/opportunity";
-import { z } from "zod";
+import { type GeneralInformationSchema } from "@lib/schemas/opportunity";
+import { type z } from "zod";
 import db from "server/db";
 
 export default async function CreateOpportunity() {

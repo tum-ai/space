@@ -1,6 +1,6 @@
 import { Button } from "@components/ui/button";
 import { Input } from "@components/ui/input";
-import { TallyField } from "@lib/types/tally";
+import { type TallyField } from "@lib/types/tally";
 import { format } from "date-fns";
 import Link from "next/link";
 import {

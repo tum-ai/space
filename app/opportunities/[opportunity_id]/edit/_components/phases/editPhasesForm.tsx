@@ -2,7 +2,7 @@
 
 import { useFieldArray, useForm } from "react-hook-form";
 import Phase from "./phases/phase";
-import { z } from "zod";
+import { type z } from "zod";
 import { Separator } from "@components/ui/separator";
 import { AddPhasePopover } from "./phases/addPhasePopover";
 import { PhasesSchema } from "@lib/schemas/opportunity";

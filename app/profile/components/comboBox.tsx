@@ -1,7 +1,7 @@
 "use client";
 
-import { FC } from "react";
-import { UseControllerProps, useController } from "react-hook-form";
+import { type FC } from "react";
+import { type UseControllerProps, useController } from "react-hook-form";
 import { CaretSortIcon, CheckIcon } from "@radix-ui/react-icons";
 import { Button } from "@components/ui/button";
 import {

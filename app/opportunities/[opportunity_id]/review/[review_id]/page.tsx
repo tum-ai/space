@@ -1,7 +1,7 @@
 import db from "server/db";
 import { ReviewForm } from "./reviewForm";
 import { redirect } from "next/navigation";
-import { Question } from "@lib/types/question";
+import { type Question } from "@lib/types/question";
 import { getServerAuthSession } from "server/auth";
 
 interface ReviewProps {

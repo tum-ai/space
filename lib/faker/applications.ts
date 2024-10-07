@@ -1,5 +1,5 @@
 import { faker } from "@faker-js/faker";
-import { Tally, TallyData, TallyField } from "@lib/types/tally";
+import { type Tally, type TallyData, type TallyField } from "@lib/types/tally";
 import { keyUniqueEnforcer, now, options } from "./utils";
 import db from "server/db";
 

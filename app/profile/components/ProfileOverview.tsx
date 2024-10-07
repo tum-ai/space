@@ -2,7 +2,7 @@
 
 import { AcademicCapIcon, PencilIcon } from "@heroicons/react/24/outline";
 import { User as UserIcon, Contact as ContactIcon } from "lucide-react";
-import { Prisma } from "@prisma/client";
+import { type Prisma } from "@prisma/client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -36,8 +36,8 @@ import { Input } from "@components/ui/input";
 import { ProfileSchema } from "@lib/schemas/profile";
 import { UserSchema } from "@lib/schemas/user";
 import {
-  ContactSchema,
-  ContactSchemaWithProfileId,
+  type ContactSchema,
+  type ContactSchemaWithProfileId,
 } from "@lib/schemas/contact";
 import { api } from "trpc/react";
 import { toast } from "sonner";

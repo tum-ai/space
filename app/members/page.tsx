@@ -1,5 +1,5 @@
 import { DataTable } from "./components/DataTable";
-import { RowUser } from "./components/DataTableTypes";
+import { type RowUser } from "./components/DataTableTypes";
 import db from "server/db";
 import { DepartmentRole, SpaceRole } from "@prisma/client";
 import { getServerAuthSession } from "server/auth";

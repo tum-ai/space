@@ -1,7 +1,7 @@
 "use client";
 
-import { ColumnDef } from "@tanstack/react-table";
-import { Prisma } from "@prisma/client";
+import { type ColumnDef } from "@tanstack/react-table";
+import { type Prisma } from "@prisma/client";
 import { Button } from "@components/ui/button";
 import { Eye } from "lucide-react";
 import Link from "next/link";

@@ -1,8 +1,8 @@
 "use client";
 import React from "react";
-import { Application } from "@prisma/client";
+import { type Application } from "@prisma/client";
 import {
-  ColumnDef,
+  type ColumnDef,
   useReactTable,
   getCoreRowModel,
   flexRender,

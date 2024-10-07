@@ -4,7 +4,7 @@ import { generateOpportunities } from "./opportunities";
 import { fetchAllUsers, options } from "./utils";
 import { generateApplications } from "./applications";
 import { connectQuestionnaires } from "server/shared/application";
-import { Person } from "@lib/types/person";
+import { type Person } from "@lib/types/person";
 import { generateReviews } from "./reviews";
 
 const numberOfOpportunities = parseInt(options.opportunities, 10);
@@ -24,7 +24,7 @@ try {
   const allUsers = await fetchAllUsers();
   allPersons =
     allUsers?.map((user) => ({
-      id: user.id!,
+      id: user.id,
       name: user.name!,
       image: user.image!,
     })) || [];
@@ -36,7 +36,7 @@ try {
     opportunities.map((o) => o.generalInformation.title),
   );
 
-  const opportunityIds = opportunities.map((o) => o.id!);
+  const opportunityIds = opportunities.map((o) => o.id);
 
   // generate applications
   const applications = await generateApplications(opportunityIds);

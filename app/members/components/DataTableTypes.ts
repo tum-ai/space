@@ -1,4 +1,4 @@
-import { SpaceRole } from "@prisma/client";
+import { type SpaceRole } from "@prisma/client";
 
 export interface Option {
   label: string | number;

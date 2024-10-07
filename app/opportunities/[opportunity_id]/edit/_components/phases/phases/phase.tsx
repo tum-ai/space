@@ -1,14 +1,14 @@
 import { Badge } from "@components/ui/badge";
 import {
-  UseFieldArrayRemove,
-  UseFieldArrayUpdate,
+  type UseFieldArrayRemove,
+  type UseFieldArrayUpdate,
   useFieldArray,
   useFormContext,
 } from "react-hook-form";
 import { Button } from "@components/ui/button";
 import { Separator } from "@components/ui/separator";
-import { z } from "zod";
-import { PhasesSchema } from "@lib/schemas/opportunity";
+import { type z } from "zod";
+import { type PhasesSchema } from "@lib/schemas/opportunity";
 import { GripVertical, Plus, X } from "lucide-react";
 import { QuestionnaireDialog } from "../questionnaire/questionnaireDialog";
 import { useSortable } from "@dnd-kit/sortable";

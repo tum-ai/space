@@ -1,5 +1,5 @@
 import * as React from "react";
-import { ColumnDef } from "@tanstack/react-table";
+import { type ColumnDef } from "@tanstack/react-table";
 import { MoreHorizontal } from "lucide-react";
 
 import { Button } from "@components/ui/button";
@@ -12,9 +12,9 @@ import {
   DropdownMenuTrigger,
 } from "@components/ui/dropdown-menu";
 import { DataTableColumnHeader } from "./DataTabelHeader";
-import { SpaceRole } from "@prisma/client";
+import { type SpaceRole } from "@prisma/client";
 import { Avatar, AvatarFallback, AvatarImage } from "@components/ui/avatar";
-import { RowUser } from "./DataTableTypes";
+import { type RowUser } from "./DataTableTypes";
 
 export type ExtendedColumnDef<TData, TUnknown> = ColumnDef<TData, TUnknown> & {
   label: string;

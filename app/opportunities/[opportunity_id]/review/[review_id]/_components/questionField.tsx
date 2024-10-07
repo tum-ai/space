@@ -1,4 +1,4 @@
-import { Question } from "@lib/types/question";
+import { type Question } from "@lib/types/question";
 import { Input } from "@components/ui/input";
 import {
   Select,

@@ -1,10 +1,10 @@
 import {
-  SubmitHandler,
-  UseFormProps,
+  type SubmitHandler,
+  type UseFormProps,
   useFieldArray,
   useForm,
 } from "react-hook-form";
-import { z } from "zod";
+import { type z } from "zod";
 import {
   Dialog,
   DialogContent,

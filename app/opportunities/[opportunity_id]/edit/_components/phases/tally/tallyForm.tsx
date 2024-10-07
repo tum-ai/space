@@ -17,13 +17,13 @@ import {
   FormDescription,
 } from "@components/ui/form";
 import { Input } from "@components/ui/input";
-import { PhasesSchema } from "@lib/schemas/opportunity";
+import { type PhasesSchema } from "@lib/schemas/opportunity";
 import { Copy } from "lucide-react";
 import { useFormContext } from "react-hook-form";
 import { toast } from "sonner";
-import { z } from "zod";
+import { type z } from "zod";
 import { api } from "trpc/react";
-import { Tally } from "@lib/types/tally";
+import { type Tally } from "@lib/types/tally";
 import { TallyFieldForm } from "./tallyFieldForm";
 import { useEffect, useState } from "react";
 

@@ -4,7 +4,7 @@ import {
 } from "@components/ui/dropdown-menu";
 import { MenuActions } from "./menuActions";
 import { Avatar, AvatarFallback, AvatarImage } from "@components/ui/avatar";
-import { Session } from "next-auth";
+import { type Session } from "next-auth";
 
 interface UserProps {
   user: Session["user"];

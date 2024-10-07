@@ -2,7 +2,7 @@ import { Card, CardFooter, CardHeader, CardContent } from "@components/ui/card";
 import { Button } from "@components/ui/button";
 import { CalendarIcon } from "@radix-ui/react-icons";
 import Link from "next/link";
-import { Opportunity } from "@prisma/client";
+import { type Opportunity } from "@prisma/client";
 import { format } from "date-fns";
 import { BarChart2, Edit, Eye, Users } from "lucide-react";
 import {

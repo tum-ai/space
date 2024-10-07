@@ -2,9 +2,9 @@
 
 import * as React from "react";
 import {
-  ColumnFiltersState,
-  SortingState,
-  VisibilityState,
+  type ColumnFiltersState,
+  type SortingState,
+  type VisibilityState,
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
@@ -25,7 +25,7 @@ import {
 } from "@components/ui/table";
 
 import { columns } from "./Columns";
-import { RowUser, ColumnData } from "./DataTableTypes";
+import { type RowUser, type ColumnData } from "./DataTableTypes";
 
 interface DataTableProps {
   rowData: RowUser[];

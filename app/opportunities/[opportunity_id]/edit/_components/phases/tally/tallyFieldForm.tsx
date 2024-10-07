@@ -1,10 +1,10 @@
 import { ApplicationField } from "@components/application/applicationField";
-import { TallyField } from "@lib/types/tally";
+import { type TallyField } from "@lib/types/tally";
 import { ConditionPopover } from "./conditionalPopover";
-import { Questionnaire } from "@lib/types/questionnaire";
+import { type Questionnaire } from "@lib/types/questionnaire";
 import { useEffect, useState } from "react";
 import { useFormContext } from "react-hook-form";
-import { z } from "zod";
+import { type z } from "zod";
 import {
   HoverCard,
   HoverCardContent,
@@ -13,7 +13,7 @@ import {
 import { QuestionView } from "../questionnaire/questionView";
 import { Badge } from "@components/ui/badge";
 import { ArrowRight, Minus } from "lucide-react";
-import { PhasesSchema } from "@lib/schemas/opportunity";
+import { type PhasesSchema } from "@lib/schemas/opportunity";
 
 interface Props {
   field: TallyField;

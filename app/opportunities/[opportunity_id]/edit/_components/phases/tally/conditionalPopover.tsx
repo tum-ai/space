@@ -13,11 +13,11 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@components/ui/popover";
-import { PhasesSchema } from "@lib/schemas/opportunity";
-import { TallyField } from "@lib/types/tally";
+import { type PhasesSchema } from "@lib/schemas/opportunity";
+import { type TallyField } from "@lib/types/tally";
 import { Plus } from "lucide-react";
 import { Form, useForm, useFormContext } from "react-hook-form";
-import { z } from "zod";
+import { type z } from "zod";
 import { FormField, FormItem, FormLabel } from "@components/ui/form";
 import { useState } from "react";
 

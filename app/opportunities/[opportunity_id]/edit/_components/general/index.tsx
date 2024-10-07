@@ -2,8 +2,8 @@ import { getServerAuthSession } from "server/auth";
 import { redirect } from "next/navigation";
 import db from "server/db";
 import EditGeneralForm from "./generalEditForm";
-import { z } from "zod";
-import { GeneralInformationSchema } from "@lib/schemas/opportunity";
+import { type z } from "zod";
+import { type GeneralInformationSchema } from "@lib/schemas/opportunity";
 
 export async function EditGeneral({
   opportunityId: opportunity_id,

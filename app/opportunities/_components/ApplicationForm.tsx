@@ -1,10 +1,10 @@
 "use client";
 import React from "react";
-import { Application } from "@prisma/client";
+import { type Application } from "@prisma/client";
 import { ApplicationField } from "@components/application/applicationField";
 import { Form } from "@components/ui/form";
 import { useForm } from "react-hook-form";
-import { Tally } from "@lib/types/tally";
+import { type Tally } from "@lib/types/tally";
 import { Card, CardContent, CardHeader, CardTitle } from "@components/ui/card";
 import { Button } from "@components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";

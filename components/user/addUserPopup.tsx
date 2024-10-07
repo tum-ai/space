@@ -16,7 +16,7 @@ import {
   CommandItem,
   CommandList,
 } from "@components/ui/command";
-import { Person } from "@lib/types/person";
+import { type Person } from "@lib/types/person";
 
 interface Props {
   append: (person: Person) => void;

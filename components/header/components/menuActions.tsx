@@ -15,7 +15,7 @@ import { LogOut, MoonIcon, SunIcon, User as UserIcon } from "lucide-react";
 import Link from "next/link";
 import { useTheme } from "next-themes";
 import { signOut } from "next-auth/react";
-import { Session } from "next-auth";
+import { type Session } from "next-auth";
 
 interface MenuActionsProps {
   user: Session["user"];

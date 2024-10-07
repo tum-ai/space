@@ -19,10 +19,10 @@ import {
 } from "@components/ui/dialog";
 import { DataTable } from "@components/ui/data-table";
 import { Hand, Key as KeyIcon } from "lucide-react";
-import { Prisma, User } from "@prisma/client";
+import { type Prisma, type User } from "@prisma/client";
 import { logEntryColumns, userColumns } from "./columns";
-import { Session } from "next-auth";
-import { LogEntry } from "@lib/types/key";
+import { type Session } from "next-auth";
+import { type LogEntry } from "@lib/types/key";
 import { api } from "trpc/react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";

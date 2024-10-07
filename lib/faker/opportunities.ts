@@ -1,11 +1,11 @@
 import { faker } from "@faker-js/faker";
 import db from "server/db";
 import { keyUniqueEnforcer, now, options, uuidUniqueEnforcer } from "./utils";
-import { Question } from "@lib/types/question";
+import { type Question } from "@lib/types/question";
 import {
-  GeneralInformation,
-  Phase,
-  Questionnaire,
+  type GeneralInformation,
+  type Phase,
+  type Questionnaire,
 } from "@lib/types/opportunity";
 import { allPersons } from "./mock";
 

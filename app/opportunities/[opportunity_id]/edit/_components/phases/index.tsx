@@ -1,10 +1,10 @@
 import { getServerAuthSession } from "server/auth";
 import { redirect } from "next/navigation";
 import db from "server/db";
-import { z } from "zod";
-import { PhasesSchema } from "@lib/schemas/opportunity";
+import { type z } from "zod";
+import { type PhasesSchema } from "@lib/schemas/opportunity";
 import { EditPhasesForm } from "./editPhasesForm";
-import { Prisma } from "@prisma/client";
+import { type Prisma } from "@prisma/client";
 
 export async function EditPhases({ opportunityId }: { opportunityId: string }) {
   const session = await getServerAuthSession();

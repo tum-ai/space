@@ -1,7 +1,7 @@
-import { QuestionSchema } from "@lib/schemas/question";
+import { type QuestionSchema } from "@lib/schemas/question";
 import { QuestionField } from "app/opportunities/[opportunity_id]/review/[review_id]/_components/questionField";
 import { ChevronDownSquare, Dices, ListTodo, Type } from "lucide-react";
-import { z } from "zod";
+import { type z } from "zod";
 
 interface QuestionViewProps {
   question: z.infer<typeof QuestionSchema>;

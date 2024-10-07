@@ -1,9 +1,9 @@
 import { db } from "server/db";
-import { Prisma } from "@prisma/client";
+import { type Prisma } from "@prisma/client";
 import { env } from "env.mjs";
 import { createHmac } from "crypto";
 import { NextResponse } from "next/server";
-import { Tally } from "@lib/types/tally";
+import { type Tally } from "@lib/types/tally";
 import { connectQuestionnaires } from "server/shared/application";
 
 export async function POST(

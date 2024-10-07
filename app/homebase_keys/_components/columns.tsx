@@ -1,10 +1,10 @@
 import { Button } from "@components/ui/button";
-import { User } from "@prisma/client";
-import { ColumnDef } from "@tanstack/react-table";
+import { type User } from "@prisma/client";
+import { type ColumnDef } from "@tanstack/react-table";
 import { Hand, User as UserIcon } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@components/ui/avatar";
 import { DataTableColumnHeader } from "@components/ui/data-table-column-header";
-import { LogEntry } from "@lib/types/key";
+import { type LogEntry } from "@lib/types/key";
 import { api } from "trpc/react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";

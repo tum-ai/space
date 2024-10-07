@@ -1,5 +1,5 @@
 import { Cross2Icon } from "@radix-ui/react-icons";
-import { Table } from "@tanstack/react-table";
+import { type Table } from "@tanstack/react-table";
 
 import { Button } from "@components/ui/button";
 import { Input } from "@components/ui/input";
@@ -7,8 +7,8 @@ import { DataTableViewOptions } from "./DataTableViewOptions";
 
 import { DataTableFacetedFilter } from "./DataTableFacetedFilter";
 import React, { useState, useEffect } from "react";
-import { ColumnData, Option, RowUser } from "./DataTableTypes";
-import { ExtendedColumnDef } from "./Columns";
+import { type ColumnData, type Option, type RowUser } from "./DataTableTypes";
+import { type ExtendedColumnDef } from "./Columns";
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>;

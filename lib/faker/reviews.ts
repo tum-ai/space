@@ -1,8 +1,8 @@
 import { faker } from "@faker-js/faker";
 import db from "server/db";
 import { allPersons } from "./mock";
-import { Questionnaire } from "@prisma/client";
-import { Question } from "@lib/types/question";
+import { type Questionnaire } from "@prisma/client";
+import { type Question } from "@lib/types/question";
 
 interface Review {
   content: Question[];
@@ -19,7 +19,7 @@ export async function generateReviews() {
     },
   });
 
-  let reviews: Review[] = [];
+  const reviews: Review[] = [];
   for (const application of applications) {
     for (const questionnaire of application.questionnaires) {
       reviews.push(generateReview(application.id, questionnaire));
@@ -67,7 +67,7 @@ function generateContent(questions: Question[]): Question[] {
         };
       case "NUMERIC":
         return {
-          ...question!,
+          ...question,
           value: faker.number.int({
             min: question.options.min,
             max: question.options.max,

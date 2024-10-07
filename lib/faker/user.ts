@@ -1,4 +1,4 @@
-import { Person } from "@lib/types/person";
+import { type Person } from "@lib/types/person";
 import db from "server/db";
 import { emailUniqueEnforcer } from "./utils";
 import { faker } from "@faker-js/faker";
@@ -11,8 +11,8 @@ export async function generateUsers(number: number): Promise<Person[]> {
   });
   const users = generatedUsers.map((u) => ({
     id: u.id,
-    name: u.name!,
-    image: u.image!,
+    name: u.name,
+    image: u.image,
   }));
   return users;
 }

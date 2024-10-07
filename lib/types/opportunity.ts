@@ -1,9 +1,9 @@
 import {
-  GeneralInformationSchema,
-  PhaseSchema,
-  QuestionnaireSchema,
+  type GeneralInformationSchema,
+  type PhaseSchema,
+  type QuestionnaireSchema,
 } from "@lib/schemas/opportunity";
-import { z } from "zod";
+import { type z } from "zod";
 
 export type GeneralInformation = z.infer<typeof GeneralInformationSchema>;
 export type Questionnaire = z.infer<typeof QuestionnaireSchema>;

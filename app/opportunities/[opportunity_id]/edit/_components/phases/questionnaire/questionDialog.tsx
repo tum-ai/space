@@ -1,5 +1,5 @@
 import {
-  SubmitHandler,
+  type SubmitHandler,
   useFieldArray,
   useForm,
   useFormContext,
@@ -12,7 +12,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@components/ui/form";
-import { z } from "zod";
+import { type z } from "zod";
 import { Button } from "@components/ui/button";
 import {
   Dialog,
@@ -31,7 +31,7 @@ import {
   SelectValue,
 } from "@components/ui/select";
 import {
-  ArrayOptionsSchema,
+  type ArrayOptionsSchema,
   QuestionSchema,
   isArrayOptions,
 } from "@lib/schemas/question";
