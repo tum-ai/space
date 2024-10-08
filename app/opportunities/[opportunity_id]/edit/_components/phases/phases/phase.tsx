@@ -1,9 +1,3 @@
-import {
-  type UseFieldArrayRemove,
-  type UseFieldArrayUpdate,
-  useFieldArray,
-  useFormContext,
-} from "react-hook-form";
 import { Button } from "@components/ui/button";
 import { Separator } from "@components/ui/separator";
 import { type z } from "zod";
@@ -11,38 +5,39 @@ import { type PhasesSchema } from "@lib/schemas/opportunity";
 import { Ellipsis, FolderPen, Move, Plus, Trash, X } from "lucide-react";
 import { QuestionnaireDialog } from "../questionnaire/questionnaireDialog";
 import { Card } from "@components/ui/card";
+import { Phase as PhaseType, Questionnaire } from "@lib/types/opportunity";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@components/ui/dropdown-menu";
-import { Avatar, AvatarFallback, AvatarImage } from "@components/ui/avatar";
+import { Avatar, AvatarImage, AvatarFallback } from "@components/ui/avatar";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@components/ui/tooltip";
+import { usePhasesContext } from "../usePhasesStore";
 
 interface Props {
   index: number;
-  phase: z.infer<typeof PhasesSchema>["phases"][number];
-  remove: UseFieldArrayRemove;
-  update: UseFieldArrayUpdate<z.infer<typeof PhasesSchema>, "phases">;
 }
 
-export default function Phase({ index, phase, remove: removePhase }: Props) {
-  const form = useFormContext<z.infer<typeof PhasesSchema>>();
-  const {
-    fields: questionaires,
-    append,
-    remove,
-    update,
-  } = useFieldArray({
-    keyName: `fieldId`,
-    control: form.control,
-    name: `phases.${index}.questionnaires`,
-  });
+export default function Phase({ index: phaseIndex }: Props) {
+  const phase = usePhasesContext((s) => s.phases.at(phaseIndex));
+  if (!phase) throw new Error(`Phase does not exist at index ${phaseIndex}`);
+
+  const onRemove = usePhasesContext((s) => s.removePhase);
+  const appendQuestionnaire = usePhasesContext((s) => s.appendQuestionnaire)(
+    phaseIndex,
+  );
+  const removeQuestionnaire = usePhasesContext((s) => s.removeQuestionnaire)(
+    phaseIndex,
+  );
+  const updateQuestionnaire = usePhasesContext((s) => s.updateQuestionnaire)(
+    phaseIndex,
+  );
 
   return (
     <Card className="group w-80">
@@ -71,14 +66,14 @@ export default function Phase({ index, phase, remove: removePhase }: Props) {
                 <Move className="mr-2 h-4 w-4" />
                 <span>Move</span>
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => removePhase(index)}>
+              <DropdownMenuItem onClick={() => onRemove(phaseIndex)}>
                 <Trash className="mr-2 h-4 w-4" />
                 <span>Delete</span>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
 
-          <QuestionnaireDialog onSave={(data) => append(data)}>
+          <QuestionnaireDialog onSave={appendQuestionnaire}>
             <Button
               type="button"
               size="icon-sm"
@@ -94,19 +89,19 @@ export default function Phase({ index, phase, remove: removePhase }: Props) {
       <Separator />
 
       <div className="flex flex-col gap-2 p-2">
-        {questionaires.map((questionnaire, index) => (
+        {phase.questionnaires.map((questionnaire, index) => (
           <QuestionnaireDialog
             key={questionnaire.id}
             defaultValues={questionnaire}
-            onSave={(data) => update(index, data)}
-            onRemove={() => remove(index)}
+            onSave={(data) => updateQuestionnaire(index, data)}
+            onRemove={() => removeQuestionnaire(index)}
           >
             <Card className="cursor-pointer p-2">
               <div className="flex flex-row justify-between">
                 <p>{questionnaire.name}</p>
 
                 <div className="flex -space-x-3 overflow-hidden">
-                  {questionnaire.reviewers.splice(0, 5).map((reviewer) => (
+                  {[...questionnaire.reviewers].splice(0, 4).map((reviewer) => (
                     <Tooltip
                       key={`reviewer-${questionnaire.name}-${reviewer.id}`}
                     >
@@ -120,13 +115,20 @@ export default function Phase({ index, phase, remove: removePhase }: Props) {
                       </TooltipContent>
                     </Tooltip>
                   ))}
+                  {questionnaire.reviewers.length > 4 && (
+                    <Avatar className="h-6 w-6 border bg-primary-foreground">
+                      <AvatarFallback className="text-xs">
+                        +{questionnaire.reviewers.length - 4}
+                      </AvatarFallback>
+                    </Avatar>
+                  )}
                 </div>
               </div>
             </Card>
           </QuestionnaireDialog>
         ))}
 
-        <QuestionnaireDialog onSave={(data) => append(data)}>
+        <QuestionnaireDialog onSave={appendQuestionnaire}>
           <Button
             variant="outline"
             className="h-8 w-full py-1 opacity-0 group-hover:opacity-100"

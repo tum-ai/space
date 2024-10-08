@@ -21,26 +21,31 @@ import { type Person } from "@lib/types/person";
 interface Props {
   append: (person: Person) => void;
   users: Person[];
+  children?: React.ReactNode;
 }
 
-export const AddUserPopup = ({ append, users }: Props) => {
+export const AddUserPopup = ({ append, users, children }: Props) => {
   const { data } = api.user.getAll.useQuery();
   const [open, setOpen] = useState(false);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <Button
-          type="button"
-          variant="secondary"
-          role="combobox"
-          aria-expanded={open}
-          className="w-full"
-        >
-          <UserPlus className="mr-2" />
-          Add user
-          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-        </Button>
+        {children ? (
+          children
+        ) : (
+          <Button
+            type="button"
+            variant="secondary"
+            role="combobox"
+            aria-expanded={open}
+            className="w-full"
+          >
+            <UserPlus className="mr-2" />
+            Add user
+            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+          </Button>
+        )}
       </PopoverTrigger>
       <PopoverContent className="w-96 p-0">
         <Command>

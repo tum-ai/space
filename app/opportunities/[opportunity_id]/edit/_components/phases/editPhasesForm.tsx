@@ -1,17 +1,18 @@
 "use client";
 
-import { useFieldArray, useForm } from "react-hook-form";
 import Phase from "./phases/phase";
+import { produce } from "immer";
 import { type z } from "zod";
-import { Separator } from "@components/ui/separator";
 import { AddPhasePopover } from "./phases/addPhasePopover";
-import { PhasesSchema } from "@lib/schemas/opportunity";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { type PhasesSchema } from "@lib/schemas/opportunity";
 import { Button } from "@components/ui/button";
 import { Save } from "lucide-react";
-import { Form } from "@components/ui/form";
 import { toast } from "sonner";
 import { TallyForm } from "./tally/tallyForm";
+import { Phase as PhaseType } from "@lib/types/opportunity";
+import { createPhasesStore, PhasesContext } from "./usePhasesStore";
+import { useRef } from "react";
+import { useStore } from "zustand";
 
 interface Props {
   update: (input: z.infer<typeof PhasesSchema>) => Promise<void>;
@@ -19,39 +20,22 @@ interface Props {
 }
 
 export function EditPhasesForm({ defaultValues, update }: Props) {
-  const form = useForm<z.infer<typeof PhasesSchema>>({
-    resolver: zodResolver(PhasesSchema),
-    defaultValues,
-  });
+  const store = useRef(createPhasesStore(defaultValues)).current;
+  const phases = useStore(store, (s) => s.phases);
+  const appendPhase = useStore(store, (s) => s.appendPhase);
 
-  const {
-    fields: phases,
-    append: appendPhases,
-    remove: removePhases,
-    update: updatePhases,
-  } = useFieldArray({
-    keyName: "fieldId",
-    control: form.control,
-    name: "phases",
-  });
-
-  async function onSubmit(values: z.infer<typeof PhasesSchema>) {
+  async function onSubmit() {
     const id = toast.loading("Updating phases");
     try {
-      await update(values);
+      await update({ ...defaultValues, phases });
       toast.success("Successfully updated phases", { id });
     } catch (err) {
       toast.error("Failed to update phases", { id });
     }
   }
-
   return (
-    <Form {...form}>
-      <form
-        // eslint-disable-next-line @typescript-eslint/no-misused-promises
-        onSubmit={form.handleSubmit(onSubmit, (err) => console.error(err))}
-        className="flex flex-col space-y-12 p-8"
-      >
+    <PhasesContext.Provider value={store}>
+      <section className="flex flex-col space-y-12 p-8">
         <div className="flex flex-col space-y-6">
           <div className="flex justify-between">
             <div className="flex flex-col gap-3">
@@ -60,7 +44,7 @@ export function EditPhasesForm({ defaultValues, update }: Props) {
               </h2>
             </div>
 
-            <Button type="submit">
+            <Button type="button" onClick={onSubmit}>
               <Save className="mr-2" />
               Save
             </Button>
@@ -81,16 +65,10 @@ export function EditPhasesForm({ defaultValues, update }: Props) {
             {/* TODO: Fix horizontal overflow */}
             <div className="flex min-h-80 gap-4">
               {phases.map((phase, index) => (
-                <Phase
-                  key={phase.name}
-                  index={index}
-                  phase={phase}
-                  remove={removePhases}
-                  update={updatePhases}
-                />
+                <Phase key={phase.id} index={index} />
               ))}
 
-              <AddPhasePopover append={appendPhases} />
+              <AddPhasePopover onSave={(data) => appendPhase(data)} />
             </div>
           </div>
 
@@ -103,10 +81,10 @@ export function EditPhasesForm({ defaultValues, update }: Props) {
                 Configure your Tally form for the review process
               </p>
             </div>
-            <TallyForm />
+            {/* <TallyForm opportunityId={defaultValues.opportunityId!} /> */}
           </div>
         </div>
-      </form>
-    </Form>
+      </section>
+    </PhasesContext.Provider>
   );
 }

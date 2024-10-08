@@ -3,8 +3,6 @@ import { type TallyField } from "@lib/types/tally";
 import { ConditionPopover } from "./conditionalPopover";
 import { type Questionnaire } from "@lib/types/questionnaire";
 import { useEffect, useState } from "react";
-import { useFormContext } from "react-hook-form";
-import { type z } from "zod";
 import {
   HoverCard,
   HoverCardContent,
@@ -13,21 +11,21 @@ import {
 import { QuestionView } from "../questionnaire/questionView";
 import { Badge } from "@components/ui/badge";
 import { ArrowRight, Minus } from "lucide-react";
-import { type PhasesSchema } from "@lib/schemas/opportunity";
+import { type Phase } from "@lib/types/opportunity";
 
 interface Props {
   field: TallyField;
+  phases: Phase[];
 }
 
-export const TallyFieldForm = ({ field }: Props) => {
-  const opportunityForm = useFormContext<z.infer<typeof PhasesSchema>>();
+export const TallyFieldForm = ({ field, phases }: Props) => {
   const [assignedQuestionnaire, setAssignedQuestionnaire] = useState<
     Questionnaire[]
   >([]);
 
   useEffect(() => {
     const newQuestionnaires = new Set<Questionnaire>();
-    for (const phase of opportunityForm.getValues().phases) {
+    for (const phase of phases) {
       for (const questionnaire of phase.questionnaires) {
         if (
           questionnaire.conditions?.some(
@@ -40,7 +38,7 @@ export const TallyFieldForm = ({ field }: Props) => {
     }
 
     setAssignedQuestionnaire([...newQuestionnaires]);
-  }, [opportunityForm, field.key]);
+  }, [phases, field.key]);
 
   return (
     <div key={field.key} className="grid w-full grid-cols-[2.5rem,_1fr] gap-6">
@@ -70,7 +68,6 @@ export const TallyFieldForm = ({ field }: Props) => {
                         type="button"
                         onClick={() => {
                           const findIndexes = (): [number, number] => {
-                            const phases = opportunityForm.getValues().phases;
                             for (let i = 0; i < phases.length; i++) {
                               const questionnaires = phases[i]!.questionnaires;
 

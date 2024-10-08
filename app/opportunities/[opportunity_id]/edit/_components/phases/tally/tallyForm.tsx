@@ -16,21 +16,14 @@ import {
   FormDescription,
 } from "@components/ui/form";
 import { Input } from "@components/ui/input";
-import { type PhasesSchema } from "@lib/schemas/opportunity";
 import { Copy } from "lucide-react";
-import { useFormContext } from "react-hook-form";
 import { toast } from "sonner";
-import { type z } from "zod";
 import { api } from "trpc/react";
 import { type Tally } from "@lib/types/tally";
 import { TallyFieldForm } from "./tallyFieldForm";
 import { useEffect, useState } from "react";
 
-export const TallyForm = () => {
-  const form = useFormContext<z.infer<typeof PhasesSchema>>();
-
-  const opportunityId = form.getValues().opportunityId;
-
+export const TallyForm = ({ opportunityId }: { opportunityId: number }) => {
   const { data } = api.opportunity.getTallySchema.useQuery({
     id: Number(opportunityId),
   });
@@ -41,7 +34,7 @@ export const TallyForm = () => {
   useEffect(() => {
     if (typeof window !== "undefined") {
       setWebhookUrl(
-        `${window.location.origin}/api/tally/opportunity/${form.getValues("opportunityId")}`,
+        `${window.location.origin}/api/tally/opportunity/${opportunityId}`,
       );
     }
   }, []);

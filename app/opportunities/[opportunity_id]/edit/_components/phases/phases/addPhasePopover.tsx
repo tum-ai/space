@@ -23,24 +23,30 @@ import {
 } from "@components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Plus } from "lucide-react";
+import { type Phase as PhaseType } from "@lib/types/opportunity";
+import { v4 as uuidv4 } from "uuid";
 
-interface AddPhasePopoverProps {
-  append: UseFieldArrayAppend<z.infer<typeof PhasesSchema>, "phases">;
+interface Props {
+  onSave: (phase: PhaseType) => void;
 }
 
-export const AddPhasePopover = ({ append }: AddPhasePopoverProps) => {
+export const AddPhasePopover = ({ onSave }: Props) => {
   const [popoverOpen, setPopoverOpen] = useState(false);
+
+  const defaultValues = {
+    id: uuidv4(),
+    name: ``,
+    questionnaires: [],
+  };
+
   const form = useForm<z.infer<typeof PhaseSchema>>({
     resolver: zodResolver(PhaseSchema),
-    defaultValues: {
-      name: "",
-      questionnaires: [],
-    },
+    defaultValues,
   });
 
   const onSubmit: SubmitHandler<z.infer<typeof PhaseSchema>> = (data) => {
-    append(data);
-    form.reset();
+    onSave(data);
+    form.reset(defaultValues);
     setPopoverOpen(false);
   };
 

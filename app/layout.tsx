@@ -4,7 +4,7 @@ import { Toaster } from "@components/ui/sonner";
 import { TRPCReactProvider } from "trpc/react";
 import { TooltipProvider } from "@radix-ui/react-tooltip";
 import Link from "next/link";
-import { Goal, Key, LogIn, Users } from "lucide-react";
+import { Goal, Key, LogIn, Settings, Users } from "lucide-react";
 
 import {
   Tooltip,
@@ -12,8 +12,12 @@ import {
   TooltipTrigger,
 } from "@components/ui/tooltip";
 import { Logo } from "./_components/logo";
-import { UserComponent } from "./_components/user";
 import { getServerAuthSession } from "server/auth";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+} from "@components/ui/dropdown-menu";
+import { MenuActions } from "./_components/menuActions";
 
 interface Props {
   children: React.ReactNode;
@@ -89,7 +93,14 @@ export default async function RootLayout({ children }: Props) {
                     )}
                   </nav>
                   <nav className="mt-auto flex flex-col items-center gap-4 px-2 sm:py-5">
-                    {session && <UserComponent user={session.user} />}
+                    {session && (
+                      <DropdownMenu>
+                        <DropdownMenuTrigger>
+                          <Settings />
+                        </DropdownMenuTrigger>
+                        <MenuActions user={session.user} />
+                      </DropdownMenu>
+                    )}
                     {!session && (
                       <Tooltip>
                         <TooltipTrigger asChild>

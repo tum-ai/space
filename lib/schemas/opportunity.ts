@@ -12,7 +12,6 @@ export const QuestionnaireSchema = z.object({
 });
 
 export const PhaseSchema = z.object({
-  opportunityId: z.number().optional(),
   id: z.string().uuid().optional(),
   name: z.string().min(1, "Phase name is required"),
   questionnaires: z.array(QuestionnaireSchema),

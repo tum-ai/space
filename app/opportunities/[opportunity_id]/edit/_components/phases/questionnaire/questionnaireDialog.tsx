@@ -17,8 +17,8 @@ import {
 import { QuestionnaireSchema } from "@lib/schemas/opportunity";
 import { v4 as uuidv4 } from "uuid";
 import { Button } from "@components/ui/button";
-import { QuestionDialog } from "./questionDialog";
 import {
+  Form,
   FormControl,
   FormDescription,
   FormField,
@@ -29,10 +29,16 @@ import {
 import { Input } from "@components/ui/input";
 import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { FileMinus, FilePlus2, Save, UserMinus } from "lucide-react";
+import { FileMinus, FilePlus2, Minus, Save, Plus } from "lucide-react";
 import { AddUserPopup } from "@components/user/addUserPopup";
 import { Avatar, AvatarFallback, AvatarImage } from "@components/ui/avatar";
 import { QuestionView } from "./questionView";
+import { Card } from "@components/ui/card";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@components/ui/tooltip";
 
 interface QuestionnaireProps {
   onSave: (data: z.infer<typeof QuestionnaireSchema>) => void;
@@ -101,141 +107,130 @@ export const QuestionnaireDialog = ({
   return (
     <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="max-h-[42rem] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>
-            {defaultValues ? "Edit" : "Add"} questionaire
-          </DialogTitle>
-          <DialogDescription>
-            Configure questions and reviewer for {form.watch("name")}
-          </DialogDescription>
-        </DialogHeader>
+      <DialogContent className="max-h-[42rem] space-y-4 overflow-y-auto">
+        <Form {...form}>
+          <DialogHeader>
+            <DialogTitle>
+              {defaultValues ? "Edit" : "Add"} questionaire
+            </DialogTitle>
+            <DialogDescription>
+              Configure questions and reviewer
+            </DialogDescription>
+          </DialogHeader>
 
-        <div className="space-y-2">
-          <h4 className="scroll-m-20 text-xl font-semibold tracking-tight">
-            Information
-          </h4>
-          <FormField
-            control={form.control}
-            name={`name`}
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Name*</FormLabel>
-                <FormControl>
-                  <Input placeholder="General" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          <div className="space-y-2">
+            <h4 className="scroll-m-20 text-xl font-semibold tracking-tight">
+              Information
+            </h4>
+            <FormField
+              control={form.control}
+              name={`name`}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Name*</FormLabel>
+                  <FormControl>
+                    <Input placeholder="General" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-          <FormItem>
-            <FormLabel>Required reviews*</FormLabel>
-            <FormControl>
-              <Input
-                type="number"
-                placeholder="General"
-                {...form.register("requiredReviews", { valueAsNumber: true })}
-              />
-            </FormControl>
-            <FormDescription>
-              Required amount of unique reviews for this questionnaire per
-              application.
-            </FormDescription>
-            <FormMessage />
-          </FormItem>
-        </div>
+            <FormItem>
+              <FormLabel>Required reviews*</FormLabel>
+              <FormControl>
+                <Input
+                  type="number"
+                  placeholder="General"
+                  {...form.register("requiredReviews", { valueAsNumber: true })}
+                />
+              </FormControl>
+              <FormDescription>
+                Required amount of unique reviews for this questionnaire per
+                application.
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          </div>
 
-        <div className="mt-8">
-          <h4 className="scroll-m-20 text-xl font-semibold tracking-tight">
-            Questions
-          </h4>
-          <div className="space-y-4">
-            {questions.map((question, index) => (
-              <QuestionDialog
-                key={question.key}
-                defaultValues={question}
-                onSave={(data) => {
-                  updateQuestion(index, data);
-                  form.handleSubmit(onSave, console.error);
-                }}
-                onRemove={() => removeQuestion(index)}
-              >
-                <Button
-                  className="h-max w-full justify-between"
-                  variant="outline"
-                  type="button"
-                >
+          <div className="space-y-2">
+            <h4 className="scroll-m-20 text-xl font-semibold tracking-tight">
+              Questions
+            </h4>
+            <div className="space-y-4">
+              {questions.map((question) => (
+                <Card className="h-max w-full justify-between">
                   <QuestionView question={question} />
-                </Button>
-              </QuestionDialog>
-            ))}
+                </Card>
+              ))}
 
-            <QuestionDialog
-              onSave={(data) => {
-                appendQuestion(data);
-                form.handleSubmit(onSave, console.error);
-              }}
-            >
               <Button className="w-full" variant="secondary" type="button">
                 <FilePlus2 className="mr-2" />
                 Add question
               </Button>
-            </QuestionDialog>
+            </div>
           </div>
-        </div>
 
-        <div className="mt-8">
-          <h4 className="scroll-m-20 text-xl font-semibold tracking-tight">
-            Reviewer
-          </h4>
-          <div className="space-y-4">
-            {reviewers.map((reviewer, index) => (
-              <div
-                className="flex w-full justify-between rounded-md border border-input p-4"
-                key={reviewer.id}
-              >
-                <div className="flex w-full items-center gap-6">
-                  <Avatar>
-                    <AvatarImage src={reviewer.image} />
-                    <AvatarFallback>{reviewer.name}</AvatarFallback>
-                  </Avatar>
-
-                  <h3>{reviewer.name}</h3>
-                </div>
-
-                <Button
-                  size="icon"
-                  variant="ghost"
-                  onClick={() => {
-                    removeReviewer(index);
-                  }}
+          <div className="space-y-2">
+            <h4 className="scroll-m-20 text-xl font-semibold tracking-tight">
+              Reviewer
+            </h4>
+            <div className="flex -space-x-3 overflow-hidden">
+              {reviewers.map((reviewer, index) => (
+                <Tooltip
+                  key={`questionnaire-${form.watch("id")}-${reviewer.id}`}
                 >
-                  <UserMinus className="mx-2" />
-                </Button>
-              </div>
-            ))}
-
-            <AddUserPopup append={appendReviewer} users={reviewers} />
+                  <TooltipTrigger>
+                    <button
+                      className="relative"
+                      onClick={() => {
+                        removeReviewer(index);
+                      }}
+                    >
+                      <Avatar className="h-10 w-10 border">
+                        <span className="absolute flex h-full w-full items-center justify-center bg-red-500/80 opacity-0 transition-opacity hover:opacity-100">
+                          <Minus />
+                        </span>
+                        <AvatarImage src={reviewer.image ?? undefined} />
+                      </Avatar>
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>{reviewer.name}</p>
+                  </TooltipContent>
+                </Tooltip>
+              ))}
+              <AddUserPopup append={appendReviewer} users={reviewers}>
+                <span className="ml-2">
+                  <Button
+                    size="icon"
+                    className="ml-4 h-10 w-10 rounded-full"
+                    variant="ghost"
+                  >
+                    <Plus />
+                  </Button>
+                </span>
+              </AddUserPopup>
+            </div>
           </div>
-        </div>
 
-        <DialogFooter>
-          {onRemove && (
-            <Button type="button" variant="destructive" onClick={onRemove}>
-              <FileMinus className="mr-2" />
-              Remove
+          <DialogFooter>
+            {onRemove && (
+              <Button type="button" variant="destructive" onClick={onRemove}>
+                <FileMinus className="mr-2" />
+                Remove
+              </Button>
+            )}
+            <Button
+              type="button"
+              // eslint-disable-next-line @typescript-eslint/no-misused-promises
+              onClick={form.handleSubmit(onSubmit, console.error)}
+            >
+              <Save className="mr-2" />
+              Save
             </Button>
-          )}
-          <Button
-            type="button"
-            // eslint-disable-next-line @typescript-eslint/no-misused-promises
-            onClick={form.handleSubmit(onSubmit, console.error)}
-          >
-            <Save className="mr-2" />
-            Save
-          </Button>
-        </DialogFooter>
+          </DialogFooter>
+        </Form>
       </DialogContent>
     </Dialog>
   );
