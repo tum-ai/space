@@ -9,14 +9,19 @@ import {
   CardTitle,
 } from "@components/ui/card";
 import { Input } from "@components/ui/input";
-import { Copy } from "lucide-react";
+import { Copy, Send } from "lucide-react";
 import { toast } from "sonner";
 import { api } from "trpc/react";
 import { type Tally } from "@lib/types/tally";
 import { TallyFieldForm } from "./tallyFieldForm";
 import { useEffect, useState } from "react";
 import { Label } from "@components/ui/label";
-import { ApplicationField } from "@components/application/applicationField";
+import {
+  ResizableHandle,
+  ResizablePanel,
+  ResizablePanelGroup,
+} from "@components/ui/resizable";
+import { Alert, AlertDescription, AlertTitle } from "@components/ui/alert";
 
 export const TallyForm = ({ opportunityId }: { opportunityId: number }) => {
   const { data } = api.opportunity.getTallySchema.useQuery({
@@ -35,7 +40,7 @@ export const TallyForm = ({ opportunityId }: { opportunityId: number }) => {
   }, []);
 
   return (
-    <div className="grid gap-8 md:grid-cols-3">
+    <div className="flex flex-col gap-8">
       <div className="w-full space-y-2">
         <Label>Webhook url</Label>
         <div className="flex w-full gap-2">
@@ -59,26 +64,64 @@ export const TallyForm = ({ opportunityId }: { opportunityId: number }) => {
           Set this Webhook url in Tally to receive the applications
         </p>
       </div>
-      <Card className="col-span-2">
-        <CardHeader>
-          <CardTitle className="scroll-m-20 text-2xl font-semibold tracking-tight">
-            Application Form
-          </CardTitle>
-          {applicationFields.length === 0 && (
-            <CardDescription>
-              Your application schema will show up here once you submit a test
-              application
-            </CardDescription>
-          )}
-        </CardHeader>
-        <CardContent>
-          <div className="sticky grid gap-8">
-            {applicationFields.map((field) => (
-              <TallyFieldForm field={field} key={field.key} />
-            ))}
-          </div>
-        </CardContent>
-      </Card>
+
+      {!applicationFields.length && (
+        <Alert className="w-max">
+          <Send className="h-4 w-4" />
+          <AlertTitle>Send a Test application</AlertTitle>
+          <AlertDescription>
+            Submit a test application to see it here and configure the
+            assignment of questionnaires
+          </AlertDescription>
+        </Alert>
+      )}
+
+      {!!applicationFields.length && (
+        <div className="h-[80vh]">
+          <ResizablePanelGroup
+            direction="horizontal"
+            autoSaveId="tallyform-config"
+            className="gap-4"
+          >
+            <ResizablePanel defaultSize={50}>
+              <Card className="h-full overflow-y-scroll">
+                <CardHeader>
+                  <CardTitle className="scroll-m-20 text-2xl font-semibold tracking-tight">
+                    Assignment rules
+                  </CardTitle>
+                  <CardDescription>
+                    Define rules to decide which questionnaires to assign to an
+                    application
+                  </CardDescription>
+                </CardHeader>
+              </Card>
+            </ResizablePanel>
+            <ResizableHandle />
+            <ResizablePanel defaultSize={50}>
+              <Card className="h-full overflow-y-scroll">
+                <CardHeader>
+                  <CardTitle className="scroll-m-20 text-2xl font-semibold tracking-tight">
+                    Application Form
+                  </CardTitle>
+                  {applicationFields.length === 0 && (
+                    <CardDescription>
+                      Your application schema will show up here once you submit
+                      a test application
+                    </CardDescription>
+                  )}
+                </CardHeader>
+                <CardContent>
+                  <div className="sticky grid gap-8">
+                    {applicationFields.map((field) => (
+                      <TallyFieldForm field={field} key={field.key} />
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            </ResizablePanel>
+          </ResizablePanelGroup>
+        </div>
+      )}
     </div>
   );
 };

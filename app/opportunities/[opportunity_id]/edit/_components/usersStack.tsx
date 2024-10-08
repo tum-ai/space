@@ -8,7 +8,7 @@ import {
   TooltipTrigger,
 } from "@components/ui/tooltip";
 import { AddUserPopup } from "@components/user/addUserPopup";
-import { Person } from "@lib/types/person";
+import { type Person } from "@lib/types/person";
 import { Minus, Plus, UserMinus } from "lucide-react";
 
 interface Props {
@@ -30,7 +30,7 @@ export const UsersStack = ({ users, append, remove, key }: Props) => {
                 remove(index);
               }}
             >
-              <Avatar className="h-10 w-10 ring-2 ring-border transition-colors hover:ring-destructive">
+              <Avatar className="h-10 w-10 ring-2 ring-border transition-colors hover:ring-destructive-foreground">
                 <span className="absolute flex h-full w-full items-center justify-center bg-destructive/90 text-destructive-foreground opacity-0 transition-opacity hover:opacity-100">
                   <UserMinus />
                 </span>
