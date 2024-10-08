@@ -20,11 +20,18 @@ import {
 import { cn } from "@lib/utils";
 import { format } from "date-fns";
 import { Calendar } from "@components/ui/calendar";
-import { CalendarIcon, UserMinus } from "lucide-react";
+import { CalendarIcon, Minus, Plus, UserMinus } from "lucide-react";
 import { type GeneralInformationSchema } from "@lib/schemas/opportunity";
 import { type z } from "zod";
 import { AddUserPopup } from "@components/user/addUserPopup";
 import { Avatar, AvatarFallback, AvatarImage } from "@components/ui/avatar";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@components/ui/tooltip";
+import { UsersStack } from "../../edit/_components/usersStack";
+import { User } from "@prisma/client";
 
 export function GeneralInformation() {
   const form = useFormContext<z.infer<typeof GeneralInformationSchema>>();
@@ -132,7 +139,7 @@ export function GeneralInformation() {
         )}
       />
 
-      <div className="col-span-2 mb-8">
+      <div className="col-span-2">
         <FormField
           control={form.control}
           name="description"
@@ -151,35 +158,12 @@ export function GeneralInformation() {
       <FormItem className="col-span-2">
         <FormLabel>Admins</FormLabel>
         <FormControl>
-          <div className="space-y-2">
-            {admins.map((admin, index) => (
-              <div
-                className="flex w-full justify-between rounded-md border border-input p-4"
-                key={admin.id}
-              >
-                <div className="flex w-full items-center gap-6">
-                  <Avatar>
-                    <AvatarImage src={admin.image} />
-                    <AvatarFallback>{admin.name}</AvatarFallback>
-                  </Avatar>
-
-                  <h3>{admin.name}</h3>
-                </div>
-
-                <Button
-                  size="icon"
-                  variant="ghost"
-                  onClick={() => {
-                    removeAdmin(index);
-                  }}
-                >
-                  <UserMinus className="mx-2" />
-                </Button>
-              </div>
-            ))}
-
-            <AddUserPopup append={appendAdmin} users={admins} />
-          </div>
+          <UsersStack
+            key={`${form.getValues("opportunityId")}-admins`}
+            users={admins}
+            append={appendAdmin}
+            remove={removeAdmin}
+          />
         </FormControl>
         <FormMessage />
       </FormItem>

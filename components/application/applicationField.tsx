@@ -15,7 +15,6 @@ import {
 import { Textarea } from "@components/ui/textarea";
 import { Checkbox } from "@components/ui/checkbox";
 import { FileText, X } from "lucide-react";
-import { FormLabel } from "@components/ui/form";
 import { cn } from "@lib/utils";
 import {
   Table,
@@ -27,6 +26,7 @@ import {
 } from "@components/ui/table";
 import { Badge } from "@components/ui/badge";
 import { Slider } from "@components/ui/slider";
+import { Label } from "@components/ui/label";
 
 interface ApplicationFieldProps {
   field: TallyField;
@@ -37,7 +37,7 @@ interface ApplicationFieldProps {
 const ApplicationValue = ({ field }: ApplicationFieldProps) => {
   if (!field.value)
     return (
-      <div className="flex w-full items-center justify-center gap-2 px-3 py-2 text-sm">
+      <div className="flex w-full items-center justify-center gap-2 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background">
         <X />
         <p>No value</p>
       </div>
@@ -109,7 +109,11 @@ const ApplicationValue = ({ field }: ApplicationFieldProps) => {
       return <p>No value</p>;
 
     case "TEXTAREA":
-      return <Textarea readOnly defaultValue={field.value} />;
+      return (
+        <p className="flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background">
+          {field.value}
+        </p>
+      );
 
     case "INPUT_TEXT":
       return <Input readOnly value={field.value} />;
@@ -213,7 +217,7 @@ export const ApplicationField = ({
       </div>
     )}
     <div className={cn("flex flex-col gap-3", className)}>
-      {!!field.label && <FormLabel>{field.label}</FormLabel>}
+      {!!field.label && <Label>{field.label}</Label>}
       <ApplicationValue field={field} />
     </div>
   </div>

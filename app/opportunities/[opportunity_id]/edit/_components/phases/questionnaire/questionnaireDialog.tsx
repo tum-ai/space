@@ -29,16 +29,36 @@ import {
 import { Input } from "@components/ui/input";
 import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { FileMinus, FilePlus2, Minus, Save, Plus } from "lucide-react";
-import { AddUserPopup } from "@components/user/addUserPopup";
-import { Avatar, AvatarFallback, AvatarImage } from "@components/ui/avatar";
+import { FileMinus, FilePlus2, Save } from "lucide-react";
 import { QuestionView } from "./questionView";
 import { Card } from "@components/ui/card";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@components/ui/tooltip";
+import { QuestionForm, type QuestionFormProps } from "./question";
+import type { Question } from "@lib/types/question";
+import { UsersStack } from "../../usersStack";
+
+const QuestionEdit = ({
+  question,
+  ...props
+}: { question: Question } & Omit<QuestionFormProps, "toggleEdit">) => {
+  const [isEdit, setIsEdit] = useState(false);
+
+  return (
+    <>
+      {!isEdit && (
+        <Card className="p-2" onClick={() => setIsEdit(true)}>
+          <QuestionView question={question} />
+        </Card>
+      )}
+      {!!isEdit && (
+        <QuestionForm
+          {...props}
+          toggleEdit={() => setIsEdit(false)}
+          defaultValues={question}
+        />
+      )}
+    </>
+  );
+};
 
 interface QuestionnaireProps {
   onSave: (data: z.infer<typeof QuestionnaireSchema>) => void;
@@ -82,6 +102,8 @@ export const QuestionnaireDialog = ({
 
     setDialogOpen(false);
   };
+
+  const [addQuestionOpen, setAddQuestionOpen] = useState(false);
 
   const {
     fields: questions,
@@ -157,14 +179,29 @@ export const QuestionnaireDialog = ({
             <h4 className="scroll-m-20 text-xl font-semibold tracking-tight">
               Questions
             </h4>
-            <div className="space-y-4">
-              {questions.map((question) => (
-                <Card className="h-max w-full justify-between">
-                  <QuestionView question={question} />
-                </Card>
+            <div className="space-y-2">
+              {questions.map((question, i) => (
+                <QuestionEdit
+                  key={`question-edit-${question.fieldId}`}
+                  question={question}
+                  onSave={(data) => updateQuestion(i, data)}
+                  onRemove={() => removeQuestion(i)}
+                />
               ))}
 
-              <Button className="w-full" variant="secondary" type="button">
+              {addQuestionOpen && (
+                <QuestionForm
+                  toggleEdit={() => setAddQuestionOpen(false)}
+                  onSave={appendQuestion}
+                />
+              )}
+
+              <Button
+                className="w-full"
+                variant="secondary"
+                type="button"
+                onClick={() => setAddQuestionOpen(true)}
+              >
                 <FilePlus2 className="mr-2" />
                 Add question
               </Button>
@@ -175,43 +212,12 @@ export const QuestionnaireDialog = ({
             <h4 className="scroll-m-20 text-xl font-semibold tracking-tight">
               Reviewer
             </h4>
-            <div className="flex -space-x-3 overflow-hidden">
-              {reviewers.map((reviewer, index) => (
-                <Tooltip
-                  key={`questionnaire-${form.watch("id")}-${reviewer.id}`}
-                >
-                  <TooltipTrigger>
-                    <button
-                      className="relative"
-                      onClick={() => {
-                        removeReviewer(index);
-                      }}
-                    >
-                      <Avatar className="h-10 w-10 border">
-                        <span className="absolute flex h-full w-full items-center justify-center bg-red-500/80 opacity-0 transition-opacity hover:opacity-100">
-                          <Minus />
-                        </span>
-                        <AvatarImage src={reviewer.image ?? undefined} />
-                      </Avatar>
-                    </button>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>{reviewer.name}</p>
-                  </TooltipContent>
-                </Tooltip>
-              ))}
-              <AddUserPopup append={appendReviewer} users={reviewers}>
-                <span className="ml-2">
-                  <Button
-                    size="icon"
-                    className="ml-4 h-10 w-10 rounded-full"
-                    variant="ghost"
-                  >
-                    <Plus />
-                  </Button>
-                </span>
-              </AddUserPopup>
-            </div>
+            <UsersStack
+              key={`questionnaire-${form.watch("id")}-`}
+              users={reviewers}
+              append={appendReviewer}
+              remove={removeReviewer}
+            />
           </div>
 
           <DialogFooter>

@@ -1,7 +1,6 @@
 "use client";
 
 import Phase from "./phases/phase";
-import { produce } from "immer";
 import { type z } from "zod";
 import { AddPhasePopover } from "./phases/addPhasePopover";
 import { type PhasesSchema } from "@lib/schemas/opportunity";
@@ -9,10 +8,10 @@ import { Button } from "@components/ui/button";
 import { Save } from "lucide-react";
 import { toast } from "sonner";
 import { TallyForm } from "./tally/tallyForm";
-import { Phase as PhaseType } from "@lib/types/opportunity";
 import { createPhasesStore, PhasesContext } from "./usePhasesStore";
 import { useRef } from "react";
 import { useStore } from "zustand";
+import { ScrollArea, ScrollBar } from "@components/ui/scroll-area";
 
 interface Props {
   update: (input: z.infer<typeof PhasesSchema>) => Promise<void>;
@@ -63,13 +62,23 @@ export function EditPhasesForm({ defaultValues, update }: Props) {
             </div>
 
             {/* TODO: Fix horizontal overflow */}
-            <div className="flex min-h-80 gap-4">
-              {phases.map((phase, index) => (
-                <Phase key={phase.id} index={index} />
-              ))}
+            <ScrollArea className="w-full">
+              <div className="group/phases flex min-h-80 gap-4">
+                {phases.map((phase, index) => (
+                  <Phase
+                    key={phase.id}
+                    index={index}
+                    className="min-w-0 shrink-0"
+                  />
+                ))}
 
-              <AddPhasePopover onSave={(data) => appendPhase(data)} />
-            </div>
+                <AddPhasePopover
+                  onSave={(data) => appendPhase(data)}
+                  className="flex w-max opacity-0 transition-opacity group-hover/phases:opacity-100"
+                />
+              </div>
+              <ScrollBar orientation="horizontal" />
+            </ScrollArea>
           </div>
 
           <div className="space-y-6">
@@ -81,7 +90,7 @@ export function EditPhasesForm({ defaultValues, update }: Props) {
                 Configure your Tally form for the review process
               </p>
             </div>
-            {/* <TallyForm opportunityId={defaultValues.opportunityId!} /> */}
+            <TallyForm opportunityId={defaultValues.opportunityId!} />
           </div>
         </div>
       </section>

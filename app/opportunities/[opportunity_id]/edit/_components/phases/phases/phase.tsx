@@ -1,11 +1,8 @@
 import { Button } from "@components/ui/button";
 import { Separator } from "@components/ui/separator";
-import { type z } from "zod";
-import { type PhasesSchema } from "@lib/schemas/opportunity";
-import { Ellipsis, FolderPen, Move, Plus, Trash, X } from "lucide-react";
+import { Ellipsis, FolderPen, Move, Plus, Trash } from "lucide-react";
 import { QuestionnaireDialog } from "../questionnaire/questionnaireDialog";
 import { Card } from "@components/ui/card";
-import { Phase as PhaseType, Questionnaire } from "@lib/types/opportunity";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -19,12 +16,14 @@ import {
   TooltipTrigger,
 } from "@components/ui/tooltip";
 import { usePhasesContext } from "../usePhasesStore";
+import { cn } from "@lib/utils";
 
 interface Props {
   index: number;
+  className?: string;
 }
 
-export default function Phase({ index: phaseIndex }: Props) {
+export default function Phase({ index: phaseIndex, className }: Props) {
   const phase = usePhasesContext((s) => s.phases.at(phaseIndex));
   if (!phase) throw new Error(`Phase does not exist at index ${phaseIndex}`);
 
@@ -40,7 +39,7 @@ export default function Phase({ index: phaseIndex }: Props) {
   );
 
   return (
-    <Card className="group w-80">
+    <Card className={cn("group w-80", className)}>
       <div className="flex flex-row items-center justify-between p-2">
         <h4 className="scroll-m-20 text-xl font-semibold tracking-tight">
           {phase.name}
@@ -100,13 +99,13 @@ export default function Phase({ index: phaseIndex }: Props) {
               <div className="flex flex-row justify-between">
                 <p>{questionnaire.name}</p>
 
-                <div className="flex -space-x-3 overflow-hidden">
+                <div className="flex -space-x-2">
                   {[...questionnaire.reviewers].splice(0, 4).map((reviewer) => (
                     <Tooltip
                       key={`reviewer-${questionnaire.name}-${reviewer.id}`}
                     >
                       <TooltipTrigger>
-                        <Avatar className="h-6 w-6 border">
+                        <Avatar className="h-6 w-6 ring-1 ring-border">
                           <AvatarImage src={reviewer.image ?? undefined} />
                         </Avatar>
                       </TooltipTrigger>
@@ -116,7 +115,7 @@ export default function Phase({ index: phaseIndex }: Props) {
                     </Tooltip>
                   ))}
                   {questionnaire.reviewers.length > 4 && (
-                    <Avatar className="h-6 w-6 border bg-primary-foreground">
+                    <Avatar className="h-6 w-6 bg-primary-foreground ring-1 ring-border">
                       <AvatarFallback className="text-xs">
                         +{questionnaire.reviewers.length - 4}
                       </AvatarFallback>
@@ -131,7 +130,7 @@ export default function Phase({ index: phaseIndex }: Props) {
         <QuestionnaireDialog onSave={appendQuestionnaire}>
           <Button
             variant="outline"
-            className="h-8 w-full py-1 opacity-0 group-hover:opacity-100"
+            className="h-8 w-full py-1 opacity-0 transition-opacity group-hover:opacity-100"
           >
             <Plus />
           </Button>

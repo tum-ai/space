@@ -25,12 +25,14 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Plus } from "lucide-react";
 import { type Phase as PhaseType } from "@lib/types/opportunity";
 import { v4 as uuidv4 } from "uuid";
+import { cn } from "@lib/utils";
 
 interface Props {
   onSave: (phase: PhaseType) => void;
+  className?: string;
 }
 
-export const AddPhasePopover = ({ onSave }: Props) => {
+export const AddPhasePopover = ({ onSave, className }: Props) => {
   const [popoverOpen, setPopoverOpen] = useState(false);
 
   const defaultValues = {
@@ -53,9 +55,8 @@ export const AddPhasePopover = ({ onSave }: Props) => {
   return (
     <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
       <PopoverTrigger asChild>
-        <Button variant="secondary" className="w-80">
-          <Plus className="mr-2" />
-          Add phase
+        <Button variant="outline" size="sm" className={cn(className)}>
+          <Plus className="mr-2" /> Add Phase
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-80 space-y-4">
