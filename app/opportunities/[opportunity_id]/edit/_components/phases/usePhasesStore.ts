@@ -47,11 +47,11 @@ export const createPhasesStore = (initProps?: Partial<Props>) => {
           state.phases[phaseIndex]!.questionnaires.push(questionnaire);
         }),
       removeQuestionnaire: (phaseIndex) => (questionnaireIndex) =>
-        set((state) =>
+        set((state) => {
           state.phases
             .at(phaseIndex)
-            ?.questionnaires.splice(questionnaireIndex, 1),
-        ),
+            ?.questionnaires.splice(questionnaireIndex, 1);
+        }),
       updateQuestionnaire: (phaseIndex) => (questionnaireIndex, data) =>
         set((state) => {
           state.phases[phaseIndex]!.questionnaires[questionnaireIndex] = data;
