@@ -1,6 +1,6 @@
 import { type Phase, type Questionnaire } from "@lib/types/opportunity";
 import { createStore, useStore } from "zustand";
-import { createContext, useContext, useRef } from "react";
+import { createContext, useContext } from "react";
 import { immer } from "zustand/middleware/immer";
 
 interface Props {
@@ -9,6 +9,7 @@ interface Props {
 
 interface PhasesState extends Props {
   appendPhase: (data: Phase) => void;
+  updatePhase: (index: number) => (data: Phase) => void;
   removePhase: (index: number) => void;
 
   appendQuestionnaire: (
@@ -36,6 +37,10 @@ export const createPhasesStore = (initProps?: Partial<Props>) => {
       appendPhase: (data) =>
         set((state) => {
           state.phases.push(data);
+        }),
+      updatePhase: (index) => (data) =>
+        set((state) => {
+          state.phases[index] = data;
         }),
       removePhase: (index) =>
         set((state) => {

@@ -35,6 +35,7 @@ import { Card } from "@components/ui/card";
 import { QuestionForm, type QuestionFormProps } from "./question";
 import type { Question } from "@lib/types/question";
 import { UsersStack } from "../../usersStack";
+import { useSession } from "next-auth/react";
 
 const QuestionEdit = ({
   question,

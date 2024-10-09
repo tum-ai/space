@@ -92,6 +92,7 @@ export function generatePhases(): Phase[] {
 function generatePhase(): Phase {
   return {
     name: faker.word.words(2),
+    isInterview: false,
     questionnaires: Array.from(
       {
         length: faker.number.int({

@@ -9,6 +9,7 @@ import {
 } from "@components/ui/tooltip";
 import { AddUserPopup } from "@components/user/addUserPopup";
 import { type Person } from "@lib/types/person";
+import { cn } from "@lib/utils";
 import { Minus, Plus, UserMinus } from "lucide-react";
 
 interface Props {
@@ -46,7 +47,7 @@ export const UsersStack = ({ users, append, remove, key }: Props) => {
         </Tooltip>
       ))}
       <AddUserPopup append={append} users={users}>
-        <span className="pl-4">
+        <span className={cn(users.length && "pl-4")}>
           <Button
             size="icon-sm"
             type="button"

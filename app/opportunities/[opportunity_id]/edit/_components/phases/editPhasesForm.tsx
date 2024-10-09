@@ -2,10 +2,10 @@
 
 import Phase from "./phases/phase";
 import { type z } from "zod";
-import { AddPhasePopover } from "./phases/addPhasePopover";
+import { PhasePopover } from "./phases/phasePopover";
 import { type PhasesSchema } from "@lib/schemas/opportunity";
 import { Button } from "@components/ui/button";
-import { Save } from "lucide-react";
+import { Plus, Save } from "lucide-react";
 import { toast } from "sonner";
 import { TallyForm } from "./tally/tallyForm";
 import { createPhasesStore, PhasesContext } from "./usePhasesStore";
@@ -72,7 +72,7 @@ export function EditPhasesForm({ defaultValues, update }: Props) {
                   />
                 ))}
 
-                <AddPhasePopover
+                <PhasePopover
                   onSave={(data) => appendPhase(data)}
                   className="flex w-max opacity-0 transition-opacity group-hover/phases:opacity-100"
                 />

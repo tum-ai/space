@@ -13,6 +13,7 @@ export const QuestionnaireSchema = z.object({
 
 export const PhaseSchema = z.object({
   id: z.string().uuid().optional(),
+  isInterview: z.boolean().default(false),
   name: z.string().min(1, "Phase name is required"),
   questionnaires: z.array(QuestionnaireSchema),
 });

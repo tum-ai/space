@@ -32,6 +32,7 @@ export async function EditPhases({ opportunityId }: { opportunityId: string }) {
   const defaultPhases = opportunity.phases.map((phase) => ({
     id: phase.id,
     name: phase.name,
+    isInterview: phase.isInterview,
     questionnaires: phase.questionnaires.map((questionnaire) => ({
       id: questionnaire.id,
       name: questionnaire.name,

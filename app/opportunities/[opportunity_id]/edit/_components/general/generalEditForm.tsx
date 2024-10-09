@@ -5,7 +5,6 @@ import { GeneralInformationSchema } from "@lib/schemas/opportunity";
 import { Save } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@components/ui/button";
-import { useRouter } from "next/navigation";
 import { type Session } from "next-auth";
 import Breadcrumbs from "@components/ui/breadcrumbs";
 import { Form } from "@components/ui/form";
@@ -16,13 +15,12 @@ import { GeneralInformation } from "../../../_components/general/general";
 import { DeleteButton } from "../deleteButton";
 
 interface Props {
-  session: Session;
   defaultValues: z.infer<typeof GeneralInformationSchema>;
   update: (
     input: z.infer<typeof GeneralInformationSchema>,
   ) => Promise<Opportunity>;
 }
-const EditGeneralForm = ({ session, defaultValues, update }: Props) => {
+const EditGeneralForm = ({ defaultValues, update }: Props) => {
   const form = useForm<z.infer<typeof GeneralInformationSchema>>({
     resolver: zodResolver(GeneralInformationSchema),
     defaultValues,

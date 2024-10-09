@@ -1,6 +1,13 @@
 import { Button } from "@components/ui/button";
 import { Separator } from "@components/ui/separator";
-import { Ellipsis, FolderPen, Move, Plus, Trash } from "lucide-react";
+import {
+  Ellipsis,
+  FolderPen,
+  Handshake,
+  Move,
+  Plus,
+  Trash,
+} from "lucide-react";
 import { QuestionnaireDialog } from "../questionnaire/questionnaireDialog";
 import { Card } from "@components/ui/card";
 import {
@@ -17,6 +24,7 @@ import {
 } from "@components/ui/tooltip";
 import { usePhasesContext } from "../usePhasesStore";
 import { cn } from "@lib/utils";
+import { PhasePopover } from "./phasePopover";
 
 interface Props {
   index: number;
@@ -28,6 +36,7 @@ export default function Phase({ index: phaseIndex, className }: Props) {
   if (!phase) throw new Error(`Phase does not exist at index ${phaseIndex}`);
 
   const onRemove = usePhasesContext((s) => s.removePhase);
+  const onSave = usePhasesContext((s) => s.updatePhase)(phaseIndex);
   const appendQuestionnaire = usePhasesContext((s) => s.appendQuestionnaire)(
     phaseIndex,
   );
@@ -41,10 +50,11 @@ export default function Phase({ index: phaseIndex, className }: Props) {
   return (
     <Card className={cn("group w-80", className)}>
       <div className="flex flex-row items-center justify-between p-2">
-        <h4 className="scroll-m-20 text-xl font-semibold tracking-tight">
+        <h4 className="flex scroll-m-20 items-center text-xl font-semibold tracking-tight">
+          {phase.isInterview && <Handshake className="mr-2 h-6 w-6" />}
           {phase.name}
         </h4>
-        <div className="flex flex-row gap-1">
+        <div className="flex flex-row gap-2">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
@@ -58,10 +68,6 @@ export default function Phase({ index: phaseIndex, className }: Props) {
             </DropdownMenuTrigger>
             <DropdownMenuContent>
               <DropdownMenuItem>
-                <FolderPen className="mr-2 h-4 w-4" />
-                <span>Rename</span>
-              </DropdownMenuItem>
-              <DropdownMenuItem>
                 <Move className="mr-2 h-4 w-4" />
                 <span>Move</span>
               </DropdownMenuItem>
@@ -71,6 +77,17 @@ export default function Phase({ index: phaseIndex, className }: Props) {
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
+
+          <PhasePopover onSave={onSave} defaultValues={phase}>
+            <Button
+              type="button"
+              size="icon-sm"
+              variant="ghost"
+              className="text-muted-foreground"
+            >
+              <FolderPen />
+            </Button>
+          </PhasePopover>
 
           <QuestionnaireDialog onSave={appendQuestionnaire}>
             <Button

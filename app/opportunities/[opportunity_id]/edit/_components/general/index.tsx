@@ -61,11 +61,5 @@ export async function EditGeneral({
     });
   }
 
-  return (
-    <EditGeneralForm
-      session={session}
-      defaultValues={defaultValues}
-      update={update}
-    />
-  );
+  return <EditGeneralForm defaultValues={defaultValues} update={update} />;
 }
