@@ -17,6 +17,7 @@ import {
 } from "@components/ui/tooltip";
 import { Avatar, AvatarFallback, AvatarImage } from "@components/ui/avatar";
 import { ScrollArea, ScrollBar } from "@components/ui/scroll-area";
+import Link from "next/link";
 
 interface Props {
   opportunities: Prisma.OpportunityGetPayload<{
@@ -25,7 +26,13 @@ interface Props {
         include: {
           questionnaires: {
             include: {
-              applications: true;
+              applications: {
+                select: {
+                  id: true;
+                  name: true;
+                  reviews: { select: { user: true } };
+                };
+              };
               reviewers: true;
             };
           };
@@ -156,16 +163,36 @@ export const OpportunityOverview = ({ opportunities }: Props) => {
           <ScrollArea className="h-full overflow-y-auto">
             <div className="flex flex-col gap-2">
               {selectedQuestionnaire?.applications?.map((application) => (
-                <Card
-                  key={`questionnaire-${application.id}`}
-                  className={cn(
-                    "flex cursor-pointer flex-row items-center justify-between p-2 transition-colors",
-                  )}
+                <Link
+                  href={`opportunities/${selectedOpportunity?.id}/applications/${application.id}`}
                 >
-                  <p className="text-sm">
-                    {application.id} - {application.name}
-                  </p>
-                </Card>
+                  <Card
+                    key={`questionnaire-${application.id}`}
+                    className={cn(
+                      "flex flex-row items-center justify-between p-2 transition-colors",
+                    )}
+                  >
+                    <p>{application.name}</p>
+                    <div className="flex -space-x-3 overflow-hidden">
+                      {application.reviews.map((review, i) => (
+                        <Tooltip key={i}>
+                          <TooltipTrigger>
+                            <Link href={`review/${review.id}`}>
+                              <Avatar className="border">
+                                <AvatarImage
+                                  src={review.user.image ?? undefined}
+                                />
+                              </Avatar>
+                            </Link>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>{review.user.name}</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      ))}
+                    </div>
+                  </Card>
+                </Link>
               ))}
             </div>
             <ScrollBar orientation="vertical" />

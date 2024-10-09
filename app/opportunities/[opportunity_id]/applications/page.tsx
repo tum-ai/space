@@ -35,7 +35,7 @@ export default async function OpportunityOverviewPage({
       _count: {
         select: { reviews: true },
       },
-      content: true,
+      name: true,
       reviews: {
         select: {
           id: true,
@@ -54,6 +54,7 @@ export default async function OpportunityOverviewPage({
       },
       select: {
         content: true,
+        name: true,
         reviews: {
           select: {
             content: true,

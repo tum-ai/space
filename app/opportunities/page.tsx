@@ -36,7 +36,7 @@ export default async function OpportunitiesPage() {
                 select: {
                   id: true,
                   name: true,
-                  reviews: { select: { user: true } },
+                  reviews: { select: { id: true, user: true } },
                 },
               },
               reviewers: true,

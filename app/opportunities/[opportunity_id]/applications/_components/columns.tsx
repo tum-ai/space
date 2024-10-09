@@ -31,7 +31,7 @@ export const columns: ColumnDef<
       _count: {
         select: { reviews: true };
       };
-      content: true;
+      name: true;
       reviews: {
         select: {
           id: true;
@@ -53,20 +53,8 @@ export const columns: ColumnDef<
     cell: ({ row }) => formatDate(row.original.createdAt),
   },
   {
-    accessorKey: "content",
+    accessorKey: "name",
     header: () => "Name",
-    cell: ({ row }) => {
-      const firstName = (row.original.content as any).data?.fields
-        .filter((field: any) => field.key === "question_gaMNpP")
-        .map((field: any) => field.value)
-        .join(" ");
-      const lastName = (row.original.content as any).data.fields
-        .filter((field: any) => field.key === "question_yM9qG8")
-        .map((field: any) => field.value)
-        .join(" ");
-
-      return firstName + " " + lastName;
-    },
   },
   {
     accessorKey: "_count.reviews",
