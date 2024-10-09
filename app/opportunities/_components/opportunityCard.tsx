@@ -1,110 +1,84 @@
-import { Card, CardFooter, CardHeader, CardContent } from "@components/ui/card";
+import { Card, CardHeader, CardContent, CardTitle } from "@components/ui/card";
 import { Button } from "@components/ui/button";
 import { CalendarIcon } from "@radix-ui/react-icons";
 import Link from "next/link";
 import { type Opportunity } from "@prisma/client";
 import { format } from "date-fns";
-import { BarChart2, Edit, Eye, Users } from "lucide-react";
+import { BarChart2, Edit, Ellipsis, Eye, Users } from "lucide-react";
 import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@components/ui/tooltip";
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@components/ui/dropdown-menu";
+import { cn } from "@lib/utils";
 
 interface OpportunityCardProps {
   opportunity: Opportunity;
-  isAdmin?: boolean;
+  onClick?: () => void;
+  className?: string;
 }
 
 export default function OpportunityCard({
   opportunity,
-  isAdmin = false,
+  onClick,
+  className,
 }: OpportunityCardProps) {
   return (
-    <Card className="flex flex-col justify-between overflow-hidden">
-      <div>
-        <CardHeader>
-          <div className="flex justify-between">
-            <h2 className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0">
-              {opportunity.title}
-            </h2>
-          </div>
-        </CardHeader>
-        <CardContent className="flex flex-col gap-4">
-          <span className="flex flex-row items-center gap-2 text-slate-500">
-            <CalendarIcon />
-            <p>
-              {format(opportunity.start, "PPP")}
-              {opportunity.end && ` - ${format(opportunity.end, "PPP")}`}
-            </p>
-          </span>
-          {opportunity.description}
-        </CardContent>
-      </div>
+    <Card onClick={onClick} className={cn(className)}>
+      <CardHeader className="p-2">
+        <div className="flex justify-between gap-2">
+          <CardTitle className="text-lg">{opportunity.title}</CardTitle>
 
-      <CardFooter className="mt-auto flex divide-x divide-solid border-t p-0">
-        {isAdmin && (
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button className="flex-1 rounded-none" asChild variant="ghost">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                type="button"
+                size="icon-sm"
+                variant="ghost"
+                className="text-muted-foreground"
+              >
+                <Ellipsis />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuItem asChild>
                 <Link
                   href={"opportunities/" + +opportunity.id + "/leaderboard"}
                 >
-                  <BarChart2 />
+                  <BarChart2 className="mr-2 h-4 w-4" />
+                  <span>Leaderboard</span>
                 </Link>
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>Leaderboard</p>
-            </TooltipContent>
-          </Tooltip>
-        )}
-
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button className="flex-1 rounded-none" asChild variant="ghost">
-              <Link href={"opportunities/" + +opportunity.id + "/review"}>
-                <Eye />
-              </Link>
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>Review</p>
-          </TooltipContent>
-        </Tooltip>
-
-        {isAdmin && (
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button className="flex-1 rounded-none" asChild variant="ghost">
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
                 <Link
                   href={"opportunities/" + +opportunity.id + "/applications"}
                 >
-                  <Users />
+                  <Users className="mr-2 h-4 w-4" />
+                  <span>Applications</span>
                 </Link>
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>Applications</p>
-            </TooltipContent>
-          </Tooltip>
-        )}
-
-        {isAdmin && (
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button className="flex-1 rounded-none" asChild variant="ghost">
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
                 <Link href={"opportunities/" + +opportunity.id + "/edit"}>
-                  <Edit />
+                  <Edit className="mr-2 h-4 w-4" />
+                  <span>Edit </span>
                 </Link>
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>Edit</p>
-            </TooltipContent>
-          </Tooltip>
-        )}
-      </CardFooter>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      </CardHeader>
+
+      <CardContent className="flex flex-col gap-1 p-2 pt-0">
+        <span className="flex flex-row items-center gap-2 text-sm text-muted-foreground">
+          <CalendarIcon />
+          <p>
+            {format(opportunity.start, "dd/MM/yy")}
+            {opportunity.end && ` - ${format(opportunity.end, "dd/MM/yy")}`}
+          </p>
+        </span>
+        <p className="truncate text-sm">{opportunity.description}</p>
+      </CardContent>
     </Card>
   );
 }
