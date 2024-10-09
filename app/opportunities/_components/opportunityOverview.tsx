@@ -117,7 +117,17 @@ export const OpportunityOverview = ({ opportunities }: Props) => {
           <div className="flex h-full flex-col gap-2">
             {selectedOpportunity?.phases.map((phase) => (
               <div key={`phase-${phase.id}`} className="space-y-2">
-                <div className="font-semi text-sm">{phase.name}</div>
+                <Button
+                  variant="link"
+                  className="font-semi pl-0 text-sm"
+                  asChild
+                >
+                  <Link
+                    href={`opportunities/${selectedOpportunity.id}/phase/${phase.id}`}
+                  >
+                    {phase.name}
+                  </Link>
+                </Button>
                 <div className="flex flex-col gap-2">
                   {phase.questionnaires.map((questionnaire) => (
                     <Card
