@@ -65,12 +65,6 @@ export default async function OpportunitiesPage() {
             Opportunities
           </h1>
         </div>
-        <Link href="./opportunities/create">
-          <Button>
-            <Plus className="mr-2" />
-            Create new
-          </Button>
-        </Link>
       </div>
 
       <OpportunityOverview opportunities={opportunities} />

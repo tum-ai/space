@@ -18,6 +18,8 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@components/ui/avatar";
 import { ScrollArea, ScrollBar } from "@components/ui/scroll-area";
 import Link from "next/link";
+import { Button } from "@components/ui/button";
+import { Plus } from "lucide-react";
 
 interface Props {
   opportunities: Prisma.OpportunityGetPayload<{
@@ -30,7 +32,7 @@ interface Props {
                 select: {
                   id: true;
                   name: true;
-                  reviews: { select: { user: true } };
+                  reviews: { select: { user: true; id: true } };
                 };
               };
               reviewers: true;
@@ -77,7 +79,7 @@ export const OpportunityOverview = ({ opportunities }: Props) => {
     <Card className="flex h-full min-h-0">
       <ResizablePanelGroup direction={"horizontal"}>
         <ResizablePanel defaultSize={25} className="p-4">
-          <div className="flex h-full flex-col gap-4">
+          <div className="group flex h-full flex-col gap-4">
             {opportunities.map((item) => {
               return (
                 <OpportunityCard
@@ -96,6 +98,16 @@ export const OpportunityOverview = ({ opportunities }: Props) => {
                 />
               );
             })}
+
+            <Button
+              className="h-8 w-full py-1 opacity-0 transition-opacity group-hover:opacity-100"
+              variant="outline"
+              asChild
+            >
+              <Link href="./opportunities/create">
+                <Plus className="mr-2" /> Add Opportunity
+              </Link>
+            </Button>
           </div>
         </ResizablePanel>
 
@@ -164,10 +176,10 @@ export const OpportunityOverview = ({ opportunities }: Props) => {
             <div className="flex flex-col gap-2">
               {selectedQuestionnaire?.applications?.map((application) => (
                 <Link
+                  key={`questionnaire-${application.id}`}
                   href={`opportunities/${selectedOpportunity?.id}/applications/${application.id}`}
                 >
                   <Card
-                    key={`questionnaire-${application.id}`}
                     className={cn(
                       "flex flex-row items-center justify-between p-2 transition-colors",
                     )}

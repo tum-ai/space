@@ -61,8 +61,7 @@ export default function Breadcrumbs({
     <Breadcrumb>
       <BreadcrumbList>
         <BreadcrumbItem>
-          {" "}
-          <BreadcrumbLink href="/">Home</BreadcrumbLink>{" "}
+          <BreadcrumbLink href="/">Home</BreadcrumbLink>
         </BreadcrumbItem>
         {breadcrumbs.map(({ displayName, path }, index) => (
           <React.Fragment key={index}>

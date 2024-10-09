@@ -84,7 +84,7 @@ export const ReviewForm = ({
   return (
     <Form {...form}>
       {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
-      <div className="flex h-screen flex-col space-y-8 p-8">
+      <div className="flex h-screen flex-col gap-8 p-8">
         <div className="flex justify-between">
           <div className="flex flex-col gap-3">
             <Breadcrumbs
