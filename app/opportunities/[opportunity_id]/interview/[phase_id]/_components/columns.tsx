@@ -14,6 +14,13 @@ import { type ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, MoreHorizontal, UserCheck, UserX } from "lucide-react";
 import { type PhaseApplication } from "../page";
 import { Badge } from "@components/ui/badge";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@components/ui/tooltip";
+import Link from "next/link";
+import { Avatar, AvatarImage } from "@components/ui/avatar";
 
 export const columns: ColumnDef<PhaseApplication>[] = [
   {
@@ -48,7 +55,7 @@ export const columns: ColumnDef<PhaseApplication>[] = [
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          In Phase
+          Invited
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
@@ -58,15 +65,57 @@ export const columns: ColumnDef<PhaseApplication>[] = [
         return (
           <Badge variant="default">
             <UserCheck className="mr-2" />
-            In phase
+            Invited
           </Badge>
         );
 
       return (
         <Badge variant="outline">
           <UserX className="mr-2" />
-          Not in phase
+          Not invited
         </Badge>
+      );
+    },
+  },
+  {
+    id: "questionnaires",
+    header: "Questionnaires",
+    cell: ({ row }) => {
+      const questionnaires = row.original.questionnaires;
+      return (
+        <div className="flex gap-2">
+          {questionnaires.map((questionnaire) => (
+            <Badge
+              variant={questionnaire.phase.isCurrent ? "default" : "outline"}
+            >
+              {questionnaire.name}
+            </Badge>
+          ))}
+        </div>
+      );
+    },
+  },
+  {
+    id: "reviews",
+    header: () => "Reviews",
+    cell: ({ row }) => {
+      return (
+        <div className="flex -space-x-3 overflow-hidden">
+          {row.original.reviews.map((review, i) => (
+            <Tooltip key={i}>
+              <TooltipTrigger>
+                <Link href={`review/${review.id}`}>
+                  <Avatar className="border">
+                    <AvatarImage src={review.user.image ?? undefined} />
+                  </Avatar>
+                </Link>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>{review.user.name}</p>
+              </TooltipContent>
+            </Tooltip>
+          ))}
+        </div>
       );
     },
   },

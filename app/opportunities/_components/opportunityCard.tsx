@@ -2,7 +2,6 @@ import { Card, CardHeader, CardContent, CardTitle } from "@components/ui/card";
 import { Button } from "@components/ui/button";
 import { CalendarIcon } from "@radix-ui/react-icons";
 import Link from "next/link";
-import { type Opportunity } from "@prisma/client";
 import { format } from "date-fns";
 import { BarChart2, Edit, Ellipsis, Eye, Users } from "lucide-react";
 import {
@@ -12,9 +11,10 @@ import {
   DropdownMenuTrigger,
 } from "@components/ui/dropdown-menu";
 import { cn } from "@lib/utils";
+import { OverviewOpportunity } from "../page";
 
 interface OpportunityCardProps {
-  opportunity: Opportunity;
+  opportunity: OverviewOpportunity;
   onClick?: () => void;
   className?: string;
 }
@@ -30,42 +30,44 @@ export default function OpportunityCard({
         <div className="flex justify-between gap-2">
           <CardTitle className="text-lg">{opportunity.title}</CardTitle>
 
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                type="button"
-                size="icon-sm"
-                variant="ghost"
-                className="text-muted-foreground"
-              >
-                <Ellipsis />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              <DropdownMenuItem asChild>
-                <Link
-                  href={"opportunities/" + +opportunity.id + "/leaderboard"}
+          {opportunity.isAdmin && (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  type="button"
+                  size="icon-sm"
+                  variant="ghost"
+                  className="text-muted-foreground"
                 >
-                  <BarChart2 className="mr-2 h-4 w-4" />
-                  <span>Leaderboard</span>
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link
-                  href={"opportunities/" + +opportunity.id + "/applications"}
-                >
-                  <Users className="mr-2 h-4 w-4" />
-                  <span>Applications</span>
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link href={"opportunities/" + +opportunity.id + "/edit"}>
-                  <Edit className="mr-2 h-4 w-4" />
-                  <span>Edit </span>
-                </Link>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+                  <Ellipsis />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuItem asChild>
+                  <Link
+                    href={"opportunities/" + +opportunity.id + "/leaderboard"}
+                  >
+                    <BarChart2 className="mr-2 h-4 w-4" />
+                    <span>Leaderboard</span>
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link
+                    href={"opportunities/" + +opportunity.id + "/applications"}
+                  >
+                    <Users className="mr-2 h-4 w-4" />
+                    <span>Applications</span>
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href={"opportunities/" + +opportunity.id + "/edit"}>
+                    <Edit className="mr-2 h-4 w-4" />
+                    <span>Edit </span>
+                  </Link>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
         </div>
       </CardHeader>
 

@@ -19,34 +19,11 @@ import { Avatar, AvatarFallback, AvatarImage } from "@components/ui/avatar";
 import { ScrollArea, ScrollBar } from "@components/ui/scroll-area";
 import Link from "next/link";
 import { Button } from "@components/ui/button";
-import { Plus } from "lucide-react";
+import { Handshake, Plus } from "lucide-react";
+import { OverviewOpportunity } from "../page";
 
 interface Props {
-  opportunities: Prisma.OpportunityGetPayload<{
-    include: {
-      phases: {
-        include: {
-          questionnaires: {
-            include: {
-              applications: {
-                select: {
-                  id: true;
-                  name: true;
-                  reviews: { select: { user: true; id: true } };
-                };
-              };
-              reviewers: true;
-            };
-          };
-        };
-      };
-      admins: {
-        select: {
-          id: true;
-        };
-      };
-    };
-  }>[];
+  opportunities: OverviewOpportunity[];
 }
 
 export const OpportunityOverview = ({ opportunities }: Props) => {
@@ -77,7 +54,10 @@ export const OpportunityOverview = ({ opportunities }: Props) => {
 
   return (
     <Card className="flex h-full min-h-0">
-      <ResizablePanelGroup direction={"horizontal"}>
+      <ResizablePanelGroup
+        direction={"horizontal"}
+        autoSaveId="opportunities-overview"
+      >
         <ResizablePanel defaultSize={25} className="p-4">
           <div className="group flex h-full flex-col gap-4">
             {opportunities.map((item) => {
@@ -117,17 +97,27 @@ export const OpportunityOverview = ({ opportunities }: Props) => {
           <div className="flex h-full flex-col gap-2">
             {selectedOpportunity?.phases.map((phase) => (
               <div key={`phase-${phase.id}`} className="space-y-2">
-                <Button
-                  variant="link"
-                  className="font-semi pl-0 text-sm"
-                  asChild
-                >
-                  <Link
-                    href={`opportunities/${selectedOpportunity.id}/phase/${phase.id}`}
+                {selectedOpportunity?.isAdmin && phase.isInterview ? (
+                  <Button
+                    variant="link"
+                    className="font-semi h-min p-0 text-sm"
+                    asChild
                   >
+                    <Link
+                      href={`opportunities/${selectedOpportunity.id}/interview/${phase.id}`}
+                    >
+                      <Handshake className="mr-2 h-4 w-4" />
+                      {phase.name}
+                    </Link>
+                  </Button>
+                ) : (
+                  <span className="font-semi text-sm">
+                    {phase.isInterview && (
+                      <Handshake className="mr-2 h-4 w-4" />
+                    )}
                     {phase.name}
-                  </Link>
-                </Button>
+                  </span>
+                )}
                 <div className="flex flex-col gap-2">
                   {phase.questionnaires.map((questionnaire) => (
                     <Card

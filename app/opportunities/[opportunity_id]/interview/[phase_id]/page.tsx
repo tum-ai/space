@@ -22,7 +22,11 @@ export type PhaseApplication = {
   questionnaires: {
     id: string;
     name: string;
-    phaseId: string;
+    phase: {
+      id: string;
+      name: string;
+      isCurrent: boolean;
+    };
   }[];
   inPhase: boolean;
 };
@@ -38,7 +42,7 @@ export default async function PhasePage({ params }: Props) {
     },
   });
 
-  if (!phase) redirect("/404");
+  if (!phase || !phase.isInterview) redirect("/404");
 
   const opportunity = await db.opportunity.findUnique({
     where: { id: phase.opportunityId },
@@ -71,16 +75,31 @@ export default async function PhasePage({ params }: Props) {
         select: {
           id: true,
           name: true,
-          phaseId: true,
+          phase: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
         },
       },
     },
   });
 
-  const applicationsWithInPhase = applications.map((application) => ({
-    ...application,
-    inPhase: application.questionnaires.some((q) => q.phaseId === phase.id),
-  }));
+  const applicationsWithInPhase: PhaseApplication[] = applications.map(
+    (application) => ({
+      ...application,
+      questionnaires: application.questionnaires.map((q) => ({
+        id: q.id,
+        name: q.name,
+        phase: {
+          ...q.phase,
+          isCurrent: q.phase.id === phase.id,
+        },
+      })),
+      inPhase: application.questionnaires.some((q) => q.phase.id === phase.id),
+    }),
+  );
 
   async function assignToQuestionnaire(
     isAdd: boolean,
@@ -109,8 +128,11 @@ export default async function PhasePage({ params }: Props) {
         <div className="flex flex-col gap-3">
           <Breadcrumbs title={`${phase.name}`} />
           <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
-            Phase {phase.name}
+            {phase.name}
           </h1>
+          <p className="text-muted-foreground">
+            Invite applicants to interviews
+          </p>
         </div>
       </div>
 

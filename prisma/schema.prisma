@@ -121,6 +121,7 @@ model Opportunity {
 
 model Phase {
   id             String          @id @default(uuid())
+  isInterview    Boolean         @default(false)
   name           String
   opportunityId  Int
   opportunity    Opportunity     @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
