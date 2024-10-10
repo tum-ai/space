@@ -5,7 +5,6 @@ import { GeneralInformationSchema } from "@lib/schemas/opportunity";
 import { Save } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@components/ui/button";
-import { type Session } from "next-auth";
 import Breadcrumbs from "@components/ui/breadcrumbs";
 import { Form } from "@components/ui/form";
 import { useForm } from "react-hook-form";
