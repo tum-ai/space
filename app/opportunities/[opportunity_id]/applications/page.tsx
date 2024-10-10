@@ -31,7 +31,6 @@ export default async function ApplicationsPage({ params }: Props) {
   if (!userId) redirect("/auth");
 
   const opportunityId = Number(params.opportunity_id);
-
   const opportunity = await db.opportunity.findUnique({
     where: {
       id: opportunityId,
@@ -44,6 +43,7 @@ export default async function ApplicationsPage({ params }: Props) {
       },
     },
   });
+
   const isAdmin = !!opportunity?.admins.some((admin) => admin.id === userId);
 
   const phases = await db.phase.findMany({
@@ -54,6 +54,9 @@ export default async function ApplicationsPage({ params }: Props) {
             select: {
               id: true,
               name: true,
+            },
+            orderBy: {
+              createdAt: "asc",
             },
           },
           reviewers: true,
@@ -98,9 +101,11 @@ export default async function ApplicationsPage({ params }: Props) {
             Applications for {opportunity?.title}
           </h1>
         </div>
-        <div className="flex gap-2">
-          <ExportButton getExportData={getExportData} />
-        </div>
+        {isAdmin && (
+          <div className="flex gap-2">
+            <ExportButton getExportData={getExportData} />
+          </div>
+        )}
       </div>
 
       <ApplicationOverview

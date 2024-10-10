@@ -21,6 +21,7 @@
     "@prisma/client": "^5.20.0",
     "@radix-ui/colors": "^3.0.0",
     "@radix-ui/react-alert-dialog": "^1.1.2",
+    "@radix-ui/react-aspect-ratio": "^1.1.0",
     "@radix-ui/react-avatar": "^1.1.1",
     "@radix-ui/react-checkbox": "^1.1.2",
     "@radix-ui/react-dialog": "^1.1.2",

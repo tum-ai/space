@@ -90,13 +90,16 @@ export const ApplicationOverview = ({ phases, isAdmin }: Props) => {
                     className="h-min p-0 text-sm font-semibold"
                     asChild
                   >
-                    <Link href={`./interview/${phase.id}`}>
+                    <Link
+                      href={`./interview/${phase.id}`}
+                      className="flex items-center"
+                    >
                       <Handshake className="mr-2 h-4 w-4" />
                       {phase.name}
                     </Link>
                   </Button>
                 ) : (
-                  <span className="text-sm font-semibold">
+                  <span className="flex items-center text-sm font-semibold">
                     {phase.isInterview && (
                       <Handshake className="mr-2 h-4 w-4" />
                     )}
@@ -156,7 +159,7 @@ export const ApplicationOverview = ({ phases, isAdmin }: Props) => {
 
         <ResizableHandle withHandle />
 
-        <ResizablePanel defaultSize={25} className="space-y-4">
+        <ResizablePanel defaultSize={25} className="flex flex-col gap-4">
           <h3 className="scroll-m-20 p-4 pb-0 text-2xl font-semibold tracking-tight">
             Applications
           </h3>

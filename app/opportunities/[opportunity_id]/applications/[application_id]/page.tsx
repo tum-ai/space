@@ -51,7 +51,7 @@ export default async function ApplicationOverview({
       <div className="flex justify-between">
         <div className="flex flex-col gap-3">
           <Breadcrumbs
-            title={`Application: ${application.name}`}
+            title={`${application.name}`}
             opportunityTitle={opportunity.title}
           />
           <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
@@ -59,12 +59,16 @@ export default async function ApplicationOverview({
           </h1>
         </div>
 
-        <div className="flex gap-2">
-          <p>Questionnaires:</p>
-          <div space-x-2>
-            {application.questionnaires.map((questionnaire) => (
-              <Badge key={questionnaire.id}>{questionnaire.name}</Badge>
-            ))}
+        <div>
+          <div className="flex items-center gap-2">
+            <p className="text-sm">Questionnaires:</p>
+            <div className="space-x-2">
+              {application.questionnaires.map((questionnaire) => (
+                <Badge key={questionnaire.id} variant="outline">
+                  {questionnaire.name}
+                </Badge>
+              ))}
+            </div>
           </div>
         </div>
       </div>

@@ -59,6 +59,9 @@ export default async function OpportunitiesPage() {
           },
         },
       },
+      orderBy: {
+        start: "desc",
+      },
     })
   ).map((opportunity) => ({
     ...opportunity,
@@ -76,7 +79,7 @@ export default async function OpportunitiesPage() {
         </div>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+      <div className="grid auto-rows-fr gap-4 md:grid-cols-2 xl:grid-cols-3">
         {opportunities.map((opportunity) => (
           <OpportunityCard key={opportunity.id} opportunity={opportunity} />
         ))}
