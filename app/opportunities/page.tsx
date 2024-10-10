@@ -2,26 +2,13 @@ import { redirect } from "next/navigation";
 import { getServerAuthSession } from "server/auth";
 import db from "server/db";
 import Breadcrumbs from "@components/ui/breadcrumbs";
-import { OpportunityOverview } from "./_components/opportunityOverview";
-import {
-  Application,
-  Opportunity,
-  Phase,
-  Questionnaire,
-  User,
-} from "@prisma/client";
+import { type Opportunity } from "@prisma/client";
+import OpportunityCard from "./_components/opportunityCard";
+import Link from "next/link";
 
 export const dynamic = "force-dynamic";
 
 export type OverviewOpportunity = Opportunity & {
-  phases: (Phase & {
-    questionnaires: (Questionnaire & {
-      reviewers: User[];
-      applications: (Application & {
-        reviews: { id: number; user: User }[];
-      })[];
-    })[];
-  })[];
   isAdmin: boolean;
 };
 
@@ -90,7 +77,13 @@ export default async function OpportunitiesPage() {
         </div>
       </div>
 
-      <OpportunityOverview opportunities={opportunities} />
+      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+        {opportunities.map((opportunity) => (
+          <Link key={opportunity.id} href={`./opportunities/${opportunity.id}`}>
+            <OpportunityCard opportunity={opportunity} />
+          </Link>
+        ))}
+      </div>
     </div>
   );
 }

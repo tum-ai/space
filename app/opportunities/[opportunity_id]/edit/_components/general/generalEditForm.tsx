@@ -11,7 +11,7 @@ import { Form } from "@components/ui/form";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { type Opportunity } from "@prisma/client";
-import { GeneralInformation } from "../../../_components/general/general";
+import { GeneralInformation } from "../../../../_components/generalForm";
 import { DeleteButton } from "../deleteButton";
 
 interface Props {

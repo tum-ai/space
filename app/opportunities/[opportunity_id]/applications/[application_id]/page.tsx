@@ -1,5 +1,6 @@
 import Breadcrumbs from "@components/ui/breadcrumbs";
 import { Button } from "@components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@components/ui/card";
 import ApplicationForm from "app/opportunities/_components/ApplicationForm";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Link from "next/link";
@@ -57,7 +58,17 @@ export default async function ApplicationOverview({
           </Button>
         </div>
       </div>
-      <ApplicationForm application={application}></ApplicationForm>
+
+      <Card className="h-full overflow-y-auto">
+        <CardHeader>
+          <CardTitle className="flex scroll-m-20 justify-between text-2xl font-semibold tracking-tight">
+            Application Content
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <ApplicationForm application={application} />
+        </CardContent>
+      </Card>
     </div>
   );
 }

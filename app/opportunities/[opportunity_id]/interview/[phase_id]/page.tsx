@@ -4,7 +4,7 @@ import { getServerAuthSession } from "server/auth";
 import db from "server/db";
 import { DataTable } from "./_components/data-table";
 import { columns } from "./_components/columns";
-import { Application, Questionnaire, type User } from "@prisma/client";
+import { type Application, type Questionnaire, type User } from "@prisma/client";
 
 interface Props {
   params: {

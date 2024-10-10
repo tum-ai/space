@@ -5,7 +5,6 @@ import { ApplicationField } from "@components/application/applicationField";
 import { Form } from "@components/ui/form";
 import { useForm } from "react-hook-form";
 import { type Tally } from "@lib/types/tally";
-import { Card, CardContent, CardHeader, CardTitle } from "@components/ui/card";
 
 interface ApplicationFormProps {
   application: Application;
@@ -17,26 +16,17 @@ const ApplicationForm = ({ application }: ApplicationFormProps) => {
 
   return (
     <Form {...form}>
-      <Card className="h-full overflow-y-auto">
-        <CardHeader>
-          <CardTitle className="flex scroll-m-20 justify-between text-2xl font-semibold tracking-tight">
-            Application Content
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="flex flex-col gap-12">
-            {applicationFields
-              .filter((field) => !!field.value)
-              .map((field) => (
-                <ApplicationField
-                  className="w-full"
-                  key={field.key}
-                  field={field}
-                />
-              ))}
-          </div>
-        </CardContent>
-      </Card>
+      <div className="flex flex-col gap-12">
+        {applicationFields
+          .filter((field) => !!field.value)
+          .map((field) => (
+            <ApplicationField
+              className="w-full"
+              key={field.key}
+              field={field}
+            />
+          ))}
+      </div>
     </Form>
   );
 };

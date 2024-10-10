@@ -5,6 +5,14 @@ import { createTRPCRouter, protectedProcedure } from "server/api/trpc";
 import { connectQuestionnaires } from "server/shared/application";
 
 export const applicationRouter = createTRPCRouter({
+  getById: protectedProcedure
+    .input(z.number())
+    .query(async ({ input, ctx }) => {
+      return await ctx.db.application.findUnique({
+        where: { id: input },
+      });
+    }),
+
   reassignAllApplicationsToQuestionnaires: protectedProcedure
     .input(z.object({ opportunityId: z.number() }))
     .mutation(async ({ input, ctx }) => {

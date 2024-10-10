@@ -20,18 +20,10 @@ import {
 import { cn } from "@lib/utils";
 import { format } from "date-fns";
 import { Calendar } from "@components/ui/calendar";
-import { CalendarIcon, Minus, Plus, UserMinus } from "lucide-react";
+import { CalendarIcon } from "lucide-react";
 import { type GeneralInformationSchema } from "@lib/schemas/opportunity";
 import { type z } from "zod";
-import { AddUserPopup } from "@components/user/addUserPopup";
-import { Avatar, AvatarFallback, AvatarImage } from "@components/ui/avatar";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@components/ui/tooltip";
-import { UsersStack } from "../../edit/_components/usersStack";
-import { User } from "@prisma/client";
+import { UsersStack } from "../[opportunity_id]/edit/_components/usersStack";
 
 export function GeneralInformation() {
   const form = useFormContext<z.infer<typeof GeneralInformationSchema>>();

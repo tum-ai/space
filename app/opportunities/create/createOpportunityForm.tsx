@@ -6,7 +6,7 @@ import { Save } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@components/ui/button";
 import { useRouter } from "next/navigation";
-import { GeneralInformation } from "../[opportunity_id]/_components/general/general";
+import { GeneralInformation } from "../_components/generalForm";
 import { type Session } from "next-auth";
 import Breadcrumbs from "@components/ui/breadcrumbs";
 import { Form } from "@components/ui/form";

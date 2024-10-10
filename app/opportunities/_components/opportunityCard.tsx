@@ -11,7 +11,7 @@ import {
   DropdownMenuTrigger,
 } from "@components/ui/dropdown-menu";
 import { cn } from "@lib/utils";
-import { OverviewOpportunity } from "../page";
+import { type OverviewOpportunity } from "../page";
 
 interface OpportunityCardProps {
   opportunity: OverviewOpportunity;
@@ -25,8 +25,8 @@ export default function OpportunityCard({
   className,
 }: OpportunityCardProps) {
   return (
-    <Card onClick={onClick} className={cn(className)}>
-      <CardHeader className="p-2">
+    <Card onClick={onClick} className={cn("h-full", className)}>
+      <CardHeader className="p-4">
         <div className="flex justify-between gap-2">
           <CardTitle className="text-lg">{opportunity.title}</CardTitle>
 
@@ -71,7 +71,7 @@ export default function OpportunityCard({
         </div>
       </CardHeader>
 
-      <CardContent className="flex flex-col gap-1 p-2 pt-0">
+      <CardContent className="flex flex-col gap-1 p-4 pt-0">
         <span className="flex flex-row items-center gap-2 text-sm text-muted-foreground">
           <CalendarIcon />
           <p>

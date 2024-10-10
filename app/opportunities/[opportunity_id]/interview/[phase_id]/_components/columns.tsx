@@ -86,6 +86,7 @@ export const columns: ColumnDef<PhaseApplication>[] = [
         <div className="flex gap-2">
           {questionnaires.map((questionnaire) => (
             <Badge
+              key={questionnaire.id}
               variant={questionnaire.phase.isCurrent ? "default" : "outline"}
             >
               {questionnaire.name}
@@ -104,7 +105,7 @@ export const columns: ColumnDef<PhaseApplication>[] = [
           {row.original.reviews.map((review, i) => (
             <Tooltip key={i}>
               <TooltipTrigger>
-                <Link href={`review/${review.id}`}>
+                <Link href={`../review/${review.id}`}>
                   <Avatar className="border">
                     <AvatarImage src={review.user.image ?? undefined} />
                   </Avatar>
