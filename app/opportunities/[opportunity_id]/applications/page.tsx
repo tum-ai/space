@@ -1,47 +1,69 @@
-import db from "server/db";
-import { getServerAuthSession } from "server/auth";
 import { redirect } from "next/navigation";
-import { DataTable } from "@components/ui/data-table";
-import { columns } from "./_components/columns";
-import { Rabbit } from "lucide-react";
-import { Button } from "@components/ui/button";
-import Link from "next/link";
-import { ExportButton } from "./_components/exportButton";
+import { getServerAuthSession } from "server/auth";
+import db from "server/db";
 import Breadcrumbs from "@components/ui/breadcrumbs";
+import { ApplicationOverview } from "./_components/applicationOverview";
+import { type Phase, type Questionnaire, type User } from "@prisma/client";
+import { ExportButton } from "./_components/exportButton";
 
-interface ApplicationsOverviewPageProps {
+export const dynamic = "force-dynamic";
+
+export type OpportunityPhase = Phase & {
+  questionnaires: (Questionnaire & {
+    reviewers: User[];
+    applications: {
+      id: number;
+      name: string | null;
+      reviews?: { id: number; user: User }[];
+    }[];
+  })[];
+};
+
+interface Props {
   params: {
     opportunity_id: string;
   };
 }
 
-export default async function OpportunityOverviewPage({
-  params,
-}: ApplicationsOverviewPageProps) {
+export default async function ApplicationsPage({ params }: Props) {
   const session = await getServerAuthSession();
-  if (!session?.user?.id) redirect("/auth");
+  const userId = session?.user.id;
+  if (!userId) redirect("/auth");
+
+  const opportunityId = Number(params.opportunity_id);
 
   const opportunity = await db.opportunity.findUnique({
-    where: { id: Number(params.opportunity_id) },
-  });
-
-  const applications = await db.application.findMany({
     where: {
-      opportunityId: Number(params.opportunity_id),
+      id: opportunityId,
     },
-    select: {
-      id: true,
-      createdAt: true,
-      _count: {
-        select: { reviews: true },
-      },
-      name: true,
-      reviews: {
+    include: {
+      admins: {
         select: {
           id: true,
-          user: { select: { image: true, name: true } },
         },
       },
+    },
+  });
+  const isAdmin = !!opportunity?.admins.some((admin) => admin.id === userId);
+
+  const phases = await db.phase.findMany({
+    include: {
+      questionnaires: {
+        include: {
+          applications: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+          reviewers: true,
+        },
+        where: { reviewers: { some: { id: userId } } },
+      },
+    },
+    where: {
+      questionnaires: { some: { reviewers: { some: { id: userId } } } },
+      opportunityId,
     },
   });
 
@@ -64,42 +86,28 @@ export default async function OpportunityOverviewPage({
     });
   }
 
-  if (!applications.length)
-    return (
-      <div className="flex h-screen flex-col items-center justify-center">
-        <div className="flex flex-col items-center text-muted-foreground">
-          <Rabbit className="mb-8 h-16 w-16" />
-          <p>No applications submitted yet.</p>
+  return (
+    <div className="flex h-screen flex-col gap-8 overflow-hidden p-8">
+      <div className="flex justify-between">
+        <div className="flex flex-col gap-3">
+          <Breadcrumbs
+            title={`Applications`}
+            opportunityTitle={opportunity?.title}
+          />
+          <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
+            Applications for {opportunity?.title}
+          </h1>
         </div>
-
-        <Button variant="link">
-          <Link href="/opportunities">Back to opportunities</Link>
-        </Button>
-      </div>
-    );
-
-  if (applications.length) {
-    return (
-      <div className="flex flex-col space-y-8 p-8">
-        <div className="flex justify-between">
-          <div className="flex w-full flex-row items-center justify-between">
-            <div className="flex flex-col gap-3">
-              <Breadcrumbs
-                title={`Applications`}
-                opportunityTitle={opportunity?.title}
-              />
-              <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
-                Applications for {opportunity?.title}
-              </h1>
-            </div>
-            <div className="flex gap-2">
-              <ExportButton getExportData={getExportData} />
-            </div>
-          </div>
+        <div className="flex gap-2">
+          <ExportButton getExportData={getExportData} />
         </div>
-
-        <DataTable columns={columns} data={applications} />
       </div>
-    );
-  }
+
+      <ApplicationOverview
+        opportunityId={opportunityId}
+        phases={phases}
+        isAdmin={isAdmin}
+      />
+    </div>
+  );
 }

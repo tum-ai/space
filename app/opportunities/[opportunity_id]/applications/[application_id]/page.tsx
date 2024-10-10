@@ -1,10 +1,9 @@
+import { Badge } from "@components/ui/badge";
 import Breadcrumbs from "@components/ui/breadcrumbs";
-import { Button } from "@components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@components/ui/card";
 import ApplicationForm from "app/opportunities/_components/ApplicationForm";
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import Link from "next/link";
 import { redirect } from "next/navigation";
+import { getServerAuthSession } from "server/auth";
 import db from "server/db";
 
 export default async function ApplicationOverview({
@@ -12,50 +11,61 @@ export default async function ApplicationOverview({
 }: {
   params: { application_id: string };
 }) {
+  const session = await getServerAuthSession();
+  if (!session?.user) redirect("/auth");
+
   const application = await db.application.findUnique({
+    include: {
+      questionnaires: {
+        include: {
+          reviewers: { select: { id: true } },
+        },
+      },
+    },
     where: {
       id: Number(params.application_id),
     },
   });
 
-  const opportunityTitle = db.opportunity
-    .findUnique({
-      where: {
-        id: application?.opportunityId,
-      },
-    })
-    .then((opportunity) => opportunity?.title);
+  const opportunity = await db.opportunity.findUnique({
+    include: { admins: { select: { id: true } } },
+    where: {
+      id: application?.opportunityId,
+    },
+  });
 
   // TODO: Better handling
-  if (!application) redirect("/");
+  if (!application || !opportunity) redirect("/404");
+
+  const isAdmin = opportunity.admins.some(
+    (admin) => admin.id === session.user.id,
+  );
+  const isReviewer = application.questionnaires.some((questionnaire) =>
+    questionnaire.reviewers.some((reviewer) => reviewer.id === session.user.id),
+  );
+
+  if (!isAdmin && !isReviewer) redirect("/403");
 
   return (
     <div className="flex h-screen flex-col space-y-8 p-8">
       <div className="flex justify-between">
         <div className="flex flex-col gap-3">
           <Breadcrumbs
-            title={`Application: ${application.id}`}
-            opportunityTitle={await opportunityTitle}
+            title={`Application: ${application.name}`}
+            opportunityTitle={opportunity.title}
           />
           <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
-            Application of ID: {application.id}
+            Application of {application.name}
           </h1>
         </div>
 
         <div className="flex gap-2">
-          <Button asChild variant="secondary">
-            <Link href={`${application.id - 1}`}>
-              <ChevronLeft />
-              Prev
-            </Link>
-          </Button>
-
-          <Button asChild variant="secondary">
-            <Link href={`${application.id + 1}`}>
-              Next
-              <ChevronRight />
-            </Link>
-          </Button>
+          <p>Questionnaires:</p>
+          <div space-x-2>
+            {application.questionnaires.map((questionnaire) => (
+              <Badge key={questionnaire.id}>{questionnaire.name}</Badge>
+            ))}
+          </div>
         </div>
       </div>
 

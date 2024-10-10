@@ -3,7 +3,15 @@ import { Button } from "@components/ui/button";
 import { CalendarIcon } from "@radix-ui/react-icons";
 import Link from "next/link";
 import { format } from "date-fns";
-import { BarChart2, Edit, Ellipsis, Eye, Users } from "lucide-react";
+import {
+  BarChart2,
+  Edit,
+  Ellipsis,
+  Eye,
+  FileText,
+  MessageSquareText,
+  Users,
+} from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,6 +20,7 @@ import {
 } from "@components/ui/dropdown-menu";
 import { cn } from "@lib/utils";
 import { type OverviewOpportunity } from "../page";
+import { Separator } from "components/ui/separator";
 
 interface OpportunityCardProps {
   opportunity: OverviewOpportunity;
@@ -51,14 +60,7 @@ export default function OpportunityCard({
                     <span>Leaderboard</span>
                   </Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link
-                    href={"opportunities/" + +opportunity.id + "/applications"}
-                  >
-                    <Users className="mr-2 h-4 w-4" />
-                    <span>Applications</span>
-                  </Link>
-                </DropdownMenuItem>
+
                 <DropdownMenuItem asChild>
                   <Link href={"opportunities/" + +opportunity.id + "/edit"}>
                     <Edit className="mr-2 h-4 w-4" />
@@ -81,6 +83,22 @@ export default function OpportunityCard({
         </span>
         <p className="truncate text-sm">{opportunity.description}</p>
       </CardContent>
+
+      <Separator />
+      <div className="flex divide-x divide-border">
+        <Button variant="ghost" className="flex-1 rounded-none" asChild>
+          <Link href={`opportunities/${opportunity.id}/applications`}>
+            <FileText className="mr-2" />
+            Applications
+          </Link>
+        </Button>
+        <Button variant="ghost" className="flex-1 rounded-none" asChild>
+          <Link href={`opportunities/${opportunity.id}/review`}>
+            <MessageSquareText className="mr-2" />
+            Review
+          </Link>
+        </Button>
+      </div>
     </Card>
   );
 }

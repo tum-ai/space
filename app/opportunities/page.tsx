@@ -4,7 +4,6 @@ import db from "server/db";
 import Breadcrumbs from "@components/ui/breadcrumbs";
 import { type Opportunity } from "@prisma/client";
 import OpportunityCard from "./_components/opportunityCard";
-import Link from "next/link";
 
 export const dynamic = "force-dynamic";
 
@@ -79,9 +78,7 @@ export default async function OpportunitiesPage() {
 
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
         {opportunities.map((opportunity) => (
-          <Link key={opportunity.id} href={`./opportunities/${opportunity.id}`}>
-            <OpportunityCard opportunity={opportunity} />
-          </Link>
+          <OpportunityCard key={opportunity.id} opportunity={opportunity} />
         ))}
       </div>
     </div>

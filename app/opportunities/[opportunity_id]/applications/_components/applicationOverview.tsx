@@ -36,11 +36,7 @@ interface Props {
   opportunityId: number;
 }
 
-export const OpportunityOverview = ({
-  phases,
-  isAdmin,
-  opportunityId,
-}: Props) => {
+export const ApplicationOverview = ({ phases, isAdmin }: Props) => {
   const [
     { questionnaire: questionnaireId, application: applicationId },
     setSelectionState,
@@ -94,7 +90,7 @@ export const OpportunityOverview = ({
                     className="h-min p-0 text-sm font-semibold"
                     asChild
                   >
-                    <Link href={`./${opportunityId}/interview/${phase.id}`}>
+                    <Link href={`./interview/${phase.id}`}>
                       <Handshake className="mr-2 h-4 w-4" />
                       {phase.name}
                     </Link>
@@ -241,17 +237,31 @@ export const OpportunityOverview = ({
                 </h3>
 
                 <div className="mx-4 flex items-center gap-2">
-                  <Button size="icon" variant="outline" asChild>
-                    <Link
-                      href={`./${opportunityId}/applications/${applicationQuery.data?.id}`}
-                    >
-                      <Maximize />
-                    </Link>
-                  </Button>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button size="icon" variant="outline" asChild>
+                        <Link
+                          href={`./applications/${applicationQuery.data?.id}`}
+                        >
+                          <Maximize />
+                        </Link>
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Maximize</p>
+                    </TooltipContent>
+                  </Tooltip>
 
-                  <Button size="icon" variant="outline">
-                    <MessageSquareText />
-                  </Button>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button size="icon" variant="outline" disabled>
+                        <MessageSquareText />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Start review</p>
+                    </TooltipContent>
+                  </Tooltip>
                 </div>
               </>
             )}
