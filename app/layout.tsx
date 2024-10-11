@@ -43,8 +43,8 @@ export default async function RootLayout({ children }: Props) {
               disableTransitionOnChange
             >
               <>
-                <aside className="fixed inset-y-0 left-0 z-10 flex w-14 flex-col border-r bg-background">
-                  <nav className="flex flex-col items-center gap-4 px-2 sm:py-5">
+                <aside className="fixed inset-y-0 left-0 z-10 flex w-14 flex-col gap-4 border-r bg-background py-4">
+                  <nav className="flex flex-col items-center gap-4 px-2">
                     <Link
                       href="/"
                       className="group flex h-9 w-9 shrink-0 items-center justify-center gap-2 rounded-full text-lg font-semibold text-primary-foreground md:h-8 md:w-8 md:text-base"
@@ -97,7 +97,7 @@ export default async function RootLayout({ children }: Props) {
                       </>
                     )}
                   </nav>
-                  <nav className="mt-auto flex flex-col items-center gap-4 px-2 sm:py-5">
+                  <nav className="mt-auto flex flex-col items-center gap-4 px-2">
                     {session && (
                       <DropdownMenu>
                         <DropdownMenuTrigger>

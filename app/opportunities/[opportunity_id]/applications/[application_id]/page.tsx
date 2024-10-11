@@ -1,7 +1,9 @@
 import { Badge } from "@components/ui/badge";
-import Breadcrumbs from "@components/ui/breadcrumbs";
 import { Card, CardContent, CardHeader, CardTitle } from "@components/ui/card";
+import { PageHeading } from "@components/ui/page-heading";
+import { mapPathnameToBreadcrumbs } from "@lib/utils";
 import ApplicationForm from "app/opportunities/_components/ApplicationForm";
+import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { getServerAuthSession } from "server/auth";
 import db from "server/db";
@@ -46,19 +48,16 @@ export default async function ApplicationOverview({
 
   if (!isAdmin && !isReviewer) redirect("/403");
 
-  return (
-    <div className="flex h-screen flex-col space-y-8 p-8">
-      <div className="flex justify-between">
-        <div className="flex flex-col gap-3">
-          <Breadcrumbs
-            title={`${application.name}`}
-            opportunityTitle={opportunity.title}
-          />
-          <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
-            Application of {application.name}
-          </h1>
-        </div>
+  const headerList = headers();
+  const breadcrumbs = mapPathnameToBreadcrumbs(headerList);
 
+  return (
+    <div className="flex h-screen flex-col space-y-8 py-8">
+      <PageHeading
+        title={application.name ?? ""}
+        description={`Application of ${application.name}`}
+        breadcrumbs={breadcrumbs}
+      >
         <div>
           <div className="flex items-center gap-2">
             <p className="text-sm">Questionnaires:</p>
@@ -71,7 +70,7 @@ export default async function ApplicationOverview({
             </div>
           </div>
         </div>
-      </div>
+      </PageHeading>
 
       <Card className="h-full overflow-y-auto">
         <CardHeader>

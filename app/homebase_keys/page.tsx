@@ -3,7 +3,9 @@ import db from "server/db";
 import { KeyCard } from "./_components/key-card";
 import { redirect } from "next/navigation";
 import { CreateKeyButton } from "./_components/create-key-button";
-import Breadcrumbs from "@components/ui/breadcrumbs";
+import { PageHeading } from "@components/ui/page-heading";
+import { headers } from "next/headers";
+import { mapPathnameToBreadcrumbs } from "@lib/utils";
 
 export default async function HomebaseKeys() {
   const session = await getServerAuthSession();
@@ -12,21 +14,18 @@ export default async function HomebaseKeys() {
 
   if (!session?.user.id) redirect("/auth");
 
-  return (
-    <section className="p-8">
-      <div className="mb-12 flex flex-col space-y-6">
-        <div className="flex justify-between">
-          <div className="flex flex-col gap-3">
-            <Breadcrumbs title="Keys" />
-            <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
-              Homebase key tracking
-            </h1>
-            <p className="text-muted-foreground">Manage homebase keys</p>
-          </div>
+  const headerList = headers();
+  const breadcrumbs = mapPathnameToBreadcrumbs(headerList);
 
-          {session.user.roles.includes("ADMIN") && <CreateKeyButton />}
-        </div>
-      </div>
+  return (
+    <section className="space-y-8 p-8">
+      <PageHeading
+        title="Homebase keys"
+        description="See who can get you into the homebase"
+        breadcrumbs={breadcrumbs}
+      >
+        {session.user.roles.includes("ADMIN") && <CreateKeyButton />}
+      </PageHeading>
 
       <div className="grid gap-8 xl:grid-cols-2">
         {keys.map((key) => (

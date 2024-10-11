@@ -4,6 +4,9 @@ import CreateOpportunityForm from "./createOpportunityForm";
 import { type GeneralInformationSchema } from "@lib/schemas/opportunity";
 import { type z } from "zod";
 import db from "server/db";
+import { PageHeading } from "@components/ui/page-heading";
+import { headers } from "next/headers";
+import { mapPathnameToBreadcrumbs } from "@lib/utils";
 
 export default async function CreateOpportunity() {
   const session = await getServerAuthSession();
@@ -29,5 +32,13 @@ export default async function CreateOpportunity() {
     return opportunity;
   }
 
-  return <CreateOpportunityForm session={session} create={create} />;
+  const headerList = headers();
+  const breadcrumbs = mapPathnameToBreadcrumbs(headerList);
+
+  return (
+    <div className="space-y-8 py-8">
+      <PageHeading title="Create Opportunity" breadcrumbs={breadcrumbs} />
+      <CreateOpportunityForm session={session} create={create} />
+    </div>
+  );
 }

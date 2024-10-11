@@ -34,7 +34,10 @@ export default function OpportunityCard({
   return (
     <Card
       onClick={onClick}
-      className={cn("flex h-full flex-col justify-between", className)}
+      className={cn(
+        "flex h-full w-full flex-col justify-between overflow-hidden",
+        className,
+      )}
     >
       <div>
         <CardHeader className="p-4">

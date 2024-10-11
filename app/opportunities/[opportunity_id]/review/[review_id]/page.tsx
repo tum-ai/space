@@ -3,6 +3,9 @@ import { ReviewForm } from "./reviewForm";
 import { redirect } from "next/navigation";
 import { type Question } from "@lib/types/question";
 import { getServerAuthSession } from "server/auth";
+import { headers } from "next/headers";
+import { mapPathnameToBreadcrumbs } from "@lib/utils";
+import { PageBreadcrumbs } from "@components/ui/page-breadcrumbs";
 
 interface ReviewProps {
   params: {
@@ -38,12 +41,18 @@ export default async function Review({ params }: ReviewProps) {
 
   const questions = review.questionnaire.questions as Question[];
 
+  const headerList = headers();
+  const breadcrumbs = mapPathnameToBreadcrumbs(headerList);
+
   return (
-    <ReviewForm
-      questions={questions}
-      application={review.application}
-      review={review}
-      opportunityTitle={opportunity?.title}
-    />
+    <div className="flex h-screen flex-col gap-4 py-8">
+      <PageBreadcrumbs breadcrumbs={breadcrumbs} />
+      <ReviewForm
+        questions={questions}
+        application={review.application}
+        review={review}
+        opportunityTitle={opportunity?.title}
+      />
+    </div>
   );
 }

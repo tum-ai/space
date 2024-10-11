@@ -5,7 +5,6 @@ import { GeneralInformationSchema } from "@lib/schemas/opportunity";
 import { Save } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@components/ui/button";
-import Breadcrumbs from "@components/ui/breadcrumbs";
 import { Form } from "@components/ui/form";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -40,34 +39,23 @@ const EditGeneralForm = ({ defaultValues, update }: Props) => {
       <form
         // eslint-disable-next-line @typescript-eslint/no-misused-promises
         onSubmit={form.handleSubmit(onSubmit, (err) => console.error(err))}
-        className="flex flex-col space-y-12 p-8"
+        className="flex flex-col gap-4"
       >
-        <div className="flex flex-col space-y-6">
-          <div className="flex justify-between">
-            <div className="flex flex-col gap-3">
-              <Breadcrumbs title={form.getValues().title} />
-              <h2 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
-                Edit opportunity
-              </h2>
-              <p className="text-muted-foreground">
-                Configure the general information of the opportunity
-              </p>
-            </div>
-
-            <div className="flex gap-2">
-              <DeleteButton
-                title={form.getValues().title}
-                id={form.getValues().opportunityId!}
-              />
-              <Button type="submit">
-                <Save className="mr-2" />
-                Save
-              </Button>
-            </div>
-          </div>
-        </div>
-
+        <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
+          General Information
+        </h3>
         <GeneralInformation />
+        <div className="flex justify-end gap-2">
+          <DeleteButton
+            title={form.getValues().title}
+            id={form.getValues().opportunityId!}
+          />
+
+          <Button type="submit">
+            <Save className="mr-2" />
+            Save
+          </Button>
+        </div>
       </form>
     </Form>
   );

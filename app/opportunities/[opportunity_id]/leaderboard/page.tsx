@@ -2,7 +2,9 @@ import { redirect } from "next/navigation";
 import { getServerAuthSession } from "server/auth";
 import db from "server/db";
 import { Leaderboard } from "./_components/Leaderboard";
-import Breadcrumbs from "@components/ui/breadcrumbs";
+import { PageHeading } from "@components/ui/page-heading";
+import { headers } from "next/headers";
+import { mapPathnameToBreadcrumbs } from "@lib/utils";
 
 interface OpportunityProps {
   params: { opportunity_id: string };
@@ -11,13 +13,6 @@ interface OpportunityProps {
 export default async function OpportunityPage({ params }: OpportunityProps) {
   const session = await getServerAuthSession();
   if (!session?.user?.id) redirect("/auth");
-
-  const opportunity = await db.opportunity.findUnique({
-    where: {
-      id: Number(params.opportunity_id),
-      admins: { some: { id: session.user.id } },
-    },
-  });
 
   const reviewer = await db.user.findMany({
     where: {
@@ -44,22 +39,16 @@ export default async function OpportunityPage({ params }: OpportunityProps) {
     },
   });
 
+  const headerList = headers();
+  const breadcrumbs = mapPathnameToBreadcrumbs(headerList);
+
   return (
-    <div className="space-y-8 p-8">
-      <div className="flex justify-between">
-        <div className="flex flex-col gap-3">
-          <Breadcrumbs
-            title={"Leaderboard"}
-            opportunityTitle={opportunity?.title}
-          />
-          <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
-            Leaderboard
-          </h1>
-          <p className="text-muted-foreground">
-            See who is carrying this student initiative
-          </p>
-        </div>
-      </div>
+    <div className="space-y-8 py-8">
+      <PageHeading
+        title="Leaderboard"
+        description="See who is carrying this student initiative"
+        breadcrumbs={breadcrumbs}
+      />
 
       <Leaderboard
         reviewers={reviewer.map((reviewer) => ({

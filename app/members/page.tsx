@@ -4,7 +4,9 @@ import db from "server/db";
 import { DepartmentRole, SpaceRole } from "@prisma/client";
 import { getServerAuthSession } from "server/auth";
 import { redirect } from "next/navigation";
-import Breadcrumbs from "@components/ui/breadcrumbs";
+import { PageHeading } from "@components/ui/page-heading";
+import { headers } from "next/headers";
+import { mapPathnameToBreadcrumbs } from "@lib/utils";
 
 export default async function MembersPage() {
   const session = await getServerAuthSession();
@@ -59,19 +61,18 @@ export default async function MembersPage() {
     positions: positions,
   };
 
-  return (
-    <section className="p-8">
-      <div className="mb-12 flex flex-col space-y-6">
-        <div className="flex flex-col gap-3">
-          <Breadcrumbs title="Members" />
-          <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
-            Members
-          </h1>
-          <p className="text-muted-foreground">Manage and list members</p>
-        </div>
-      </div>
+  const headerList = headers();
+  const breadcrumbs = mapPathnameToBreadcrumbs(headerList);
 
-      <DataTable rowData={profiles} columnData={columnData}></DataTable>
+  return (
+    <section className="space-y-8 py-8">
+      <PageHeading
+        title="Members"
+        description="Manage and list members"
+        breadcrumbs={breadcrumbs}
+      />
+
+      <DataTable rowData={profiles} columnData={columnData} />
     </section>
   );
 }

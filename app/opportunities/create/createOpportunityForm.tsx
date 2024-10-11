@@ -8,7 +8,6 @@ import { Button } from "@components/ui/button";
 import { useRouter } from "next/navigation";
 import { GeneralInformation } from "../_components/generalForm";
 import { type Session } from "next-auth";
-import Breadcrumbs from "@components/ui/breadcrumbs";
 import { Form } from "@components/ui/form";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -57,27 +56,15 @@ const CreateOpportunityForm = ({ session, create }: Props) => {
       <form
         // eslint-disable-next-line @typescript-eslint/no-misused-promises
         onSubmit={form.handleSubmit(onSubmit, (err) => console.error(err))}
+        className="space-y-4"
       >
-        <div className="p-8">
-          <div className="mb-12 flex flex-col space-y-6">
-            <div className="flex justify-between">
-              <div className="flex flex-col gap-3">
-                <Breadcrumbs title={`Create opportunity`} />
-                <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
-                  Create new opportunity
-                </h1>
-                <p className="text-muted-foreground">
-                  Configure a new opportunity
-                </p>
-              </div>
+        <GeneralInformation />
 
-              <Button type="submit">
-                <Save className="mr-2" />
-                Create
-              </Button>
-            </div>
-          </div>
-          <GeneralInformation />
+        <div className="flex justify-end">
+          <Button type="submit">
+            <Save className="mr-2" />
+            Create
+          </Button>
         </div>
       </form>
     </Form>

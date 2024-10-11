@@ -1,9 +1,11 @@
 import { redirect } from "next/navigation";
 import { getServerAuthSession } from "server/auth";
 import db from "server/db";
-import Breadcrumbs from "@components/ui/breadcrumbs";
 import { type Opportunity } from "@prisma/client";
 import OpportunityCard from "./_components/opportunityCard";
+import { PageHeading } from "@components/ui/page-heading";
+import { headers } from "next/headers";
+import { mapPathnameToBreadcrumbs } from "@lib/utils";
 
 export const dynamic = "force-dynamic";
 
@@ -68,16 +70,12 @@ export default async function OpportunitiesPage() {
     isAdmin: opportunity.admins.map((admin) => admin.id).includes(userId),
   }));
 
+  const headerList = headers();
+  const breadcrumbs = mapPathnameToBreadcrumbs(headerList);
+
   return (
-    <div className="flex h-screen flex-col gap-8 overflow-hidden p-8">
-      <div className="flex justify-between">
-        <div className="flex flex-col gap-3">
-          <Breadcrumbs title="Opportunities" />
-          <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
-            Opportunities
-          </h1>
-        </div>
-      </div>
+    <div className="flex h-screen flex-col gap-8 overflow-hidden py-8">
+      <PageHeading title={"Opportunitites"} breadcrumbs={breadcrumbs} />
 
       <div className="grid auto-rows-fr gap-4 md:grid-cols-2 xl:grid-cols-3">
         {opportunities.map((opportunity) => (

@@ -1,4 +1,3 @@
-import Breadcrumbs from "@components/ui/breadcrumbs";
 import { redirect } from "next/navigation";
 import { getServerAuthSession } from "server/auth";
 import db from "server/db";
@@ -9,6 +8,9 @@ import {
   type Questionnaire,
   type User,
 } from "@prisma/client";
+import { PageHeading } from "@components/ui/page-heading";
+import { headers } from "next/headers";
+import { mapPathnameToBreadcrumbs } from "@lib/utils";
 
 interface Props {
   params: {
@@ -125,19 +127,16 @@ export default async function PhasePage({ params }: Props) {
     return;
   }
 
+  const headerList = headers();
+  const breadcrumbs = mapPathnameToBreadcrumbs(headerList);
+
   return (
-    <div className="flex flex-col gap-8 p-8">
-      <div className="flex justify-between">
-        <div className="flex flex-col gap-3">
-          <Breadcrumbs title={`${phase.name}`} />
-          <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
-            {phase.name}
-          </h1>
-          <p className="text-muted-foreground">
-            Invite applicants to interviews
-          </p>
-        </div>
-      </div>
+    <div className="flex flex-col gap-8 py-8">
+      <PageHeading
+        title={phase.name}
+        breadcrumbs={breadcrumbs}
+        description="Invite applicants to interviews"
+      />
 
       <DataTable
         columns={columns}

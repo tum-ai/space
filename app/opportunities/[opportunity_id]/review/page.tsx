@@ -6,8 +6,10 @@ import { DataTable } from "@components/ui/data-table";
 import { Button } from "@components/ui/button";
 import { FileCheck } from "lucide-react";
 import Link from "next/link";
-import Breadcrumbs from "@components/ui/breadcrumbs";
 import { Progress } from "@components/ui/progress";
+import { PageHeading } from "@components/ui/page-heading";
+import { headers } from "next/headers";
+import { mapPathnameToBreadcrumbs } from "@lib/utils";
 
 interface ReviewPageProps {
   params: { opportunity_id: string };
@@ -61,27 +63,23 @@ export default async function ReviewPage({ params }: ReviewPageProps) {
   const totalRequiredReviews = reviewsPerApplication * applicationCount;
   const progress = (reviewCount / totalRequiredReviews) * 100;
 
+  const headerList = headers();
+  const breadcrumbs = mapPathnameToBreadcrumbs(headerList);
+
   return (
     <div className="space-y-8 p-8">
-      <div className="flex justify-between">
-        <div className="flex flex-col gap-3">
-          <Breadcrumbs
-            title={"Reviews"}
-            opportunityTitle={opportunity?.title}
-          />
-          <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
-            Your reviews
-          </h1>
-          <p className="text-muted-foreground">See and edit your reviews</p>
-        </div>
-
+      <PageHeading
+        title="Reviews"
+        description="See and edit your reviews"
+        breadcrumbs={breadcrumbs}
+      >
         <Button asChild>
           <Link href="review/new">
             <FileCheck className="mr-2" />
             Start new review
           </Link>
         </Button>
-      </div>
+      </PageHeading>
 
       <div>
         <div className="mb-4 flex flex-col items-center justify-between sm:flex-row">

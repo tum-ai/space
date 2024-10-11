@@ -24,6 +24,7 @@ import {
   restrictToHorizontalAxis,
   restrictToParentElement,
 } from "@dnd-kit/modifiers";
+import { Separator } from "@components/ui/separator";
 
 interface Props {
   update: (input: z.infer<typeof PhasesSchema>) => Promise<void>;
@@ -50,15 +51,63 @@ export function EditPhasesForm({ defaultValues, update }: Props) {
 
   return (
     <PhasesContext.Provider value={store}>
-      <section className="flex flex-col space-y-12 p-8">
-        <div className="flex flex-col space-y-6">
-          <div className="flex justify-between">
-            <div className="flex flex-col gap-3">
-              <h2 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
-                Review Process
-              </h2>
-            </div>
+      <section className="flex flex-col gap-8">
+        <div className="space-y-6">
+          <div>
+            <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
+              Phases
+            </h3>
+            <p className="text-muted-foreground">
+              Configure the different phases applicants will go through
+            </p>
+          </div>
 
+          <ScrollArea className="w-full">
+            <div className="group/phases flex min-h-80 gap-4">
+              <DndContext
+                modifiers={[restrictToHorizontalAxis, restrictToParentElement]}
+                sensors={sensors}
+                collisionDetection={closestCenter}
+                onDragEnd={(event) => {
+                  const { active, over } = event;
+
+                  if (active.id !== over?.id) {
+                    const oldIndex = phases.findIndex(
+                      (p) => p.id === active.id,
+                    );
+                    const newIndex = phases.findIndex((p) => p.id === over?.id);
+                    const newPhases = arrayMove(phases, oldIndex, newIndex).map(
+                      (phase, i) => ({
+                        ...phase,
+                        order: i,
+                      }),
+                    );
+                    setPhases(newPhases);
+                  }
+                }}
+              >
+                <SortableContext items={phases}>
+                  {phases.map((phase, index) => (
+                    <Phase
+                      key={phase.id}
+                      index={index}
+                      className="min-w-0 shrink-0"
+                    />
+                  ))}
+                </SortableContext>
+              </DndContext>
+
+              <PhasePopover
+                onSave={(data) =>
+                  appendPhase({ ...data, order: phases.length })
+                }
+                className="flex w-max opacity-0 transition-opacity group-hover/phases:opacity-100"
+              />
+            </div>
+            <ScrollBar orientation="horizontal" />
+          </ScrollArea>
+
+          <div className="flex justify-end gap-2">
             <Button type="button" onClick={onSubmit}>
               <Save className="mr-2" />
               Save
@@ -66,80 +115,24 @@ export function EditPhasesForm({ defaultValues, update }: Props) {
           </div>
         </div>
 
-        <div className="space-y-12">
-          <div className="space-y-6">
-            <div>
-              <h3 className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0">
-                Phases
-              </h3>
-              <p className="text-muted-foreground">
-                Configure the different phases applicants will go through
-              </p>
-            </div>
+        <Separator />
 
-            <ScrollArea className="w-full">
-              <div className="group/phases flex min-h-80 gap-4">
-                <DndContext
-                  modifiers={[
-                    restrictToHorizontalAxis,
-                    restrictToParentElement,
-                  ]}
-                  sensors={sensors}
-                  collisionDetection={closestCenter}
-                  onDragEnd={(event) => {
-                    const { active, over } = event;
-
-                    if (active.id !== over?.id) {
-                      const oldIndex = phases.findIndex(
-                        (p) => p.id === active.id,
-                      );
-                      const newIndex = phases.findIndex(
-                        (p) => p.id === over?.id,
-                      );
-                      const newPhases = arrayMove(
-                        phases,
-                        oldIndex,
-                        newIndex,
-                      ).map((phase, i) => ({
-                        ...phase,
-                        order: i,
-                      }));
-                      setPhases(newPhases);
-                    }
-                  }}
-                >
-                  <SortableContext items={phases}>
-                    {phases.map((phase, index) => (
-                      <Phase
-                        key={phase.id}
-                        index={index}
-                        className="min-w-0 shrink-0"
-                      />
-                    ))}
-                  </SortableContext>
-                </DndContext>
-
-                <PhasePopover
-                  onSave={(data) =>
-                    appendPhase({ ...data, order: phases.length })
-                  }
-                  className="flex w-max opacity-0 transition-opacity group-hover/phases:opacity-100"
-                />
-              </div>
-              <ScrollBar orientation="horizontal" />
-            </ScrollArea>
+        <div className="space-y-6">
+          <div>
+            <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
+              Tally Form
+            </h3>
+            <p className="text-muted-foreground">
+              Configure your Tally form for the review process
+            </p>
           </div>
 
-          <div className="space-y-6">
-            <div>
-              <h3 className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0">
-                Tally form
-              </h3>
-              <p className="text-muted-foreground">
-                Configure your Tally form for the review process
-              </p>
-            </div>
-            <TallyForm opportunityId={defaultValues.opportunityId!} />
+          <TallyForm opportunityId={defaultValues.opportunityId!} />
+          <div className="flex justify-end gap-2">
+            <Button type="button" onClick={onSubmit}>
+              <Save className="mr-2" />
+              Save
+            </Button>
           </div>
         </div>
       </section>

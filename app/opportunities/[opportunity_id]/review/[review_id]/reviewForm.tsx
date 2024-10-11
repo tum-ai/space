@@ -13,7 +13,6 @@ import { type Application, type Review } from "@prisma/client";
 import { type Tally } from "@lib/types/tally";
 import { useRouter } from "next/navigation";
 import { DeleteAlertDialog } from "../components/review-altert-dialog";
-import Breadcrumbs from "@components/ui/breadcrumbs";
 import { QuestionField } from "./_components/questionField";
 import {
   ResizableHandle,
@@ -84,18 +83,11 @@ export const ReviewForm = ({
   return (
     <Form {...form}>
       {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
-      <div className="flex h-screen flex-col gap-8 p-8">
+      <div className="flex min-h-0 flex-col gap-8">
         <div className="flex justify-between">
-          <div className="flex flex-col gap-3">
-            <Breadcrumbs
-              title={`Application: ${application.opportunityId}`}
-              opportunityTitle={opportunityTitle}
-            />
-            <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
-              Review application
-            </h1>
-            <p className="text-muted-foreground">Review a candidate</p>
-          </div>
+          <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
+            Review application
+          </h1>
 
           <div className="flex gap-2">
             <div>

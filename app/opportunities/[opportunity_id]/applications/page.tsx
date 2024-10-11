@@ -1,10 +1,12 @@
 import { redirect } from "next/navigation";
 import { getServerAuthSession } from "server/auth";
 import db from "server/db";
-import Breadcrumbs from "@components/ui/breadcrumbs";
 import { ApplicationOverview } from "./_components/applicationOverview";
 import { type Phase, type Questionnaire, type User } from "@prisma/client";
 import { ExportButton } from "./_components/exportButton";
+import { PageHeading } from "@components/ui/page-heading";
+import { headers } from "next/headers";
+import { mapPathnameToBreadcrumbs } from "@lib/utils";
 
 export const dynamic = "force-dynamic";
 
@@ -97,24 +99,18 @@ export default async function ApplicationsPage({ params }: Props) {
     });
   }
 
+  const headerList = headers();
+  const breadcrumbs = mapPathnameToBreadcrumbs(headerList);
+
   return (
-    <div className="flex h-screen flex-col gap-8 overflow-hidden p-8">
-      <div className="flex justify-between">
-        <div className="flex flex-col gap-3">
-          <Breadcrumbs
-            title={`Applications`}
-            opportunityTitle={opportunity?.title}
-          />
-          <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
-            Applications for {opportunity?.title}
-          </h1>
-        </div>
-        {isAdmin && (
-          <div className="flex gap-2">
-            <ExportButton getExportData={getExportData} />
-          </div>
-        )}
-      </div>
+    <div className="flex h-screen flex-col gap-8 overflow-hidden py-8">
+      <PageHeading
+        title={opportunity?.title ?? ""}
+        description="Invite applicants to be interviewed"
+        breadcrumbs={breadcrumbs}
+      >
+        <ExportButton getExportData={getExportData} />
+      </PageHeading>
 
       <ApplicationOverview
         opportunityId={opportunityId}
