@@ -45,13 +45,12 @@ export default async function Review({ params }: ReviewProps) {
   const breadcrumbs = mapPathnameToBreadcrumbs(headerList);
 
   return (
-    <div className="flex h-screen flex-col gap-4 py-8">
-      <PageBreadcrumbs breadcrumbs={breadcrumbs} />
+    <div className="flex h-screen flex-col py-8">
+      <PageBreadcrumbs breadcrumbs={breadcrumbs} className="mb-1" />
       <ReviewForm
         questions={questions}
         application={review.application}
         review={review}
-        opportunityTitle={opportunity?.title}
       />
     </div>
   );

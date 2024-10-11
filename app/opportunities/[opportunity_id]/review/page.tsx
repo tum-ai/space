@@ -67,12 +67,8 @@ export default async function ReviewPage({ params }: ReviewPageProps) {
   const breadcrumbs = mapPathnameToBreadcrumbs(headerList);
 
   return (
-    <div className="space-y-8 p-8">
-      <PageHeading
-        title="Reviews"
-        description="See and edit your reviews"
-        breadcrumbs={breadcrumbs}
-      >
+    <div className="flex flex-col gap-8 py-8">
+      <PageHeading title="Reviews" breadcrumbs={breadcrumbs}>
         <Button asChild>
           <Link href="review/new">
             <FileCheck className="mr-2" />

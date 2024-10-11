@@ -18,9 +18,9 @@
       "@styles/*": ["./styles/*"],
       "@components/*": ["./components/*"],
       "@services/*": ["./services/*"],
-      "@lib/*": ["./lib/*"],
       "@providers/*": ["./providers/*"],
-      "@hooks/*": ["./hooks/*"],
+      "@lib/*": ["./lib/*"],
+      "@hooks/*": ["./lib/hooks/*"],
       "@config/*": ["./config/*"]
     },
 

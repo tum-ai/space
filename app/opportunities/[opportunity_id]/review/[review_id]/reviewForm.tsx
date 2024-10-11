@@ -24,14 +24,12 @@ interface ReviewFormProps {
   application: Application;
   review: Review;
   questions: Question[];
-  opportunityTitle: string | undefined;
 }
 
 export const ReviewForm = ({
   application,
   questions,
   review,
-  opportunityTitle,
 }: ReviewFormProps) => {
   const applicationFields = (application.content as Tally).data.fields;
 
@@ -85,9 +83,9 @@ export const ReviewForm = ({
       {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
       <div className="flex min-h-0 flex-col gap-8">
         <div className="flex justify-between">
-          <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
+          <h2 className="scroll-m-20 text-3xl font-semibold tracking-tight first:mt-0">
             Review application
-          </h1>
+          </h2>
 
           <div className="flex gap-2">
             <div>

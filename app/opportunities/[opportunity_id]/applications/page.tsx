@@ -104,11 +104,7 @@ export default async function ApplicationsPage({ params }: Props) {
 
   return (
     <div className="flex h-screen flex-col gap-8 overflow-hidden py-8">
-      <PageHeading
-        title={opportunity?.title ?? ""}
-        description="Invite applicants to be interviewed"
-        breadcrumbs={breadcrumbs}
-      >
+      <PageHeading title={opportunity?.title ?? ""} breadcrumbs={breadcrumbs}>
         <ExportButton getExportData={getExportData} />
       </PageHeading>
 

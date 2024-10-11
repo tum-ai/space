@@ -17,16 +17,16 @@ export const PageHeading = ({
   children,
 }: Props) => {
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-1">
       <PageBreadcrumbs breadcrumbs={breadcrumbs} />
 
-      <div className="flex w-full flex-col justify-between gap-4 md:flex-row">
+      <div className="flex w-full flex-col justify-between gap-2 md:flex-row">
         <div className="flex w-full flex-col gap-3 truncate">
-          <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
+          <h2 className="scroll-m-20 text-3xl font-semibold tracking-tight first:mt-0">
             {title}
-          </h1>
+          </h2>
           {description && (
-            <p className="text-muted-foreground">{description}</p>
+            <p className="text-sm text-muted-foreground">{description}</p>
           )}
         </div>
         {children}

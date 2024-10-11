@@ -12,9 +12,10 @@ type PageBreadcrumb = { href: string; label: string };
 
 export interface Props {
   breadcrumbs: PageBreadcrumb[];
+  className?: string;
 }
 
-export const PageBreadcrumbs = ({ breadcrumbs }: Props) => {
+export const PageBreadcrumbs = ({ breadcrumbs, className }: Props) => {
   const capitalizeFirstChar = (str: string) => {
     if (!str) return str;
     return isNaN(Number(str.charAt(0)))
@@ -23,7 +24,7 @@ export const PageBreadcrumbs = ({ breadcrumbs }: Props) => {
   };
 
   return (
-    <Breadcrumb>
+    <Breadcrumb className={className}>
       <BreadcrumbList>
         <BreadcrumbItem>
           <BreadcrumbLink href="/">Home</BreadcrumbLink>
