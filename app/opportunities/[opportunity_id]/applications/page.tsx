@@ -55,7 +55,7 @@ export default async function ApplicationsPage({ params }: Props) {
               id: true,
               name: true,
               reviews: {
-                select: isAdmin ? { user: true } : undefined,
+                select: !isAdmin ? { user: true } : undefined,
               },
             },
             orderBy: {
@@ -64,11 +64,13 @@ export default async function ApplicationsPage({ params }: Props) {
           },
           reviewers: true,
         },
-        where: { reviewers: { some: { id: userId } } },
+        where: !isAdmin ? { reviewers: { some: { id: userId } } } : undefined,
       },
     },
     where: {
-      questionnaires: { some: { reviewers: { some: { id: userId } } } },
+      questionnaires: !isAdmin
+        ? { some: { reviewers: { some: { id: userId } } } }
+        : undefined,
       opportunityId,
     },
   });

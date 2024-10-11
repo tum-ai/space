@@ -1,13 +1,6 @@
 import { Button } from "@components/ui/button";
 import { Separator } from "@components/ui/separator";
-import {
-  Ellipsis,
-  FolderPen,
-  Handshake,
-  Move,
-  Plus,
-  Trash,
-} from "lucide-react";
+import { Ellipsis, FolderPen, Handshake, Plus, Trash } from "lucide-react";
 import { QuestionnaireDialog } from "../questionnaire/questionnaireDialog";
 import { Card } from "@components/ui/card";
 import {
@@ -20,6 +13,8 @@ import { usePhasesContext } from "../usePhasesStore";
 import { cn } from "@lib/utils";
 import { PhasePopover } from "./phasePopover";
 import { AvatarStack } from "@components/user/users-stack";
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 
 interface Props {
   index: number;
@@ -42,10 +37,33 @@ export default function Phase({ index: phaseIndex, className }: Props) {
     phaseIndex,
   );
 
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    setActivatorNodeRef,
+  } = useSortable({ id: phase.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
+
   return (
-    <Card className={cn("group w-80", className)}>
+    <Card
+      className={cn("group w-80 cursor-default", className)}
+      ref={setNodeRef}
+      style={style}
+      {...attributes}
+    >
       <div className="flex flex-row items-center justify-between p-2">
-        <h4 className="flex scroll-m-20 items-center text-xl font-semibold tracking-tight">
+        <h4
+          className="flex flex-1 cursor-pointer scroll-m-20 items-center text-xl font-semibold tracking-tight"
+          ref={setActivatorNodeRef}
+          {...listeners}
+        >
           {phase.isInterview && <Handshake className="mr-2 h-6 w-6" />}
           {phase.name}
         </h4>
@@ -62,27 +80,19 @@ export default function Phase({ index: phaseIndex, className }: Props) {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
-              <DropdownMenuItem>
-                <Move className="mr-2 h-4 w-4" />
-                <span>Move</span>
-              </DropdownMenuItem>
+              <PhasePopover onSave={onSave} defaultValues={phase}>
+                <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                  <FolderPen className="mr-2 h-4 w-4" />
+                  <span>Edit</span>
+                </DropdownMenuItem>
+              </PhasePopover>
+
               <DropdownMenuItem onClick={() => onRemove(phaseIndex)}>
                 <Trash className="mr-2 h-4 w-4" />
                 <span>Delete</span>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-
-          <PhasePopover onSave={onSave} defaultValues={phase}>
-            <Button
-              type="button"
-              size="icon-sm"
-              variant="ghost"
-              className="text-muted-foreground"
-            >
-              <FolderPen />
-            </Button>
-          </PhasePopover>
 
           <QuestionnaireDialog onSave={appendQuestionnaire}>
             <Button

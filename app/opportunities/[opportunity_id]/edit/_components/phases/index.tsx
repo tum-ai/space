@@ -1,10 +1,9 @@
 import { getServerAuthSession } from "server/auth";
 import { redirect } from "next/navigation";
 import db from "server/db";
-import { type z } from "zod";
-import { type PhasesSchema } from "@lib/schemas/opportunity";
 import { EditPhasesForm } from "./editPhasesForm";
 import { type Prisma } from "@prisma/client";
+import type { Phases, Phase } from "@lib/types/opportunity";
 
 export async function EditPhases({ opportunityId }: { opportunityId: string }) {
   const session = await getServerAuthSession();
@@ -24,6 +23,7 @@ export async function EditPhases({ opportunityId }: { opportunityId: string }) {
             include: { reviewers: true },
           },
         },
+        orderBy: { order: "asc" },
       },
     },
   });
@@ -32,6 +32,7 @@ export async function EditPhases({ opportunityId }: { opportunityId: string }) {
   const defaultPhases = opportunity.phases.map((phase) => ({
     id: phase.id,
     name: phase.name,
+    order: phase.order,
     isInterview: phase.isInterview,
     questionnaires: phase.questionnaires.map((questionnaire) => ({
       id: questionnaire.id,
@@ -45,14 +46,14 @@ export async function EditPhases({ opportunityId }: { opportunityId: string }) {
         image: user.image,
       })),
     })),
-  })) as z.infer<typeof PhasesSchema>["phases"][number][];
+  })) as Phase[];
 
   const defaultValues = {
     opportunityId: opportunity.id,
     phases: defaultPhases,
   };
 
-  async function upsert(input: z.infer<typeof PhasesSchema>) {
+  async function upsert(input: Phases) {
     "use server";
 
     // Update phases and questionnaires
@@ -66,6 +67,7 @@ export async function EditPhases({ opportunityId }: { opportunityId: string }) {
           create: {
             opportunity: { connect: { id: input.opportunityId } },
             name: phase.name,
+            order: phase.order ?? 0,
           } satisfies Prisma.PhaseCreateInput,
 
           update: {
@@ -93,12 +95,20 @@ export async function EditPhases({ opportunityId }: { opportunityId: string }) {
             create: {
               ...questionnaire,
               phase: { connect: { id: phases[index]!.id } },
-              reviewers: { connect: questionnaire.reviewers },
+              reviewers: {
+                connect: questionnaire.reviewers.map((reviewer) => ({
+                  id: reviewer.id,
+                })),
+              },
             } satisfies Prisma.QuestionnaireCreateInput,
             update: {
               ...questionnaire,
               phase: { connect: { id: phases[index]!.id } },
-              reviewers: { connect: questionnaire.reviewers },
+              reviewers: {
+                set: questionnaire.reviewers.map((reviewer) => ({
+                  id: reviewer.id,
+                })),
+              },
             },
           });
         });

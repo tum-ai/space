@@ -8,6 +8,8 @@ interface Props {
 }
 
 interface PhasesState extends Props {
+  setPhases: (phases: Phase[]) => void;
+
   appendPhase: (data: Phase) => void;
   updatePhase: (index: number) => (data: Phase) => void;
   removePhase: (index: number) => void;
@@ -33,6 +35,11 @@ export const createPhasesStore = (initProps?: Partial<Props>) => {
     immer((set) => ({
       ...DEFAULT_PROPS,
       ...initProps,
+
+      setPhases: (phases) =>
+        set((state) => {
+          state.phases = phases;
+        }),
 
       appendPhase: (data) =>
         set((state) => {

@@ -12,7 +12,8 @@ export const QuestionnaireSchema = z.object({
 });
 
 export const PhaseSchema = z.object({
-  id: z.string().uuid().optional(),
+  id: z.string().uuid(),
+  order: z.number(),
   isInterview: z.boolean().default(false),
   name: z.string().min(1, "Phase name is required"),
   questionnaires: z.array(QuestionnaireSchema),

@@ -35,6 +35,7 @@ export async function generateOpportunities(number: number) {
         phases: {
           create: opportunity.phases.map((phase) => ({
             name: phase.name,
+            order: phase.order,
             questionnaires: {
               create: phase.questionnaires.map((questionnaire) => ({
                 id: questionnaire.id,
@@ -91,7 +92,9 @@ export function generatePhases(): Phase[] {
 
 function generatePhase(): Phase {
   return {
+    id: uuidUniqueEnforcer.enforce(() => faker.string.uuid()),
     name: faker.word.words(2),
+    order: faker.number.int({ min: 1, max: 10 }),
     isInterview: false,
     questionnaires: Array.from(
       {

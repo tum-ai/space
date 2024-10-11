@@ -5,13 +5,26 @@ import { type z } from "zod";
 import { PhasePopover } from "./phases/phasePopover";
 import { type PhasesSchema } from "@lib/schemas/opportunity";
 import { Button } from "@components/ui/button";
-import { Plus, Save } from "lucide-react";
+import { Save } from "lucide-react";
 import { toast } from "sonner";
 import { TallyForm } from "./tally/tallyForm";
 import { createPhasesStore, PhasesContext } from "./usePhasesStore";
 import { useRef } from "react";
 import { useStore } from "zustand";
 import { ScrollArea, ScrollBar } from "@components/ui/scroll-area";
+import {
+  closestCenter,
+  DndContext,
+  PointerSensor,
+  type UniqueIdentifier,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
+import { arrayMove, SortableContext } from "@dnd-kit/sortable";
+import {
+  restrictToHorizontalAxis,
+  restrictToParentElement,
+} from "@dnd-kit/modifiers";
 
 interface Props {
   update: (input: z.infer<typeof PhasesSchema>) => Promise<void>;
@@ -21,6 +34,7 @@ interface Props {
 export function EditPhasesForm({ defaultValues, update }: Props) {
   const store = useRef(createPhasesStore(defaultValues)).current;
   const phases = useStore(store, (s) => s.phases);
+  const setPhases = useStore(store, (s) => s.setPhases);
   const appendPhase = useStore(store, (s) => s.appendPhase);
 
   async function onSubmit() {
@@ -32,6 +46,9 @@ export function EditPhasesForm({ defaultValues, update }: Props) {
       toast.error("Failed to update phases", { id });
     }
   }
+
+  const sensors = useSensors(useSensor(PointerSensor));
+
   return (
     <PhasesContext.Provider value={store}>
       <section className="flex flex-col space-y-12 p-8">
@@ -61,16 +78,46 @@ export function EditPhasesForm({ defaultValues, update }: Props) {
               </p>
             </div>
 
-            {/* TODO: Fix horizontal overflow */}
             <ScrollArea className="w-full">
               <div className="group/phases flex min-h-80 gap-4">
-                {phases.map((phase, index) => (
-                  <Phase
-                    key={phase.id}
-                    index={index}
-                    className="min-w-0 shrink-0"
-                  />
-                ))}
+                <DndContext
+                  modifiers={[
+                    restrictToHorizontalAxis,
+                    restrictToParentElement,
+                  ]}
+                  sensors={sensors}
+                  collisionDetection={closestCenter}
+                  onDragEnd={(event) => {
+                    const { active, over } = event;
+
+                    if (active.id !== over?.id) {
+                      const oldIndex = phases.findIndex(
+                        (p) => p.id === active.id,
+                      );
+                      const newIndex = phases.findIndex(
+                        (p) => p.id === over?.id,
+                      );
+                      const newPhases = arrayMove(phases, oldIndex, newIndex);
+                      setPhases(newPhases);
+                    }
+                  }}
+                >
+                  <SortableContext
+                    items={
+                      phases.filter((phase) => phase.id) as {
+                        id: UniqueIdentifier;
+                      }[]
+                    }
+                  >
+                    {phases.map((phase, index) => (
+                      <Phase
+                        key={phase.id}
+                        index={index}
+                        className="min-w-0 shrink-0"
+                      />
+                    ))}
+                  </SortableContext>
+                </DndContext>
 
                 <PhasePopover
                   onSave={(data) => appendPhase(data)}

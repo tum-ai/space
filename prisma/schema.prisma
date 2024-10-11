@@ -121,6 +121,7 @@ model Opportunity {
 
 model Phase {
   id             String          @id @default(uuid())
+  order          Int
   isInterview    Boolean         @default(false)
   name           String
   opportunityId  Int
