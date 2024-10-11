@@ -18,7 +18,7 @@ export default async function HomebaseKeys() {
   const breadcrumbs = mapPathnameToBreadcrumbs(headerList);
 
   return (
-    <section className="space-y-8 p-8">
+    <section className="space-y-8 py-8">
       <PageHeading
         title="Homebase keys"
         description="See who can get you into the homebase"

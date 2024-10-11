@@ -66,14 +66,16 @@ export const TallyForm = ({ opportunityId }: { opportunityId: number }) => {
       </div>
 
       {!applicationFields.length && (
-        <Alert className="w-max">
-          <Send className="h-4 w-4" />
-          <AlertTitle>Send a Test application</AlertTitle>
-          <AlertDescription>
-            Submit a test application to see it here and configure the
-            assignment of questionnaires
-          </AlertDescription>
-        </Alert>
+        <div className="overflow-x-auto">
+          <Alert className="w-max">
+            <Send className="h-4 w-4" />
+            <AlertTitle>Send a Test application</AlertTitle>
+            <AlertDescription>
+              Submit a test application to see it here and configure the
+              assignment of questionnaires
+            </AlertDescription>
+          </Alert>
+        </div>
       )}
 
       {!!applicationFields.length && (

@@ -123,7 +123,7 @@ export default async function RootLayout({ children }: Props) {
                   </nav>
                 </aside>
                 <div className="flex flex-col pl-14 sm:gap-4">
-                  <main className="px-4 sm:px-6">{children}</main>
+                  <main className="px-4 sm:px-10">{children}</main>
                 </div>
               </>
               <Toaster />

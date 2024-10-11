@@ -6,6 +6,10 @@ import OpportunityCard from "./_components/opportunityCard";
 import { PageHeading } from "@components/ui/page-heading";
 import { headers } from "next/headers";
 import { mapPathnameToBreadcrumbs } from "@lib/utils";
+import { Button } from "@components/ui/button";
+import { Plus } from "lucide-react";
+import Link from "next/link";
+import { ScrollBar, ScrollArea } from "@components/ui/scroll-area";
 
 export const dynamic = "force-dynamic";
 
@@ -71,17 +75,31 @@ export default async function OpportunitiesPage() {
   }));
 
   const headerList = headers();
+  const pathname = headerList.get("x-current-path");
   const breadcrumbs = mapPathnameToBreadcrumbs(headerList);
 
   return (
     <div className="flex h-screen flex-col gap-8 overflow-hidden py-8">
       <PageHeading title={"Opportunitites"} breadcrumbs={breadcrumbs} />
 
-      <div className="grid auto-rows-fr gap-4 md:grid-cols-2 xl:grid-cols-3">
-        {opportunities.map((opportunity) => (
-          <OpportunityCard key={opportunity.id} opportunity={opportunity} />
-        ))}
-      </div>
+      <ScrollArea className="flex-1 overflow-y-auto">
+        <div className="grid auto-rows-fr gap-4 md:grid-cols-2 xl:grid-cols-3">
+          {opportunities.map((opportunity) => (
+            <OpportunityCard key={opportunity.id} opportunity={opportunity} />
+          ))}
+          <Button
+            className="flex h-full w-full border-dashed"
+            variant="outline"
+            asChild
+          >
+            <Link href={`${pathname}/create`}>
+              <Plus className="pr-2" />
+              Create Opportunity
+            </Link>
+          </Button>
+        </div>
+        <ScrollBar />
+      </ScrollArea>
     </div>
   );
 }
