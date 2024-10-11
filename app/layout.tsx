@@ -18,10 +18,15 @@ import {
   DropdownMenuTrigger,
 } from "@components/ui/dropdown-menu";
 import { MenuActions } from "./_components/menuActions";
+import type { Metadata } from "next/types";
 
 interface Props {
   children: React.ReactNode;
 }
+
+export const metadata: Metadata = {
+  title: "TUM.ai Space",
+};
 
 export default async function RootLayout({ children }: Props) {
   const session = await getServerAuthSession();
