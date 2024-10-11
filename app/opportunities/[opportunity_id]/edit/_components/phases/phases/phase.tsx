@@ -3,18 +3,17 @@ import { Separator } from "@components/ui/separator";
 import { Ellipsis, FolderPen, Handshake, Plus, Trash } from "lucide-react";
 import { QuestionnaireDialog } from "../questionnaire/questionnaireDialog";
 import { Card } from "@components/ui/card";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@components/ui/dropdown-menu";
 import { usePhasesContext } from "../usePhasesStore";
 import { cn } from "@lib/utils";
 import { PhasePopover } from "./phasePopover";
 import { AvatarStack } from "@components/user/users-stack";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@components/ui/popover";
 
 interface Props {
   index: number;
@@ -68,8 +67,8 @@ export default function Phase({ index: phaseIndex, className }: Props) {
           {phase.name}
         </h4>
         <div className="flex flex-row gap-2">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
+          <Popover>
+            <PopoverTrigger asChild>
               <Button
                 type="button"
                 size="icon-sm"
@@ -78,21 +77,31 @@ export default function Phase({ index: phaseIndex, className }: Props) {
               >
                 <Ellipsis />
               </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              <PhasePopover onSave={onSave} defaultValues={phase}>
-                <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+            </PopoverTrigger>
+            <PopoverContent className="flex w-max flex-col p-1">
+              <PhasePopover onSave={onSave} defaultValues={phase} align="start">
+                <Button
+                  onSelect={(e) => e.preventDefault()}
+                  variant="ghost"
+                  className="h-max justify-start px-2 py-1.5"
+                  size="sm"
+                >
                   <FolderPen className="mr-2 h-4 w-4" />
                   <span>Edit</span>
-                </DropdownMenuItem>
+                </Button>
               </PhasePopover>
 
-              <DropdownMenuItem onClick={() => onRemove(phaseIndex)}>
+              <Button
+                onClick={() => onRemove(phaseIndex)}
+                variant="ghost"
+                className="h-max justify-start px-2 py-1.5"
+                size="sm"
+              >
                 <Trash className="mr-2 h-4 w-4" />
                 <span>Delete</span>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+              </Button>
+            </PopoverContent>
+          </Popover>
 
           <QuestionnaireDialog onSave={appendQuestionnaire}>
             <Button

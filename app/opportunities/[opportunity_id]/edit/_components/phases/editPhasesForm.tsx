@@ -16,7 +16,6 @@ import {
   closestCenter,
   DndContext,
   PointerSensor,
-  type UniqueIdentifier,
   useSensor,
   useSensors,
 } from "@dnd-kit/core";
@@ -97,18 +96,19 @@ export function EditPhasesForm({ defaultValues, update }: Props) {
                       const newIndex = phases.findIndex(
                         (p) => p.id === over?.id,
                       );
-                      const newPhases = arrayMove(phases, oldIndex, newIndex);
+                      const newPhases = arrayMove(
+                        phases,
+                        oldIndex,
+                        newIndex,
+                      ).map((phase, i) => ({
+                        ...phase,
+                        order: i,
+                      }));
                       setPhases(newPhases);
                     }
                   }}
                 >
-                  <SortableContext
-                    items={
-                      phases.filter((phase) => phase.id) as {
-                        id: UniqueIdentifier;
-                      }[]
-                    }
-                  >
+                  <SortableContext items={phases}>
                     {phases.map((phase, index) => (
                       <Phase
                         key={phase.id}
@@ -120,7 +120,9 @@ export function EditPhasesForm({ defaultValues, update }: Props) {
                 </DndContext>
 
                 <PhasePopover
-                  onSave={(data) => appendPhase(data)}
+                  onSave={(data) =>
+                    appendPhase({ ...data, order: phases.length })
+                  }
                   className="flex w-max opacity-0 transition-opacity group-hover/phases:opacity-100"
                 />
               </div>

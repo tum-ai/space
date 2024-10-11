@@ -29,18 +29,20 @@ import { v4 as uuidv4 } from "uuid";
 import { cn } from "@lib/utils";
 import { Checkbox } from "@components/ui/checkbox";
 
-interface Props {
+type Props = {
   onSave: (phase: PhaseType) => void;
   children?: React.ReactNode;
   defaultValues?: UseFormProps<z.infer<typeof PhaseSchema>>["defaultValues"];
   className?: string;
-}
+  align?: "center" | "start" | "end";
+};
 
 export const PhasePopover = ({
   onSave,
   children,
   defaultValues: initialDefaultValues,
   className,
+  align = "center",
 }: Props) => {
   const [popoverOpen, setPopoverOpen] = useState(false);
 
@@ -52,7 +54,7 @@ export const PhasePopover = ({
   };
 
   const form = useForm<z.infer<typeof PhaseSchema>>({
-    resolver: zodResolver(PhaseSchema),
+    resolver: zodResolver(PhaseSchema.omit({ order: true })),
     defaultValues: initialDefaultValues ?? defaultValues,
   });
 
@@ -78,7 +80,7 @@ export const PhasePopover = ({
           </Button>
         )}
       </PopoverTrigger>
-      <PopoverContent>
+      <PopoverContent align={align}>
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSave, console.error)}

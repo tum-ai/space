@@ -61,17 +61,18 @@ export async function EditPhases({ opportunityId }: { opportunityId: string }) {
       input.phases.map((phase) => {
         return db.phase.upsert({
           where: {
-            id: phase.id ?? "",
+            id: phase.id,
           } satisfies Prisma.PhaseWhereUniqueInput,
 
           create: {
             opportunity: { connect: { id: input.opportunityId } },
             name: phase.name,
-            order: phase.order ?? 0,
+            order: phase.order,
           } satisfies Prisma.PhaseCreateInput,
 
           update: {
             name: phase.name,
+            order: phase.order,
           } satisfies Prisma.PhaseUpdateInput,
         } satisfies Prisma.PhaseUpsertArgs);
       }),

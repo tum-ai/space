@@ -73,6 +73,9 @@ export default async function ApplicationsPage({ params }: Props) {
         : undefined,
       opportunityId,
     },
+    orderBy: {
+      order: "desc",
+    },
   });
 
   async function getExportData() {
