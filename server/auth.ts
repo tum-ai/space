@@ -1,9 +1,13 @@
-import { AuthOptions, DefaultSession, getServerSession } from "next-auth";
+import {
+  type AuthOptions,
+  type DefaultSession,
+  getServerSession,
+} from "next-auth";
 import SlackProvider from "next-auth/providers/slack";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { db } from "server/db";
 import { env } from "env.mjs";
-import { SpaceRole } from "@prisma/client";
+import { type SpaceRole } from "@prisma/client";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`

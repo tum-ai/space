@@ -4,7 +4,11 @@ import { getServerAuthSession } from "server/auth";
 import db from "server/db";
 import { DataTable } from "./_components/data-table";
 import { columns } from "./_components/columns";
-import { type Application, type Questionnaire, type User } from "@prisma/client";
+import {
+  type Application,
+  type Questionnaire,
+  type User,
+} from "@prisma/client";
 
 interface Props {
   params: {
@@ -52,9 +56,8 @@ export default async function PhasePage({ params }: Props) {
     },
   });
 
-  // TODO: redirect to unauthorized page
   if (!opportunity?.admins.map((admin) => admin.id).includes(session.user.id))
-    return redirect("/");
+    return redirect("/auth");
 
   const questionnaires = await db.questionnaire.findMany({
     where: { phaseId: phase.id },

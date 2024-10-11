@@ -3,12 +3,17 @@ import { ProfileOverview } from "../components/ProfileOverview";
 import { Search } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@components/ui/button";
+import { getServerAuthSession } from "server/auth";
+import { redirect } from "next/navigation";
 
 export default async function ProfilePage({
   params,
 }: {
   params: { profile_id: string };
 }) {
+  const session = await getServerAuthSession();
+  if (!session?.user.id) redirect("/auth");
+
   const user = await db.user.findUnique({
     where: { id: params.profile_id },
     include: { profile: true },

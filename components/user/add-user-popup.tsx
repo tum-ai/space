@@ -16,15 +16,19 @@ import {
   CommandItem,
   CommandList,
 } from "@components/ui/command";
-import { type Person } from "@lib/types/person";
+import { type AvatarStackUser } from "./users-stack";
 
-interface Props {
-  append: (person: Person) => void;
-  users: Person[];
+interface Props<User> {
+  append: (user: User) => void;
+  users: User[];
   children?: React.ReactNode;
 }
 
-export const AddUserPopup = ({ append, users, children }: Props) => {
+export const AddUserPopup = <User extends AvatarStackUser>({
+  append,
+  users,
+  children,
+}: Props<User>) => {
   const { data } = api.user.getAll.useQuery();
   const [open, setOpen] = useState(false);
 
@@ -63,11 +67,7 @@ export const AddUserPopup = ({ append, users, children }: Props) => {
                     key={member.id}
                     value={member.name ?? ""}
                     onSelect={() => {
-                      append({
-                        id: member.id,
-                        name: member.name ?? undefined,
-                        image: member.image ?? undefined,
-                      });
+                      append(member as unknown as User);
                       setOpen(false);
                     }}
                   >

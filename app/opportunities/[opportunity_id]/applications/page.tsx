@@ -54,6 +54,9 @@ export default async function ApplicationsPage({ params }: Props) {
             select: {
               id: true,
               name: true,
+              reviews: {
+                select: isAdmin ? { user: true } : undefined,
+              },
             },
             orderBy: {
               createdAt: "asc",

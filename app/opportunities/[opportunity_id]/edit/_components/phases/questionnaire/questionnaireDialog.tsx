@@ -34,7 +34,7 @@ import { QuestionView } from "./questionView";
 import { Card } from "@components/ui/card";
 import { QuestionForm, type QuestionFormProps } from "./question";
 import type { Question } from "@lib/types/question";
-import { UsersStack } from "../../usersStack";
+import { AvatarStack } from "../../../../../../../components/user/users-stack";
 import { useSession } from "next-auth/react";
 
 const QuestionEdit = ({
@@ -213,10 +213,15 @@ export const QuestionnaireDialog = ({
             <h4 className="scroll-m-20 text-xl font-semibold tracking-tight">
               Reviewer
             </h4>
-            <UsersStack
-              key={`questionnaire-${form.watch("id")}-`}
+            <AvatarStack
               users={reviewers}
-              append={appendReviewer}
+              append={(user) =>
+                appendReviewer({
+                  ...user,
+                  name: user.name ?? undefined,
+                  image: user.image ?? undefined,
+                })
+              }
               remove={removeReviewer}
             />
           </div>

@@ -13,7 +13,6 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@components/ui/tooltip";
-import { Avatar, AvatarFallback, AvatarImage } from "@components/ui/avatar";
 import { ScrollArea, ScrollBar } from "@components/ui/scroll-area";
 import Link from "next/link";
 import { Button } from "@components/ui/button";
@@ -29,6 +28,7 @@ import { api } from "trpc/react";
 import ApplicationForm from "app/opportunities/_components/ApplicationForm";
 import { Input } from "@components/ui/input";
 import { Separator } from "components/ui/separator";
+import { AvatarStack } from "@components/user/users-stack";
 
 interface Props {
   phases: OpportunityPhase[];
@@ -81,80 +81,61 @@ export const ApplicationOverview = ({ phases, isAdmin }: Props) => {
             Phases
           </h3>
           <Separator />
-          <div className="flex h-full flex-col gap-2 p-4 pt-0">
-            {phases.map((phase) => (
-              <div key={`phase-${phase.id}`} className="space-y-2">
-                {isAdmin && phase.isInterview ? (
-                  <Button
-                    variant="link"
-                    className="h-min p-0 text-sm font-semibold"
-                    asChild
-                  >
-                    <Link
-                      href={`./interview/${phase.id}`}
-                      className="flex items-center"
+
+          <ScrollArea className="h-full overflow-y-auto">
+            <div className="flex h-full flex-col gap-2 p-4 pt-0">
+              {phases.map((phase) => (
+                <div key={`phase-${phase.id}`} className="space-y-2">
+                  {isAdmin && phase.isInterview ? (
+                    <Button
+                      variant="link"
+                      className="h-min p-0 text-sm font-semibold"
+                      asChild
                     >
-                      <Handshake className="mr-2 h-4 w-4" />
-                      {phase.name}
-                    </Link>
-                  </Button>
-                ) : (
-                  <span className="flex items-center text-sm font-semibold">
-                    {phase.isInterview && (
-                      <Handshake className="mr-2 h-4 w-4" />
-                    )}
-                    {phase.name}
-                  </span>
-                )}
-                <div className="flex flex-col gap-2">
-                  {phase.questionnaires.map((questionnaire) => (
-                    <Card
-                      key={`questionnaire-${questionnaire.id}`}
-                      onClick={() =>
-                        setSelectionState({
-                          questionnaire: questionnaire.id,
-                          application: undefined,
-                        })
-                      }
-                      className={cn(
-                        "flex cursor-pointer flex-row items-center justify-between p-2 transition-colors",
-                        questionnaire.id === questionnaireId && "bg-muted",
+                      <Link
+                        href={`./interview/${phase.id}`}
+                        className="flex items-center"
+                      >
+                        <Handshake className="mr-2 h-4 w-4" />
+                        {phase.name}
+                      </Link>
+                    </Button>
+                  ) : (
+                    <span className="flex items-center text-sm font-semibold">
+                      {phase.isInterview && (
+                        <Handshake className="mr-2 h-4 w-4" />
                       )}
-                    >
-                      <p className="text-sm">{questionnaire.name}</p>
-                      <div className="flex -space-x-2">
-                        {[...questionnaire.reviewers]
-                          .splice(0, 4)
-                          .map((reviewer) => (
-                            <Tooltip
-                              key={`reviewer-${questionnaire.name}-${reviewer.id}`}
-                            >
-                              <TooltipTrigger>
-                                <Avatar className="h-6 w-6 ring-1 ring-border">
-                                  <AvatarImage
-                                    src={reviewer.image ?? undefined}
-                                  />
-                                </Avatar>
-                              </TooltipTrigger>
-                              <TooltipContent>
-                                <p>{reviewer.name}</p>
-                              </TooltipContent>
-                            </Tooltip>
-                          ))}
-                        {questionnaire.reviewers.length > 4 && (
-                          <Avatar className="h-6 w-6 bg-primary-foreground ring-1 ring-border">
-                            <AvatarFallback className="text-xs">
-                              +{questionnaire.reviewers.length - 4}
-                            </AvatarFallback>
-                          </Avatar>
+                      {phase.name}
+                    </span>
+                  )}
+                  <div className="flex flex-col gap-2">
+                    {phase.questionnaires.map((questionnaire) => (
+                      <Card
+                        key={`questionnaire-${questionnaire.id}`}
+                        onClick={() =>
+                          setSelectionState({
+                            questionnaire: questionnaire.id,
+                            application: undefined,
+                          })
+                        }
+                        className={cn(
+                          "flex cursor-pointer flex-row items-center justify-between p-2 transition-colors",
+                          questionnaire.id === questionnaireId && "bg-muted",
                         )}
-                      </div>
-                    </Card>
-                  ))}
+                      >
+                        <p className="text-sm">{questionnaire.name}</p>
+                        <AvatarStack
+                          users={questionnaire.reviewers}
+                          size="sm"
+                          maxVisible={4}
+                        />
+                      </Card>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          </ScrollArea>
         </ResizablePanel>
 
         <ResizableHandle withHandle />
@@ -190,35 +171,13 @@ export const ApplicationOverview = ({ phases, isAdmin }: Props) => {
                   )}
                 >
                   <p className="text-sm">{application.name}</p>
-                  <div className="flex -space-x-2">
-                    {application.reviews &&
-                      [...application.reviews?.map((review) => review.user)]
-                        .splice(0, 4)
-                        .map((reviewer) => (
-                          <Tooltip
-                            key={`reviewer-${application.name}-${reviewer.id}`}
-                          >
-                            <TooltipTrigger>
-                              <Avatar className="h-6 w-6 ring-1 ring-border">
-                                <AvatarImage
-                                  src={reviewer.image ?? undefined}
-                                />
-                              </Avatar>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                              <p>{reviewer.name}</p>
-                            </TooltipContent>
-                          </Tooltip>
-                        ))}
-                    {application.reviews?.length &&
-                      application.reviews?.length > 4 && (
-                        <Avatar className="h-6 w-6 bg-primary-foreground ring-1 ring-border">
-                          <AvatarFallback className="text-xs">
-                            +{application.reviews.length - 4}
-                          </AvatarFallback>
-                        </Avatar>
-                      )}
-                  </div>
+                  {application.reviews && (
+                    <AvatarStack
+                      users={application.reviews.map((review) => review.user)}
+                      size="sm"
+                      maxVisible={4}
+                    />
+                  )}
                 </Card>
               ))}
             </div>

@@ -16,15 +16,10 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@components/ui/dropdown-menu";
-import { Avatar, AvatarImage, AvatarFallback } from "@components/ui/avatar";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@components/ui/tooltip";
 import { usePhasesContext } from "../usePhasesStore";
 import { cn } from "@lib/utils";
 import { PhasePopover } from "./phasePopover";
+import { AvatarStack } from "@components/user/users-stack";
 
 interface Props {
   index: number;
@@ -116,29 +111,11 @@ export default function Phase({ index: phaseIndex, className }: Props) {
               <div className="flex flex-row justify-between">
                 <p>{questionnaire.name}</p>
 
-                <div className="flex -space-x-2">
-                  {[...questionnaire.reviewers].splice(0, 4).map((reviewer) => (
-                    <Tooltip
-                      key={`reviewer-${questionnaire.name}-${reviewer.id}`}
-                    >
-                      <TooltipTrigger>
-                        <Avatar className="h-6 w-6 ring-1 ring-border">
-                          <AvatarImage src={reviewer.image ?? undefined} />
-                        </Avatar>
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <p>{reviewer.name}</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  ))}
-                  {questionnaire.reviewers.length > 4 && (
-                    <Avatar className="h-6 w-6 bg-primary-foreground ring-1 ring-border">
-                      <AvatarFallback className="text-xs">
-                        +{questionnaire.reviewers.length - 4}
-                      </AvatarFallback>
-                    </Avatar>
-                  )}
-                </div>
+                <AvatarStack
+                  users={questionnaire.reviewers}
+                  size="sm"
+                  maxVisible={5}
+                />
               </div>
             </Card>
           </QuestionnaireDialog>

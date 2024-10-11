@@ -23,7 +23,7 @@ import { Calendar } from "@components/ui/calendar";
 import { CalendarIcon } from "lucide-react";
 import { type GeneralInformationSchema } from "@lib/schemas/opportunity";
 import { type z } from "zod";
-import { UsersStack } from "../[opportunity_id]/edit/_components/usersStack";
+import { AvatarStack } from "../../../components/user/users-stack";
 
 export function GeneralInformation() {
   const form = useFormContext<z.infer<typeof GeneralInformationSchema>>();
@@ -150,11 +150,11 @@ export function GeneralInformation() {
       <FormItem className="col-span-2">
         <FormLabel>Admins</FormLabel>
         <FormControl>
-          <UsersStack
-            key={`${form.getValues("opportunityId")}-admins`}
+          <AvatarStack
             users={admins}
             append={appendAdmin}
             remove={removeAdmin}
+            size={"default"}
           />
         </FormControl>
         <FormMessage />
