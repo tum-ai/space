@@ -55,10 +55,7 @@ export async function mapPathnameToBreadcrumbs(
         return { label, href };
       }),
     )
-  ).map((e) => {
-    console.log(e);
-    return e;
-  }) as PageBreadcrumb[];
+  ).map((e) => e) as PageBreadcrumb[];
 }
 
 type PageBreadcrumb = { href: string; label: string };

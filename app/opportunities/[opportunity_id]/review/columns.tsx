@@ -12,7 +12,7 @@ import {
 import { Button } from "@components/ui/button";
 import Link from "next/link";
 import { CheckCircle, Clock, Edit, PlusCircle, Trash } from "lucide-react";
-import { DeleteAlertDialog } from "./components/review-altert-dialog";
+import { DeleteAlertDialog } from "./_components/review-altert-dialog";
 import { Badge } from "@components/ui/badge";
 
 export type Review = PrismaReview & {

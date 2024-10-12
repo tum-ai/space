@@ -32,11 +32,11 @@ export function Leaderboard({
   const topThree = sortedReviewers.slice(0, 3);
 
   return (
-    <div className="flex items-end justify-center space-x-4">
+    <div className="flex max-w-full items-end justify-center space-x-4">
       {topThree.map((reviewer, index) => (
         <div key={reviewer.user} className="flex flex-col items-center">
           <div
-            className={`w-20 h-${["28", "24", "20"][index]} flex flex-col items-center justify-end rounded-t-lg bg-primary p-2`}
+            className={`w-20 h-${["28", "24", "20"][index]} flex flex-col items-center justify-end rounded-t-lg bg-primary pt-2`}
           >
             {index === 0 && <Trophy className="mb-2 h-8 w-8 text-yellow-300" />}
             {index === 1 && <Medal className="mb-2 h-8 w-8 text-gray-300" />}

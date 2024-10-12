@@ -89,8 +89,8 @@ export default async function OpportunitiesDashboardPage({ params }: Props) {
     <div className="flex flex-col gap-8 py-8">
       <PageHeading title="Dashboard" breadcrumbs={breadcrumbs} />
 
-      <div className="grid auto-rows-fr gap-4 lg:grid-cols-6">
-        <div className="col-span-2 row-span-2 grid grid-cols-subgrid grid-rows-subgrid">
+      <div className="grid auto-rows-fr gap-4 md:grid-cols-4 lg:grid-cols-6">
+        <div className="col-span-2 row-span-3 grid grid-cols-subgrid grid-rows-subgrid sm:row-span-2">
           <Card className="col-span-2">
             <CardHeader className="pb-3">
               <CardTitle>Your Dashboard</CardTitle>
@@ -106,7 +106,7 @@ export default async function OpportunitiesDashboardPage({ params }: Props) {
             </CardFooter>
           </Card>
 
-          <Card className="flex justify-between">
+          <Card className="col-span-2 flex justify-between sm:col-span-1">
             <CardHeader className="pb-2">
               <CardDescription>Applications</CardDescription>
               <CardTitle className="text-4xl">
@@ -118,7 +118,7 @@ export default async function OpportunitiesDashboardPage({ params }: Props) {
             </div>
           </Card>
 
-          <Card className="flex justify-between">
+          <Card className="col-span-2 flex justify-between sm:col-span-1">
             <CardHeader className="pb-2">
               <CardDescription>Reviews</CardDescription>
               <CardTitle className="text-4xl">{reviews.length ?? 0}</CardTitle>
@@ -143,7 +143,7 @@ export default async function OpportunitiesDashboardPage({ params }: Props) {
 
         <ReviewsChart reviews={reviews} className="col-span-2 row-span-2" />
 
-        <Card className="col-span-2 row-span-2 flex flex-col">
+        <Card className="col-span-2 row-span-2 hidden flex-col sm:flex">
           <CardHeader>
             <CardTitle>Top reviewer</CardTitle>
             <CardDescription>

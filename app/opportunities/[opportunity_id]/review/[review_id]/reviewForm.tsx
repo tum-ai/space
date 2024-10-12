@@ -12,7 +12,7 @@ import { toast } from "sonner";
 import { type Application, type Review } from "@prisma/client";
 import { type Tally } from "@lib/types/tally";
 import { useRouter } from "next/navigation";
-import { DeleteAlertDialog } from "../components/review-altert-dialog";
+import { DeleteAlertDialog } from "../_components/review-altert-dialog";
 import { QuestionField } from "./_components/questionField";
 import {
   ResizableHandle,
