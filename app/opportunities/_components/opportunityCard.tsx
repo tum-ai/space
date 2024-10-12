@@ -5,6 +5,7 @@ import Link from "next/link";
 import { format } from "date-fns";
 import {
   BarChart2,
+  ChartLine,
   Edit,
   Ellipsis,
   FileText,
@@ -65,6 +66,15 @@ export default function OpportunityCard({
                     >
                       <BarChart2 className="mr-2 h-4 w-4" />
                       <span>Leaderboard</span>
+                    </Link>
+                  </DropdownMenuItem>
+
+                  <DropdownMenuItem asChild>
+                    <Link
+                      href={"opportunities/" + +opportunity.id + "/dashboard"}
+                    >
+                      <ChartLine className="mr-2 h-4 w-4" />
+                      <span>Dashboard </span>
                     </Link>
                   </DropdownMenuItem>
 
