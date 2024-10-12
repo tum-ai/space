@@ -25,9 +25,16 @@ interface Props {
   params: {
     opportunity_id: string;
   };
+  searchParams: {
+    application?: string;
+    questionnaire?: string;
+  };
 }
 
-export default async function ApplicationsPage({ params }: Props) {
+export default async function ApplicationsPage({
+  params,
+  searchParams,
+}: Props) {
   const session = await getServerAuthSession();
   const userId = session?.user.id;
   if (!userId) redirect("/auth");
@@ -112,6 +119,10 @@ export default async function ApplicationsPage({ params }: Props) {
         opportunityId={opportunityId}
         phases={phases}
         isAdmin={isAdmin}
+        initialSelection={{
+          questionnaire: searchParams.questionnaire,
+          application: Number(searchParams.application),
+        }}
       />
     </div>
   );

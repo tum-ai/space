@@ -30,24 +30,43 @@ import ApplicationForm from "app/opportunities/_components/ApplicationForm";
 import { Input } from "@components/ui/input";
 import { Separator } from "components/ui/separator";
 import { AvatarStack } from "@components/user/users-stack";
+import { usePathname, useRouter } from "next/navigation";
 
+interface SelectionState {
+  questionnaire?: string;
+  application?: number;
+}
 interface Props {
   phases: OpportunityPhase[];
   isAdmin: boolean;
   opportunityId: number;
+  initialSelection: SelectionState;
 }
 
-export const ApplicationOverview = ({ phases, isAdmin }: Props) => {
-  const [
-    { questionnaire: questionnaireId, application: applicationId },
-    setSelectionState,
-  ] = useState<{
+export const ApplicationOverview = ({
+  phases,
+  isAdmin,
+  initialSelection,
+}: Props) => {
+  const [selectionState, setSelectionState] = useState<{
     questionnaire?: string;
     application?: number;
-  }>({
-    questionnaire: undefined,
-    application: undefined,
-  });
+  }>(initialSelection);
+
+  const { questionnaire: questionnaireId, application: applicationId } =
+    selectionState;
+
+  const pathname = usePathname();
+  const router = useRouter();
+
+  const updateSelection = (data: typeof selectionState) => {
+    setSelectionState(data);
+
+    const params = new URLSearchParams();
+    if (data.questionnaire) params.set("questionnaire", data.questionnaire);
+    if (data.application) params.set("application", String(data.application));
+    router.push(pathname + "?" + params.toString());
+  };
 
   const selectedQuestionnaire = useMemo(() => {
     return phases
@@ -122,7 +141,7 @@ export const ApplicationOverview = ({ phases, isAdmin }: Props) => {
                           <Card
                             key={`questionnaire-${questionnaire.id}`}
                             onClick={() =>
-                              setSelectionState({
+                              updateSelection({
                                 questionnaire: questionnaire.id,
                                 application: undefined,
                               })
@@ -175,10 +194,10 @@ export const ApplicationOverview = ({ phases, isAdmin }: Props) => {
                   {filteredApplications?.map((application) => (
                     <Card
                       onClick={() =>
-                        setSelectionState((prev) => ({
-                          ...prev,
+                        updateSelection({
+                          questionnaire: questionnaireId,
                           application: application.id,
-                        }))
+                        })
                       }
                       key={`application-${application.id}`}
                       className={cn(
