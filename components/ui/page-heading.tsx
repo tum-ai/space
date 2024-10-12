@@ -17,7 +17,7 @@ export const PageHeading = ({
   children,
 }: Props) => {
   return (
-    <div className="flex flex-col gap-1">
+    <div className="mt-14 flex flex-col gap-1 sm:mt-0">
       <PageBreadcrumbs breadcrumbs={breadcrumbs} />
 
       <div className="flex w-full flex-col justify-between gap-2 md:flex-row">

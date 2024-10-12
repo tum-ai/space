@@ -79,7 +79,7 @@ export default async function OpportunitiesPage() {
   const breadcrumbs = mapPathnameToBreadcrumbs(headerList);
 
   return (
-    <div className="flex h-screen flex-col gap-8 overflow-hidden py-8">
+    <div className="flex flex-col gap-8 overflow-hidden py-8 sm:h-screen">
       <PageHeading title={"Opportunitites"} breadcrumbs={breadcrumbs} />
 
       <ScrollArea className="flex-1 overflow-y-auto">

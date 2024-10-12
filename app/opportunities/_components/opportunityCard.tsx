@@ -62,15 +62,6 @@ export default function OpportunityCard({
                 <DropdownMenuContent>
                   <DropdownMenuItem asChild>
                     <Link
-                      href={"opportunities/" + +opportunity.id + "/leaderboard"}
-                    >
-                      <BarChart2 className="mr-2 h-4 w-4" />
-                      <span>Leaderboard</span>
-                    </Link>
-                  </DropdownMenuItem>
-
-                  <DropdownMenuItem asChild>
-                    <Link
                       href={"opportunities/" + +opportunity.id + "/dashboard"}
                     >
                       <ChartLine className="mr-2 h-4 w-4" />

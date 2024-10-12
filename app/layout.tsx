@@ -4,7 +4,7 @@ import { Toaster } from "@components/ui/sonner";
 import { TRPCReactProvider } from "trpc/react";
 import { TooltipProvider } from "@radix-ui/react-tooltip";
 import Link from "next/link";
-import { Goal, Key, LogIn, Settings, Users } from "lucide-react";
+import { Goal, Key, LogIn, PanelLeft, Settings, Users } from "lucide-react";
 
 import {
   Tooltip,
@@ -19,6 +19,8 @@ import {
 } from "@components/ui/dropdown-menu";
 import { MenuActions } from "./_components/menuActions";
 import type { Metadata } from "next/types";
+import { Sheet, SheetContent, SheetTrigger } from "@components/ui/sheet";
+import { Button } from "@components/ui/button";
 
 interface Props {
   children: React.ReactNode;
@@ -27,6 +29,28 @@ interface Props {
 export const metadata: Metadata = {
   title: "TUM.ai Space",
 };
+
+const navigationItems: {
+  href: string;
+  label: string;
+  icon: React.ReactNode;
+}[] = [
+  {
+    href: "/opportunities",
+    label: "Opportunities",
+    icon: <Goal className="h-5 w-5" />,
+  },
+  {
+    href: "/members",
+    label: "Members",
+    icon: <Users className="h-5 w-5" />,
+  },
+  {
+    href: "/homebase_keys",
+    label: "Keys",
+    icon: <Key className="h-5 w-5" />,
+  },
+];
 
 export default async function RootLayout({ children }: Props) {
   const session = await getServerAuthSession();
@@ -43,7 +67,7 @@ export default async function RootLayout({ children }: Props) {
               disableTransitionOnChange
             >
               <>
-                <aside className="fixed inset-y-0 left-0 z-10 flex w-14 flex-col gap-4 border-r bg-background py-4">
+                <aside className="fixed inset-y-0 left-0 z-10 hidden w-14 flex-col gap-4 border-r bg-background py-4 sm:flex">
                   <nav className="flex flex-col items-center gap-4 px-2">
                     <Link
                       href="/"
@@ -52,50 +76,21 @@ export default async function RootLayout({ children }: Props) {
                       <Logo className="h-8 w-8 transition-all group-hover:scale-110" />
                       <span className="sr-only">TUM.ai space</span>
                     </Link>
-                    {!!session && (
-                      <>
-                        <Tooltip>
+                    {!!session &&
+                      navigationItems.map(({ href, label, icon }) => (
+                        <Tooltip key={href}>
                           <TooltipTrigger asChild>
                             <Link
                               href="/opportunities"
                               className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
                             >
-                              <Goal className="h-5 w-5" />
-                              <span className="sr-only">Opportunities</span>
+                              {icon}
+                              <span className="sr-only">{label}</span>
                             </Link>
                           </TooltipTrigger>
-                          <TooltipContent side="right">
-                            Opportunities
-                          </TooltipContent>
+                          <TooltipContent side="right">{label}</TooltipContent>
                         </Tooltip>
-
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <Link
-                              href="/members"
-                              className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
-                            >
-                              <Users className="h-5 w-5" />
-                              <span className="sr-only">Members</span>
-                            </Link>
-                          </TooltipTrigger>
-                          <TooltipContent side="right">Members</TooltipContent>
-                        </Tooltip>
-
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <Link
-                              href="/homebase_keys"
-                              className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
-                            >
-                              <Key className="h-5 w-5" />
-                              <span className="sr-only">Keys</span>
-                            </Link>
-                          </TooltipTrigger>
-                          <TooltipContent side="right">Keys</TooltipContent>
-                        </Tooltip>
-                      </>
-                    )}
+                      ))}
                   </nav>
                   <nav className="mt-auto flex flex-col items-center gap-4 px-2">
                     {session && (
@@ -122,7 +117,35 @@ export default async function RootLayout({ children }: Props) {
                     )}
                   </nav>
                 </aside>
-                <div className="flex flex-col pl-14 sm:gap-4">
+                <header className="fixed top-0 z-30 flex h-14 w-full items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
+                  <Sheet>
+                    <SheetTrigger asChild>
+                      <Button
+                        size="icon"
+                        variant="outline"
+                        className="sm:hidden"
+                      >
+                        <PanelLeft className="h-5 w-5" />
+                        <span className="sr-only">Toggle Menu</span>
+                      </Button>
+                    </SheetTrigger>
+                    <SheetContent side="left" className="pt-16 sm:max-w-xs">
+                      <nav className="grid gap-6 text-lg font-medium">
+                        {navigationItems.map(({ href, label, icon }) => (
+                          <Link
+                            key={href}
+                            href={href}
+                            className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
+                          >
+                            {icon}
+                            {label}
+                          </Link>
+                        ))}
+                      </nav>
+                    </SheetContent>
+                  </Sheet>
+                </header>
+                <div className="flex flex-col sm:gap-4 sm:pl-14">
                   <main className="px-4 sm:px-10">{children}</main>
                 </div>
               </>
