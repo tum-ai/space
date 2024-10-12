@@ -1,7 +1,7 @@
 import { Badge } from "@components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@components/ui/card";
 import { PageHeading } from "@components/ui/page-heading";
-import { mapPathnameToBreadcrumbs } from "@lib/utils";
+import { mapPathnameToBreadcrumbs } from "@components/ui/page-breadcrumbs";
 import ApplicationForm from "app/opportunities/_components/ApplicationForm";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
@@ -49,7 +49,7 @@ export default async function ApplicationOverview({
   if (!isAdmin && !isReviewer) redirect("/403");
 
   const headerList = headers();
-  const breadcrumbs = mapPathnameToBreadcrumbs(headerList);
+  const breadcrumbs = await mapPathnameToBreadcrumbs(headerList);
 
   return (
     <div className="flex h-screen flex-col space-y-8 py-8">

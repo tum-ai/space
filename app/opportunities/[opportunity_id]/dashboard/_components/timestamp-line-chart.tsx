@@ -27,6 +27,7 @@ const chartConfig = {
 interface Props<DataPoint extends Pick<Application, "id" | "createdAt">> {
   title: string;
   applications: DataPoint[];
+  className?: string;
 }
 
 export const TimestampLineChart = <
@@ -34,6 +35,7 @@ export const TimestampLineChart = <
 >({
   applications,
   title,
+  className,
 }: Props<DataPoint>) => {
   const groupedApplications = applications.reduce(
     (acc, application) => {
@@ -58,7 +60,7 @@ export const TimestampLineChart = <
   const latestDate = applications[applications.length - 1]?.createdAt;
 
   return (
-    <Card>
+    <Card className={className}>
       <CardHeader>
         <CardTitle>{title}</CardTitle>
         <CardDescription>
@@ -97,6 +99,7 @@ export const TimestampLineChart = <
               stroke="var(--color-desktop)"
               strokeWidth={2}
               dot={false}
+              type="monotone"
             />
           </LineChart>
         </ChartContainer>

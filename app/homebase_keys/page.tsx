@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 import { CreateKeyButton } from "./_components/create-key-button";
 import { PageHeading } from "@components/ui/page-heading";
 import { headers } from "next/headers";
-import { mapPathnameToBreadcrumbs } from "@lib/utils";
+import { mapPathnameToBreadcrumbs } from "@components/ui/page-breadcrumbs";
 
 export default async function HomebaseKeys() {
   const session = await getServerAuthSession();
@@ -15,7 +15,7 @@ export default async function HomebaseKeys() {
   if (!session?.user.id) redirect("/auth");
 
   const headerList = headers();
-  const breadcrumbs = mapPathnameToBreadcrumbs(headerList);
+  const breadcrumbs = await mapPathnameToBreadcrumbs(headerList);
 
   return (
     <section className="space-y-8 py-8">

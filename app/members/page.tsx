@@ -6,7 +6,7 @@ import { getServerAuthSession } from "server/auth";
 import { redirect } from "next/navigation";
 import { PageHeading } from "@components/ui/page-heading";
 import { headers } from "next/headers";
-import { mapPathnameToBreadcrumbs } from "@lib/utils";
+import { mapPathnameToBreadcrumbs } from "@components/ui/page-breadcrumbs";
 
 export default async function MembersPage() {
   const session = await getServerAuthSession();
@@ -62,7 +62,7 @@ export default async function MembersPage() {
   };
 
   const headerList = headers();
-  const breadcrumbs = mapPathnameToBreadcrumbs(headerList);
+  const breadcrumbs = await mapPathnameToBreadcrumbs(headerList);
 
   return (
     <section className="space-y-8 py-8">

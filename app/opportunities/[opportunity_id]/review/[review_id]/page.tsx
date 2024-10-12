@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import { type Question } from "@lib/types/question";
 import { getServerAuthSession } from "server/auth";
 import { headers } from "next/headers";
-import { mapPathnameToBreadcrumbs } from "@lib/utils";
+import { mapPathnameToBreadcrumbs } from "@components/ui/page-breadcrumbs";
 import { PageBreadcrumbs } from "@components/ui/page-breadcrumbs";
 
 interface ReviewProps {
@@ -42,7 +42,7 @@ export default async function Review({ params }: ReviewProps) {
   const questions = review.questionnaire.questions as Question[];
 
   const headerList = headers();
-  const breadcrumbs = mapPathnameToBreadcrumbs(headerList);
+  const breadcrumbs = await mapPathnameToBreadcrumbs(headerList);
 
   return (
     <div className="flex h-screen flex-col py-8">

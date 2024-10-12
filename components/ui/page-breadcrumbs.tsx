@@ -7,6 +7,59 @@ import {
   BreadcrumbSeparator,
   BreadcrumbPage,
 } from "./breadcrumb";
+import { Fragment } from "react";
+import type { ReadonlyHeaders } from "next/dist/server/web/spec-extension/adapters/headers";
+import db from "server/db";
+
+export async function mapPathnameToBreadcrumbs(
+  headerList: ReadonlyHeaders,
+): Promise<{ label: string; href: string }[]> {
+  const pathname = headerList.get("x-current-path");
+  if (!pathname) return [];
+
+  const segments = pathname.split("/").filter(Boolean);
+
+  const getLabelForNumberSegment = async (
+    segment: string,
+    index: number,
+  ): Promise<PageBreadcrumb["label"]> => {
+    const previousSegment = segments[index - 1];
+
+    if (previousSegment == "opportunities") {
+      return await db.opportunity
+        .findUnique({
+          where: { id: Number(segment) },
+        })
+        .then((e) => e?.title ?? segment);
+    }
+
+    if (previousSegment === "application") {
+      return await db.application
+        .findUnique({
+          where: { id: Number(segment) },
+        })
+        .then((e) => e?.name ?? segment);
+    }
+
+    return segment;
+  };
+
+  return (
+    await Promise.all(
+      segments.map(async (segment, index) => {
+        const href = "/" + segments.slice(0, index + 1).join("/");
+        const label = isNaN(Number(segment))
+          ? segment
+          : await getLabelForNumberSegment(segment, index);
+
+        return { label, href };
+      }),
+    )
+  ).map((e) => {
+    console.log(e);
+    return e;
+  }) as PageBreadcrumb[];
+}
 
 type PageBreadcrumb = { href: string; label: string };
 
@@ -31,12 +84,10 @@ export const PageBreadcrumbs = ({ breadcrumbs, className }: Props) => {
         </BreadcrumbItem>
 
         {breadcrumbs.map(({ href, label }, index) => (
-          <>
-            <BreadcrumbSeparator key={`separator-${href}`} />
-
+          <Fragment key={href}>
+            <BreadcrumbSeparator />
             <BreadcrumbItem>
               <BreadcrumbLink
-                key={href}
                 asChild
                 className="max-w-20 truncate md:max-w-none"
               >
@@ -47,7 +98,7 @@ export const PageBreadcrumbs = ({ breadcrumbs, className }: Props) => {
                 )}
               </BreadcrumbLink>
             </BreadcrumbItem>
-          </>
+          </Fragment>
         ))}
       </BreadcrumbList>
     </Breadcrumb>

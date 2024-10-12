@@ -10,7 +10,7 @@ import {
 } from "@prisma/client";
 import { PageHeading } from "@components/ui/page-heading";
 import { headers } from "next/headers";
-import { mapPathnameToBreadcrumbs } from "@lib/utils";
+import { mapPathnameToBreadcrumbs } from "@components/ui/page-breadcrumbs";
 
 interface Props {
   params: {
@@ -128,7 +128,7 @@ export default async function PhasePage({ params }: Props) {
   }
 
   const headerList = headers();
-  const breadcrumbs = mapPathnameToBreadcrumbs(headerList);
+  const breadcrumbs = await mapPathnameToBreadcrumbs(headerList);
 
   return (
     <div className="flex flex-col gap-8 py-8">

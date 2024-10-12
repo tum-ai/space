@@ -23,6 +23,7 @@ import {
   MessageSquareText,
   Minimize,
   Search,
+  UserX,
 } from "lucide-react";
 import { type OpportunityPhase } from "../page";
 import { api } from "trpc/react";
@@ -31,6 +32,7 @@ import { Input } from "@components/ui/input";
 import { Separator } from "components/ui/separator";
 import { AvatarStack } from "@components/user/users-stack";
 import { usePathname, useRouter } from "next/navigation";
+import { Alert, AlertDescription, AlertTitle } from "@components/ui/alert";
 
 interface SelectionState {
   questionnaire?: string;
@@ -65,7 +67,7 @@ export const ApplicationOverview = ({
     const params = new URLSearchParams();
     if (data.questionnaire) params.set("questionnaire", data.questionnaire);
     if (data.application) params.set("application", String(data.application));
-    router.push(pathname + "?" + params.toString());
+    router.replace(pathname + "?" + params.toString());
   };
 
   const selectedQuestionnaire = useMemo(() => {
@@ -80,6 +82,7 @@ export const ApplicationOverview = ({
 
   const applicationQuery = api.application.getById.useQuery(
     applicationId ?? -1,
+    { enabled: !!applicationId },
   );
 
   const [searchValue, setSearchValue] = useState("");
@@ -97,7 +100,7 @@ export const ApplicationOverview = ({
   const [isApplicationMaximized, setIsApplicationMaximized] = useState(false);
 
   return (
-    <Card className="flex h-full min-h-0">
+    <Card className="flex h-full min-h-0 flex-1">
       <ResizablePanelGroup
         direction={"horizontal"}
         autoSaveId="opportunities-overview"
@@ -180,7 +183,7 @@ export const ApplicationOverview = ({
                 Applications
               </h3>
               <Separator />
-              <div className="relative m-4 mt-0">
+              <div className="relative mx-4">
                 <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
                 <Input
                   placeholder="Search"
@@ -217,6 +220,29 @@ export const ApplicationOverview = ({
                       )}
                     </Card>
                   ))}
+                  {!!searchValue && !filteredApplications?.length && (
+                    <Alert>
+                      <UserX className="h-4 w-4" />
+                      <AlertTitle>Not found</AlertTitle>
+                      <AlertDescription>
+                        No applicant with that name was found
+                      </AlertDescription>
+                    </Alert>
+                  )}
+
+                  {!searchValue && !filteredApplications?.length && (
+                    <Alert>
+                      <UserX className="h-4 w-4" />
+                      <AlertTitle>No applicants</AlertTitle>
+                      <AlertDescription>No one applied yet</AlertDescription>
+                    </Alert>
+                  )}
+
+                  {!!filteredApplications?.length && (
+                    <p className="text-xs text-muted-foreground">
+                      {filteredApplications?.length} Applications
+                    </p>
+                  )}
                 </div>
                 <ScrollBar orientation="vertical" />
               </ScrollArea>

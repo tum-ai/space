@@ -66,12 +66,14 @@ export async function EditPhases({ opportunityId }: { opportunityId: string }) {
 
           create: {
             opportunity: { connect: { id: input.opportunityId } },
+            isInterview: phase.isInterview,
             name: phase.name,
             order: phase.order,
           } satisfies Prisma.PhaseCreateInput,
 
           update: {
             name: phase.name,
+            isInterview: phase.isInterview,
             order: phase.order,
           } satisfies Prisma.PhaseUpdateInput,
         } satisfies Prisma.PhaseUpsertArgs);

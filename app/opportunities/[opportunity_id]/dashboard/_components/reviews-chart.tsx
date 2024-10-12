@@ -16,11 +16,14 @@ import {
   ChartTooltipContent,
 } from "@components/ui/chart";
 import type { Review, User } from "@prisma/client";
+import { cn } from "@lib/utils";
 
 export function ReviewsChart({
   reviews,
+  className,
 }: {
   reviews: (Review & { user: User })[];
+  className?: string;
 }) {
   const chartData = React.useMemo(() => {
     const groupedData = reviews.reduce(
@@ -44,39 +47,26 @@ export function ReviewsChart({
   }, [reviews]);
 
   const userConfig = React.useMemo(() => {
-    const colors = [
-      "hsl(var(--chart-1))",
-      "hsl(var(--chart-2))",
-      "hsl(var(--chart-3))",
-      "hsl(var(--chart-4))",
-      "hsl(var(--chart-5))",
-    ];
-
     return chartData.reduce(
-      (acc, { id, user }, index) => {
-        acc[id] = {
-          label: user,
-          fill: colors[index % colors.length]!,
-        };
+      (acc, { id, user }) => {
+        acc[id] = { label: user };
         return acc;
       },
-      {} as Record<string, { label: string; fill: string }>,
+      {} as Record<string, { label: string }>,
     );
   }, [chartData]);
-
-  console.log(userConfig);
 
   const totalReviews = React.useMemo(() => {
     return reviews.length;
   }, [reviews]);
 
   return (
-    <Card className="flex flex-col">
+    <Card className={cn("flex flex-col", className)}>
       <CardHeader>
         <CardTitle>Reviewers</CardTitle>
         <CardDescription>Distribution of reviews</CardDescription>
       </CardHeader>
-      <CardContent className="flex-1 pb-0">
+      <CardContent className="flex-1">
         <ChartContainer
           config={userConfig}
           className="mx-auto aspect-square max-h-[250px]"
@@ -93,6 +83,7 @@ export function ReviewsChart({
               innerRadius={60}
               paddingAngle={1}
               strokeWidth={5}
+              fill={"hsl(var(--chart-1))"}
             >
               <Label
                 content={({ viewBox }) => {

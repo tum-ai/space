@@ -4,7 +4,7 @@ import { Toaster } from "@components/ui/sonner";
 import { TRPCReactProvider } from "trpc/react";
 import { TooltipProvider } from "@radix-ui/react-tooltip";
 import Link from "next/link";
-import { Goal, Key, LogIn, PanelLeft, Settings, Users } from "lucide-react";
+import { Goal, Key, LogIn, Settings, Users } from "lucide-react";
 
 import {
   Tooltip,
@@ -19,8 +19,7 @@ import {
 } from "@components/ui/dropdown-menu";
 import { MenuActions } from "./_components/menuActions";
 import type { Metadata } from "next/types";
-import { Sheet, SheetContent, SheetTrigger } from "@components/ui/sheet";
-import { Button } from "@components/ui/button";
+import { NavigationBar } from "./_components/navigation-bar";
 
 interface Props {
   children: React.ReactNode;
@@ -30,11 +29,7 @@ export const metadata: Metadata = {
   title: "TUM.ai Space",
 };
 
-const navigationItems: {
-  href: string;
-  label: string;
-  icon: React.ReactNode;
-}[] = [
+const navigationItems = [
   {
     href: "/opportunities",
     label: "Opportunities",
@@ -118,32 +113,7 @@ export default async function RootLayout({ children }: Props) {
                   </nav>
                 </aside>
                 <header className="fixed top-0 z-30 flex h-14 w-full items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
-                  <Sheet>
-                    <SheetTrigger asChild>
-                      <Button
-                        size="icon"
-                        variant="outline"
-                        className="sm:hidden"
-                      >
-                        <PanelLeft className="h-5 w-5" />
-                        <span className="sr-only">Toggle Menu</span>
-                      </Button>
-                    </SheetTrigger>
-                    <SheetContent side="left" className="pt-16 sm:max-w-xs">
-                      <nav className="grid gap-6 text-lg font-medium">
-                        {navigationItems.map(({ href, label, icon }) => (
-                          <Link
-                            key={href}
-                            href={href}
-                            className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
-                          >
-                            {icon}
-                            {label}
-                          </Link>
-                        ))}
-                      </nav>
-                    </SheetContent>
-                  </Sheet>
+                  <NavigationBar navigationItems={navigationItems} />
                 </header>
                 <div className="flex flex-col sm:gap-4 sm:pl-14">
                   <main className="px-4 sm:px-10">{children}</main>

@@ -10,7 +10,7 @@ import {
 import { AddUserPopup } from "@components/user/add-user-popup";
 import { cn } from "@lib/utils";
 import { cva } from "class-variance-authority";
-import { Plus, UserMinus } from "lucide-react";
+import { Plus, User, UserMinus } from "lucide-react";
 import type { VariantProps } from "class-variance-authority";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
 import { ScrollBar } from "@components/ui/scroll-area";
@@ -54,6 +54,16 @@ export const AvatarStack = <User extends AvatarStackUser>({
   remove,
   size = "default",
 }: Props<User>) => {
+  const getInitials = (name: string) => {
+    const initials = name
+      .split(" ")
+      .map((part) => part.charAt(0).toUpperCase())
+      .splice(2)
+      .join("");
+
+    return initials;
+  };
+
   return (
     <div
       className={cn(
@@ -84,11 +94,17 @@ export const AvatarStack = <User extends AvatarStackUser>({
                       <UserMinus />
                     </span>
                     <AvatarImage src={user.image ?? undefined} />
+                    <AvatarFallback>
+                      <User />
+                    </AvatarFallback>
                   </Avatar>
                 </button>
               ) : (
                 <Avatar className={cn(userStackVariants({ size }))}>
                   <AvatarImage src={user.image ?? undefined} />
+                  <AvatarFallback>
+                    <User />
+                  </AvatarFallback>
                 </Avatar>
               )}
             </TooltipTrigger>

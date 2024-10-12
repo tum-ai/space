@@ -6,7 +6,7 @@ import { type z } from "zod";
 import db from "server/db";
 import { PageHeading } from "@components/ui/page-heading";
 import { headers } from "next/headers";
-import { mapPathnameToBreadcrumbs } from "@lib/utils";
+import { mapPathnameToBreadcrumbs } from "@components/ui/page-breadcrumbs";
 
 export default async function CreateOpportunity() {
   const session = await getServerAuthSession();
@@ -33,7 +33,7 @@ export default async function CreateOpportunity() {
   }
 
   const headerList = headers();
-  const breadcrumbs = mapPathnameToBreadcrumbs(headerList);
+  const breadcrumbs = await mapPathnameToBreadcrumbs(headerList);
 
   return (
     <div className="space-y-8 py-8">

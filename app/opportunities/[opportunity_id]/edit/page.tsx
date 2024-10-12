@@ -4,7 +4,7 @@ import { EditPhases } from "./_components/phases";
 import { redirect } from "next/navigation";
 import { PageHeading } from "@components/ui/page-heading";
 import { headers } from "next/headers";
-import { mapPathnameToBreadcrumbs } from "@lib/utils";
+import { mapPathnameToBreadcrumbs } from "@components/ui/page-breadcrumbs";
 import { Separator } from "@components/ui/separator";
 
 interface Props {
@@ -20,7 +20,7 @@ export default async function OpportunityEdit({ params }: Props) {
   const opportunityId = params.opportunity_id;
 
   const headerList = headers();
-  const breadcrumbs = mapPathnameToBreadcrumbs(headerList);
+  const breadcrumbs = await mapPathnameToBreadcrumbs(headerList);
 
   return (
     <div className="space-y-8 py-8">

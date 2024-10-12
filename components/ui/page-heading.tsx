@@ -21,7 +21,7 @@ export const PageHeading = ({
       <PageBreadcrumbs breadcrumbs={breadcrumbs} />
 
       <div className="flex w-full flex-col justify-between gap-2 md:flex-row">
-        <div className="flex w-full flex-col gap-3 truncate">
+        <div className="flex w-full flex-col gap-1 truncate">
           <h2 className="scroll-m-20 text-3xl font-semibold tracking-tight first:mt-0">
             {title}
           </h2>

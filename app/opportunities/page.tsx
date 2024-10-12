@@ -5,7 +5,7 @@ import { type Opportunity } from "@prisma/client";
 import OpportunityCard from "./_components/opportunityCard";
 import { PageHeading } from "@components/ui/page-heading";
 import { headers } from "next/headers";
-import { mapPathnameToBreadcrumbs } from "@lib/utils";
+import { mapPathnameToBreadcrumbs } from "@components/ui/page-breadcrumbs";
 import { Button } from "@components/ui/button";
 import { Plus } from "lucide-react";
 import Link from "next/link";
@@ -76,7 +76,7 @@ export default async function OpportunitiesPage() {
 
   const headerList = headers();
   const pathname = headerList.get("x-current-path");
-  const breadcrumbs = mapPathnameToBreadcrumbs(headerList);
+  const breadcrumbs = await mapPathnameToBreadcrumbs(headerList);
 
   return (
     <div className="flex flex-col gap-8 overflow-hidden py-8 sm:h-screen">

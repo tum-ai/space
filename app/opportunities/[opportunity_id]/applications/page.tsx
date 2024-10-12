@@ -6,7 +6,7 @@ import { type Phase, type Questionnaire, type User } from "@prisma/client";
 import { ExportButton } from "./_components/exportButton";
 import { PageHeading } from "@components/ui/page-heading";
 import { headers } from "next/headers";
-import { mapPathnameToBreadcrumbs } from "@lib/utils";
+import { mapPathnameToBreadcrumbs } from "@components/ui/page-breadcrumbs";
 
 export const dynamic = "force-dynamic";
 
@@ -63,9 +63,6 @@ export default async function ApplicationsPage({
             select: {
               id: true,
               name: true,
-              reviews: {
-                select: !!isAdmin ? { user: true } : undefined,
-              },
             },
             orderBy: {
               createdAt: "asc",
@@ -107,7 +104,7 @@ export default async function ApplicationsPage({
   }
 
   const headerList = headers();
-  const breadcrumbs = mapPathnameToBreadcrumbs(headerList);
+  const breadcrumbs = await mapPathnameToBreadcrumbs(headerList);
 
   return (
     <div className="flex h-screen flex-col gap-8 overflow-hidden py-8">
@@ -120,7 +117,8 @@ export default async function ApplicationsPage({
         phases={phases}
         isAdmin={isAdmin}
         initialSelection={{
-          questionnaire: searchParams.questionnaire,
+          questionnaire:
+            searchParams.questionnaire ?? phases[0]?.questionnaires[0]?.id,
           application: Number(searchParams.application),
         }}
       />
