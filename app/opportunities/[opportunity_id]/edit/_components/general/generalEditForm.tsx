@@ -10,7 +10,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { type Opportunity } from "@prisma/client";
 import { GeneralInformation } from "../../../../_components/generalForm";
-import { DeleteButton } from "../deleteButton";
+import { DeleteButton } from "./deleteButton";
 
 interface Props {
   defaultValues: z.infer<typeof GeneralInformationSchema>;

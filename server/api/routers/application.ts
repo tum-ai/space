@@ -13,6 +13,18 @@ export const applicationRouter = createTRPCRouter({
       });
     }),
 
+  getAllByOpportunity: protectedProcedure
+    .input(z.number())
+    .query(async ({ input, ctx }) => {
+      return await ctx.db.application.findMany({
+        select: {
+          id: true,
+          createdAt: true,
+        },
+        where: { opportunityId: input },
+      });
+    }),
+
   reassignAllApplicationsToQuestionnaires: protectedProcedure
     .input(z.object({ opportunityId: z.number() }))
     .mutation(async ({ input, ctx }) => {
