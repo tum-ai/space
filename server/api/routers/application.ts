@@ -19,9 +19,11 @@ export const applicationRouter = createTRPCRouter({
       return await ctx.db.application.findMany({
         select: {
           id: true,
+          name: true,
           createdAt: true,
         },
         where: { opportunityId: input },
+        orderBy: { createdAt: "desc" },
       });
     }),
 

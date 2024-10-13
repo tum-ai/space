@@ -1,6 +1,6 @@
 "use client";
 
-import { format, formatDistanceToNow } from "date-fns";
+import { format } from "date-fns";
 import { Button } from "@components/ui/button";
 import {
   Card,
@@ -13,7 +13,7 @@ import { Input } from "@components/ui/input";
 import { Copy, RotateCcw, Send } from "lucide-react";
 import { toast } from "sonner";
 import { api } from "trpc/react";
-import { type TallyData } from "@lib/types/tally";
+import { type TallyField, type Tally } from "@lib/types/tally";
 import { TallyFieldForm } from "./tallyFieldForm";
 import { useEffect, useState } from "react";
 import { Label } from "@components/ui/label";
@@ -26,10 +26,13 @@ import { Alert, AlertDescription, AlertTitle } from "@components/ui/alert";
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
+  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@components/ui/select";
+import { type Application } from "@prisma/client";
 
 export const TallyForm = ({ opportunityId }: { opportunityId: string }) => {
   const { data: applicationList, refetch: refetchApplications } =
@@ -43,6 +46,12 @@ export const TallyForm = ({ opportunityId }: { opportunityId: string }) => {
     Number(selectedApplication),
     { enabled: !!selectedApplication },
   );
+
+  const getTallyFields = (
+    application?: Application | null,
+  ): TallyField[] | undefined => {
+    return (application?.content as Tally)?.data?.fields;
+  };
 
   const [webhookUrl, setWebhookUrl] = useState("");
 
@@ -93,19 +102,37 @@ export const TallyForm = ({ opportunityId }: { opportunityId: string }) => {
                 <SelectValue placeholder="Choose application" />
               </SelectTrigger>
               <SelectContent>
-                {applicationList?.map((application) => (
-                  <SelectItem
-                    key={application.id}
-                    value={String(application.id)}
-                  >
-                    {new Date(application.createdAt).toDateString() ===
-                    new Date().toDateString()
-                      ? formatDistanceToNow(new Date(application.createdAt), {
-                          addSuffix: true,
-                        })
-                      : format(new Date(application.createdAt), "PPpp")}
-                  </SelectItem>
-                ))}
+                <SelectGroup>
+                  {applicationList &&
+                    Object.entries(
+                      applicationList.reduce(
+                        (acc, application) => {
+                          const date = new Date(
+                            application.createdAt,
+                          ).toDateString();
+                          if (!acc[date]) acc[date] = [];
+                          acc[date].push(application);
+                          return acc;
+                        },
+                        {} as Record<string, typeof applicationList>,
+                      ),
+                    ).map(([date, applications]) => (
+                      <SelectGroup key={date}>
+                        <SelectLabel>{date}</SelectLabel>
+                        {applications.map((application) => (
+                          <SelectItem
+                            key={application.id}
+                            value={String(application.id)}
+                          >
+                            <span className="font-mono font-semibold">
+                              {format(new Date(application.createdAt), "HH:mm")}
+                            </span>
+                            {!!application.name && <> - {application.name}</>}
+                          </SelectItem>
+                        ))}
+                      </SelectGroup>
+                    ))}
+                </SelectGroup>
               </SelectContent>
             </Select>
 
@@ -121,7 +148,7 @@ export const TallyForm = ({ opportunityId }: { opportunityId: string }) => {
         </div>
       </div>
 
-      {!(application?.content as TallyData)?.fields?.length && (
+      {!getTallyFields(application)?.length && (
         <div className="flex justify-center">
           <Alert className="w-max">
             <Send className="h-4 w-4" />
@@ -133,7 +160,7 @@ export const TallyForm = ({ opportunityId }: { opportunityId: string }) => {
         </div>
       )}
 
-      {!!(application?.content as TallyData)?.fields?.length && (
+      {!!getTallyFields(application)?.length && (
         <div className="h-[80vh]">
           <ResizablePanelGroup
             direction="horizontal"
@@ -160,21 +187,12 @@ export const TallyForm = ({ opportunityId }: { opportunityId: string }) => {
                   <CardTitle className="scroll-m-20 text-2xl font-semibold tracking-tight">
                     Application Form
                   </CardTitle>
-                  {(application?.content as TallyData)?.fields?.length ===
-                    0 && (
-                    <CardDescription>
-                      Your application schema will show up here once you submit
-                      a test application
-                    </CardDescription>
-                  )}
                 </CardHeader>
                 <CardContent>
                   <div className="sticky grid gap-8">
-                    {(application?.content as TallyData)?.fields?.map(
-                      (field) => (
-                        <TallyFieldForm field={field} key={field.key} />
-                      ),
-                    )}
+                    {getTallyFields(application)?.map((field) => (
+                      <TallyFieldForm field={field} key={field.key} />
+                    ))}
                   </div>
                 </CardContent>
               </Card>
