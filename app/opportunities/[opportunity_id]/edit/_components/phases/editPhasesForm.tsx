@@ -51,7 +51,7 @@ export function EditPhasesForm({ update }: Props) {
             Phases
           </h3>
           <p className="text-muted-foreground">
-            Configure the different phases applicants will go through
+            Set up the various stages applicants will experience
           </p>
         </div>
 

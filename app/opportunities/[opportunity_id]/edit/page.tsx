@@ -75,6 +75,11 @@ export default async function OpportunityEdit({ params }: Props) {
   const upsertPhases = async (input: Phases) => {
     "use server";
 
+    await db.opportunity.update({
+      where: { id: Number(opportunityId) },
+      data: { schemaId: input.schemaId },
+    });
+
     // Update phases and questionnaires
     const phases = await db.$transaction(
       input.phases.map((phase) => {
@@ -167,7 +172,7 @@ export default async function OpportunityEdit({ params }: Props) {
         <Separator />
         <EditPhasesForm update={upsertPhases} />
         <Separator />
-        <TallyForm opportunityId={opportunityId} />
+        <TallyForm opportunity={opportunity} update={upsertPhases} />
       </div>
     </PhaseContextProvider>
   );

@@ -10,7 +10,7 @@ import {
   CardTitle,
 } from "@components/ui/card";
 import { Input } from "@components/ui/input";
-import { Copy, RotateCcw, Send } from "lucide-react";
+import { Copy, Plus, RotateCcw, Save, Send } from "lucide-react";
 import { toast } from "sonner";
 import { api } from "trpc/react";
 import { type TallyField, type Tally } from "@lib/types/tally";
@@ -32,15 +32,36 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@components/ui/select";
-import { type Application } from "@prisma/client";
+import type { Opportunity, Application } from "@prisma/client";
+import { usePhasesContext } from "../phases/usePhasesStore";
+import { type Phases } from "@lib/types/opportunity";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@components/ui/popover";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@components/ui/command";
 
-export const TallyForm = ({ opportunityId }: { opportunityId: string }) => {
+export const TallyForm = ({
+  opportunity,
+  update,
+}: {
+  opportunity: Opportunity;
+  update: (input: Phases) => Promise<void>;
+}) => {
   const { data: applicationList, refetch: refetchApplications } =
-    api.application.getAllByOpportunity.useQuery(Number(opportunityId));
+    api.application.getAllByOpportunity.useQuery(Number(opportunity.id));
 
   const [selectedApplication, setSelectedApplication] = useState<
     string | undefined
-  >(undefined);
+  >(opportunity.schemaId ? String(opportunity.schemaId) : undefined);
 
   const { data: application } = api.application.getById.useQuery(
     Number(selectedApplication),
@@ -53,18 +74,44 @@ export const TallyForm = ({ opportunityId }: { opportunityId: string }) => {
     return (application?.content as Tally)?.data?.fields;
   };
 
-  const [webhookUrl, setWebhookUrl] = useState("");
+  const phases = usePhasesContext((s) => s.phases);
 
+  async function onSubmit() {
+    const id = toast.loading("Updating application related settings");
+    try {
+      await update({ phases, schemaId: Number(selectedApplication) });
+      toast.success("Application settings updated successfully!", { id });
+    } catch (_err) {
+      toast.error("Error updating application settings. Please try again.", {
+        id,
+      });
+    }
+  }
+
+  const [webhookUrl, setWebhookUrl] = useState("");
   useEffect(() => {
     if (typeof window !== "undefined") {
       setWebhookUrl(
-        `${window.location.origin}/api/tally/opportunity/${opportunityId}`,
+        `${window.location.origin}/api/tally/opportunity/${opportunity.id}`,
       );
     }
-  }, [opportunityId]);
+  }, [opportunity.id]);
+
+  const [open, setOpen] = useState(false);
+  const [questionnairesWithRules, setQuestionnairesWithRules] = useState([]);
 
   return (
     <div className="flex flex-col gap-8">
+      <div>
+        <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
+          Application
+        </h3>
+        <p className="text-muted-foreground">
+          Configure the review process and specify the fields of interest for
+          the application.
+        </p>
+      </div>
+
       <div className="grid grid-cols-2 gap-4">
         <div className="w-full space-y-2">
           <Label>Webhook url</Label>
@@ -174,13 +221,59 @@ export const TallyForm = ({ opportunityId }: { opportunityId: string }) => {
                     Assignment rules
                   </CardTitle>
                   <CardDescription>
-                    Define rules to decide which questionnaires to assign to an
-                    application
+                    Set rules to determine which questionnaires are assigned to
+                    an application. Questionnaires without specific rules will
+                    be assigned to all applicants.
                   </CardDescription>
                 </CardHeader>
+
+                <CardContent>
+                  <Popover open={open} onOpenChange={setOpen}>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        role="combobox"
+                        aria-expanded={open}
+                        className="h-32 w-full items-center justify-center border-dashed"
+                      >
+                        <Plus className="mr-2" />
+                        Add questionnaire rule
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="p-0">
+                      <Command>
+                        <CommandInput placeholder="Search questionnaire..." />
+                        <CommandList>
+                          <CommandEmpty>No questionnaire found.</CommandEmpty>
+
+                          {phases.map((phase) => (
+                            <CommandGroup heading={phase.name} key={phase.id}>
+                              {phase.questionnaires.map((q) => (
+                                <CommandItem
+                                  keywords={[phase.name, q.name]}
+                                  key={q.id}
+                                  value={q.id}
+                                  onSelect={(currentValue) => {
+                                    setQuestionnairesWithRules((prev) => ({
+                                      ...prev,
+                                      currentValue,
+                                    }));
+                                    setOpen(false);
+                                  }}
+                                >
+                                  {q.name}
+                                </CommandItem>
+                              ))}
+                            </CommandGroup>
+                          ))}
+                        </CommandList>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
+                </CardContent>
               </Card>
             </ResizablePanel>
-            <ResizableHandle />
+            <ResizableHandle withHandle />
             <ResizablePanel defaultSize={50}>
               <Card className="h-full overflow-y-scroll">
                 <CardHeader>
@@ -200,6 +293,13 @@ export const TallyForm = ({ opportunityId }: { opportunityId: string }) => {
           </ResizablePanelGroup>
         </div>
       )}
+
+      <div className="flex justify-end gap-2">
+        <Button type="button" onClick={onSubmit}>
+          <Save className="mr-2" />
+          Save
+        </Button>
+      </div>
     </div>
   );
 };

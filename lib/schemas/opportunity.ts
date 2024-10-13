@@ -21,6 +21,7 @@ export const PhaseSchema = z.object({
 
 export const PhasesSchema = z.object({
   opportunityId: z.number().optional(),
+  schemaId: z.number().optional(), // The id of the application used to define the schema
   phases: z.array(PhaseSchema),
 });
 

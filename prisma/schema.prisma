@@ -113,7 +113,7 @@ model Opportunity {
   end          DateTime?
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
-  tallySchema  Json?
+  schemaId     Int?
   applications Application[]
   phases       Phase[]
   admins       User[]        @relation("OpportunityToUser")
@@ -121,7 +121,7 @@ model Opportunity {
 
 model Phase {
   id             String          @id @default(uuid())
-  order          Int
+  order          Int             @default(0)
   isInterview    Boolean         @default(false)
   name           String
   opportunityId  Int

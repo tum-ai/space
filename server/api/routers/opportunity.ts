@@ -42,13 +42,4 @@ export const opportunityRouter = createTRPCRouter({
         },
       });
     }),
-
-  getTallySchema: protectedProcedure
-    .input(z.object({ id: z.number() }))
-    .query(async ({ input, ctx }) => {
-      return await ctx.db.opportunity.findFirst({
-        where: { id: input.id },
-        select: { tallySchema: true },
-      });
-    }),
 });

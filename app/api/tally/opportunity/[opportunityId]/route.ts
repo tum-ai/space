@@ -28,12 +28,6 @@ export async function POST(
       },
     });
 
-    // TODO: Strip tallyApplication of actual values and personal data
-    await db.opportunity.update({
-      where: { id: parseInt(opportunityId) },
-      data: { tallySchema: { ...tallyApplication } },
-    });
-
     const application = await db.application.create({
       data: {
         content: tallyApplication,
