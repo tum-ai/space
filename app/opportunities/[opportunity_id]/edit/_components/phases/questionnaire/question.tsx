@@ -30,7 +30,7 @@ import {
   isArrayOptions,
 } from "@lib/schemas/question";
 import { useState } from "react";
-import { Minus, Plus, X } from "lucide-react";
+import { Minus, Plus } from "lucide-react";
 import { toast } from "sonner";
 import { Card } from "@components/ui/card";
 
@@ -49,7 +49,7 @@ export const QuestionForm = ({
 }: QuestionFormProps) => {
   const form = useForm<z.infer<typeof QuestionSchema>>({
     resolver: zodResolver(QuestionSchema),
-    defaultValues: defaultValues ?? { key: uuidv4() },
+    defaultValues: defaultValues ?? { key: uuidv4(), type: "INPUT_TEXT" },
   });
 
   const onSubmit: SubmitHandler<z.infer<typeof QuestionSchema>> = (data) => {
@@ -116,7 +116,7 @@ export const QuestionForm = ({
           {type === "NUMERIC" && <MinMaxOption />}
         </div>
 
-        <div className="flex justify-end gap-2">
+        <div className="flex justify-between">
           <Button
             size="sm"
             type="button"
@@ -128,25 +128,27 @@ export const QuestionForm = ({
             Cancel
           </Button>
 
-          {onRemove && (
+          <div className="flex gap-2">
+            {onRemove && (
+              <Button
+                size="sm"
+                type="button"
+                variant="destructive"
+                onClick={onRemove}
+              >
+                Remove
+              </Button>
+            )}
+
             <Button
               size="sm"
-              type="button"
-              variant="destructive"
-              onClick={onRemove}
+              type="submit"
+              variant="outline"
+              onClick={form.handleSubmit(onSubmit, console.error)}
             >
-              Remove
+              {defaultValues ? "Update" : "Create"}
             </Button>
-          )}
-
-          <Button
-            size="sm"
-            type="button"
-            variant="outline"
-            onClick={form.handleSubmit(onSubmit, console.error)}
-          >
-            {defaultValues ? "Update" : "Create"}
-          </Button>
+          </div>
         </div>
       </Card>
     </Form>
@@ -185,14 +187,14 @@ const ChoiceOptions = () => {
         <div className="divide-y rounded border">
           {options.map((option, index) => (
             <div key={option.id} className="flex justify-between px-2 py-1">
-              <p className="flex items-center">{option.text}</p>
+              <p className="flex items-center text-sm">{option.text}</p>
               <Button
                 size="icon"
                 className="px-2"
                 variant="ghost"
                 onClick={() => remove(index)}
               >
-                <X />
+                <Minus />
               </Button>
             </div>
           ))}

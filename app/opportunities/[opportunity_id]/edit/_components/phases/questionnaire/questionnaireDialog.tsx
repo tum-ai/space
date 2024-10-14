@@ -9,7 +9,6 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -35,7 +34,6 @@ import { Card } from "@components/ui/card";
 import { QuestionForm, type QuestionFormProps } from "./question";
 import type { Question } from "@lib/types/question";
 import { AvatarStack } from "../../../../../../../components/user/users-stack";
-import { useSession } from "next-auth/react";
 
 const QuestionEdit = ({
   question,
@@ -130,118 +128,131 @@ export const QuestionnaireDialog = ({
   return (
     <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="max-h-[42rem] space-y-4 overflow-y-auto">
+      <DialogContent>
         <Form {...form}>
-          <DialogHeader>
-            <DialogTitle>
-              {defaultValues ? "Edit" : "Add"} questionaire
-            </DialogTitle>
-            <DialogDescription>
-              Configure questions and reviewer
-            </DialogDescription>
-          </DialogHeader>
+          <form
+            onSubmit={form.handleSubmit(onSubmit, console.error)}
+            className="max-h-[42rem] space-y-4 overflow-y-auto"
+          >
+            <DialogHeader>
+              <DialogTitle>
+                {defaultValues ? "Edit" : "Add"} questionaire
+              </DialogTitle>
+              <DialogDescription>
+                Configure questions and reviewer
+              </DialogDescription>
+            </DialogHeader>
 
-          <div className="space-y-2">
-            <h4 className="scroll-m-20 text-xl font-semibold tracking-tight">
-              Information
-            </h4>
-            <FormField
-              control={form.control}
-              name={`name`}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Name*</FormLabel>
-                  <FormControl>
-                    <Input placeholder="General" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormItem>
-              <FormLabel>Required reviews*</FormLabel>
-              <FormControl>
-                <Input
-                  type="number"
-                  placeholder="General"
-                  {...form.register("requiredReviews", { valueAsNumber: true })}
-                />
-              </FormControl>
-              <FormDescription>
-                Required amount of unique reviews for this questionnaire per
-                application.
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          </div>
-
-          <div className="space-y-2">
-            <h4 className="scroll-m-20 text-xl font-semibold tracking-tight">
-              Questions
-            </h4>
             <div className="space-y-2">
-              {questions.map((question, i) => (
-                <QuestionEdit
-                  key={`question-edit-${question.fieldId}`}
-                  question={question}
-                  onSave={(data) => updateQuestion(i, data)}
-                  onRemove={() => removeQuestion(i)}
-                />
-              ))}
+              <h4 className="scroll-m-20 text-xl font-semibold tracking-tight">
+                Information
+              </h4>
+              <FormField
+                control={form.control}
+                name={`name`}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Name*</FormLabel>
+                    <FormControl>
+                      <Input placeholder="General" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-              {addQuestionOpen && (
-                <QuestionForm
-                  toggleEdit={() => setAddQuestionOpen(false)}
-                  onSave={appendQuestion}
-                />
-              )}
-
-              <Button
-                className="w-full"
-                variant="secondary"
-                type="button"
-                onClick={() => setAddQuestionOpen(true)}
-              >
-                <FilePlus2 className="mr-2" />
-                Add question
-              </Button>
+              <FormItem>
+                <FormLabel>Required reviews*</FormLabel>
+                <FormControl>
+                  <Input
+                    type="number"
+                    placeholder="General"
+                    {...form.register("requiredReviews", {
+                      valueAsNumber: true,
+                    })}
+                  />
+                </FormControl>
+                <FormDescription>
+                  Required amount of unique reviews for this questionnaire per
+                  application.
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
             </div>
-          </div>
 
-          <div className="space-y-2">
-            <h4 className="scroll-m-20 text-xl font-semibold tracking-tight">
-              Reviewer
-            </h4>
-            <AvatarStack
-              users={reviewers}
-              append={(user) =>
-                appendReviewer({
-                  ...user,
-                  name: user.name ?? undefined,
-                  image: user.image ?? undefined,
-                })
-              }
-              remove={removeReviewer}
-            />
-          </div>
+            <div className="space-y-2">
+              <h4 className="scroll-m-20 text-xl font-semibold tracking-tight">
+                Questions
+              </h4>
+              <div className="space-y-2">
+                {questions.map((question, i) => (
+                  <QuestionEdit
+                    key={`question-edit-${question.fieldId}`}
+                    question={question}
+                    onSave={(data) => updateQuestion(i, data)}
+                    onRemove={() => removeQuestion(i)}
+                  />
+                ))}
 
-          <DialogFooter>
-            {onRemove && (
-              <Button type="button" variant="destructive" onClick={onRemove}>
-                <FileMinus className="mr-2" />
-                Remove
+                {addQuestionOpen && (
+                  <QuestionForm
+                    toggleEdit={() => setAddQuestionOpen(false)}
+                    onSave={appendQuestion}
+                  />
+                )}
+
+                <Button
+                  className="w-full border-dashed"
+                  variant="outline"
+                  type="button"
+                  onClick={() => setAddQuestionOpen(true)}
+                >
+                  <FilePlus2 className="mr-2" />
+                  Add question
+                </Button>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <h4 className="scroll-m-20 text-xl font-semibold tracking-tight">
+                Reviewer
+              </h4>
+              <AvatarStack
+                users={reviewers}
+                append={(user) =>
+                  appendReviewer({
+                    ...user,
+                    name: user.name ?? undefined,
+                    image: user.image ?? undefined,
+                  })
+                }
+                remove={removeReviewer}
+              />
+            </div>
+
+            <div className="flex justify-between pt-8">
+              <Button type="button" variant="ghost">
+                Cancel
               </Button>
-            )}
-            <Button
-              type="button"
-              // eslint-disable-next-line @typescript-eslint/no-misused-promises
-              onClick={form.handleSubmit(onSubmit, console.error)}
-            >
-              <Save className="mr-2" />
-              Save
-            </Button>
-          </DialogFooter>
+
+              <div className="flex gap-2">
+                {onRemove && (
+                  <Button
+                    type="button"
+                    variant="destructive"
+                    onClick={onRemove}
+                  >
+                    <FileMinus className="mr-2" />
+                    Remove
+                  </Button>
+                )}
+                <Button type="submit">
+                  <Save className="mr-2" />
+                  Save
+                </Button>
+              </div>
+            </div>
+          </form>
         </Form>
       </DialogContent>
     </Dialog>
