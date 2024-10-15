@@ -10,12 +10,11 @@ import {
   CardTitle,
 } from "@components/ui/card";
 import { Input } from "@components/ui/input";
-import { Copy, Plus, RotateCcw, Save, Send } from "lucide-react";
+import { Copy, Plus, RotateCcw, Save, Send, X } from "lucide-react";
 import { toast } from "sonner";
 import { api } from "trpc/react";
 import { type TallyField, type Tally } from "@lib/types/tally";
-import { TallyFieldForm } from "./tallyFieldForm";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Label } from "@components/ui/label";
 import {
   ResizableHandle,
@@ -35,19 +34,108 @@ import {
 import type { Opportunity, Application } from "@prisma/client";
 import { usePhasesContext } from "../phases/usePhasesStore";
 import { type Phases } from "@lib/types/opportunity";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@components/ui/popover";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@components/ui/command";
+import { SelectQuestionnaireCombobox } from "./select-questionnaire-combobox";
+import { ApplicationField } from "@components/application/applicationField";
+
+const Rule = () => {
+  const [questionnaire, setQuestionnaire] = useState("");
+  return (
+    <Card className="p-2">
+      <div className="flex items-center gap-2 text-sm">
+        Assign
+        <SelectQuestionnaireCombobox
+          value={questionnaire}
+          setValue={setQuestionnaire}
+        />
+        if
+      </div>
+    </Card>
+  );
+};
+
+const Name = ({
+  fields,
+  selectFun,
+  isSelecting,
+  setSelecting,
+}: {
+  fields?: TallyField[];
+  selectFun: React.MutableRefObject<
+    ((field: TallyField["key"]) => void) | undefined
+  >;
+  isSelecting: boolean;
+  setSelecting: React.Dispatch<React.SetStateAction<boolean>>;
+}) => {
+  const [nameKeys, setNameKeys] = useState<string[]>([]);
+  if (!fields) return null;
+
+  return (
+    <Card className="group overflow-y-scroll">
+      <CardHeader>
+        <CardTitle className="scroll-m-20 text-2xl font-semibold tracking-tight">
+          Name
+        </CardTitle>
+        <CardDescription>
+          Choose the fields that make up the applicant&apos;s name. The full
+          name will be a combination of all selected fields, separated by
+          spaces.
+        </CardDescription>
+      </CardHeader>
+
+      <CardContent className="flex items-center gap-2">
+        {!!nameKeys.length && (
+          <div className="flex items-center">
+            {nameKeys
+              .map((key) => fields.find((f) => f.key === key))
+              .filter((field) => field !== undefined)
+              .map((field, index) => (
+                <div key={field?.key} className="flex items-center">
+                  <Button
+                    variant="outline"
+                    className="hover:bg-destructive hover:text-destructive-foreground"
+                    onClick={() =>
+                      setNameKeys((keys) =>
+                        keys.filter((key) => key != field.key),
+                      )
+                    }
+                  >
+                    {field?.label}
+                  </Button>
+                  {index < nameKeys.length - 1 && <Plus className="mx-2" />}
+                </div>
+              ))}
+          </div>
+        )}
+
+        {isSelecting && (
+          <>
+            <X className="mr-2" />
+            <Button variant="outline" onClick={() => setSelecting(false)}>
+              Cancel
+            </Button>
+          </>
+        )}
+        {!isSelecting && (
+          <div className="flex items-center opacity-0 transition-opacity group-hover:opacity-100">
+            <Plus className="mr-2" />
+            <Button
+              variant="outline"
+              className="border-dashed"
+              onClick={() => {
+                const fun = (key: TallyField["key"]) =>
+                  setNameKeys((prev) => [...prev, key]);
+                selectFun.current = fun;
+                setSelecting(true);
+              }}
+            >
+              Add field
+            </Button>
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  );
+};
 
 export const TallyForm = ({
   opportunity,
@@ -59,13 +147,13 @@ export const TallyForm = ({
   const { data: applicationList, refetch: refetchApplications } =
     api.application.getAllByOpportunity.useQuery(Number(opportunity.id));
 
-  const [selectedApplication, setSelectedApplication] = useState<
-    string | undefined
-  >(opportunity.schemaId ? String(opportunity.schemaId) : undefined);
+  const [schemaId, setSchemaId] = useState<string | undefined>(
+    opportunity.schemaId ? String(opportunity.schemaId) : undefined,
+  );
 
   const { data: application } = api.application.getById.useQuery(
-    Number(selectedApplication),
-    { enabled: !!selectedApplication },
+    Number(schemaId),
+    { enabled: !!schemaId },
   );
 
   const getTallyFields = (
@@ -79,7 +167,7 @@ export const TallyForm = ({
   async function onSubmit() {
     const id = toast.loading("Updating application related settings");
     try {
-      await update({ phases, schemaId: Number(selectedApplication) });
+      await update({ phases, schemaId: Number(schemaId) });
       toast.success("Application settings updated successfully!", { id });
     } catch (_err) {
       toast.error("Error updating application settings. Please try again.", {
@@ -97,8 +185,11 @@ export const TallyForm = ({
     }
   }, [opportunity.id]);
 
-  const [open, setOpen] = useState(false);
-  const [questionnairesWithRules, setQuestionnairesWithRules] = useState([]);
+  const [addRuleOpen, setAddRuleOpen] = useState(false);
+  const selectFun = useRef<((key: TallyField["key"]) => void) | undefined>(
+    undefined,
+  );
+  const [isSelecting, setSelecting] = useState(false);
 
   return (
     <div className="flex flex-col gap-8">
@@ -141,10 +232,7 @@ export const TallyForm = ({
           <Label>Choose an application</Label>
 
           <div className="flex w-full gap-2">
-            <Select
-              value={selectedApplication}
-              onValueChange={setSelectedApplication}
-            >
+            <Select value={schemaId} onValueChange={setSchemaId}>
               <SelectTrigger>
                 <SelectValue placeholder="Choose application" />
               </SelectTrigger>
@@ -214,8 +302,15 @@ export const TallyForm = ({
             autoSaveId="tallyform-config"
             className="gap-4"
           >
-            <ResizablePanel defaultSize={50}>
-              <Card className="h-full overflow-y-scroll">
+            <ResizablePanel defaultSize={50} className="flex flex-col gap-4">
+              <Name
+                fields={getTallyFields(application)}
+                selectFun={selectFun}
+                isSelecting={isSelecting}
+                setSelecting={setSelecting}
+              />
+
+              <Card className="flex-1 overflow-y-scroll">
                 <CardHeader>
                   <CardTitle className="scroll-m-20 text-2xl font-semibold tracking-tight">
                     Assignment rules
@@ -227,49 +322,16 @@ export const TallyForm = ({
                   </CardDescription>
                 </CardHeader>
 
-                <CardContent>
-                  <Popover open={open} onOpenChange={setOpen}>
-                    <PopoverTrigger asChild>
-                      <Button
-                        variant="outline"
-                        role="combobox"
-                        aria-expanded={open}
-                        className="h-32 w-full items-center justify-center border-dashed"
-                      >
-                        <Plus className="mr-2" />
-                        Add questionnaire rule
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="p-0">
-                      <Command>
-                        <CommandInput placeholder="Search questionnaire..." />
-                        <CommandList>
-                          <CommandEmpty>No questionnaire found.</CommandEmpty>
-
-                          {phases.map((phase) => (
-                            <CommandGroup heading={phase.name} key={phase.id}>
-                              {phase.questionnaires.map((q) => (
-                                <CommandItem
-                                  keywords={[phase.name, q.name]}
-                                  key={q.id}
-                                  value={q.id}
-                                  onSelect={(currentValue) => {
-                                    setQuestionnairesWithRules((prev) => ({
-                                      ...prev,
-                                      currentValue,
-                                    }));
-                                    setOpen(false);
-                                  }}
-                                >
-                                  {q.name}
-                                </CommandItem>
-                              ))}
-                            </CommandGroup>
-                          ))}
-                        </CommandList>
-                      </Command>
-                    </PopoverContent>
-                  </Popover>
+                <CardContent className="space-y-2">
+                  {addRuleOpen && <Rule />}
+                  <Button
+                    variant="outline"
+                    onClick={() => setAddRuleOpen(true)}
+                    className="h-32 w-full items-center justify-center border-dashed"
+                  >
+                    <Plus className="mr-2" />
+                    Add questionnaire rule
+                  </Button>
                 </CardContent>
               </Card>
             </ResizablePanel>
@@ -283,9 +345,27 @@ export const TallyForm = ({
                 </CardHeader>
                 <CardContent>
                   <div className="sticky grid gap-8">
-                    {getTallyFields(application)?.map((field) => (
-                      <TallyFieldForm field={field} key={field.key} />
-                    ))}
+                    {getTallyFields(application)?.map((field) => {
+                      const select = selectFun.current;
+
+                      return (
+                        <div key={field.key} className="flex items-end gap-2">
+                          {isSelecting && select && (
+                            <Button
+                              onClick={() => {
+                                select(field.key);
+                                setSelecting(false);
+                              }}
+                              size="icon"
+                              variant="outline"
+                            >
+                              <Plus />
+                            </Button>
+                          )}
+                          <ApplicationField field={field} className="w-full" />
+                        </div>
+                      );
+                    })}
                   </div>
                 </CardContent>
               </Card>

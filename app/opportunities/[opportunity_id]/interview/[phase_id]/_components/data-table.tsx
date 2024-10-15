@@ -25,7 +25,7 @@ import {
 } from "components/ui/table";
 import { useMemo, useState } from "react";
 import { type PhaseApplication } from "../page";
-import { QuestionnaireCombobox } from "./questionnaireCombobox";
+import { QuestionnaireCombobox } from "../../../../../../components/questionnaire/questionnaireCombobox";
 import type { Application, Questionnaire } from "@prisma/client";
 import { UserMinus, UserPlus } from "lucide-react";
 import {
