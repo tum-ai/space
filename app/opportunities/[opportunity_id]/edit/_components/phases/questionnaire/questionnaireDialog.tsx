@@ -33,8 +33,8 @@ import { QuestionView } from "./questionView";
 import { Card } from "@components/ui/card";
 import { QuestionForm, type QuestionFormProps } from "./question";
 import type { Question } from "@lib/types/question";
-import { AvatarStack } from "../../../../../../../components/user/users-stack";
-import { AnimatePresence, motion } from "framer-motion";
+import { AvatarStack } from "@components/user/users-stack";
+import { AnimatePresence, LayoutGroup, motion } from "framer-motion";
 
 const QuestionEdit = ({
   question,
@@ -50,11 +50,13 @@ const QuestionEdit = ({
         </Card>
       )}
       {!!isEdit && (
-        <QuestionForm
-          {...props}
-          toggleEdit={() => setIsEdit(false)}
-          defaultValues={question}
-        />
+        <Card className="p-2">
+          <QuestionForm
+            {...props}
+            toggleEdit={() => setIsEdit(false)}
+            defaultValues={question}
+          />
+        </Card>
       )}
     </>
   );
@@ -202,10 +204,12 @@ export const QuestionnaireDialog = ({
                       animate={{ opacity: 1, height: "initial" }}
                       exit={{ opacity: 0, height: 0 }}
                     >
-                      <QuestionForm
-                        toggleEdit={() => setAddQuestionOpen(false)}
-                        onSave={appendQuestion}
-                      />
+                      <Card className="p-2">
+                        <QuestionForm
+                          toggleEdit={() => setAddQuestionOpen(false)}
+                          onSave={appendQuestion}
+                        />
+                      </Card>
                     </motion.div>
                   )}
                 </AnimatePresence>

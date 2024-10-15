@@ -68,53 +68,48 @@ export const QuestionForm = ({
 
   return (
     <Form {...form}>
-      <Card className="space-y-2 p-2">
-        <div className="space-y-2">
-          <FormField
-            control={form.control}
-            name="type"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Type</FormLabel>
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select a question type" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    <SelectItem value="INPUT_TEXT">Input text</SelectItem>
-                    <SelectItem value="DROPDOWN">Dropdown</SelectItem>
-                    <SelectItem value="CHECKBOXES">Checkboxes</SelectItem>
-                    <SelectItem value="NUMERIC">Numeric</SelectItem>
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="label"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Question</FormLabel>
+      <div className="space-y-2">
+        <FormField
+          control={form.control}
+          name="type"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Type</FormLabel>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
-                  <Input {...field} />
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select a question type" />
+                  </SelectTrigger>
                 </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+                <SelectContent>
+                  <SelectItem value="INPUT_TEXT">Input text</SelectItem>
+                  <SelectItem value="DROPDOWN">Dropdown</SelectItem>
+                  <SelectItem value="CHECKBOXES">Checkboxes</SelectItem>
+                  <SelectItem value="NUMERIC">Numeric</SelectItem>
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
-          {type === "DROPDOWN" && <ChoiceOptions />}
-          {type === "CHECKBOXES" && <ChoiceOptions />}
-          {type === "NUMERIC" && <MinMaxOption />}
-        </div>
+        <FormField
+          control={form.control}
+          name="label"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Question</FormLabel>
+              <FormControl>
+                <Input {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        {type === "DROPDOWN" && <ChoiceOptions />}
+        {type === "CHECKBOXES" && <ChoiceOptions />}
+        {type === "NUMERIC" && <MinMaxOption />}
 
         <div className="flex justify-between">
           <Button
@@ -150,7 +145,7 @@ export const QuestionForm = ({
             </Button>
           </div>
         </div>
-      </Card>
+      </div>
     </Form>
   );
 };
