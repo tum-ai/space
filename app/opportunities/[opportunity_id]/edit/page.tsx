@@ -10,7 +10,7 @@ import db from "server/db";
 import { PhaseContextProvider } from "./_components/phaseContextProvider";
 import type { Phases, Phase } from "@lib/types/opportunity";
 import { EditPhasesForm } from "./_components/phases/editPhasesForm";
-import { TallyForm } from "./_components/tally/tallyForm";
+import { TallyForm } from "./_components/tally/tally-form";
 
 export type PhaseEditOpportunity = Prisma.OpportunityGetPayload<{
   include: {

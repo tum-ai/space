@@ -12,7 +12,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@components/ui/select";
-import { Textarea } from "@components/ui/textarea";
 import { Checkbox } from "@components/ui/checkbox";
 import { FileText, X } from "lucide-react";
 import { cn } from "@lib/utils";
@@ -168,7 +167,7 @@ const ApplicationValue = ({ field }: ApplicationFieldProps) => {
             <TableRow>
               <TableHead className="w-[120px]" />
               {field.columns.map((col) => (
-                <TableHead>{col.text}</TableHead>
+                <div key={col.id}>{col.text}</div>
               ))}
             </TableRow>
           </TableHeader>
