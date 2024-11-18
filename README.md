@@ -1,265 +1,156 @@
 # TUM.ai Space 🚀
 
-TUM.ai Space is an all-in-one platform with the purpose of tracking all internal processes related to members. This entails: development, performance, projects, and recruitment.
+## Overview
 
-TUM.ai Space solves the following issues:
+TUM.ai Space is an all-in-one platform that streamlines internal processes for member management, including:
+- Development tracking
+- Performance monitoring
+- Project management
+- Recruitment processes
 
-- Lack of a clear, systematic, observable overview of members' achievements
-- Decoupled nature of the existing systems and the lack of extensibility thereof
+### Problem Statement
+Traditional systems face challenges with:
+- Limited visibility into member achievements
+- Fragmented tooling and systems
+- Lack of scalability
 
-Hence, TUM.ai Space facilitates the following:
+### Solution
+TUM.ai Space provides:
+- Comprehensive oversight of stakeholder activities and projects
+- Unified data management platform
+- Extensible architecture for future growth
 
-- Increased observability of TUM.ai's existing stakeholder data and projects in addition to prospective stakeholder data
-- Centralized organization of internal information that is setup in an extensible and manageable format
+## Project Organization
 
-## Organization
+Development is managed through [Linear](https://linear.app/tum-ai/project/tumai-space-5b8716e29acb). All tasks and issues are tracked here—please **do not use GitHub Issues for development tasks**.
 
-Project planning is conducted through [Linear](https://linear.app/tum-ai/project/tumai-space-5b8716e29acb). All relevant issues and tasks are managed there - Github Issues should not be considered for development.
+### Linear Workflow
 
-For instructions on working and developing a Linear ticket, please refer to [this section](#working-on-a-linear-ticket).
+Follow these steps for ticket-based development:
 
-## Repo Structure
-
-| Directory                  | Explanation                                   |
-| -------------------------- | --------------------------------------------- |
-| .fileserver/certification/ | Resources needed for generating a certificate |
-| .github/workflows/         |                                               |
-| api/                       | Backend, services                             |
-| app/                       | Frontend                                      |
-
-## Development
-
-### Installation and Prerequisites
-
-Consider the following as an ordered checklist of prerequisites for [running TUM.ai Space](#running-the-project)
-
-- Linux Only: build/dev tools, mainly for make
-
-1. Homebrew: See [here](https://brew.sh)
-2. Node + NPM: See [here](https://nodejs.org/en/download/package-manager) <br>
-3. Docker + Docker Compose: See [here](https://docs.docker.com/get-docker/)
-4. Micromamba or Anaconda: See (recommended) [Micromamba](https://mamba.readthedocs.io/en/latest/micromamba-installation.html) or [Anaconda](https://docs.anaconda.com/free/anaconda/install/index.html)
-5. Create the development environment using environment.yml: <br>
-
-If you have Anaconda:
-
+1. Select and open your Linear ticket
+2. Copy the branch name (branch icon in top left)
+3. Create your local branch:
 ```bash
-~ cd api
-~ conda env create -f environment.yml
+git switch -c <branch-name>
 ```
 
-If you have Micromamba:
-
+4. Set up remote tracking:
 ```bash
-~ cd api
-~ micromamba env create -f environment.yml
+git push --set-upstream origin <branch-name>
 ```
 
-6. (Optional but recommended) Pyenv: See [documentation](https://github.com/pyenv/pyenv) and [installer](https://github.com/pyenv/pyenv#automatic-installer)
-7. **Signing your commits with GPG**: See [here](https://docs.github.com/en/authentication/managing-commit-signature-verification/signing-commits) - this is highly encouraged but not necessary
+## 🔧 Tech Stack
 
-### Setup
+[![Next.js](https://img.shields.io/badge/Next.js-14.2-black?style=flat-square&logo=next.js)](https://nextjs.org/)
+[![React](https://img.shields.io/badge/React-18.3-blue?style=flat-square&logo=react)](https://reactjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.6-blue?style=flat-square&logo=typescript)](https://www.typescriptlang.org/)
+[![tRPC](https://img.shields.io/badge/tRPC-11.0-blue?style=flat-square)](https://trpc.io/)
+[![Prisma](https://img.shields.io/badge/Prisma-5.20-blue?style=flat-square&logo=prisma)](https://www.prisma.io/)
+[![TailwindCSS](https://img.shields.io/badge/TailwindCSS-3.4-blue?style=flat-square&logo=tailwind-css)](https://tailwindcss.com/)
 
-**Initial setup** \
-For MacOS:
+### Repository Structure
 
-1. Find your python version
-2. Execute the following:
-
-```bash
-open /Applications/Python\ {your python version}/Install\ Certificate.command
+```
+space/
+├── app/          # Next.js app router and pages
+├── components/   # Reusable React components
+├── lib/         # Utility functions and helpers
+├── prisma/      # Database schema and migrations
+├── providers/   # Context providers
+├── public/      # Static assets
+├── styles/      # Global styles
+└── trpc/        # tRPC router and procedures
 ```
 
-For Linux, MacOS, Windows:
 
-1. Create .env within /api
-2. Paste [this](https://tum-ai-internal.slack.com/archives/C02787QJ95W/p1698584387138569) into /api/.env
-3. Create .env within /app and paste in the following:
-4. Create /api/.secrets and then /api/.secrets/tumai-space-firebase-adminsdk.json
-5. Paste [this](https://tum-ai-internal.slack.com/archives/C02787QJ95W/p1698583880296439) into /api/.secrets/tumai-space-firebase-adminsdk.json - Add Firebase Admin SDK Certificate (for staging env): the development environment will use authentication of the Staging Firebase project
+### Core Technology
+- **Framework**: [Next.js](https://nextjs.org/) - React framework for production
+- **Language**: [TypeScript](https://www.typescriptlang.org/) - Type-safe JavaScript
+- **Styling**: [Tailwind CSS](https://tailwindcss.com/) - Utility-first CSS
+- **Database**: PostgreSQL with [Prisma ORM](https://www.prisma.io/) - Type-safe database access
 
-### Running the Project
+### Frontend Architecture
+- **State Management**: [Zustand](https://github.com/pmndrs/zustand) - Simple, fast state management
+- **Data Fetching**: [TanStack Query](https://tanstack.com/query) - Powerful async state management
+- **UI Components**: 
+  - [Radix UI](https://www.radix-ui.com/) - Accessible component primitives
+  - [Tremor](https://www.tremor.so/) - Advanced analytics components
+  - [DND Kit](https://dndkit.com/) - Drag & drop functionality
+- **Forms**: [React Hook Form](https://react-hook-form.com/) + [Zod](https://zod.dev/) - Type-safe form handling
 
-**Backend** in `/api/`
+### Backend Services
+- **API Layer**: [tRPC](https://trpc.io/) - End-to-end typesafe APIs
+- **Authentication**: [NextAuth.js](https://next-auth.js.org/) - Flexible auth solutions
+- **Communication**: [Resend](https://resend.com/) - Modern email infrastructure
 
-1. Change into the api directory:
+## Development Guide
 
+### Prerequisites
+
+Required tools:
+
+0. [Homebrew](https://brew.sh) (or other preferred package manager)
+1. [Node + NPM](https://nodejs.org/en/download/package-manager)
+2. [Docker + Docker Compose](https://docs.docker.com/get-docker/)
+3. [Bun](https://bun.sh/docs/installation)
+
+Recommended tools:
+- [Micromamba](https://mamba.readthedocs.io/en/latest/micromamba-installation.html) or [Anaconda](https://docs.anaconda.com/free/anaconda/install/index.html)
+- [Pyenv](https://github.com/pyenv/pyenv)
+- [GPG for commit signing](https://docs.github.com/en/authentication/managing-commit-signature-verification/signing-commits)
+
+### Initial Setup
+
+0. Install [required tools](#Prerequisites)
+
+1. Copy `.env` file to root directory
+
+2. Install dependencies:
 ```bash
-~ cd api
+npm install
+```
+or 
+```bash
+bun install
 ```
 
-2. Activate the Conda environment using either Micromamba or Anaconda:
+### Database Setup
 
+Setting up mock data for development:
+
+1. Start local database:
 ```bash
-~ micromamba activate space
+docker-compose up
 ```
 
+2. Setup authentication:
+   - Launch the UI
+   - Login via Slack
+   - This creates initial user data
+
+3. Initialize database schema:
+```bash
+npx prisma migrate dev
+```
+
+4. Generate mock data:
+```bash
+bun db:seed
+```
+
+### Additonal database commands:
+```bash
+bun prisma migrate reset    # Reset database
+```
+
+### Run Server
+
+1. Start development server:
+```bash
+npm run dev:https  # Recommended for Slack authentication
+```
 or
-
 ```bash
-~ conda activate space
+npm run dev       # Standard HTTP server
 ```
-
-3. Run the backend:
-
-(Recommended)
-
-```bash
-~ uvicorn space_api.main:app --host 0.0.0.0 --reload --port 8000
-```
-
-or
-
-```bash
-~ make run  # in root dir (launch api in docker container)
-```
-
-**Frontend** in `/app/`
-
-1. Install the project's frontend dependencies listed in the package.json file, create a node_modules directory and ensuring the correct package versions are used:
-
-```bash
-~ cd app
-~ npm install
-```
-
-2. Start a development server for the frontend using npm:
-
-```bash
-~ npm run dev
-```
-
-**Using the precommit hook**
-
-To trigger this manually:
-
-```bash
-~ pre-commit run --all
-```
-
-To trigger this on every commit:
-
-```bash
-~ pre-commit install
-```
-
-**Deploying to Firebase (hosting) manually / using Firebase local emulators:**
-
-Consider checking out the commands listed in /app/Makefile.
-
-> Please only use them if you know what you are doing!
-
-### Generating mock data
-
-Generate mock users, opportunities, applications and reviews using **faker** scripts.
-
-How to generate mock data:
-
-1. **Run local DB**
-
-   ```bash
-   docker-compose up
-   ```
-
-2. **Login via Slack Authentication**
-
-   - Open the UI and log in via Slack authentication. This will create a session and a User entry in the DB.
-
-3. **Seed local DB**
-
-   - Run the following command to seed the local DB with mock data:
-
-   ```bash
-   bun db:seed
-   ```
-
-Command Line Options:
-
-```bash
-~ bun db:seed -h
-```
-
-Reset/Clear DB:
-
-```bash
-~ bun prisma migrate reset
-```
-
-### Working on a Linear ticket
-
-Working with Linear tickets is very similar to working with GitHub issues.
-It works as follows:
-
-1. Start by clicking on the chosen ticket
-2. Click on the branch icon in the top left corner to copy the branch name - this allows Linear to track the ticket status and progress
-3. Now locate the space repository and create a new branch:
-
-```bash
-~ git switch -c <branch-name>
-```
-
-4. Now push the branch and changes at first with:
-
-```bash
-~ git push --set-upstream origin <branch-name>
-```
-
-### Technology Stack
-
-In the beginning of the project the team formed and chose a technical stack. This will not be changed and is a final decision.
-
-**Backend**:
-
-- Service Logic: `Python` using [`FastAPI`](https://github.com/tiangolo/fastapi) framework (apiDocs via `Pydantic` models)
-- Database: `PostgreSQL` on Azure through `SQLAlchemy 2.0`
-
-**Frontend**:
-
-- [`NextJS`](https://nextjs.org/) framework for the website
-- [`MobX`](https://mobx.js.org) for state management
-- Firebase Auth for authentication
-
-**Deployment**:
-
-- Backend and Database (DB) on Azure - this will be moved to Google Cloud in the future
-- Firebase Authentication for managing authentication, authorization and roles
-- [`Docker`](https://www.docker.com/) with [`Docker Compose`](https://docs.docker.com/compose/) for containerization and orchestration of the backend and DB
-
-## Documentation
-
-To view an Entity-Relationship Diagram (ERD) of the system, paste `api/docs/erDiagram` file into a mermaid-style viewer like [this](https://mermaid.live/).
-Alternatively, checkout the [/api/README.md](https://github.com/tum-ai/space/tree/main/api) on GitHub.
-
-Documentation on the [frontend](https://www.notion.so/tum-ai/Frontend-Development-Guide-Documentation-259fdf1c5c1446d29fee4f16a39d4c0c?pvs=4) and [backend](https://www.notion.so/tum-ai/Backend-Development-Guide-Documentation-4c408603fb65439d94293c5189435770?pvs=4) as well as instructions on how to add services, pages, etc. can be seen on the linked Notion pages.
-
-### FAQ
-
-**A section with common errors and how to solve them can be found on [this](https://www.notion.so/tum-ai/Space-10953cc88e334d61a1fb37744bc72291?pvs=4) Notion page, documenting the project.**
-
-**DevOps**:
-
-- Deployed on Azure
-- [`Firebase`](https://firebase.com/) for managing authentication
-- [`Docker`](https://www.docker.com/) with [`Docker Compose`](https://docs.docker.com/compose/) for containerization and orchestration
-
-**2. Staging**
-
-- Deployed version of the staging branch
-  - Frontend deployed to Firebase staging project ("tumai-space-staging")
-  - Backend deployed to Azure Staging
-  - Uses an Azure Staging DB
-- Continuous-Integration (CI) Action is triggered on Pull-Request (PR) creation into main
-
-**3. Production**:
-
-- Deployed version of the main branch
-  - Frontend deployed to Firebase production project ("tumai-space")
-  - Backend deployed to Azure Production
-  - Uses an Azure Production DB
-- CI Action triggered on push commit to main (=merge PR)
-
-One could also see the **Testing** CI part as an environment:
-
-- Runs linting & unit tests on every pushed commit of all branches
-- No deployment
-- Uses an Azure Dev DB
