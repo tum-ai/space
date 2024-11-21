@@ -76,7 +76,7 @@ export default async function RootLayout({ children }: Props) {
                         <Tooltip key={href}>
                           <TooltipTrigger asChild>
                             <Link
-                              href="/opportunities"
+                              href={href}
                               className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
                             >
                               {icon}
