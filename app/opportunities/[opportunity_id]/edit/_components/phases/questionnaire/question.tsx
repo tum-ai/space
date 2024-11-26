@@ -32,7 +32,6 @@ import {
 import { useState } from "react";
 import { Minus, Plus } from "lucide-react";
 import { toast } from "sonner";
-import { Card } from "@components/ui/card";
 
 export interface QuestionFormProps {
   onSave: (data: z.infer<typeof QuestionSchema>) => void;

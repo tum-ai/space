@@ -131,11 +131,11 @@ export const QuestionnaireDialog = ({
   return (
     <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent>
+      <DialogContent className="p-0">
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit, console.error)}
-            className="max-h-[42rem] space-y-4 overflow-y-auto"
+            className="max-h-[42rem] space-y-4 overflow-y-auto p-6"
           >
             <DialogHeader>
               <DialogTitle>
@@ -196,7 +196,9 @@ export const QuestionnaireDialog = ({
                     onRemove={() => removeQuestion(i)}
                   />
                 ))}
+              </div>
 
+              <div>
                 <AnimatePresence>
                   {addQuestionOpen && (
                     <motion.div
@@ -204,7 +206,7 @@ export const QuestionnaireDialog = ({
                       animate={{ opacity: 1, height: "initial" }}
                       exit={{ opacity: 0, height: 0 }}
                     >
-                      <Card className="p-2">
+                      <Card className="mb-2 p-2">
                         <QuestionForm
                           toggleEdit={() => setAddQuestionOpen(false)}
                           onSave={appendQuestion}

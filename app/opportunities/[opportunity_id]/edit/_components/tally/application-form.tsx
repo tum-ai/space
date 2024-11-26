@@ -1,5 +1,5 @@
 "use client";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, LayoutGroup } from "framer-motion";
 import { Button } from "@components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@components/ui/card";
 import { Plus } from "lucide-react";
@@ -26,37 +26,38 @@ export const ApplicationForm = ({
         <div className="sticky grid gap-8">
           {getTallyFields(application)?.map((field) => {
             const select = selectFun.current;
+            const show =
+              !!selecting && selecting.types.includes(field.type) && !!select;
 
             return (
-              <div key={field.key} className="flex min-h-10 items-end gap-2">
+              <motion.div key={field.key} className="flex min-h-10 items-end">
                 <AnimatePresence>
-                  {!!selecting &&
-                    selecting.types.includes(field.type) &&
-                    select && (
-                      <motion.div
-                        initial={{ opacity: 0, width: 0 }}
-                        animate={{ opacity: 1, width: "initial" }}
-                        exit={{ opacity: 0, width: 0 }}
-                      >
-                        <Button
-                          onClick={() => {
-                            select(field);
+                  {show && (
+                    <motion.div
+                      initial={{ opacity: 0, width: 0 }}
+                      animate={{ opacity: 1, width: "initial" }}
+                      exit={{ opacity: 0, width: 0 }}
+                    >
+                      <Button
+                        className="mr-2"
+                        onClick={() => {
+                          select(field);
 
-                            if (!selecting.multiple) {
-                              setSelecting(undefined);
-                            }
-                          }}
-                          size="icon"
-                          variant="outline"
-                        >
-                          <Plus />
-                        </Button>
-                      </motion.div>
-                    )}
+                          if (!selecting.multiple) {
+                            setSelecting(undefined);
+                          }
+                        }}
+                        size="icon"
+                        variant="outline"
+                      >
+                        <Plus />
+                      </Button>
+                    </motion.div>
+                  )}
                 </AnimatePresence>
 
                 <ApplicationField field={field} className="w-full" />
-              </div>
+              </motion.div>
             );
           })}
         </div>
