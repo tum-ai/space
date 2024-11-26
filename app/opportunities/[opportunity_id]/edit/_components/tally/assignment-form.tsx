@@ -23,8 +23,9 @@ import {
 const AssignmentRule = ({
   selectFun,
   selecting,
+  onCancel,
   setSelecting,
-}: SelectingProps) => {
+}: SelectingProps & { onCancel: () => void }) => {
   const [questionnaire, setQuestionnaire] = useState("");
   const [field, setField] = useState<TallyField>();
 
@@ -64,13 +65,12 @@ const AssignmentRule = ({
                   <SelectValue placeholder="Choose application" />
                 </SelectTrigger>
                 <SelectContent>
-                  {"options" in field
-                    ? field.options?.map((option) => (
-                        <SelectItem key={option.id} value={option.id}>
-                          {option.text}
-                        </SelectItem>
-                      ))
-                    : null}
+                  {"options" in field &&
+                    field.options?.map((option) => (
+                      <SelectItem key={option.id} value={option.id}>
+                        {option.text}
+                      </SelectItem>
+                    ))}
                 </SelectContent>
               </Select>
             </motion.div>
@@ -78,7 +78,9 @@ const AssignmentRule = ({
         </AnimatePresence>
       </div>
       <div className="flex justify-end gap-2">
-        <Button variant="ghost">Cancel</Button>
+        <Button variant="ghost" onClick={onCancel}>
+          Cancel
+        </Button>
         <Button variant="outline">Create</Button>
       </div>
     </Card>
@@ -106,7 +108,7 @@ export const AssignmentForm = ({
         </CardDescription>
       </CardHeader>
 
-      <CardContent className="space-y-2">
+      <CardContent>
         <AnimatePresence>
           {addRuleOpen && (
             <motion.div
@@ -114,10 +116,16 @@ export const AssignmentForm = ({
               animate={{ height: "initial", opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
             >
-              <AssignmentRule {...props} />
+              <div className="mb-2">
+                <AssignmentRule
+                  {...props}
+                  onCancel={() => setAddRuleOpen(false)}
+                />
+              </div>
             </motion.div>
           )}
         </AnimatePresence>
+
         <Button
           variant="outline"
           onClick={() => setAddRuleOpen(true)}
