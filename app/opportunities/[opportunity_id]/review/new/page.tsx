@@ -16,6 +16,9 @@ export default async function StartReview({ params }: StartReviewProps) {
   const applications = await db.application.findMany({
     where: {
       opportunityId: Number(params.opportunity_id),
+      questionnaires: {
+        some: {},
+      },
     },
     select: {
       id: true,
@@ -23,8 +26,16 @@ export default async function StartReview({ params }: StartReviewProps) {
         select: {
           id: true,
           requiredReviews: true,
-          reviews: true,
-          reviewers: true,
+          reviews: {
+            select: {
+              userId: true,
+              questionnaireId: true,
+              applicationId: true,
+            },
+          },
+          reviewers: {
+            select: { id: true, name: true },
+          },
         },
       },
     },

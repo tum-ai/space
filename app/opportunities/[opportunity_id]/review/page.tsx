@@ -19,10 +19,6 @@ export default async function ReviewPage({ params }: ReviewPageProps) {
   const session = await getServerAuthSession();
   if (!session?.user?.id) redirect("/auth");
 
-  const opportunity = await db.opportunity.findUnique({
-    where: { id: Number(params.opportunity_id) },
-  });
-
   const userReviews = await db.review.findMany({
     where: {
       user: { id: session?.user.id },
