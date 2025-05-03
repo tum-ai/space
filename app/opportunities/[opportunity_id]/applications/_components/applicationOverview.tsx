@@ -45,6 +45,24 @@ interface Props {
   initialSelection: SelectionState;
 }
 
+function getApplicantName(name: string | null, content: any): string {
+  if (name) return name;
+  try {
+    const fields = content?.data?.fields;
+    if (!fields) return "Unknown";
+    const firstName = fields.find(
+      (f: any) => f.label?.trim().toLowerCase() === "first name"
+    )?.value;
+    const lastName = fields.find(
+      (f: any) => f.label?.trim().toLowerCase() === "last name"
+    )?.value;
+    if (firstName && lastName) return `${firstName} ${lastName}`;
+    return firstName || lastName || "Unknown";
+  } catch {
+    return "Unknown";
+  }
+}
+
 export const ApplicationOverview = ({
   phases,
   isAdmin,
@@ -208,7 +226,7 @@ export const ApplicationOverview = ({
                         application.id === applicationId && "bg-muted",
                       )}
                     >
-                      <p className="truncate text-sm">{application.name}</p>
+                      <p className="truncate text-sm">{getApplicantName(application.name, applicationQuery.data?.content)}</p>
                       {application.reviews && (
                         <AvatarStack
                           users={application.reviews.map(
@@ -260,7 +278,7 @@ export const ApplicationOverview = ({
             {applicationQuery.data && (
               <>
                 <h3 className="mx-4 scroll-m-20 text-2xl font-semibold tracking-tight">
-                  {applicationQuery.data?.name}
+                  {getApplicantName(applicationQuery.data?.name, applicationQuery.data?.content)}
                 </h3>
 
                 <div className="mx-4 flex items-center gap-2">
