@@ -1,6 +1,5 @@
-import { getDayOfYear } from "date-fns";
-import { type Quote, Rocket } from "lucide-react";
-import Loading from "./loading";
+import { type Quote } from "lucide-react";
+import { DateTime } from "luxon";
 
 type Quote = {
   text: string;
@@ -112,7 +111,7 @@ export default function Home() {
     },
   ];
 
-  const dayOfYear = getDayOfYear(new Date());
+  const dayOfYear = DateTime.now().ordinal;
   const quoteOfTheDay =
     inspirationalQuotes[dayOfYear % inspirationalQuotes.length];
 

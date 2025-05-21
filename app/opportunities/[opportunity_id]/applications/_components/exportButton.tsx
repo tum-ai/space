@@ -2,7 +2,7 @@
 
 import { Button } from "@components/ui/button";
 import { FileDown } from "lucide-react";
-import { type JsonValue } from "next-auth/adapters";
+import { type Prisma } from "@prisma/client";
 import { toast } from "sonner";
 
 export const ExportButton = ({
@@ -10,9 +10,9 @@ export const ExportButton = ({
 }: {
   getExportData: () => Promise<
     {
-      content: JsonValue;
+      content: Prisma.JsonValue;
       reviews: {
-        content: JsonValue;
+        content: Prisma.JsonValue;
       }[];
     }[]
   >;
